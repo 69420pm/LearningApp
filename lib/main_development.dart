@@ -7,6 +7,7 @@
 
 import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_cards_api/hive_cards_api.dart';
 import 'package:learning_app/app/app.dart';
@@ -14,6 +15,7 @@ import 'package:learning_app/bootstrap.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   final appDocumentDirectory =
       await path_provider.getApplicationDocumentsDirectory();
   Hive.init(appDocumentDirectory.path);

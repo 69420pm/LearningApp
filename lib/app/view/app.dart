@@ -9,7 +9,9 @@ import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:learning_app/app/routes/app_router.dart';
 import 'package:learning_app/counter/counter.dart';
+import 'package:learning_app/home/view/home_page.dart';
 import 'package:learning_app/l10n/l10n.dart';
 
 class App extends StatelessWidget {
@@ -21,13 +23,15 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return RepositoryProvider.value(
       value: cardsRepository,
-      child: const AppView(),
+      child: AppView(),
     );
   }
 }
 
 class AppView extends StatelessWidget {
-  const AppView({super.key});
+  AppView({super.key});
+
+  final AppRouter _appRouter = AppRouter();
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +47,7 @@ class AppView extends StatelessWidget {
         GlobalMaterialLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      home: const CounterPage(),
+      onGenerateRoute: _appRouter.onGenerateRoute,
     );
     ;
   }
