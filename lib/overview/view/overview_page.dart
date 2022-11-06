@@ -12,20 +12,32 @@ class OverviewPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [BlocProvider(create: (context) => HomeCubit())],
-      child: OverviewView(),
+      child: const OverviewView(),
     );
   }
 }
 
 class OverviewView extends StatelessWidget {
   const OverviewView({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.of(context).pushNamed('/'),
+      /// Add card/subject FAB
+      floatingActionButton: Column(
+        children: [
+          SizedBox(height: 200,),
+          FloatingActionButton(
+            onPressed: () => Navigator.of(context).pushNamed('/add_card'),
+          ),
+          FloatingActionButton(
+            onPressed: () => Navigator.of(context).pushNamed('/add_card'),
+          ),
+          FloatingActionButton(
+            onPressed: () => Navigator.of(context).pushNamed('/add_card'),
+          ),
+        ],
       ),
+      body: Text("hey guys")
     );
   }
 }
