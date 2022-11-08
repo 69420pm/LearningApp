@@ -22,18 +22,23 @@ class OverviewView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      /// Add card/subject FAB
       floatingActionButton: Column(
         children: [
           SizedBox(height: 200,),
+          /// Add card FAB
           FloatingActionButton(
+            heroTag: 'card',
             onPressed: () => Navigator.of(context).pushNamed('/add_card'),
           ),
+          /// Add subject FAB
           FloatingActionButton(
-            onPressed: () => Navigator.of(context).pushNamed('/add_card'),
+            heroTag: 'subject',
+            onPressed: () => Navigator.of(context).pushNamed('/add_subject'),
           ),
+          /// Add group FAB
           FloatingActionButton(
-            onPressed: () => Navigator.of(context).pushNamed('/add_card'),
+            heroTag: 'group',
+            onPressed: () => Navigator.of(context).pushNamed('/add_group'),
           ),
         ],
       ),
