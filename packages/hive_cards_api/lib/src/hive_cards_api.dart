@@ -25,9 +25,9 @@ class HiveCardsApi extends CardsApi {
 
   void _init() {
     List<String>? _jsonCards = _hiveBox.get('cards') as List<String>;
-    if (_jsonCards != null) {
-      _cardStreamController.add(_cardsFromJson(_jsonCards));
-    }
+    _cardStreamController.add(_cardsFromJson(_jsonCards));
+    List<String>? _jsonGroups = _hiveBox.get('groups') as List<String>;
+    _groupStreamController.add(_groupsFromJson(_jsonGroups));
   }
 
   List<String> _cardsToJson(List<Card> cards) {
@@ -125,13 +125,21 @@ class HiveCardsApi extends CardsApi {
     }
     _cardStreamController.add(cards);
 
-    return _hiveBox.put("cards", _cardsToJson(cards));
+    return _hiveBox.put('cards', _cardsToJson(cards));
   }
 
   @override
   Future<void> saveGroup(Group group) {
-    // TODO: implement saveGroup
-    throw UnimplementedError();
+    final groups = [..._groupStreamController.value];
+    final groupIndex = groups.indexWhere((element) => element.id == group.id);
+    if(groupIndex >= 0){
+      groups[groupIndex] = group;
+    }else{
+      groups.add(group);
+    }
+    _groupStreamController.add(groups);
+
+    return _hiveBox.put('groups', _groupsToJson(groups));
   }
 
   @override

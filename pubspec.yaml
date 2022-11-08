@@ -24,6 +24,7 @@ dependencies:
     path: packages/hive_cards_api
   cards_repository:
     path: packages/cards_repository
+  uuid: ^3.0.6
   
 
 

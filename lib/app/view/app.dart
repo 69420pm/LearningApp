@@ -30,10 +30,10 @@ class App extends StatelessWidget {
 class AppView extends StatelessWidget {
   AppView({super.key});
 
-  final AppRouter _appRouter = AppRouter();
-
   @override
   Widget build(BuildContext context) {
+    final cardsRepository = context.read<CardsRepository>();
+    final appRouter = AppRouter(cardsRepository);
     return MaterialApp(
       theme: ThemeData(
         appBarTheme: const AppBarTheme(color: Color(0xFF13B9FF)),
@@ -46,7 +46,7 @@ class AppView extends StatelessWidget {
         GlobalMaterialLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      onGenerateRoute: _appRouter.onGenerateRoute,
+      onGenerateRoute: appRouter.onGenerateRoute,
     );
   }
 }
