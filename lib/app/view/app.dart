@@ -35,7 +35,7 @@ class AppView extends StatelessWidget {
     final cardsRepository = context.read<CardsRepository>();
     final appRouter = AppRouter(cardsRepository);
     return MaterialApp(
-      title: "Learning App",
+      title: 'Learning App',
       theme: ThemeData(
         appBarTheme: const AppBarTheme(color: Color(0xFF13B9FF)),
         colorScheme: ColorScheme.fromSwatch(

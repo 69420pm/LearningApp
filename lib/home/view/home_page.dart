@@ -1,4 +1,4 @@
-import "package:flutter/material.dart";
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/app/view/error.dart';
 import 'package:learning_app/home/cubit/home_cubit.dart';
