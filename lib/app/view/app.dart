@@ -37,6 +37,7 @@ class AppView extends StatelessWidget {
     return MaterialApp(
       title: 'Learning App',
       theme: ThemeData(
+        useMaterial3: true,
         appBarTheme: const AppBarTheme(color: Color(0xFF13B9FF)),
         colorScheme: ColorScheme.fromSwatch(
           accentColor: const Color(0xFF13B9FF),
