@@ -99,7 +99,15 @@ class HiveCardsApi extends CardsApi {
 
   @override
   Future<void> saveSubject(Subject subject) {
-    // TODO: implement saveSubject
-    throw UnimplementedError();
+    final subjects = [..._subjectStreamController.value];
+    final subjectIndex = subjects.indexWhere((element) => element.id == subject.id);
+    if (subjectIndex >= 0) {
+      subjects[subjectIndex] = subject;
+    } else {
+      subjects.add(subject);
+    }
+    _subjectStreamController.add(subjects);
+
+    return _hiveBox.put('subjects', _subjectsToJson(subjects));
   }
 }

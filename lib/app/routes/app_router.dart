@@ -1,8 +1,9 @@
 import 'package:cards_repository/cards_repository.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:learning_app/add_card/view/add_card.dart';
+import 'package:learning_app/add_card/view/add_card_page.dart';
+import 'package:learning_app/add_subject/cubit/add_subject_cubit.dart';
+import 'package:learning_app/add_subject/view/add_subject_page.dart';
 
 import 'package:learning_app/app/view/error.dart';
 import 'package:learning_app/home/cubit/home_cubit.dart';
@@ -16,6 +17,7 @@ class AppRouter {
   final CardsRepository _cardsRepository;
 
   final HomeCubit _homeCubit = HomeCubit();
+  late final AddSubjectCubit _addSubjectCubit = AddSubjectCubit(_cardsRepository);
 
   Route<dynamic> onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
@@ -36,6 +38,20 @@ class AppRouter {
           builder: (_) => BlocProvider.value(
             value: _homeCubit,
             child: AddCardPage(),
+          ),
+        );
+      case '/add_subject':
+        return MaterialPageRoute(
+          builder: (_) => MultiBlocProvider(
+            providers: [
+              BlocProvider.value(
+                value: _homeCubit,
+              ),
+              BlocProvider.value(
+                value: _addSubjectCubit,
+              ),
+            ],
+            child: AddSubjectPage(),
           ),
         );
       // error route

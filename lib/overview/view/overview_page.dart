@@ -9,36 +9,30 @@ class OverviewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+        appBar: AppBar(
           title: Text("Overview"),
-          ),
-      floatingActionButton: Column(
-        children: [
-          SizedBox(
-            height: 200,
-          ),
+        ),
+        floatingActionButton: Column(
+          children: [
+            SizedBox(
+              height: 200,
+            ),
 
-          /// Add card FAB
-          FloatingActionButton(
-            heroTag: 'card',
-            onPressed: () => Navigator.of(context).pushNamed('/add_card'),
-          ),
+            /// Add card FAB
+            FloatingActionButton(
+              child: Icon(Icons.add),
+              heroTag: 'card',
+              onPressed: () => Navigator.of(context).pushNamed('/add_card'),
+            ),
 
-          /// Add subject FAB
-          FloatingActionButton(
-            heroTag: 'subject',
-            onPressed: () =>
-                Navigator.of(context).pushNamed('/add_subject'),
-          ),
-
-          /// Add group FAB
-          FloatingActionButton(
-            heroTag: 'group',
-            onPressed: () => Navigator.of(context).pushNamed('/add_group'),
-          ),
-        ],
-      ),
-      body: Text("text alla") 
-    );
+            /// Add subject FAB
+            FloatingActionButton(
+              child: Icon(Icons.add),
+              heroTag: 'subject',
+              onPressed: () => Navigator.of(context).pushNamed('/add_subject'),
+            ),
+          ],
+        ),
+        body: Text("text alla"));
   }
 }
