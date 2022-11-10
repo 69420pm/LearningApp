@@ -17,10 +17,10 @@ class CardsRepository {
   final CardsApi _cardsApi;
 
   /// provide a [Stream] of all cards
-  Stream<List<Group>> getCards() => _cardsApi.getCards();
+  Stream<List<Card>> getCards() => _cardsApi.getCards();
 
   /// provide a [Stream] of all subjects
-  Stream<List<Group>> getSubjects() => _cardsApi.getSubjects();
+  Stream<List<Subject>> getSubjects() => _cardsApi.getSubjects();
 
 
   /// Saves a [card]
