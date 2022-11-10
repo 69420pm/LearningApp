@@ -24,6 +24,7 @@ class HomeView extends StatelessWidget {
 
   /// index of current navbar status
   int navbarIndex = 0;
+  PageController _pageController = PageController(initialPage: 0);
 
   final screens = [
     /// TODO remove place holder
@@ -40,25 +41,41 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
+        int pageIndex = 0;
+        List<Widget> pages = [
+          OverviewPage(),
+          Scaffold(
+              appBar: AppBar(
+            title: Text('Calender'),
+          )),
+          Scaffold(
+              appBar: AppBar(
+            title: Text('Settings'),
+          ))
+        ];
         if (state is HomeOverview) {
-          return const OverviewPage();
+          pageIndex = 0;
         } else if (state is HomeCalendar) {
-          return const Scaffold(
-            bottomNavigationBar: _BottomNavBar(
-              navbarIndex: 1,
-            ),
-          );
+          pageIndex = 1;
         } else if (state is HomeSettings) {
-          return const Scaffold(
-            bottomNavigationBar: _BottomNavBar(
-              navbarIndex: 2,
-            ),
-          );
-        } else if (state is HomeCardReview) {
-          return Scaffold();
-          // navbarIndex = 1;
+          pageIndex = 2;
+        } else {
+          return const ErrorPage(errorMessage: 'Bottom navigation bar error');
         }
-        return const ErrorPage(errorMessage: 'Bottom navigation bar error');
+
+        return Scaffold(
+          body: PageView.builder(
+            controller: _pageController,
+            itemCount: 3,
+            itemBuilder: (context, index) => pages[index],
+            onPageChanged: (pageIndex) =>
+                context.read<HomeCubit>().setTab(pageIndex),
+          ),
+          bottomNavigationBar: _BottomNavBar(
+            navbarIndex: pageIndex,
+            pageController: _pageController,
+          ),
+        );
       },
     );
     ;
@@ -66,9 +83,11 @@ class HomeView extends StatelessWidget {
 }
 
 class _BottomNavBar extends StatelessWidget {
-  const _BottomNavBar({super.key, required this.navbarIndex});
+  const _BottomNavBar(
+      {super.key, required this.navbarIndex, required this.pageController});
 
   final int navbarIndex;
+  final PageController pageController;
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +95,7 @@ class _BottomNavBar extends StatelessWidget {
       /// when a navbar tile gets pressed
       onDestinationSelected: (value) {
         context.read<HomeCubit>().setTab(value);
+        pageController.jumpToPage(value);
       },
       selectedIndex: navbarIndex,
       destinations: [
