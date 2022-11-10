@@ -1,44 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/app/view/error.dart';
+import 'package:learning_app/calendar/view/calendar_page.dart';
 import 'package:learning_app/home/cubit/home_cubit.dart';
 import 'package:learning_app/overview/view/overview_page.dart';
-
+import 'package:learning_app/settings/view/settings_page.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
 
   /// index of current navbar status
-  int navbarIndex = 0;
   PageController _pageController = PageController(initialPage: 0);
-
-  final screens = [
-    /// TODO remove place holder
+  int pageIndex = 0;
+  final pages = <Widget>[
     OverviewPage(),
-    Center(
-      child: Text("1234"),
-    ),
-    Center(
-      child: Text("1235"),
-    )
+    CalendarPage(),
+    SettingsPage(),
   ];
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
-        int pageIndex = 0;
-        List<Widget> pages = [
-          OverviewPage(),
-          Scaffold(
-              appBar: AppBar(
-            title: Text('Calender'),
-          )),
-          Scaffold(
-              appBar: AppBar(
-            title: Text('Settings'),
-          ))
-        ];
         if (state is HomeOverview) {
           pageIndex = 0;
         } else if (state is HomeCalendar) {
