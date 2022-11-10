@@ -8,44 +8,37 @@ class OverviewPage extends StatelessWidget {
   const OverviewPage({super.key});
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-        length: 3,
-        child: Scaffold(
-          appBar: AppBar(
-              title: Text("Overview"),
-              bottom: TabBar(
-                  tabs: [Tab(text: "te"), Tab(text: "te"), Tab(text: "te")])),
-          floatingActionButton: Column(
-            children: [
-              SizedBox(
-                height: 200,
-              ),
-
-              /// Add card FAB
-              FloatingActionButton(
-                heroTag: 'card',
-                onPressed: () => Navigator.of(context).pushNamed('/add_card'),
-              ),
-
-              /// Add subject FAB
-              FloatingActionButton(
-                heroTag: 'subject',
-                onPressed: () =>
-                    Navigator.of(context).pushNamed('/add_subject'),
-              ),
-
-              /// Add group FAB
-              FloatingActionButton(
-                heroTag: 'group',
-                onPressed: () => Navigator.of(context).pushNamed('/add_group'),
-              ),
-            ],
+    return Scaffold(
+      appBar: AppBar(
+          title: Text("Overview"),
           ),
-          body: TabBarView(
-            /// Prevent tab swiping
-            physics: NeverScrollableScrollPhysics(),
-            children: [Text("dfs"), Text("sdf"), Text("dfsal")],
+      floatingActionButton: Column(
+        children: [
+          SizedBox(
+            height: 200,
           ),
-        ));
+
+          /// Add card FAB
+          FloatingActionButton(
+            heroTag: 'card',
+            onPressed: () => Navigator.of(context).pushNamed('/add_card'),
+          ),
+
+          /// Add subject FAB
+          FloatingActionButton(
+            heroTag: 'subject',
+            onPressed: () =>
+                Navigator.of(context).pushNamed('/add_subject'),
+          ),
+
+          /// Add group FAB
+          FloatingActionButton(
+            heroTag: 'group',
+            onPressed: () => Navigator.of(context).pushNamed('/add_group'),
+          ),
+        ],
+      ),
+      body: Text("text alla") 
+    );
   }
 }

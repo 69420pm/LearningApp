@@ -72,13 +72,13 @@ class HiveCardsApi extends CardsApi {
   }
 
   @override
-  Stream<List<Group>> getCards() {
+  Stream<List<Card>> getCards() {
     // TODO: implement getCards
     throw UnimplementedError();
   }
 
   @override
-  Stream<List<Group>> getSubjects() {
+  Stream<List<Subject>> getSubjects() {
     // TODO: implement getSubjects
     throw UnimplementedError();
   }

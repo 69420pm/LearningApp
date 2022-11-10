@@ -6,7 +6,6 @@
 // https://opensource.org/licenses/MIT.
 
 import 'package:cards_api/src/models/card.dart';
-import 'package:cards_api/src/models/group.dart';
 import 'package:cards_api/src/models/subject.dart';
 
 /// {@template cards_api}
@@ -17,10 +16,10 @@ abstract class CardsApi {
   const CardsApi();
 
   /// provide a [Stream] of all cards
-  Stream<List<Group>> getCards();
+  Stream<List<Card>> getCards();
 
   /// provide a [Stream] of all subjects
-  Stream<List<Group>> getSubjects();
+  Stream<List<Subject>> getSubjects();
 
 
   /// Saves a [card]
