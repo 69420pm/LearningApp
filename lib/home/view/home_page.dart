@@ -62,7 +62,6 @@ class _BottomNavBar extends StatelessWidget {
     return NavigationBar(
       /// when a navbar tile gets pressed
       onDestinationSelected: (value) {
-        context.read<HomeCubit>().setTab(value);
         pageController.jumpToPage(value);
       },
       selectedIndex: navbarIndex,
