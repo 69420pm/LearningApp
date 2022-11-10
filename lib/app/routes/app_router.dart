@@ -26,7 +26,7 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => BlocProvider.value(
             value: _homeCubit,
-            child: const HomePage(),
+            child: HomePage(),
           ),
         );
       case '/add_card':

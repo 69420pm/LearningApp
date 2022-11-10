@@ -4,23 +4,9 @@ import 'package:learning_app/app/view/error.dart';
 import 'package:learning_app/home/cubit/home_cubit.dart';
 import 'package:learning_app/overview/view/overview_page.dart';
 
-/// First page after Material App, responsible for Scaffold
+
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
-  /// Inject HomeCubit(), which handles navigation navigation bar
-  /// and main Scaffold
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => HomeCubit(),
-      child: HomeView(),
-    );
-  }
-}
-
-class HomeView extends StatelessWidget {
-  HomeView({super.key});
+  HomePage({super.key});
 
   /// index of current navbar status
   int navbarIndex = 0;
