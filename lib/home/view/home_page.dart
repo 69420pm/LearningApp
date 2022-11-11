@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/app/view/error.dart';
 import 'package:learning_app/calendar/view/calendar_page.dart';
 import 'package:learning_app/home/cubit/home_cubit.dart';
 import 'package:learning_app/overview/view/overview_page.dart';
 import 'package:learning_app/settings/view/settings_page.dart';
+import 'package:ui_components/ui_components.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -61,22 +63,28 @@ class _BottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return NavigationBar(
       /// when a navbar tile gets pressed
-      onDestinationSelected: (value) {
-        pageController.jumpToPage(value);
-      },
+      onDestinationSelected: pageController.jumpToPage,
+      height: UiSizeConstants.defaultSize * 7,
       selectedIndex: navbarIndex,
-      destinations: [
+      labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+      destinations: const [
         /// Overview tile
-        const NavigationDestination(
-            icon: const Icon(Icons.email_outlined), label: "Fuck you"),
+        NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home),
+            label: "Overview"),
 
         /// Calendar tile
-        const NavigationDestination(
-            icon: const Icon(Icons.email_outlined), label: "Fuck you"),
+        NavigationDestination(
+            icon: Icon(Icons.calendar_month_outlined),
+            selectedIcon: Icon(Icons.calendar_month),
+            label: "Calender"),
 
         /// Settings tile
-        const NavigationDestination(
-            icon: const Icon(Icons.email_outlined), label: "Fuck you"),
+        NavigationDestination(
+            icon: Icon(Icons.settings_outlined),
+            selectedIcon: Icon(Icons.settings),
+            label: "Settings"),
       ],
     );
   }

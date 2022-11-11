@@ -8,6 +8,7 @@
 import 'package:cards_repository/cards_repository.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -36,6 +37,7 @@ class AppView extends StatelessWidget {
   Widget build(BuildContext context) {
     final cardsRepository = context.read<CardsRepository>();
     final appRouter = AppRouter(cardsRepository);
+
     return DynamicColorBuilder(
       builder: (lightDynamic, darkDynamic) => MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -58,6 +60,18 @@ class AppView extends StatelessWidget {
     required bool isLightMode,
     required ColorScheme colorScheme,
   }) {
+    if (isLightMode) {
+      SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle.light
+            .copyWith(systemNavigationBarColor: lightColorScheme.background),
+      );
+    } else {
+      SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle.dark
+            .copyWith(systemNavigationBarColor: darkColorScheme.background),
+      );
+    }
+
     return ThemeData(
       brightness: isLightMode ? Brightness.light : Brightness.dark,
       colorScheme: colorScheme,

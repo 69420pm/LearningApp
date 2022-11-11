@@ -1,14 +1,15 @@
-// Copyright (c) 2022, Very Good Ventures
-// https://verygood.ventures
-//
-// Use of this source code is governed by an MIT-style
-// license that can be found in the LICENSE file or at
-// https://opensource.org/licenses/MIT.
-
-/// {@template ui_components}
-/// A Very Good Project created by Very Good CLI.
-/// {@endtemplate}
 class UiSizeConstants {
-  /// {@macro ui_components}
-  double padding = 48;
+  static const double defaultSize = 8;
+
+  static const double paddingEdge = 16;
+
+  static const double cornerRadius = 16;
+
+  static const double shadowBlur = 10;
+  static const double shadowSpread = 1;
+  static const double shadowOffset = 3;
+
+  static const double fontSizeTitle = 20;
+
+  static const double borderWidth = 2;
 }
