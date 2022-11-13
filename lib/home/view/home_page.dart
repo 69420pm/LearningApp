@@ -48,13 +48,15 @@ class HomePage extends StatelessWidget {
         );
       },
     );
-    ;
   }
 }
 
 class _BottomNavBar extends StatelessWidget {
-  const _BottomNavBar(
-      {super.key, required this.navbarIndex, required this.pageController});
+  const _BottomNavBar({
+    super.key,
+    required this.navbarIndex,
+    required this.pageController,
+  });
 
   final int navbarIndex;
   final PageController pageController;
@@ -70,21 +72,24 @@ class _BottomNavBar extends StatelessWidget {
       destinations: const [
         /// Overview tile
         NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home),
-            label: "Overview"),
+          icon: Icon(Icons.home_outlined),
+          selectedIcon: Icon(Icons.home),
+          label: 'Overview',
+        ),
 
         /// Calendar tile
         NavigationDestination(
-            icon: Icon(Icons.calendar_month_outlined),
-            selectedIcon: Icon(Icons.calendar_month),
-            label: "Calender"),
+          icon: Icon(Icons.calendar_month_outlined),
+          selectedIcon: Icon(Icons.calendar_month),
+          label: 'Calender',
+        ),
 
         /// Settings tile
         NavigationDestination(
-            icon: Icon(Icons.settings_outlined),
-            selectedIcon: Icon(Icons.settings),
-            label: "Settings"),
+          icon: Icon(Icons.settings_outlined),
+          selectedIcon: Icon(Icons.settings),
+          label: 'Settings',
+        ),
       ],
     );
   }

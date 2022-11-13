@@ -3,15 +3,15 @@ import 'package:cards_repository/cards_repository.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
-part 'add_subject_state.dart';
+part 'edit_subject_state.dart';
 
-class AddSubjectCubit extends Cubit<AddSubjectState> {
-  AddSubjectCubit(this._cardsRepository) : super(AddSubjectInitial());
+class EditSubjectCubit extends Cubit<EditSubjectState> {
+  EditSubjectCubit(this._cardsRepository) : super(EditSubjectInitial());
 
   final CardsRepository _cardsRepository;
 
   Future<void> saveSubject(String name, String parentId, String icon) async {
-    emit(AddSubjectLoading());
+    emit(EditSubjectLoading());
     final newSubject = Subject(
         id: const Uuid().v4(),
         name: name,
@@ -22,10 +22,10 @@ class AddSubjectCubit extends Cubit<AddSubjectState> {
         daysToGetNotified: List<String>.empty());
     try {
       await _cardsRepository.saveSubject(newSubject);
-      emit(AddSubjectSuccess());
+      emit(EditSubjectSuccess());
     } catch (e) {
       emit(
-        AddSubjectFailure(
+        EditSubjectFailure(
             errorMessage:
                 'Subject saving failed, while communicating with hive'),
       );

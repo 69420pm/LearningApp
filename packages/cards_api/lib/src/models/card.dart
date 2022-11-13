@@ -40,7 +40,7 @@ class Card extends Equatable {
     required this.parentSubjectId,
     required this.askCardsInverted,
     required this.typeAnswer,
-    required this.recallScore,
+    this.recallScore = 0,
     required this.dateToReview,
   });
   
