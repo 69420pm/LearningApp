@@ -1,9 +1,13 @@
+import 'package:cards_api/cards_api.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_subject/cubit/add_subject_cubit.dart';
 
 class AddSubjectPage extends StatelessWidget {
-  AddSubjectPage({super.key});
+  AddSubjectPage({super.key, this.subjectToEdit = null});
+
+  /// when add_subject_page is used as edit_subject_page, when not let it empty
+  final Subject? subjectToEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -40,13 +44,14 @@ class AddSubjectPage extends StatelessWidget {
               controller: iconController,
             ),
             ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (formKey.currentState!.validate()) {
-                    context.read<AddSubjectCubit>().saveSubject(
+                    await context.read<AddSubjectCubit>().saveSubject(
                         nameController.text,
                         locationController.text,
                         iconController.text);
                   }
+                  Navigator.pop(context);
                 },
                 child: Text("Save"))
           ],

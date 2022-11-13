@@ -24,9 +24,11 @@ class AddSubjectCubit extends Cubit<AddSubjectState> {
       await _cardsRepository.saveSubject(newSubject);
       emit(AddSubjectSuccess());
     } catch (e) {
-      emit(AddSubjectFailure(
-          errorMessage:
-              'Subject saving failed, while communicating with hive'));
+      emit(
+        AddSubjectFailure(
+            errorMessage:
+                'Subject saving failed, while communicating with hive'),
+      );
     }
   }
 }

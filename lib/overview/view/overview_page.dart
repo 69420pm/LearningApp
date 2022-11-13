@@ -68,7 +68,6 @@ class OverviewPage extends StatelessWidget {
                       subjectListTiles.add(SubjectListTile(subject: element));
                     },
                   );
-                  print(subjectListTiles);
                   return ListView(
                     scrollDirection: Axis.vertical,
                     shrinkWrap: true,
