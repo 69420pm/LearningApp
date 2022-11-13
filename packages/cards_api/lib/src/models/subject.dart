@@ -75,10 +75,9 @@ class Subject extends Equatable {
       dateCreated: map['dateCreated'] as String,
       parentSubjectId: map['parentSubjectId'] as String,
       prefixIcon: map['prefixIcon'] as String,
-      classTests: List<String>.from((map['classTests'] as List<String>)),
+      classTests: List<String>.from(map['classTests'] as List<dynamic>),
       daysToGetNotified:
-          List<String>.from((map['daysToGetNotified'] as List<String>)),
-    );
+          List<String>.from(map['daysToGetNotified'] as List<dynamic>),    );
   }
 
   String toJson() => json.encode(toMap());

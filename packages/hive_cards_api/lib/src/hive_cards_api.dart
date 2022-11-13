@@ -5,6 +5,8 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
+import 'dart:convert';
+
 import 'package:cards_api/cards_api.dart';
 import 'package:hive/hive.dart';
 import 'package:rxdart/rxdart.dart' hide Subject;
@@ -14,7 +16,9 @@ import 'package:rxdart/rxdart.dart' hide Subject;
 /// {@endtemplate}
 class HiveCardsApi extends CardsApi {
   /// {@macro hive_cards_api}
-  HiveCardsApi(this._hiveBox);
+  HiveCardsApi(this._hiveBox) {
+    _init();
+  }
 
   Box<dynamic> _hiveBox;
 
@@ -23,8 +27,21 @@ class HiveCardsApi extends CardsApi {
       BehaviorSubject<List<Subject>>.seeded(const []);
 
   void _init() {
-    List<String>? _jsonCards = _hiveBox.get('cards') as List<String>;
-    _cardStreamController.add(_cardsFromJson(_jsonCards));
+    try {
+      var jsonCards = _hiveBox.get('cards') as List<String>;
+      _cardStreamController.add(_cardsFromJson(jsonCards));
+    } catch (e) {
+      var text = 'no cards on hive db saved';
+      print('\x1B[33m$text\x1B[0m');
+    }
+
+    try {
+      var jsonSubjects = _hiveBox.get('subjects') as List<String>;
+      _subjectStreamController.add(_subjectsFromJson(jsonSubjects));
+    } catch (e) {
+      var text = 'no subjects on hive db saved';
+      print('\x1B[33m$text\x1B[0m');
+    }
   }
 
   List<String> _cardsToJson(List<Card> cards) {
@@ -52,7 +69,7 @@ class HiveCardsApi extends CardsApi {
   }
 
   List<Subject> _subjectsFromJson(List<String> json) {
-    List<Subject> subjects = [];
+    List<Subject> subjects = List.empty(growable: true);
     json.forEach((element) {
       subjects.add(Subject.fromJson(element));
     });
@@ -78,10 +95,8 @@ class HiveCardsApi extends CardsApi {
   }
 
   @override
-  Stream<List<Subject>> getSubjects() {
-    // TODO: implement getSubjects
-    throw UnimplementedError();
-  }
+  Stream<List<Subject>> getSubjects() =>
+      _subjectStreamController.asBroadcastStream();
 
   @override
   Future<void> saveCard(Card card) {
@@ -100,7 +115,8 @@ class HiveCardsApi extends CardsApi {
   @override
   Future<void> saveSubject(Subject subject) {
     final subjects = [..._subjectStreamController.value];
-    final subjectIndex = subjects.indexWhere((element) => element.id == subject.id);
+    final subjectIndex =
+        subjects.indexWhere((element) => element.id == subject.id);
     if (subjectIndex >= 0) {
       subjects[subjectIndex] = subject;
     } else {

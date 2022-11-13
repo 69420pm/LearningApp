@@ -8,6 +8,7 @@ import 'package:learning_app/add_subject/view/add_subject_page.dart';
 import 'package:learning_app/app/view/error.dart';
 import 'package:learning_app/home/cubit/home_cubit.dart';
 import 'package:learning_app/home/view/home_page.dart';
+import 'package:learning_app/overview/bloc/overview_bloc.dart';
 import 'package:learning_app/overview/view/overview_page.dart';
 
 /// Handles complete app routing and is injected in MaterialApp()
@@ -17,7 +18,10 @@ class AppRouter {
   final CardsRepository _cardsRepository;
 
   final HomeCubit _homeCubit = HomeCubit();
-  late final AddSubjectCubit _addSubjectCubit = AddSubjectCubit(_cardsRepository);
+  late final AddSubjectCubit _addSubjectCubit =
+      AddSubjectCubit(_cardsRepository);
+  late final OverviewBloc _overviewBloc = OverviewBloc(_cardsRepository)
+    ..add(OverviewSubjectSubscriptionRequested());
 
   Route<dynamic> onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
@@ -28,6 +32,9 @@ class AppRouter {
             providers: [
               BlocProvider.value(
                 value: _homeCubit,
+              ),
+              BlocProvider.value(
+                value: _overviewBloc,
               ),
             ],
             child: HomePage(),
