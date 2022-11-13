@@ -7,6 +7,8 @@ import 'package:learning_app/add_subject/cubit/add_subject_cubit.dart';
 import 'package:learning_app/add_subject/view/add_subject_page.dart';
 
 import 'package:learning_app/app/view/error.dart';
+import 'package:learning_app/edit_subject/cubit/edit_subject_cubit.dart';
+import 'package:learning_app/edit_subject/view/edit_subject_page.dart';
 import 'package:learning_app/home/cubit/home_cubit.dart';
 import 'package:learning_app/home/view/home_page.dart';
 import 'package:learning_app/overview/bloc/overview_bloc.dart';
@@ -20,6 +22,7 @@ class AppRouter {
   final HomeCubit _homeCubit = HomeCubit();
   late final AddSubjectCubit _addSubjectCubit =
       AddSubjectCubit(_cardsRepository);
+  late final EditSubjectCubit _editSubjectCubit = EditSubjectCubit(_cardsRepository);
   late final AddCardCubit _addCardCubit = AddCardCubit(_cardsRepository);
   late final OverviewBloc _overviewBloc = OverviewBloc(_cardsRepository)
     ..add(OverviewSubjectSubscriptionRequested());
@@ -65,6 +68,22 @@ class AppRouter {
               ),
             ],
             child: AddSubjectPage(),
+          ),
+        );
+      case '/edit_subject':
+        return MaterialPageRoute(
+          builder: (_) => MultiBlocProvider(
+            providers: [
+              BlocProvider.value(
+                value: _homeCubit,
+              ),
+              BlocProvider.value(
+                value: _editSubjectCubit,
+              ),
+            ],
+            child: EditSubjectPage(
+              subjectToEdit: routeSettings.arguments! as Subject,
+            ),
           ),
         );
       // error route

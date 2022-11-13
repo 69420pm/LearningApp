@@ -74,6 +74,9 @@ class OverviewPage extends StatelessWidget {
                     children: subjectListTiles,
                   );
                 }
+                else if(state is OverviewLoading){
+                  // TODO add loading placeholder
+                }
                 return Text("error");
               })
             ],

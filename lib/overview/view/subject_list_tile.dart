@@ -10,6 +10,11 @@ class SubjectListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(color: Colors.green ,child: Text(subject.name));
+    return Container(color: Colors.green ,child: Row(
+      children: [
+        Text(subject.name),
+        ElevatedButton(onPressed: () => Navigator.of(context).pushNamed("/edit_subject", arguments: subject), child: const Text('edit subject'))
+      ],
+    ));
   }
 }
