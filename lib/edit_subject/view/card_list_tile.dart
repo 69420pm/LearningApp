@@ -10,6 +10,6 @@ class CardListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(child: Text(card.front));
+    return Container(child: Text(card.front), color: Colors.green);
   }
 }

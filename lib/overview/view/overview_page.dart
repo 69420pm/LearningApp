@@ -59,6 +59,7 @@ class OverviewPage extends StatelessWidget {
               const SizedBox(height: UiSizeConstants.defaultSize * 2),
               const LearnAllButton(),
               BlocBuilder<OverviewBloc, OverviewState>(
+                buildWhen: (previous, current) => previous != current,
                   builder: (context, state) {
                 if (state is OverviewSuccess) {
                   final subjectListTiles =

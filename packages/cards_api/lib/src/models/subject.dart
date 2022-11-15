@@ -15,7 +15,7 @@ class Subject extends Equatable {
   final String dateCreated;
 
   /// id of parent subject to order cards
-  final String parentSubjectId;
+  final String? parentSubjectId;
 
   /// prefix icon
   final String prefixIcon;
@@ -94,7 +94,6 @@ class Subject extends Equatable {
       id,
       name,
       dateCreated,
-      parentSubjectId,
       prefixIcon,
       classTests,
       daysToGetNotified,
