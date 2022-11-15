@@ -26,7 +26,7 @@ dependencies:
     path: packages/cards_repository
   ui_components:
     path: packages/ui_components
-  uuid: ^3.0.6
+  uuid: ^3.0.7
   dynamic_color: ^1.5.4
   google_fonts: ^3.0.1
   
