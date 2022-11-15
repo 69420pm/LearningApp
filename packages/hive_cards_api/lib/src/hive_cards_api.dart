@@ -89,10 +89,7 @@ class HiveCardsApi extends CardsApi {
   }
 
   @override
-  Stream<List<Card>> getCards() {
-    // TODO: implement getCards
-    throw UnimplementedError();
-  }
+  Stream<List<Card>> getCards() => _cardStreamController.asBroadcastStream();
 
   @override
   Stream<List<Subject>> getSubjects() =>

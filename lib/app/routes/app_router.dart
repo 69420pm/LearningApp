@@ -7,7 +7,7 @@ import 'package:learning_app/add_subject/cubit/add_subject_cubit.dart';
 import 'package:learning_app/add_subject/view/add_subject_page.dart';
 
 import 'package:learning_app/app/view/error.dart';
-import 'package:learning_app/edit_subject/cubit/edit_subject_cubit.dart';
+import 'package:learning_app/edit_subject/bloc/edit_subject_bloc.dart';
 import 'package:learning_app/edit_subject/view/edit_subject_page.dart';
 import 'package:learning_app/home/cubit/home_cubit.dart';
 import 'package:learning_app/home/view/home_page.dart';
@@ -22,7 +22,8 @@ class AppRouter {
   final HomeCubit _homeCubit = HomeCubit();
   late final AddSubjectCubit _addSubjectCubit =
       AddSubjectCubit(_cardsRepository);
-  late final EditSubjectCubit _editSubjectCubit = EditSubjectCubit(_cardsRepository);
+  late final EditSubjectBloc _editSubjectBloc =
+      EditSubjectBloc(_cardsRepository);
   late final AddCardCubit _addCardCubit = AddCardCubit(_cardsRepository);
   late final OverviewBloc _overviewBloc = OverviewBloc(_cardsRepository)
     ..add(OverviewSubjectSubscriptionRequested());
@@ -53,7 +54,8 @@ class AppRouter {
               ),
               BlocProvider.value(value: _addCardCubit),
             ],
-            child: AddCardPage(),
+            child: AddCardPage(
+                recommendedSubjectParentId: routeSettings.arguments as String?),
           ),
         );
       case '/add_subject':
@@ -78,7 +80,7 @@ class AppRouter {
                 value: _homeCubit,
               ),
               BlocProvider.value(
-                value: _editSubjectCubit,
+                value: _editSubjectBloc,
               ),
             ],
             child: EditSubjectPage(

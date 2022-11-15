@@ -4,21 +4,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_card/cubit/add_card_cubit.dart';
 
 class AddCardPage extends StatelessWidget {
-  AddCardPage({super.key, this.cardToEdit = null});
+  AddCardPage({super.key, this.recommendedSubjectParentId = null});
 
   /// when add_Card_page is used as edit_Card_page, when not let it empty
-  final Card? cardToEdit;
+  final String? recommendedSubjectParentId;
 
   @override
   Widget build(BuildContext context) {
-    
     final frontController = TextEditingController();
     final backController = TextEditingController();
     final locationController = TextEditingController();
     final iconController = TextEditingController();
 
+    if (recommendedSubjectParentId != null) {
+      locationController.text = recommendedSubjectParentId!;
+    }
+
     final formKey = GlobalKey<FormState>();
     return Scaffold(
+      appBar: AppBar(title: Text("Add Card Page")),
       body: SafeArea(
           child: Form(
         key: formKey,
@@ -35,9 +39,10 @@ class AddCardPage extends StatelessWidget {
                 }
               },
             ),
-TextFormField(
+            TextFormField(
               controller: backController,
             ),
+
             /// File Location
             TextFormField(
               controller: locationController,

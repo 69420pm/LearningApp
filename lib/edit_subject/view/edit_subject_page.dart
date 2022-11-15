@@ -1,7 +1,8 @@
 import 'package:cards_api/cards_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:learning_app/edit_subject/cubit/edit_subject_cubit.dart';
+import 'package:learning_app/edit_subject/bloc/edit_subject_bloc.dart';
+import 'package:learning_app/edit_subject/view/card_list_tile.dart';
 
 class EditSubjectPage extends StatelessWidget {
   EditSubjectPage({super.key, required this.subjectToEdit});
@@ -11,12 +12,15 @@ class EditSubjectPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-      final nameController = TextEditingController(text: subjectToEdit!.name);
-      final locationController =
-          TextEditingController(text: subjectToEdit!.parentSubjectId);
-      final iconController = TextEditingController(text: subjectToEdit!.prefixIcon);
-
+    context
+        .read<EditSubjectBloc>()
+        .add(EditSubjectCardSubscriptionRequested(subjectToEdit.id));
+    final nameController = TextEditingController(text: subjectToEdit.name);
+    final locationController =
+        TextEditingController(text: subjectToEdit!.parentSubjectId);
+    final iconController =
+        TextEditingController(text: subjectToEdit.prefixIcon);
+    print(subjectToEdit.id);
     final formKey = GlobalKey<FormState>();
     return Scaffold(
       appBar: AppBar(title: Text('Edit Subject')),
@@ -47,16 +51,52 @@ class EditSubjectPage extends StatelessWidget {
               controller: iconController,
             ),
             ElevatedButton(
-                onPressed: () async {
-                  if (formKey.currentState!.validate()) {
-                    await context.read<EditSubjectCubit>().saveSubject(
-                        nameController.text,
-                        locationController.text,
-                        iconController.text);
-                  }
-                  Navigator.pop(context);
-                },
-                child: Text("Save"))
+              onPressed: () async {
+                if (formKey.currentState!.validate()) {
+                  if (subjectToEdit.name != nameController.text ||
+                      subjectToEdit.parentSubjectId !=
+                          locationController.text ||
+                      subjectToEdit.prefixIcon != iconController.text)
+                    subjectToEdit.copyWith(
+                        name: nameController.text,
+                        parentSubjectId: locationController.text,
+                        prefixIcon: iconController.text);
+                  context.read<EditSubjectBloc>().add(EditSubjectSaveSubject(
+                      subjectToEdit.copyWith(
+                          name: nameController.text,
+                          parentSubjectId: locationController.text,
+                          prefixIcon: iconController.text)));
+                }
+                Navigator.pop(context);
+              },
+              child: const Text('Save'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context)
+                    .pushNamed('/add_card', arguments: subjectToEdit.id);
+              },
+              child: const Text('Add card'),
+            ),
+            ElevatedButton(
+              onPressed: () {},
+              child: const Text('Add Subtopic'),
+            ),
+            BlocBuilder<EditSubjectBloc, EditSubjectState>(
+                builder: (context, state) {
+              if (state is EditSubjectCardsFetchingSuccess) {
+                final cardListTiles = List<CardListTile>.empty(growable: true);
+                state.cards.forEach((element) {
+                  cardListTiles.add(CardListTile(card: element));
+                });
+                return ListView(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  children: cardListTiles,
+                );
+              }
+              return Text("error");
+            })
           ],
         ),
       )),
