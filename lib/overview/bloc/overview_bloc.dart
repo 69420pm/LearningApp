@@ -19,12 +19,6 @@ class OverviewBloc extends Bloc<OverviewEvent, OverviewState> {
     Emitter<OverviewState> emit,
   ) async {
     emit(OverviewLoading());
-
-    // _cardsRepository.getSubjects().listen((event) {
-    //   emit(OverviewSuccess(subjects: event));
-    //   print(event);
-    // },);
-
     await emit.forEach<List<Subject>>(_cardsRepository.getSubjects(),
         onData: (subjects) => OverviewSuccess(subjects: subjects),
         onError: (_, __) => OverviewFailure(errorMessage: 'Subject loading failed'));
