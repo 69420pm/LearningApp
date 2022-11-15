@@ -20,7 +20,13 @@ class OverviewBloc extends Bloc<OverviewEvent, OverviewState> {
   ) async {
     emit(OverviewLoading());
     await emit.forEach<List<Subject>>(_cardsRepository.getSubjects(),
-        onData: (subjects) => OverviewSuccess(subjects: subjects),
+        onData: (subjects) {
+          final subjectsToSendFurther = List<Subject>.empty(growable: true);
+          for (var element in subjects) {
+            if(element.parentSubjectId == null || element.parentSubjectId!.isEmpty) subjectsToSendFurther.add(element);
+          }
+          return OverviewSuccess(subjects: subjectsToSendFurther);
+        },
         onError: (_, __) => OverviewFailure(errorMessage: 'Subject loading failed'));
   }
 }

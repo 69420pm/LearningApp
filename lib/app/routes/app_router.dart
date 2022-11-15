@@ -69,7 +69,9 @@ class AppRouter {
                 value: _addSubjectCubit,
               ),
             ],
-            child: AddSubjectPage(),
+            child: AddSubjectPage(
+              recommendedSubjectParentId: routeSettings.arguments as String?,
+            ),
           ),
         );
       case '/edit_subject':

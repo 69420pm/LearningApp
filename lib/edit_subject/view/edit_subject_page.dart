@@ -5,7 +5,7 @@ import 'package:learning_app/edit_subject/bloc/edit_subject_bloc.dart';
 import 'package:learning_app/edit_subject/view/card_list_tile.dart';
 
 class EditSubjectPage extends StatelessWidget {
-  EditSubjectPage({super.key, required this.subjectToEdit});
+  const EditSubjectPage({super.key, required this.subjectToEdit});
 
   /// when add_subject_page is used as edit_subject_page, when not let it empty
   final Subject subjectToEdit;
@@ -17,7 +17,7 @@ class EditSubjectPage extends StatelessWidget {
         .add(EditSubjectCardSubscriptionRequested(subjectToEdit.id));
     final nameController = TextEditingController(text: subjectToEdit.name);
     final locationController =
-        TextEditingController(text: subjectToEdit!.parentSubjectId);
+        TextEditingController(text: subjectToEdit.parentSubjectId);
     final iconController =
         TextEditingController(text: subjectToEdit.prefixIcon);
     print(subjectToEdit.id);
@@ -53,19 +53,18 @@ class EditSubjectPage extends StatelessWidget {
             ElevatedButton(
               onPressed: () async {
                 if (formKey.currentState!.validate()) {
-                  if (subjectToEdit.name != nameController.text ||
-                      subjectToEdit.parentSubjectId !=
-                          locationController.text ||
-                      subjectToEdit.prefixIcon != iconController.text)
-                    subjectToEdit.copyWith(
-                        name: nameController.text,
-                        parentSubjectId: locationController.text,
-                        prefixIcon: iconController.text);
-                  context.read<EditSubjectBloc>().add(EditSubjectSaveSubject(
-                      subjectToEdit.copyWith(
-                          name: nameController.text,
-                          parentSubjectId: locationController.text,
-                          prefixIcon: iconController.text)));
+                  final nameInput = nameController.text.trim();
+                  final locationInput = locationController.text.trim();
+                  final iconInput = locationController.text.trim();
+
+                  if (!nothingChanged(
+                      nameInput, locationInput, iconInput, subjectToEdit)) {
+                    context.read<EditSubjectBloc>().add(EditSubjectSaveSubject(
+                        subjectToEdit.copyWith(
+                            name: nameInput,
+                            parentSubjectId: locationInput,
+                            prefixIcon: iconInput)));
+                  }
                 }
                 Navigator.pop(context);
               },
@@ -79,7 +78,10 @@ class EditSubjectPage extends StatelessWidget {
               child: const Text('Add card'),
             ),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context)
+                    .pushNamed('/add_subject', arguments: subjectToEdit.id);
+              },
               child: const Text('Add Subtopic'),
             ),
             BlocBuilder<EditSubjectBloc, EditSubjectState>(
@@ -101,5 +103,15 @@ class EditSubjectPage extends StatelessWidget {
         ),
       )),
     );
+  }
+
+  bool nothingChanged(
+      String name, String location, String icon, Subject currentSubject) {
+    if (name != currentSubject.name ||
+        location != currentSubject.parentSubjectId ||
+        icon != currentSubject.prefixIcon) {
+      return false;
+    }
+    return true;
   }
 }

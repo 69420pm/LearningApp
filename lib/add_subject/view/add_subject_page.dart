@@ -4,15 +4,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_subject/cubit/add_subject_cubit.dart';
 
 class AddSubjectPage extends StatelessWidget {
-  AddSubjectPage({super.key});
+  const AddSubjectPage({super.key, this.recommendedSubjectParentId});
 
-  /// when add_subject_page is used as edit_subject_page, when not let it empty
+  final String? recommendedSubjectParentId;
 
   @override
   Widget build(BuildContext context) {
     final nameController = TextEditingController();
     final locationController = TextEditingController();
     final iconController = TextEditingController();
+
+    if(recommendedSubjectParentId != null){
+      locationController.text = recommendedSubjectParentId!;
+    }
 
     final formKey = GlobalKey<FormState>();
     return Scaffold(
@@ -34,7 +38,7 @@ class AddSubjectPage extends StatelessWidget {
               },
             ),
 
-            /// File Location
+            /// File Location can be empty
             TextFormField(
               controller: locationController,
             ),
