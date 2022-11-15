@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:cards_repository/cards_repository.dart';
-import 'package:meta/meta.dart';
 
 part 'overview_event.dart';
 part 'overview_state.dart';
