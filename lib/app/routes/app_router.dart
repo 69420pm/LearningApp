@@ -7,11 +7,11 @@ import 'package:learning_app/add_subject/cubit/add_subject_cubit.dart';
 import 'package:learning_app/add_subject/view/add_subject_page.dart';
 
 import 'package:learning_app/app/view/error.dart';
-import 'package:learning_app/edit_subject/bloc/edit_subject_bloc.dart';
-import 'package:learning_app/edit_subject/view/edit_subject_page.dart';
 import 'package:learning_app/home/cubit/home_cubit.dart';
 import 'package:learning_app/home/view/home_page.dart';
 import 'package:learning_app/overview/bloc/overview_bloc.dart';
+import 'package:learning_app/subject_overview/bloc/subject_overview_bloc.dart';
+import 'package:learning_app/subject_overview/view/subject_overview_page.dart';
 
 /// Handles complete app routing and is injected in MaterialApp()
 class AppRouter {
@@ -74,7 +74,7 @@ class AppRouter {
             ),
           ),
         );
-      case '/edit_subject':
+      case '/subject_overview':
         return MaterialPageRoute(
           builder: (_) => MultiBlocProvider(
             providers: [
@@ -85,7 +85,7 @@ class AppRouter {
                 value: _editSubjectBloc,
               ),
             ],
-            child: EditSubjectPage(
+            child: SubjectOverviewPage(
               subjectToEdit: routeSettings.arguments! as Subject,
             ),
           ),

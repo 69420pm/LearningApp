@@ -2,6 +2,7 @@ import 'package:cards_api/cards_api.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_subject/cubit/add_subject_cubit.dart';
+import 'package:ui_components/ui_components.dart';
 
 class AddSubjectPage extends StatelessWidget {
   const AddSubjectPage({super.key, this.recommendedSubjectParentId});
@@ -14,13 +15,13 @@ class AddSubjectPage extends StatelessWidget {
     final locationController = TextEditingController();
     final iconController = TextEditingController();
 
-    if(recommendedSubjectParentId != null){
+    if (recommendedSubjectParentId != null) {
       locationController.text = recommendedSubjectParentId!;
     }
 
     final formKey = GlobalKey<FormState>();
     return Scaffold(
-      appBar: AppBar(title: Text('Add page')),
+      appBar: UIAppBar(title: Text('Add page')),
       body: SafeArea(
           child: Form(
         key: formKey,

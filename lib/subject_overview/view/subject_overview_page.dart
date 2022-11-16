@@ -1,11 +1,12 @@
 import 'package:cards_api/cards_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:learning_app/edit_subject/bloc/edit_subject_bloc.dart';
-import 'package:learning_app/edit_subject/view/card_list_tile.dart';
+import 'package:learning_app/subject_overview/bloc/subject_overview_bloc.dart';
+import 'package:learning_app/subject_overview/view/card_list_tile.dart';
+import 'package:ui_components/ui_components.dart';
 
-class EditSubjectPage extends StatelessWidget {
-  const EditSubjectPage({super.key, required this.subjectToEdit});
+class SubjectOverviewPage extends StatelessWidget {
+  const SubjectOverviewPage({super.key, required this.subjectToEdit});
 
   /// when add_subject_page is used as edit_subject_page, when not let it empty
   final Subject subjectToEdit;
@@ -20,19 +21,26 @@ class EditSubjectPage extends StatelessWidget {
         TextEditingController(text: subjectToEdit.parentSubjectId);
     final iconController =
         TextEditingController(text: subjectToEdit.prefixIcon);
-    print(subjectToEdit.id);
+
     final formKey = GlobalKey<FormState>();
     return Scaffold(
-      appBar: AppBar(title: Text('Edit Subject')),
+      backgroundColor: Theme.of(context).colorScheme.background,
+      appBar: UIAppBar(
+        title: Text("Edit Subject"),
+      ),
       body: SafeArea(
           child: Form(
         key: formKey,
         child: Column(
           children: [
+            SizedBox(height: UiSizeConstants.defaultSize),
+
             /// Name
-            TextFormField(
+            UITextFormField(
+              label: "Name",
               controller: nameController,
-              validator: (value) {
+              initialValue: subjectToEdit.name,
+              valitation: (value) {
                 if (value!.isEmpty) {
                   return 'Enter something';
                 } else {
@@ -42,14 +50,19 @@ class EditSubjectPage extends StatelessWidget {
             ),
 
             /// File Location
-            TextFormField(
+            UITextFormField(
               controller: locationController,
+              label: "FileLocation string",
+              valitation: (_) => null,
             ),
 
             /// Prefix icon
-            TextFormField(
+            UITextFormField(
               controller: iconController,
+              valitation: (_) => null,
+              label: "Icon String",
             ),
+
             ElevatedButton(
               onPressed: () async {
                 if (formKey.currentState!.validate()) {

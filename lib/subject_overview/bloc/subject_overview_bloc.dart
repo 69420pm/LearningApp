@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:cards_repository/cards_repository.dart';
 
-part 'edit_subject_event.dart';
-part 'edit_subject_state.dart';
+part 'subject_overview_event.dart';
+part 'subject_overview_state.dart';
 
 class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
   EditSubjectBloc(this._cardsRepository) : super(EditSubjectInitial()) {
