@@ -58,8 +58,6 @@ class _UITextFormFieldState extends State<UITextFormField> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding:
-          const EdgeInsets.symmetric(horizontal: UiSizeConstants.paddingEdge),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

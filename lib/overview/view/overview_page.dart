@@ -37,13 +37,13 @@ class OverviewPage extends StatelessWidget {
             height: UiSizeConstants.defaultSize,
           ),
 
-          /// Add card FAB
-          FloatingActionButton.extended(
-            icon: const Icon(Icons.add),
-            label: Text("Add Card"),
-            heroTag: 'card',
-            onPressed: () => Navigator.of(context).pushNamed('/add_card'),
-          ),
+          ///* Add card FAB deprecated
+          // FloatingActionButton.extended(
+          //   icon: const Icon(Icons.add),
+          //   label: Text("Add Card"),
+          //   heroTag: 'card',
+          //   onPressed: () => Navigator.of(context).pushNamed('/add_card'),
+          // ),
 
           /// Add subject FAB
         ],
