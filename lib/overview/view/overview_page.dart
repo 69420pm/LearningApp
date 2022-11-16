@@ -59,27 +59,20 @@ class OverviewPage extends StatelessWidget {
               const SizedBox(height: UiSizeConstants.defaultSize * 2),
               const LearnAllButton(),
               BlocBuilder<OverviewBloc, OverviewState>(
-                buildWhen: (previous, current) => previous != current,
+                  buildWhen: (previous, current) => previous != current,
                   builder: (context, state) {
-                if (state is OverviewSuccess) {
-                  final subjectListTiles =
-                      List<SubjectListTile>.empty(growable: true);
-                  state.subjects.forEach(
-                    (element) {
-                      subjectListTiles.add(SubjectListTile(subject: element));
-                    },
-                  );
-                  return ListView(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    children: subjectListTiles,
-                  );
-                }
-                else if(state is OverviewLoading){
-                  // TODO add loading placeholder
-                }
-                return Text("error");
-              })
+                    if (state is OverviewSuccess) {
+                      return ListView.builder(
+                        itemCount: state.subjects.length,
+                        itemBuilder: (context, index) =>
+                            SubjectListTile(subject: state.subjects[index]),
+                        shrinkWrap: true,
+                      );
+                    } else if (state is OverviewLoading) {
+                      // TODO add loading placeholder
+                    }
+                    return Text("error");
+                  })
             ],
           ),
         ),

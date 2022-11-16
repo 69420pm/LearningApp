@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ui_components/ui_components.dart';
 
 class CalendarPage extends StatelessWidget {
   const CalendarPage({super.key});
@@ -6,7 +7,7 @@ class CalendarPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
+        appBar: UIAppBar(
       title: Text('Calender'),
     ));
   }

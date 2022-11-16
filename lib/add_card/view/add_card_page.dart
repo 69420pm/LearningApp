@@ -2,6 +2,7 @@ import 'package:cards_api/cards_api.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_card/cubit/add_card_cubit.dart';
+import 'package:ui_components/ui_components.dart';
 
 class AddCardPage extends StatelessWidget {
   AddCardPage({super.key, this.recommendedSubjectParentId = null});
@@ -22,7 +23,7 @@ class AddCardPage extends StatelessWidget {
 
     final formKey = GlobalKey<FormState>();
     return Scaffold(
-      appBar: AppBar(title: Text("Add Card Page")),
+      appBar: UIAppBar(title: Text("Add Card Page")),
       body: SafeArea(
           child: Form(
         key: formKey,

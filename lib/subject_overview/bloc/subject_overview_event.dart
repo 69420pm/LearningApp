@@ -1,4 +1,4 @@
-part of 'edit_subject_bloc.dart';
+part of 'subject_overview_bloc.dart';
 
 abstract class EditSubjectEvent {}
 
