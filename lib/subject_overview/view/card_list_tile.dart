@@ -14,8 +14,8 @@ class CardListTile extends StatelessWidget {
     return Container(
       child: Padding(
         padding: const EdgeInsets.symmetric(
-            horizontal: UiSizeConstants.defaultSize * 2,
-            vertical: UiSizeConstants.defaultSize),
+            horizontal: UISizeConstants.defaultSize * 2,
+            vertical: UISizeConstants.defaultSize),
         child: Text(
           card.front,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -25,7 +25,7 @@ class CardListTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.secondaryContainer,
         borderRadius: BorderRadius.all(
-          Radius.circular(UiSizeConstants.cornerRadius),
+          Radius.circular(UISizeConstants.cornerRadius),
         ),
       ),
     );

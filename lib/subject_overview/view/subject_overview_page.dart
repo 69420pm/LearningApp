@@ -34,10 +34,10 @@ class SubjectOverviewPage extends StatelessWidget {
         key: formKey,
         child: Padding(
           padding: const EdgeInsets.symmetric(
-              horizontal: UiSizeConstants.paddingEdge),
+              horizontal: UISizeConstants.paddingEdge),
           child: Column(
             children: [
-              SizedBox(height: UiSizeConstants.defaultSize),
+              SizedBox(height: UISizeConstants.defaultSize),
 
               /// Name
               UITextFormField(

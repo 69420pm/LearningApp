@@ -24,18 +24,25 @@ class UIButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: height ?? UiSizeConstants.defaultSize * 4,
+        height: height ?? UISizeConstants.defaultSize * 4,
         width: width,
         decoration: BoxDecoration(
           color: color ?? Theme.of(context).colorScheme.primaryContainer,
           borderRadius: BorderRadius.all(
-            Radius.circular(UiSizeConstants.cornerRadius),
+            Radius.circular(UISizeConstants.cornerRadius),
           ),
         ),
-        child: Text(lable ?? "",
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: textColor ??
-                    Theme.of(context).colorScheme.onPrimaryContainer)),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+                horizontal: UISizeConstants.defaultSize * 2,
+                vertical: UISizeConstants.defaultSize),
+            child: Text(lable ?? "",
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: textColor ??
+                        Theme.of(context).colorScheme.onPrimaryContainer)),
+          ),
+        ),
       ),
     );
   }

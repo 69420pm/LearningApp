@@ -34,7 +34,7 @@ class OverviewPage extends StatelessWidget {
             backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
           ),
           const SizedBox(
-            height: UiSizeConstants.defaultSize,
+            height: UISizeConstants.defaultSize,
           ),
 
           ///* Add card FAB deprecated
@@ -50,13 +50,13 @@ class OverviewPage extends StatelessWidget {
       ),
       body: Padding(
         padding:
-            const EdgeInsets.symmetric(horizontal: UiSizeConstants.paddingEdge),
+            const EdgeInsets.symmetric(horizontal: UISizeConstants.paddingEdge),
         child: SafeArea(
           child: Column(
             children: [
-              const SizedBox(height: UiSizeConstants.defaultSize * 1),
+              const SizedBox(height: UISizeConstants.defaultSize * 1),
               const SearchBar(),
-              const SizedBox(height: UiSizeConstants.defaultSize * 2),
+              const SizedBox(height: UISizeConstants.defaultSize * 2),
               const LearnAllButton(),
               BlocBuilder<OverviewBloc, OverviewState>(
                   buildWhen: (previous, current) => previous != current,
