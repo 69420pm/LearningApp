@@ -62,6 +62,7 @@ class OverviewPage extends StatelessWidget {
                   buildWhen: (previous, current) => previous != current,
                   builder: (context, state) {
                     if (state is OverviewSuccess) {
+                      print(state.subjects);
                       return ListView.builder(
                         itemCount: state.subjects.length,
                         itemBuilder: (context, index) =>
@@ -72,7 +73,8 @@ class OverviewPage extends StatelessWidget {
                       // TODO add loading placeholder
                     }
                     return Text("error");
-                  })
+                  }),
+
             ],
           ),
         ),

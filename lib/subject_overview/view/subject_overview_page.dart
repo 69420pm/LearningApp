@@ -17,8 +17,8 @@ class SubjectOverviewPage extends StatelessWidget {
         .read<EditSubjectBloc>()
         .add(EditSubjectCardSubscriptionRequested(subjectToEdit.id));
     final nameController = TextEditingController(text: subjectToEdit.name);
-    final locationController =
-        TextEditingController(text: subjectToEdit.parentSubjectId);
+    // final locationController =
+    //     TextEditingController(text: subjectToEdit.parentId);
     final iconController =
         TextEditingController(text: subjectToEdit.prefixIcon);
 
@@ -33,7 +33,7 @@ class SubjectOverviewPage extends StatelessWidget {
         key: formKey,
         child: Column(
           children: [
-            SizedBox(height: UiSizeConstants.defaultSize),
+            const SizedBox(height: UiSizeConstants.defaultSize),
 
             /// Name
             UITextFormField(
@@ -49,12 +49,12 @@ class SubjectOverviewPage extends StatelessWidget {
               },
             ),
 
-            /// File Location
-            UITextFormField(
-              controller: locationController,
-              label: "FileLocation string",
-              valitation: (_) => null,
-            ),
+            // /// File Location
+            // UITextFormField(
+            //   controller: locationController,
+            //   label: "FileLocation string",
+            //   valitation: (_) => null,
+            // ),
 
             /// Prefix icon
             UITextFormField(
@@ -67,15 +67,13 @@ class SubjectOverviewPage extends StatelessWidget {
               onPressed: () async {
                 if (formKey.currentState!.validate()) {
                   final nameInput = nameController.text.trim();
-                  final locationInput = locationController.text.trim();
-                  final iconInput = locationController.text.trim();
+                  final iconInput = iconController.text.trim();
 
                   if (!nothingChanged(
-                      nameInput, locationInput, iconInput, subjectToEdit)) {
+                      nameInput, iconInput, subjectToEdit)) {
                     context.read<EditSubjectBloc>().add(EditSubjectSaveSubject(
                         subjectToEdit.copyWith(
                             name: nameInput,
-                            parentSubjectId: locationInput,
                             prefixIcon: iconInput)));
                   }
                 }
@@ -86,7 +84,7 @@ class SubjectOverviewPage extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context)
-                    .pushNamed('/add_card', arguments: subjectToEdit.id);
+                    .pushNamed('/add_card', arguments: subjectToEdit);
               },
               child: const Text('Add card'),
             ),
@@ -95,13 +93,13 @@ class SubjectOverviewPage extends StatelessWidget {
                 Navigator.of(context)
                     .pushNamed('/add_subject', arguments: subjectToEdit.id);
               },
-              child: const Text('Add Subtopic'),
+              child: const Text('Add Folder'),
             ),
             BlocBuilder<EditSubjectBloc, EditSubjectState>(
                 builder: (context, state) {
-              if (state is EditSubjectCardsFetchingSuccess) {
+              if (state is EditSubjectCardFetchingSuccess) {
                 final cardListTiles = List<CardListTile>.empty(growable: true);
-                state.cards.forEach((element) {
+                subjectToEdit.childCards.forEach((element) {
                   cardListTiles.add(CardListTile(card: element));
                 });
                 return ListView(
@@ -119,9 +117,9 @@ class SubjectOverviewPage extends StatelessWidget {
   }
 
   bool nothingChanged(
-      String name, String location, String icon, Subject currentSubject) {
+      String name, String icon, Subject currentSubject) {
     if (name != currentSubject.name ||
-        location != currentSubject.parentSubjectId ||
+        // location != currentSubject.parentId ||
         icon != currentSubject.prefixIcon) {
       return false;
     }

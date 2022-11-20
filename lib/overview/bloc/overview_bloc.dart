@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
 
 part 'overview_event.dart';
@@ -20,11 +21,7 @@ class OverviewBloc extends Bloc<OverviewEvent, OverviewState> {
     emit(OverviewLoading());
     await emit.forEach<List<Subject>>(_cardsRepository.getSubjects(),
         onData: (subjects) {
-          final subjectsToSendFurther = List<Subject>.empty(growable: true);
-          for (var element in subjects) {
-            if(element.parentSubjectId == null || element.parentSubjectId!.isEmpty) subjectsToSendFurther.add(element);
-          }
-          return OverviewSuccess(subjects: subjectsToSendFurther);
+          return OverviewSuccess(subjects: subjects);
         },
         onError: (_, __) => OverviewFailure(errorMessage: 'Subject loading failed'));
   }

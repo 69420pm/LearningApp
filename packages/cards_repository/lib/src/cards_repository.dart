@@ -31,6 +31,7 @@ class CardsRepository {
   /// If a [subject] with same id already exists, it will be replaced
   Future<void> saveSubject(Subject subject) => _cardsApi.saveSubject(subject);
 
+  Future<void> saveFolder(Folder folder) => _cardsApi.saveFolder(folder);
 
   /// Deletes card with given id
   /// If no card with given id exists, a [CardNotFoundException] error is 

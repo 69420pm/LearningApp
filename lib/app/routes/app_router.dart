@@ -55,7 +55,7 @@ class AppRouter {
               BlocProvider.value(value: _addCardCubit),
             ],
             child: AddCardPage(
-                recommendedSubjectParentId: routeSettings.arguments as String?),
+                recommendedSubjectParent: routeSettings.arguments as Subject?),
           ),
         );
       case '/add_subject':

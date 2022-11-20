@@ -12,18 +12,19 @@ class AddCardCubit extends Cubit<AddCardState> {
   final CardsRepository _cardsRepository;
 
   Future<void> saveCard(
-      String front, String back, String parentId, String icon) async {
+      String front, String back, Subject parentSubject, String icon) async {
     emit(AddCardLoading());
     final newCard = Card(
         id: const Uuid().v4(),
         front: front,
         back: back,
         dateCreated: DateTime.now().toIso8601String(),
-        parentSubjectId: parentId,
+        parentId: parentSubject.id,
         askCardsInverted: false,
         typeAnswer: true,
         dateToReview: DateTime.thursday.toString());
     try {
+      parentSubject.childCards.add(newCard);
       await _cardsRepository.saveCard(newCard);
       emit(AddCardSuccess());
     } catch (e) {

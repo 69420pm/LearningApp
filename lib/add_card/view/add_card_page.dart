@@ -5,10 +5,10 @@ import 'package:learning_app/add_card/cubit/add_card_cubit.dart';
 import 'package:ui_components/ui_components.dart';
 
 class AddCardPage extends StatelessWidget {
-  AddCardPage({super.key, this.recommendedSubjectParentId = null});
+  AddCardPage({super.key, this.recommendedSubjectParent = null});
 
   /// when add_Card_page is used as edit_Card_page, when not let it empty
-  final String? recommendedSubjectParentId;
+  final Subject? recommendedSubjectParent;
 
   @override
   Widget build(BuildContext context) {
@@ -17,8 +17,8 @@ class AddCardPage extends StatelessWidget {
     final locationController = TextEditingController();
     final iconController = TextEditingController();
 
-    if (recommendedSubjectParentId != null) {
-      locationController.text = recommendedSubjectParentId!;
+    if (recommendedSubjectParent != null) {
+      locationController.text = recommendedSubjectParent!.id;
     }
 
     final formKey = GlobalKey<FormState>();
@@ -59,7 +59,7 @@ class AddCardPage extends StatelessWidget {
                     await context.read<AddCardCubit>().saveCard(
                         frontController.text,
                         backController.text,
-                        locationController.text,
+                        recommendedSubjectParent!,
                         iconController.text);
                   }
                   Navigator.pop(context);

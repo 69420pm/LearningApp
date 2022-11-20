@@ -5,6 +5,7 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
+import 'package:cards_api/cards_api.dart';
 import 'package:cards_api/src/models/card.dart';
 import 'package:cards_api/src/models/subject.dart';
 
@@ -21,7 +22,6 @@ abstract class CardsApi {
   /// provide a [Stream] of all subjects
   Stream<List<Subject>> getSubjects();
 
-
   /// Saves a [card]
   /// If a [card] with same id already exists, it will be replaced
   Future<void> saveCard(Card card);
@@ -30,6 +30,9 @@ abstract class CardsApi {
   /// If a [subject] with same id already exists, it will be replaced
   Future<void> saveSubject(Subject subject);
 
+/// Saves a [folder]
+  /// If a [folder] with same id already exists, it will be replaced
+  Future<void> saveFolder(Folder folder);
 
   /// Deletes card with given id
   /// If no card with given id exists, a [CardNotFoundException] error is 
@@ -40,6 +43,12 @@ abstract class CardsApi {
   /// If no card with given id exists, a [SubjectNotFoundException] error is 
   /// thrown
   Future<void> deleteSubject(String id);
+
+/// Deletes subject and every children with given id
+  /// If no card with given id exists, a [FolderNotFoundException] error is 
+  /// thrown
+  Future<void> deleteFolder(String id);
+
 }
 
 /// Error when a [Card] with given id is not found
@@ -47,3 +56,6 @@ class CardNotFoundException implements Exception {}
 
 /// Error when a [Subject] with given id is not found
 class SubjectNotFoundException implements Exception {}
+
+/// Error when a [Folder] with given id is not found
+class FolderNotFoundException implements Exception {}
