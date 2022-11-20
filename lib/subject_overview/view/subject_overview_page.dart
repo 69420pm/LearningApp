@@ -1,6 +1,7 @@
 import 'package:cards_api/cards_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/add_folder/view/add_folder_bottom_sheet.dart';
 import 'package:learning_app/subject_overview/bloc/subject_overview_bloc.dart';
 import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:ui_components/ui_components.dart';
@@ -26,93 +27,89 @@ class SubjectOverviewPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: UIAppBar(
-        title: Text("Edit Subject"),
+        title: Text("Subject Overview"),
       ),
       body: SafeArea(
           child: Form(
         key: formKey,
-        child: Column(
-          children: [
-            SizedBox(height: UiSizeConstants.defaultSize),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+              horizontal: UISizeConstants.paddingEdge),
+          child: Column(
+            children: [
+              SizedBox(height: UISizeConstants.defaultSize),
 
-            /// Name
-            UITextFormField(
-              label: "Name",
-              controller: nameController,
-              initialValue: subjectToEdit.name,
-              valitation: (value) {
-                if (value!.isEmpty) {
-                  return 'Enter something';
-                } else {
-                  return null;
-                }
-              },
-            ),
-
-            /// File Location
-            UITextFormField(
-              controller: locationController,
-              label: "FileLocation string",
-              valitation: (_) => null,
-            ),
-
-            /// Prefix icon
-            UITextFormField(
-              controller: iconController,
-              valitation: (_) => null,
-              label: "Icon String",
-            ),
-
-            ElevatedButton(
-              onPressed: () async {
-                if (formKey.currentState!.validate()) {
-                  final nameInput = nameController.text.trim();
-                  final locationInput = locationController.text.trim();
-                  final iconInput = locationController.text.trim();
-
-                  if (!nothingChanged(
-                      nameInput, locationInput, iconInput, subjectToEdit)) {
-                    context.read<EditSubjectBloc>().add(EditSubjectSaveSubject(
-                        subjectToEdit.copyWith(
-                            name: nameInput,
-                            parentSubjectId: locationInput,
-                            prefixIcon: iconInput)));
+              /// Name
+              UITextFormField(
+                label: "Name",
+                controller: nameController,
+                initialValue: subjectToEdit.name,
+                valitation: (value) {
+                  if (value!.isEmpty) {
+                    return 'Enter something';
+                  } else {
+                    return null;
                   }
+                },
+                onLoseFocus: (_) => save(formKey, nameController.text,
+                    locationController.text, iconController.text, context),
+              ),
+
+              /// File Location
+              UITextFormField(
+                controller: locationController,
+                label: "FileLocation string",
+                valitation: (_) => null,
+                onLoseFocus: (_) => save(formKey, nameController.text,
+                    locationController.text, iconController.text, context),
+              ),
+
+              /// Prefix icon
+              UITextFormField(
+                controller: iconController,
+                valitation: (_) => null,
+                label: "Icon String",
+                onLoseFocus: (_) => save(formKey, nameController.text,
+                    locationController.text, iconController.text, context),
+              ),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.of(context)
+                          .pushNamed('/add_card', arguments: subjectToEdit.id);
+                    },
+                    icon: const Icon(
+                      Icons.file_copy,
+                      color: Colors.red,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => showModalBottomSheet(
+                        context: context,
+                        builder: (context) => AddFolderBottomSheet()),
+                    icon: const Icon(Icons.create_new_folder_rounded),
+                  ),
+                ],
+              ),
+
+              BlocBuilder<EditSubjectBloc, EditSubjectState>(
+                  builder: (context, state) {
+                if (state is EditSubjectCardsFetchingSuccess) {
+                  return ListView.builder(
+                    itemCount: state.cards.length,
+                    scrollDirection: Axis.vertical,
+                    itemBuilder: (context, index) =>
+                        CardListTile(card: state.cards[index]),
+                    shrinkWrap: true,
+                  );
                 }
-                Navigator.pop(context);
-              },
-              child: const Text('Save'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .pushNamed('/add_card', arguments: subjectToEdit.id);
-              },
-              child: const Text('Add card'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .pushNamed('/add_subject', arguments: subjectToEdit.id);
-              },
-              child: const Text('Add Subtopic'),
-            ),
-            BlocBuilder<EditSubjectBloc, EditSubjectState>(
-                builder: (context, state) {
-              if (state is EditSubjectCardsFetchingSuccess) {
-                final cardListTiles = List<CardListTile>.empty(growable: true);
-                state.cards.forEach((element) {
-                  cardListTiles.add(CardListTile(card: element));
-                });
-                return ListView(
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  children: cardListTiles,
-                );
-              }
-              return Text("error");
-            })
-          ],
+                return Text("error");
+              })
+            ],
+          ),
         ),
       )),
     );
@@ -126,5 +123,19 @@ class SubjectOverviewPage extends StatelessWidget {
       return false;
     }
     return true;
+  }
+
+  void save(GlobalKey<FormState> formKey, String nameInput,
+      String locationInput, String iconInput, BuildContext context) async {
+    if (formKey.currentState!.validate()) {
+      if (!nothingChanged(nameInput.trim(), locationInput.trim(),
+          iconInput.trim(), subjectToEdit)) {
+        context.read<EditSubjectBloc>().add(EditSubjectSaveSubject(
+            subjectToEdit.copyWith(
+                name: nameInput,
+                parentSubjectId: locationInput,
+                prefixIcon: iconInput)));
+      }
+    }
   }
 }

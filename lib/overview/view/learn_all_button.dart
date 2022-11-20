@@ -10,22 +10,24 @@ class LearnAllButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       //TODO on tap function
-      onTap: () {},
+      onTap: () {
+        Navigator.pushNamed(context, "/learn");
+      },
       child: Container(
-        height: UiSizeConstants.defaultSize * 10,
+        height: UISizeConstants.defaultSize * 10,
         width: double.infinity,
         decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.primaryContainer,
             borderRadius: BorderRadius.all(
-                Radius.circular(UiSizeConstants.cornerRadius))),
+                Radius.circular(UISizeConstants.cornerRadius))),
         child: Padding(
-          padding: EdgeInsets.all(UiSizeConstants.defaultSize),
+          padding: EdgeInsets.all(UISizeConstants.defaultSize),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Icon(Icons.question_mark),
-              SizedBox(width: UiSizeConstants.defaultSize),
+              SizedBox(width: UISizeConstants.defaultSize),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,13 +48,13 @@ class LearnAllButton extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(width: UiSizeConstants.defaultSize * 3),
+              SizedBox(width: UISizeConstants.defaultSize * 3),
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.secondaryContainer,
                       borderRadius: BorderRadius.all(
-                          Radius.circular(UiSizeConstants.cornerRadius))),
+                          Radius.circular(UISizeConstants.cornerRadius))),
                 ),
               )
             ],

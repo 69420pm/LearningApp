@@ -46,6 +46,7 @@ class AppView extends StatelessWidget {
             isLightMode: true, colorScheme: lightDynamic ?? lightColorScheme),
         darkTheme: _themeData(
             isLightMode: false, colorScheme: darkDynamic ?? darkColorScheme),
+        themeMode: ThemeMode.dark, //TODO change later
         localizationsDelegates: const [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,

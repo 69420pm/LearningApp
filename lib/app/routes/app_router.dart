@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_card/view/add_card_page.dart';
 import 'package:learning_app/add_card/cubit/add_card_cubit.dart';
+import 'package:learning_app/add_folder/view/add_folder_bottom_sheet.dart';
 import 'package:learning_app/add_subject/cubit/add_subject_cubit.dart';
 import 'package:learning_app/add_subject/view/add_subject_page.dart';
 
 import 'package:learning_app/app/view/error.dart';
 import 'package:learning_app/home/cubit/home_cubit.dart';
 import 'package:learning_app/home/view/home_page.dart';
+import 'package:learning_app/learn/cubit/learn_cubit.dart';
+import 'package:learning_app/learn/view/learning_screen.dart';
 import 'package:learning_app/overview/bloc/overview_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/subject_overview_bloc.dart';
 import 'package:learning_app/subject_overview/view/subject_overview_page.dart';
@@ -27,6 +30,7 @@ class AppRouter {
   late final AddCardCubit _addCardCubit = AddCardCubit(_cardsRepository);
   late final OverviewBloc _overviewBloc = OverviewBloc(_cardsRepository)
     ..add(OverviewSubjectSubscriptionRequested());
+  late final LearnCubit _learnCubit = LearnCubit();
 
   Route<dynamic> onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
@@ -74,6 +78,7 @@ class AppRouter {
             ),
           ),
         );
+
       case '/subject_overview':
         return MaterialPageRoute(
           builder: (_) => MultiBlocProvider(
@@ -88,6 +93,18 @@ class AppRouter {
             child: SubjectOverviewPage(
               subjectToEdit: routeSettings.arguments! as Subject,
             ),
+          ),
+        );
+
+      case '/learn':
+        return MaterialPageRoute(
+          builder: (_) => MultiBlocProvider(
+            providers: [
+              BlocProvider.value(
+                value: _learnCubit,
+              ),
+            ],
+            child: LearingScreen(),
           ),
         );
       // error route
