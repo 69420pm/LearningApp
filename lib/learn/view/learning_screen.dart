@@ -7,8 +7,8 @@ import 'package:learning_app/learn/cubit/learn_cubit.dart';
 import 'package:learning_app/learn/view/card.dart';
 import 'package:ui_components/ui_components.dart';
 
-class LearingScreen extends StatelessWidget {
-  const LearingScreen({super.key});
+class LearningScreen extends StatelessWidget {
+  const LearningScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -13,3 +13,9 @@ class EditSubjectCardSubscriptionRequested extends EditSubjectEvent {
 
   String currentSubjectId;
 }
+
+class EditSubjectFolderSubscriptionRequested extends EditSubjectEvent {
+  EditSubjectFolderSubscriptionRequested(this.currentSubjectId);
+
+  String currentSubjectId;
+}

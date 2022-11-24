@@ -1,9 +1,11 @@
 import 'package:cards_api/cards_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/add_folder/cubit/add_folder_cubit.dart';
 import 'package:learning_app/add_folder/view/add_folder_bottom_sheet.dart';
 import 'package:learning_app/subject_overview/bloc/subject_overview_bloc.dart';
 import 'package:learning_app/subject_overview/view/card_list_tile.dart';
+import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
 import 'package:ui_components/ui_components.dart';
 
 class SubjectOverviewPage extends StatelessWidget {
@@ -18,8 +20,7 @@ class SubjectOverviewPage extends StatelessWidget {
         .read<EditSubjectBloc>()
         .add(EditSubjectCardSubscriptionRequested(subjectToEdit.id));
     final nameController = TextEditingController(text: subjectToEdit.name);
-    final locationController =
-        TextEditingController(text: subjectToEdit.parentSubjectId);
+    final locationController = TextEditingController(text: subjectToEdit.id);
     final iconController =
         TextEditingController(text: subjectToEdit.prefixIcon);
 
@@ -79,7 +80,7 @@ class SubjectOverviewPage extends StatelessWidget {
                   IconButton(
                     onPressed: () {
                       Navigator.of(context)
-                          .pushNamed('/add_card', arguments: subjectToEdit.id);
+                          .pushNamed('/add_card', arguments: subjectToEdit);
                     },
                     icon: const Icon(
                       Icons.file_copy,
@@ -89,7 +90,10 @@ class SubjectOverviewPage extends StatelessWidget {
                   IconButton(
                     onPressed: () => showModalBottomSheet(
                         context: context,
-                        builder: (context) => AddFolderBottomSheet()),
+                        builder: (_) => BlocProvider.value(
+                              value: context.read<AddFolderCubit>(),
+                              child: AddFolderBottomSheet(parentSubject: subjectToEdit),
+                            )),
                     icon: const Icon(Icons.create_new_folder_rounded),
                   ),
                 ],
@@ -97,15 +101,38 @@ class SubjectOverviewPage extends StatelessWidget {
 
               BlocBuilder<EditSubjectBloc, EditSubjectState>(
                   builder: (context, state) {
-                if (state is EditSubjectCardsFetchingSuccess) {
-                  return ListView.builder(
-                    itemCount: state.cards.length,
-                    scrollDirection: Axis.vertical,
-                    itemBuilder: (context, index) =>
-                        CardListTile(card: state.cards[index]),
-                    shrinkWrap: true,
+                if (state is EditSubjectCardFetchingSuccess) {
+                  final cardListTiles =
+                      List<CardListTile>.empty(growable: true);
+                  final folderListTiles =
+                      List<FolderListTile>.empty(growable: true);
+                  subjectToEdit.childCards.forEach((element) {
+                    cardListTiles.add(CardListTile(card: element));
+                  });
+                  subjectToEdit.childFolders.forEach((element) =>
+                      folderListTiles.add(FolderListTile(folder: element)));
+                  return Column(
+                    children: [
+                      ListView(scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      children: folderListTiles,),
+                      ListView(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        children: cardListTiles,
+                      ),
+                    ],
                   );
                 }
+                // if (state is EditSubjectCardsFetchingSuccess) {
+                //   return ListView.builder(
+                //     itemCount: state.cards.length,
+                //     scrollDirection: Axis.vertical,
+                //     itemBuilder: (context, index) =>
+                //         CardListTile(card: state.cards[index]),
+                //     shrinkWrap: true,
+                //   );
+                // }
                 return Text("error");
               })
             ],
@@ -115,10 +142,9 @@ class SubjectOverviewPage extends StatelessWidget {
     );
   }
 
-  bool nothingChanged(
-      String name, String location, String icon, Subject currentSubject) {
+  bool nothingChanged(String name, String icon, Subject currentSubject) {
     if (name != currentSubject.name ||
-        location != currentSubject.parentSubjectId ||
+        // location != currentSubject.parentId ||
         icon != currentSubject.prefixIcon) {
       return false;
     }
@@ -128,13 +154,9 @@ class SubjectOverviewPage extends StatelessWidget {
   void save(GlobalKey<FormState> formKey, String nameInput,
       String locationInput, String iconInput, BuildContext context) async {
     if (formKey.currentState!.validate()) {
-      if (!nothingChanged(nameInput.trim(), locationInput.trim(),
-          iconInput.trim(), subjectToEdit)) {
+      if (!nothingChanged(nameInput.trim(), iconInput.trim(), subjectToEdit)) {
         context.read<EditSubjectBloc>().add(EditSubjectSaveSubject(
-            subjectToEdit.copyWith(
-                name: nameInput,
-                parentSubjectId: locationInput,
-                prefixIcon: iconInput)));
+            subjectToEdit.copyWith(name: nameInput, prefixIcon: iconInput)));
       }
     }
   }

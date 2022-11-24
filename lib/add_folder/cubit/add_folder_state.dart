@@ -9,8 +9,8 @@ class AddFolderLoading extends AddFolderState {}
 
 class AddFolderSuccess extends AddFolderState {}
 
-class AddSFolderFailure extends AddFolderState {
-  AddSFolderFailure({
+class AddFolderFailure extends AddFolderState {
+  AddFolderFailure({
     required this.errorMessage,
   });
   String errorMessage;

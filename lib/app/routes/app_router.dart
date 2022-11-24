@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_card/view/add_card_page.dart';
 import 'package:learning_app/add_card/cubit/add_card_cubit.dart';
+import 'package:learning_app/add_folder/cubit/add_folder_cubit.dart';
 import 'package:learning_app/add_folder/view/add_folder_bottom_sheet.dart';
 import 'package:learning_app/add_subject/cubit/add_subject_cubit.dart';
 import 'package:learning_app/add_subject/view/add_subject_page.dart';
@@ -25,6 +26,7 @@ class AppRouter {
   final HomeCubit _homeCubit = HomeCubit();
   late final AddSubjectCubit _addSubjectCubit =
       AddSubjectCubit(_cardsRepository);
+  late final AddFolderCubit _addFolderCubit = AddFolderCubit(_cardsRepository);
   late final EditSubjectBloc _editSubjectBloc =
       EditSubjectBloc(_cardsRepository);
   late final AddCardCubit _addCardCubit = AddCardCubit(_cardsRepository);
@@ -59,7 +61,7 @@ class AppRouter {
               BlocProvider.value(value: _addCardCubit),
             ],
             child: AddCardPage(
-                recommendedSubjectParentId: routeSettings.arguments as String?),
+                recommendedSubjectParent: routeSettings.arguments as Subject?),
           ),
         );
       case '/add_subject':
@@ -89,6 +91,8 @@ class AppRouter {
               BlocProvider.value(
                 value: _editSubjectBloc,
               ),
+              BlocProvider.value(
+                value: _addFolderCubit,)
             ],
             child: SubjectOverviewPage(
               subjectToEdit: routeSettings.arguments! as Subject,
@@ -104,7 +108,7 @@ class AppRouter {
                 value: _learnCubit,
               ),
             ],
-            child: LearingScreen(),
+            child: LearningScreen(),
           ),
         );
       // error route

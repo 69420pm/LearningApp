@@ -15,11 +15,12 @@ class AddSubjectCubit extends Cubit<AddSubjectState> {
     final newSubject = Subject(
         id: const Uuid().v4(),
         name: name,
-        parentSubjectId: parentId,
         dateCreated: DateTime.now().toIso8601String(),
         prefixIcon: icon,
-        classTests: List<String>.empty(),
-        daysToGetNotified: List<String>.empty());
+        childCards: List.empty(growable: true),
+        childFolders: List.empty(growable: true),
+        classTests: List<String>.empty(growable: true),
+        daysToGetNotified: List<String>.empty(growable: true));
     try {
       await _cardsRepository.saveSubject(newSubject);
       emit(AddSubjectSuccess());

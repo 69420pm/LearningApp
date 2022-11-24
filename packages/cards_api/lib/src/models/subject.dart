@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:cards_api/cards_api.dart';
 import 'package:cards_api/src/models/card.dart';
 import 'package:equatable/equatable.dart';
 
@@ -14,45 +15,60 @@ class Subject extends Equatable {
   /// to String formatted creation date
   final String dateCreated;
 
-  /// id of parent subject to order cards
-  final String? parentSubjectId;
-
   /// prefix icon
   final String prefixIcon;
 
-  /// list of String dates as class tests
-  final List<String> classTests;
+  final List<Folder> childFolders;
 
-  /// days user should get notified for this subject
+  final List<Card> childCards;
+
   final List<String> daysToGetNotified;
-
+  final List<String> classTests;
   const Subject({
     required this.id,
     required this.name,
     required this.dateCreated,
-    required this.parentSubjectId,
     required this.prefixIcon,
-    required this.classTests,
+    required this.childFolders,
+    required this.childCards,
     required this.daysToGetNotified,
+    required this.classTests,
   });
 
+  @override
+  // TODO: implement props
+  List<Object> get props {
+    return [
+      id,
+      name,
+      dateCreated,
+      prefixIcon,
+      childFolders,
+      childCards,
+      daysToGetNotified,
+      classTests,
+    ];
+  }
+
   Subject copyWith({
+    String? id,
     String? name,
     String? dateCreated,
-    String? parentSubjectId,
     String? prefixIcon,
-    List<String>? classTests,
+    List<Folder>? childFolders,
+    List<Card>? childCards,
     List<String>? daysToGetNotified,
+    List<String>? classTest,
   }) {
     return Subject(
-      // id can't be changed
-      id: id,
+      id: id ?? this.id,
       name: name ?? this.name,
       dateCreated: dateCreated ?? this.dateCreated,
-      parentSubjectId: parentSubjectId ?? this.parentSubjectId,
       prefixIcon: prefixIcon ?? this.prefixIcon,
-      classTests: classTests ?? this.classTests,
+      childFolders: childFolders ?? this.childFolders,
+      childCards: childCards ?? this.childCards,
       daysToGetNotified: daysToGetNotified ?? this.daysToGetNotified,
+      classTests: classTest ?? this.classTests,
     );
   }
 
@@ -61,23 +77,25 @@ class Subject extends Equatable {
       'id': id,
       'name': name,
       'dateCreated': dateCreated,
-      'parentSubjectId': parentSubjectId,
       'prefixIcon': prefixIcon,
-      'classTests': classTests,
       'daysToGetNotified': daysToGetNotified,
+      'classTest': classTests,
     };
   }
 
   factory Subject.fromMap(Map<String, dynamic> map) {
     return Subject(
-      id: map['id'] as String,
-      name: map['name'] as String,
-      dateCreated: map['dateCreated'] as String,
-      parentSubjectId: map['parentSubjectId'] as String,
-      prefixIcon: map['prefixIcon'] as String,
-      classTests: List<String>.from(map['classTests'] as List<dynamic>),
-      daysToGetNotified:
-          List<String>.from(map['daysToGetNotified'] as List<dynamic>),    );
+        id: map['id'] as String,
+        name: map['name'] as String,
+        dateCreated: map['dateCreated'] as String,
+        prefixIcon: map['prefixIcon'] as String,
+        childFolders: List.empty(growable: true),
+        childCards: List.empty(growable: true),
+        daysToGetNotified:
+            List<String>.from(map['daysToGetNotified'] as List<dynamic>),
+        classTests: List<String>.from(
+          (map['classTest'] as List<dynamic>),
+        ));
   }
 
   String toJson() => json.encode(toMap());
@@ -87,16 +105,4 @@ class Subject extends Equatable {
 
   @override
   bool get stringify => true;
-
-  @override
-  List<Object> get props {
-    return [
-      id,
-      name,
-      dateCreated,
-      prefixIcon,
-      classTests,
-      daysToGetNotified,
-    ];
-  }
 }
