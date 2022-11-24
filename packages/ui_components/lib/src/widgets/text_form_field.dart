@@ -58,8 +58,6 @@ class _UITextFormFieldState extends State<UITextFormField> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding:
-          const EdgeInsets.symmetric(horizontal: UiSizeConstants.paddingEdge),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -75,7 +73,7 @@ class _UITextFormFieldState extends State<UITextFormField> {
           //     ),
           //   ),
           Padding(
-            padding: const EdgeInsets.only(bottom: UiSizeConstants.defaultSize),
+            padding: const EdgeInsets.only(bottom: UISizeConstants.defaultSize),
             child: TextFormField(
               textInputAction: widget.textInputAction,
               autofocus: widget.autofocus ?? false,
@@ -99,31 +97,31 @@ class _UITextFormFieldState extends State<UITextFormField> {
                 hintText: widget.hintText,
                 focusedBorder: OutlineInputBorder(
                   borderRadius:
-                      BorderRadius.circular(UiSizeConstants.cornerRadius),
+                      BorderRadius.circular(UISizeConstants.cornerRadius),
                   borderSide: BorderSide(
                       color: Theme.of(context).colorScheme.outline, width: 2),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius:
-                      BorderRadius.circular(UiSizeConstants.cornerRadius),
+                      BorderRadius.circular(UISizeConstants.cornerRadius),
                   borderSide:
                       const BorderSide(color: Colors.transparent, width: 2),
                 ),
                 errorBorder: OutlineInputBorder(
                   borderRadius:
-                      BorderRadius.circular(UiSizeConstants.cornerRadius),
+                      BorderRadius.circular(UISizeConstants.cornerRadius),
                   borderSide:
                       BorderSide(color: Theme.of(context).colorScheme.error),
                 ),
                 focusedErrorBorder: OutlineInputBorder(
                   borderRadius:
-                      BorderRadius.circular(UiSizeConstants.cornerRadius),
+                      BorderRadius.circular(UISizeConstants.cornerRadius),
                   borderSide: BorderSide(
                       color: Theme.of(context).colorScheme.error, width: 2),
                 ),
                 border: OutlineInputBorder(
                   borderRadius:
-                      BorderRadius.circular(UiSizeConstants.cornerRadius),
+                      BorderRadius.circular(UISizeConstants.cornerRadius),
                   borderSide: const BorderSide(width: 2),
                 ),
 

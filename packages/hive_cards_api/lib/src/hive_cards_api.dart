@@ -86,9 +86,6 @@ class HiveCardsApi extends CardsApi {
       });
     });
     _subjectStreamController.add(subjects);
-      print("subjects");
-      print(subjects);
-      print(_subjectsFromJson(_hiveBox.get('subjects') as List<String>));
     // for (var subject in subjects) {
     //   for (var cards in subject.childCardIds) {
     //     if (cardsMap[cards] != null) {

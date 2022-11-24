@@ -1,4 +1,4 @@
-class UiSizeConstants {
+class UISizeConstants {
   static const double defaultSize = 8;
 
   static const double paddingEdge = 16;

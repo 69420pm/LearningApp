@@ -12,17 +12,17 @@ class SearchBar extends StatelessWidget {
       //TODO Search methode here
       onTap: () {},
       child: Container(
-        height: UiSizeConstants.defaultSize * 6,
+        height: UISizeConstants.defaultSize * 6,
         width: double.infinity,
         decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surfaceVariant,
             borderRadius: BorderRadius.all(
-                Radius.circular(UiSizeConstants.cornerRadius))),
+                Radius.circular(UISizeConstants.cornerRadius))),
         child: Row(
           children: [
-            const SizedBox(width: UiSizeConstants.defaultSize * 2),
+            const SizedBox(width: UISizeConstants.defaultSize * 2),
             Icon(Icons.search),
-            const SizedBox(width: UiSizeConstants.defaultSize * 2),
+            const SizedBox(width: UISizeConstants.defaultSize * 2),
             Text(
               'Search',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(

@@ -1,13 +1,14 @@
+import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:ui_components/ui_components.dart';
 
-class CardListTile extends StatelessWidget {
-  const CardListTile({super.key, required this.card});
+class FolderListTile extends StatelessWidget {
+  const FolderListTile({super.key, required this.folder});
 
-  final Card card;
+  final Folder folder;
 
   @override
   Widget build(BuildContext context) {
@@ -17,13 +18,13 @@ class CardListTile extends StatelessWidget {
             horizontal: UISizeConstants.defaultSize * 2,
             vertical: UISizeConstants.defaultSize),
         child: Text(
-          card.front,
+          folder.name,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: Theme.of(context).colorScheme.onSecondaryContainer),
         ),
       ),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.secondaryContainer,
+        color: Theme.of(context).colorScheme.error,
         borderRadius: BorderRadius.all(
           Radius.circular(UISizeConstants.cornerRadius),
         ),
