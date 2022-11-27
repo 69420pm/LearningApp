@@ -11,7 +11,7 @@ class UITextFormField extends StatefulWidget {
   final String? initialValue;
   final TextInputType? inputType;
   final List<TextInputFormatter>? formater;
-  final String? Function(String?) valitation;
+  final String? Function(String?) validation;
   final Function(String)? onChanged, onFieldSubmitted, onLoseFocus;
   final bool? autofocus;
   final TextInputAction? textInputAction;
@@ -24,7 +24,7 @@ class UITextFormField extends StatefulWidget {
     this.maxLength,
     this.formater,
     this.initialValue,
-    required this.valitation,
+    required this.validation,
     this.onChanged,
     this.autofocus,
     this.onFieldSubmitted,
@@ -80,7 +80,7 @@ class _UITextFormFieldState extends State<UITextFormField> {
               onChanged: widget.onChanged,
               onFieldSubmitted: widget.onFieldSubmitted,
               autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: widget.valitation,
+              validator: widget.validation,
               keyboardType: widget.inputType,
               inputFormatters: widget.formater,
               controller: widget.controller,

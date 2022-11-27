@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_folder/cubit/add_folder_cubit.dart';
 import 'package:learning_app/add_subject/cubit/add_subject_cubit.dart';
+import 'package:learning_app/subject_overview/bloc/subject_overview_bloc.dart';
 import 'package:ui_components/ui_components.dart';
 
 class AddFolderBottomSheet extends StatelessWidget {
@@ -38,7 +39,7 @@ class AddFolderBottomSheet extends StatelessWidget {
             /// Name
             UITextFormField(
               controller: nameController,
-              valitation: (value) {
+              validation: (value) {
                 if (value!.isEmpty) {
                   return 'Enter something';
                 } else {
@@ -49,8 +50,7 @@ class AddFolderBottomSheet extends StatelessWidget {
 
             UIButton(
                 onTap: () async {
-                  await context.read<AddFolderCubit>().saveFolder(
-                      nameController.text.trim(), parentSubject, parentFolder);
+                  context.read<EditSubjectBloc>().add(EditSubjectAddFolder(name: nameController.text.trim(), parentFolder: parentFolder, parentSubject: parentSubject));
                   Navigator.pop(context);
                 },
                 lable: "Save")

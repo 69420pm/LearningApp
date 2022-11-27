@@ -16,11 +16,8 @@ class SubjectOverviewPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context
-        .read<EditSubjectBloc>()
-        .add(EditSubjectCardSubscriptionRequested(subjectToEdit.id));
+    context.read<EditSubjectBloc>().add(EditSubjectUpdateFoldersCards());
     final nameController = TextEditingController(text: subjectToEdit.name);
-    final locationController = TextEditingController(text: subjectToEdit.id);
     final iconController =
         TextEditingController(text: subjectToEdit.prefixIcon);
 
@@ -45,7 +42,7 @@ class SubjectOverviewPage extends StatelessWidget {
                 label: "Name",
                 controller: nameController,
                 initialValue: subjectToEdit.name,
-                valitation: (value) {
+                validation: (value) {
                   if (value!.isEmpty) {
                     return 'Enter something';
                   } else {
@@ -53,25 +50,17 @@ class SubjectOverviewPage extends StatelessWidget {
                   }
                 },
                 onLoseFocus: (_) => save(formKey, nameController.text,
-                    locationController.text, iconController.text, context),
-              ),
-
-              /// File Location
-              UITextFormField(
-                controller: locationController,
-                label: "FileLocation string",
-                valitation: (_) => null,
-                onLoseFocus: (_) => save(formKey, nameController.text,
-                    locationController.text, iconController.text, context),
+                    iconController.text, context),
               ),
 
               /// Prefix icon
               UITextFormField(
                 controller: iconController,
-                valitation: (_) => null,
+                initialValue: subjectToEdit.prefixIcon,
+                validation: (_) => null,
                 label: "Icon String",
                 onLoseFocus: (_) => save(formKey, nameController.text,
-                    locationController.text, iconController.text, context),
+                    iconController.text, context),
               ),
 
               Row(
@@ -91,17 +80,22 @@ class SubjectOverviewPage extends StatelessWidget {
                     onPressed: () => showModalBottomSheet(
                         context: context,
                         builder: (_) => BlocProvider.value(
-                              value: context.read<AddFolderCubit>(),
-                              child: AddFolderBottomSheet(parentSubject: subjectToEdit),
+                              value: context.read<EditSubjectBloc>(),
+                              child: AddFolderBottomSheet(
+                                  parentSubject: subjectToEdit),
                             )),
                     icon: const Icon(Icons.create_new_folder_rounded),
                   ),
                 ],
               ),
-
               BlocBuilder<EditSubjectBloc, EditSubjectState>(
-                  builder: (context, state) {
-                if (state is EditSubjectCardFetchingSuccess) {
+                  buildWhen: (previous, current) {
+                if (current is EditSubjectFoldersCardsFetchingSuccess) {
+                  return true;
+                }
+                return false;
+              }, builder: (context, state) {
+                if (state is EditSubjectFoldersCardsFetchingSuccess) {
                   final cardListTiles =
                       List<CardListTile>.empty(growable: true);
                   final folderListTiles =
@@ -113,9 +107,11 @@ class SubjectOverviewPage extends StatelessWidget {
                       folderListTiles.add(FolderListTile(folder: element)));
                   return Column(
                     children: [
-                      ListView(scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      children: folderListTiles,),
+                      ListView(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        children: folderListTiles,
+                      ),
                       ListView(
                         scrollDirection: Axis.vertical,
                         shrinkWrap: true,
@@ -151,8 +147,7 @@ class SubjectOverviewPage extends StatelessWidget {
     return true;
   }
 
-  void save(GlobalKey<FormState> formKey, String nameInput,
-      String locationInput, String iconInput, BuildContext context) async {
+  Future<void> save(GlobalKey<FormState> formKey, String nameInput, String iconInput, BuildContext context) async {
     if (formKey.currentState!.validate()) {
       if (!nothingChanged(nameInput.trim(), iconInput.trim(), subjectToEdit)) {
         context.read<EditSubjectBloc>().add(EditSubjectSaveSubject(
