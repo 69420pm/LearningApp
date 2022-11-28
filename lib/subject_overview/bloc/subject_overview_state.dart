@@ -16,34 +16,4 @@ class EditSubjectFailure extends EditSubjectState {
   String errorMessage;
 }
 
-class EditSubjectCardFetchingLoading extends EditSubjectState {}
-
-class EditSubjectCardFetchingSuccess extends EditSubjectState {
-  EditSubjectCardFetchingSuccess({
-    required this.cards,
-  });
-  List<Card> cards;
-}
-
-class EditSubjectCardFetchingFailure extends EditSubjectState {
-  EditSubjectCardFetchingFailure({
-    required this.errorMessage,
-  });
-  String errorMessage;
-}
-
-class EditSubjectFolderFetchingLoading extends EditSubjectState {}
-
-class EditSubjectFolderFetchingSuccess extends EditSubjectState {
-  EditSubjectFolderFetchingSuccess({
-    required this.subjects,
-  });
-  List<Subject> subjects;
-}
-
-class EditSubjectFolderFetchingFailure extends EditSubjectState {
-  EditSubjectFolderFetchingFailure({
-    required this.errorMessage,
-  });
-  String errorMessage;
-}
+class EditSubjectFoldersCardsFetchingSuccess extends EditSubjectState {}

@@ -59,6 +59,7 @@ class AppRouter {
                 value: _homeCubit,
               ),
               BlocProvider.value(value: _addCardCubit),
+              BlocProvider.value(value: _editSubjectBloc),
             ],
             child: AddCardPage(
                 recommendedSubjectParent: routeSettings.arguments as Subject?),
