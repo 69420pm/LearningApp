@@ -59,3 +59,5 @@ class SubjectNotFoundException implements Exception {}
 
 /// Error when a [Folder] with given id is not found
 class FolderNotFoundException implements Exception {}
+
+class ParentNotFoundException implements Exception{}

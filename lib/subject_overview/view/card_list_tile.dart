@@ -11,23 +11,31 @@ class CardListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-            horizontal: UISizeConstants.defaultSize * 2,
-            vertical: UISizeConstants.defaultSize),
-        child: Text(
-          card.front,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSecondaryContainer),
+    return Draggable(
+      child: Container(
+        width: 100,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+              horizontal: UISizeConstants.defaultSize * 2,
+              vertical: UISizeConstants.defaultSize),
+          child: Column(
+            children: [
+              Text(
+                card.front,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSecondaryContainer),
+              ),
+            ],
+          ),
+        ),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.secondaryContainer,
+          borderRadius: BorderRadius.all(
+            Radius.circular(UISizeConstants.cornerRadius),
+          ),
         ),
       ),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.secondaryContainer,
-        borderRadius: BorderRadius.all(
-          Radius.circular(UISizeConstants.cornerRadius),
-        ),
-      ),
+      feedback: Text("fd"),
     );
   }
 }

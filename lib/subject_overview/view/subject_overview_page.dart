@@ -88,49 +88,53 @@ class SubjectOverviewPage extends StatelessWidget {
                   ),
                 ],
               ),
-              BlocBuilder<EditSubjectBloc, EditSubjectState>(
-                  buildWhen: (previous, current) {
-                if (current is EditSubjectFoldersCardsFetchingSuccess) {
-                  return true;
-                }
-                return false;
-              }, builder: (context, state) {
-                if (state is EditSubjectFoldersCardsFetchingSuccess) {
-                  final cardListTiles =
-                      List<CardListTile>.empty(growable: true);
-                  final folderListTiles =
-                      List<FolderListTile>.empty(growable: true);
-                  subjectToEdit.childCards.forEach((element) {
-                    cardListTiles.add(CardListTile(card: element));
-                  });
-                  subjectToEdit.childFolders.forEach((element) =>
-                      folderListTiles.add(FolderListTile(folder: element)));
-                  return Column(
-                    children: [
-                      ListView(
-                        scrollDirection: Axis.vertical,
-                        shrinkWrap: true,
-                        children: folderListTiles,
-                      ),
-                      ListView(
-                        scrollDirection: Axis.vertical,
-                        shrinkWrap: true,
-                        children: cardListTiles,
-                      ),
-                    ],
-                  );
-                }
-                // if (state is EditSubjectCardsFetchingSuccess) {
-                //   return ListView.builder(
-                //     itemCount: state.cards.length,
-                //     scrollDirection: Axis.vertical,
-                //     itemBuilder: (context, index) =>
-                //         CardListTile(card: state.cards[index]),
-                //     shrinkWrap: true,
-                //   );
-                // }
-                return Text("error");
-              })
+              // BlocBuilder<EditSubjectBloc, EditSubjectState>(
+              //     buildWhen: (previous, current) {
+              //   if (current is EditSubjectFoldersCardsFetchingSuccess) {
+              //     return true;
+              //   }
+              //   return false;
+              // }, builder: (context, state) {
+              //   if (state is EditSubjectFoldersCardsFetchingSuccess) {
+              //     final cardListTiles =
+              //         List<CardListTile>.empty(growable: true);
+              //     final folderListTiles =
+              //         List<FolderListTile>.empty(growable: true);
+              //     subjectToEdit.childCards.forEach((element) {
+              //       cardListTiles.add(CardListTile(card: element));
+              //     });
+              //     subjectToEdit.childFolders.forEach((element) =>
+              //         folderListTiles.add(FolderListTile(folder: element)));
+              //     return Column(
+              //       children: [
+              //         ListView(
+              //           scrollDirection: Axis.vertical,
+              //           shrinkWrap: true,
+              //           children: folderListTiles,
+              //         ),
+              //         SizedBox(
+              //           height: 100,
+              //           child: ListView(
+                          
+              //             scrollDirection: Axis.horizontal,
+              //             shrinkWrap: true,
+              //             children: cardListTiles,
+              //           ),
+              //         ),
+              //       ],
+              //     );
+              //   }
+              //   // if (state is EditSubjectCardsFetchingSuccess) {
+              //   //   return ListView.builder(
+              //   //     itemCount: state.cards.length,
+              //   //     scrollDirection: Axis.vertical,
+              //   //     itemBuilder: (context, index) =>
+              //   //         CardListTile(card: state.cards[index]),
+              //   //     shrinkWrap: true,
+              //   //   );
+              //   // }
+              //   return Text("error");
+              // })
             ],
           ),
         ),

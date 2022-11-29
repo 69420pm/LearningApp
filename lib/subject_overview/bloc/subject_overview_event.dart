@@ -25,14 +25,9 @@ class EditSubjectUpdateFoldersCards extends EditSubjectEvent {
 // }
 
 class EditSubjectAddFolder extends EditSubjectEvent {
-  EditSubjectAddFolder({
-    required this.name,
-    this.parentSubject,
-    this.parentFolder,
-  });
+  EditSubjectAddFolder({required this.name, required this.parentId});
   String name;
-  Subject? parentSubject;
-  Folder? parentFolder;
+  String parentId;
 }
 
 class EditSubjectAddCard extends EditSubjectEvent {

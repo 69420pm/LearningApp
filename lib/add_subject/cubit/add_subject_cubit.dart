@@ -17,8 +17,8 @@ class AddSubjectCubit extends Cubit<AddSubjectState> {
         name: name,
         dateCreated: DateTime.now().toIso8601String(),
         prefixIcon: icon,
-        childCards: List.empty(growable: true),
-        childFolders: List.empty(growable: true),
+        // childCards: List.empty(growable: true),
+        // childFolders: List.empty(growable: true),
         classTests: List<String>.empty(growable: true),
         daysToGetNotified: List<String>.empty(growable: true));
     try {
