@@ -18,16 +18,18 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
     // on<EditSubjectFolderSubscriptionRequested>((event, emit) async {
     //   await _folderSubscriptionRequested(event, emit);
     // });
-    on<EditSubjectUpdateFoldersCards>((event, emit) => _updateState(event, emit),);
+    on<EditSubjectUpdateFoldersCards>(
+      (event, emit) => _updateState(event, emit),
+    );
     on<EditSubjectAddFolder>((event, emit) async {
       await _saveFolder(event, emit);
     });
-    on<EditSubjectAddCard>((event, emit) async => _saveCard(event, emit),);
+    // on<EditSubjectAddCard>((event, emit) async => _saveCard(event, emit),);
   }
 
   final CardsRepository _cardsRepository;
 
-  void _updateState(event, emit){
+  void _updateState(event, emit) {
     emit(EditSubjectFoldersCardsFetchingSuccess());
   }
 
@@ -45,8 +47,6 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
       );
     }
   }
-
-
 
   // Future<void> _cardSubscriptionRequested(
   //   EditSubjectCardSubscriptionRequested event,
@@ -90,74 +90,86 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
     Emitter<EditSubjectState> emit,
   ) async {
     emit(EditSubjectLoading());
-    final String parentId;
-    if (event.parentFolder != null) {
-      parentId = event.parentFolder!.id;
-    } else if (event.parentSubject != null) {
-      parentId = event.parentSubject!.id;
-    } else {
-      emit(EditSubjectFailure(errorMessage: "no parent was given"));
-      return;
-    }
     final newFolder = Folder(
-        id: const Uuid().v4(),
+        id: Uuid().v4(),
         name: event.name,
-        parentId: parentId,
         dateCreated: DateTime.now().toIso8601String(),
-        childCards: List.empty(growable: true),
-        childFolders: List.empty(growable: true));
-    try {
-      if (event.parentFolder != null) {
-        event.parentFolder!.childFolders.add(newFolder);
-      } else if (event.parentSubject != null) {
-        event.parentSubject!.childFolders.add(newFolder);
-      }
-      await _cardsRepository.saveFolder(newFolder);
-      emit(EditSubjectFoldersCardsFetchingSuccess());
-    } catch (e) {
-      emit(
-        EditSubjectFailure(
-            errorMessage:
-                'Subject saving failed, while communicating with hive'),
-      );
-    }
+        parentId: event.parentId);
+    await _cardsRepository.saveFolder(newFolder);
   }
+  // Future<void> _saveFolder(
+  //   EditSubjectAddFolder event,
+  //   Emitter<EditSubjectState> emit,
+  // ) async {
+  //   emit(EditSubjectLoading());
+  //   final String parentId;
+  //   if (event.parentFolder != null) {
+  //     parentId = event.parentFolder!.id;
+  //   } else if (event.parentSubject != null) {
+  //     parentId = event.parentSubject!.id;
+  //   } else {
+  //     emit(EditSubjectFailure(errorMessage: "no parent was given"));
+  //     return;
+  //   }
+  //   final newFolder = Folder(
+  //       id: const Uuid().v4(),
+  //       name: event.name,
+  //       parentId: parentId,
+  //       dateCreated: DateTime.now().toIso8601String(),
+  //       childCards: List.empty(growable: true),
+  //       childFolders: List.empty(growable: true));
+  //   try {
+  //     if (event.parentFolder != null) {
+  //       event.parentFolder!.childFolders.add(newFolder);
+  //     } else if (event.parentSubject != null) {
+  //       event.parentSubject!.childFolders.add(newFolder);
+  //     }
+  //     await _cardsRepository.saveFolder(newFolder);
+  //     emit(EditSubjectFoldersCardsFetchingSuccess());
+  //   } catch (e) {
+  //     emit(
+  //       EditSubjectFailure(
+  //           errorMessage:
+  //               'Subject saving failed, while communicating with hive'),
+  //     );
+  //   }
+  // }
 
-  Future<void> _saveCard(
-      EditSubjectAddCard event,
-    Emitter<EditSubjectState> emit,) async {
-    emit(EditSubjectLoading());
-    final String parentId;
-    if (event.parentFolder != null) {
-      parentId = event.parentFolder!.id;
-    } else if (event.parentSubject != null) {
-      parentId = event.parentSubject!.id;
-    } else {
-      emit(EditSubjectFailure(errorMessage: "no parent was given"));
-      return;
-    }
-    final newCard = Card(
-        id: const Uuid().v4(),
-        front: event.front,
-        back: event.back,
-        dateCreated: DateTime.now().toIso8601String(),
-        parentId: parentId,
-        askCardsInverted: false,
-        typeAnswer: true,
-        dateToReview: DateTime.thursday.toString());
-    try {
-      if(event.parentFolder != null){
-        event.parentFolder!.childCards.add(newCard);
-      }else if(event.parentSubject != null){
-        event.parentSubject!.childCards.add(newCard);
-      }
-      await _cardsRepository.saveCard(newCard);
-      emit(EditSubjectFoldersCardsFetchingSuccess());
-    } catch (e) {
-      emit(
-        EditSubjectFailure(
-            errorMessage: 'Card saving failed, while communicating with hive'),
-      );
-    }
-  }
+  // Future<void> _saveCard(
+  //     EditSubjectAddCard event,
+  //   Emitter<EditSubjectState> emit,) async {
+  //   emit(EditSubjectLoading());
+  //   final String parentId;
+  //   if (event.parentFolder != null) {
+  //     parentId = event.parentFolder!.id;
+  //   } else if (event.parentSubject != null) {
+  //     parentId = event.parentSubject!.id;
+  //   } else {
+  //     emit(EditSubjectFailure(errorMessage: "no parent was given"));
+  //     return;
+  //   }
+  //   final newCard = Card(
+  //       id: const Uuid().v4(),
+  //       front: event.front,
+  //       back: event.back,
+  //       dateCreated: DateTime.now().toIso8601String(),
+  //       parentId: parentId,
+  //       askCardsInverted: false,
+  //       typeAnswer: true,
+  //       dateToReview: DateTime.thursday.toString());
+  //   try {
+  //     if(event.parentFolder != null){
+  //       event.parentFolder!.childCards.add(newCard);
+  //     }else if(event.parentSubject != null){
+  //       event.parentSubject!.childCards.add(newCard);
+  //     }
+  //     await _cardsRepository.saveCard(newCard);
+  //     emit(EditSubjectFoldersCardsFetchingSuccess());
+  //   } catch (e) {
+  //     emit(
+  //       EditSubjectFailure(
+  //           errorMessage: 'Card saving failed, while communicating with hive'),
+  //     );
+  //   }
+  // }
 }

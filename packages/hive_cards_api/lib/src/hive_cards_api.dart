@@ -28,75 +28,82 @@ class HiveCardsApi extends CardsApi {
   final _subjectStreamController =
       BehaviorSubject<List<Subject>>.seeded(const []);
 
+  // Map<String, BehaviorSubject<List<Object>>> as = {};
+
   /// MAYBE USE MAPS ???
   List<Card> cards = List.empty(growable: true);
   List<Folder> folders = List.empty(growable: true);
   List<Subject> subjects = List.empty(growable: true);
 
+  List<String> indexedPaths = [];
+
   void _init() {
-    try {
-      var jsonCards = _hiveBox.get('cards') as List<String>;
-      cards = _cardsFromJson(jsonCards);
-      _cardStreamController.add(cards);
-
-
-    } catch (e) {
-      var text = 'no cards on hive db saved';
-    }
-
-    try {
-      var jsonFolders = _hiveBox.get('folders') as List<String>;
-      folders = _foldersFromJson(jsonFolders);
-      _folderStreamController.add(folders);
-
-    } catch (e) {
-      var text = 'no folders on hive db saved';
-    }
-
-    try {
-      final jsonSubjects = _hiveBox.get('subjects') as List<String>;
-      subjects = _subjectsFromJson(jsonSubjects);
-      _subjectStreamController.add(subjects);
-    } catch (e) {
-      var text = 'no subjects on hive db saved';
-    }
-
-    folders.forEach((folder) {
-      subjects.forEach((subject) {
-        if(folder.parentId == subject.id){
-          subject.childFolders.add(folder);
-        }
-       });
-      folders.forEach((folder) { 
-        if(folder.parentId == folder.id){
-          folder.childFolders.add(folder);
-        }
-      });
-    });    /// SHOULD GET OPTIMIZED
-    cards.forEach((card) {
-      subjects.forEach((subject) {
-        if(card.parentId == subject.id){
-          subject.childCards.add(card);
-        }
-       });
-      folders.forEach((folder) { 
-        if(card.parentId == folder.id){
-          folder.childCards.add(card);
-        }
-      });
-    });
-    _subjectStreamController.add(subjects);
-    // for (var subject in subjects) {
-    //   for (var cards in subject.childCardIds) {
-    //     if (cardsMap[cards] != null) {
-    //       subject.childCards.add(cardsMap[cards]!);
-    //     } else {
-          
-    //     }
-    //   }
-    //   for (var element in subject.childFolderIds) {}
-    // }
+    indexedPaths = _hiveBox.get('indexed_paths') as List<String>;
   }
+
+  // void _init() {
+  //   try {
+  //     var jsonCards = _hiveBox.get('cards') as List<String>;
+  //     cards = _cardsFromJson(jsonCards);
+  //     _cardStreamController.add(cards);
+
+  //   } catch (e) {
+  //     var text = 'no cards on hive db saved';
+  //   }
+
+  //   try {
+  //     var jsonFolders = _hiveBox.get('folders') as List<String>;
+  //     folders = _foldersFromJson(jsonFolders);
+  //     _folderStreamController.add(folders);
+
+  //   } catch (e) {
+  //     var text = 'no folders on hive db saved';
+  //   }
+
+  //   try {
+  //     final jsonSubjects = _hiveBox.get('subjects') as List<String>;
+  //     subjects = _subjectsFromJson(jsonSubjects);
+  //     _subjectStreamController.add(subjects);
+  //   } catch (e) {
+  //     var text = 'no subjects on hive db saved';
+  //   }
+
+  //   folders.forEach((folder) {
+  //     subjects.forEach((subject) {
+  //       if(folder.parentId == subject.id){
+  //         subject.childFolders.add(folder);
+  //       }
+  //      });
+  //     folders.forEach((folder) {
+  //       if(folder.parentId == folder.id){
+  //         folder.childFolders.add(folder);
+  //       }
+  //     });
+  //   });    /// SHOULD GET OPTIMIZED
+  //   cards.forEach((card) {
+  //     subjects.forEach((subject) {
+  //       if(card.parentId == subject.id){
+  //         subject.childCards.add(card);
+  //       }
+  //      });
+  //     folders.forEach((folder) {
+  //       if(card.parentId == folder.id){
+  //         folder.childCards.add(card);
+  //       }
+  //     });
+  //   });
+  //   _subjectStreamController.add(subjects);
+  //   // for (var subject in subjects) {
+  //   //   for (var cards in subject.childCardIds) {
+  //   //     if (cardsMap[cards] != null) {
+  //   //       subject.childCards.add(cardsMap[cards]!);
+  //   //     } else {
+
+  //   //     }
+  //   //   }
+  //   //   for (var element in subject.childFolderIds) {}
+  //   // }
+  // }
 
   List<String> _cardsToJson(List<Card> cards) {
     List<String> jsonCards = [];
@@ -175,19 +182,6 @@ class HiveCardsApi extends CardsApi {
       _subjectStreamController.asBroadcastStream();
 
   @override
-  Future<void> saveCard(Card card) {
-    final cardIndex = cards.indexWhere((element) => element.id == card.id);
-    if (cardIndex >= 0) {
-      cards[cardIndex] = card;
-    } else {
-      cards.add(card);
-    }
-    _cardStreamController.add(cards);
-
-    return _hiveBox.put('cards', _cardsToJson(cards));
-  }
-
-  @override
   Future<void> saveSubject(Subject subject) {
     final subjectIndex =
         subjects.indexWhere((element) => element.id == subject.id);
@@ -197,19 +191,51 @@ class HiveCardsApi extends CardsApi {
       subjects.add(subject);
     }
     _subjectStreamController.add(subjects);
-    return _hiveBox.put('subjects', _subjectsToJson(subjects));
+    indexedPaths.add("/subjects/" + subject.id);
+    _saveIndexedPaths();
+    return _hiveBox.put('/subjects', _subjectsToJson(subjects));
   }
 
   @override
   Future<void> saveFolder(Folder folder) {
-    final folderIndex =
-        folders.indexWhere((element) => element.id == folder.id);
-    if (folderIndex >= 0) {
-      folders[folderIndex] = folder;
-    } else {
-      folders.add(folder);
+    final parentId = folder.parentId;
+
+    final path = _getPath(parentId);
+
+    if (path == null) {
+      throw ParentNotFoundException;
     }
-    _folderStreamController.add(folders);
-    return _hiveBox.put('folders', _foldersToJson(folders));
+    if (!indexedPaths.contains(path + '/' + folder.id)) {
+      indexedPaths.add(path + '/' + folder.id);
+      _saveIndexedPaths();
+    }
+    return _hiveBox.put(path, _foldersToJson(folders));
+  }
+
+  @override
+  Future<void> saveCard(Card card) {
+    final parentId = card.parentId;
+
+    final path = _getPath(parentId);
+
+    if(path == null){
+      throw ParentNotFoundException;
+    }
+    // TODO add checking wheter card was already saved and should only get updated, or wheter it should get appended at the list cause it is a new card, same to do with folders
+    _hiveBox.get(path) as List<String>;
+    return _hiveBox.put(path, _cardsToJson([card])[0]);
+  }
+
+  String? _getPath(String parentId) {
+    for (var element in indexedPaths) {
+      if (element.endsWith(parentId)) {
+        return element;
+      }
+    }
+    return null;
+  }
+
+  void _saveIndexedPaths() {
+    _hiveBox.put('indexed_paths', indexedPaths);
   }
 }

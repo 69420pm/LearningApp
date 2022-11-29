@@ -50,7 +50,7 @@ class AddFolderBottomSheet extends StatelessWidget {
 
             UIButton(
                 onTap: () async {
-                  context.read<EditSubjectBloc>().add(EditSubjectAddFolder(name: nameController.text.trim(), parentFolder: parentFolder, parentSubject: parentSubject));
+                  // context.read<EditSubjectBloc>().add(EditSubjectAddFolder(name: nameController.text.trim(), parentFolder: parentFolder, parentSubject: parentSubject));
                   Navigator.pop(context);
                 },
                 lable: "Save")

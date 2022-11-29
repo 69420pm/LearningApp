@@ -28,13 +28,14 @@ class AddFolderCubit extends Cubit<AddFolderState> {
         name: name,
         parentId: parentId,
         dateCreated: DateTime.now().toIso8601String(),
-        childCards: List.empty(growable: true),
-        childFolders: List.empty(growable: true));
+        // childCards: List.empty(growable: true),
+        // childFolders: List.empty(growable: true));
+    );
     try {
       if (parentFolder != null) {
-        parentFolder.childFolders.add(newFolder);
+        // parentFolder.childFolders.add(newFolder);
       } else if (parentSubject != null) {
-        parentSubject.childFolders.add(newFolder);
+        // parentSubject.childFolders.add(newFolder);
       }
       await _cardsRepository.saveFolder(newFolder);
       emit(AddFolderSuccess());

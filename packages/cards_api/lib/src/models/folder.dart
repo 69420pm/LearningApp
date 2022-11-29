@@ -16,46 +16,24 @@ class Folder extends Equatable {
 
   /// id of parent subject to order cards
   final String parentId;
-
-  final List<Folder> childFolders;
-
-  final List<Card> childCards;
   const Folder({
     required this.id,
     required this.name,
     required this.dateCreated,
     required this.parentId,
-    required this.childFolders,
-    required this.childCards,
   });
 
-  @override
-  // TODO: implement props
-  List<Object> get props {
-    return [
-      id,
-      name,
-      dateCreated,
-      parentId,
-      childFolders,
-      childCards,
-    ];
-  }
-
   Folder copyWith({
+    String? id,
     String? name,
     String? dateCreated,
     String? parentId,
-    List<Folder>? childFolders,
-    List<Card>? childCards,
   }) {
     return Folder(
-      id: id,
+      id: id ?? this.id,
       name: name ?? this.name,
       dateCreated: dateCreated ?? this.dateCreated,
       parentId: parentId ?? this.parentId,
-      childFolders: childFolders ?? this.childFolders,
-      childCards: childCards ?? this.childCards,
     );
   }
 
@@ -65,8 +43,6 @@ class Folder extends Equatable {
       'name': name,
       'dateCreated': dateCreated,
       'parentId': parentId,
-      'childFolders': childFolders.map((x) => x.toMap()).toList(),
-      'childCards': childCards.map((x) => x.toMap()).toList(),
     };
   }
 
@@ -76,8 +52,6 @@ class Folder extends Equatable {
       name: map['name'] as String,
       dateCreated: map['dateCreated'] as String,
       parentId: map['parentId'] as String,
-      childFolders: List.empty(growable: true),
-      childCards: List.empty(growable: true),
     );
   }
 
@@ -88,4 +62,7 @@ class Folder extends Equatable {
 
   @override
   bool get stringify => true;
+
+  @override
+  List<Object> get props => [id, name, dateCreated, parentId];
 }
