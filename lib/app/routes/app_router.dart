@@ -61,8 +61,7 @@ class AppRouter {
               BlocProvider.value(value: _addCardCubit),
               BlocProvider.value(value: _editSubjectBloc),
             ],
-            child: AddCardPage(
-                recommendedSubjectParent: routeSettings.arguments as Subject?),
+            child: AddCardPage(parentId: routeSettings.arguments as String),
           ),
         );
       case '/add_subject':
@@ -93,7 +92,8 @@ class AppRouter {
                 value: _editSubjectBloc,
               ),
               BlocProvider.value(
-                value: _addFolderCubit,)
+                value: _addFolderCubit,
+              )
             ],
             child: SubjectOverviewPage(
               subjectToEdit: routeSettings.arguments! as Subject,

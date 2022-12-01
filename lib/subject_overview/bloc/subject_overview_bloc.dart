@@ -24,7 +24,12 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
     on<EditSubjectAddFolder>((event, emit) async {
       await _saveFolder(event, emit);
     });
-    // on<EditSubjectAddCard>((event, emit) async => _saveCard(event, emit),);
+    on<EditSubjectGetChildrenById>(
+      (event, emit) => _getChildren(event, emit),
+    );
+    on<EditSubjectAddCard>(
+      (event, emit) async => _saveCard(event, emit),
+    );
   }
 
   final CardsRepository _cardsRepository;
@@ -85,6 +90,22 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
   //   });
   // }
 
+  Future<void> _getChildren(
+    EditSubjectGetChildrenById event,
+    Emitter<EditSubjectState> emit,
+  ) async {
+    emit(EditSubjectLoading());
+    await emit.forEach(
+      _cardsRepository.getChildrenById(event.id),
+      onData: (data) {
+        print("stream update");
+        // print(data);
+        return EditSubjectRetrieveChildren(childrenStream: data);
+      },
+      onError: (error, stackTrace) => EditSubjectFailure(errorMessage: "backend broken"),
+    );
+  }
+
   Future<void> _saveFolder(
     EditSubjectAddFolder event,
     Emitter<EditSubjectState> emit,
@@ -92,10 +113,26 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
     emit(EditSubjectLoading());
     final newFolder = Folder(
         id: Uuid().v4(),
-        name: event.name,
+        name: event.name + "fdsf",
         dateCreated: DateTime.now().toIso8601String(),
         parentId: event.parentId);
     await _cardsRepository.saveFolder(newFolder);
+    emit(EditSubjectSuccess());
+  }
+
+  _saveCard(EditSubjectAddCard event, Emitter<EditSubjectState> emit) async {
+    emit(EditSubjectLoading());
+    final newCard = Card(
+        id: Uuid().v4(),
+        front: event.front,
+        back: event.back,
+        dateCreated: DateTime.now().toIso8601String(),
+        parentId: event.parentId,
+        askCardsInverted: true,
+        typeAnswer: true,
+        dateToReview: "");
+    await _cardsRepository.saveCard(newCard);
+    emit(EditSubjectSuccess());
   }
   // Future<void> _saveFolder(
   //   EditSubjectAddFolder event,

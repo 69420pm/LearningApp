@@ -6,11 +6,10 @@ import 'package:learning_app/subject_overview/bloc/subject_overview_bloc.dart';
 import 'package:ui_components/ui_components.dart';
 
 class AddCardPage extends StatelessWidget {
-  AddCardPage({super.key, this.recommendedSubjectParent = null, this.folderParent = null});
+  AddCardPage({super.key, required this.parentId});
 
   /// when add_Card_page is used as edit_Card_page, when not let it empty
-  final Subject? recommendedSubjectParent;
-  final Folder? folderParent;
+  final String parentId;
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +17,6 @@ class AddCardPage extends StatelessWidget {
     final backController = TextEditingController();
     final locationController = TextEditingController();
     final iconController = TextEditingController();
-
-    if (recommendedSubjectParent != null) {
-      locationController.text = recommendedSubjectParent!.id;
-    }else if(folderParent != null){
-      locationController.text = folderParent!.id;
-    }
 
     final formKey = GlobalKey<FormState>();
     return Scaffold(
@@ -65,7 +58,10 @@ class AddCardPage extends StatelessWidget {
                     //     backController.text,
                     //     recommendedSubjectParent!,
                     //     iconController.text);
-                    context.read<EditSubjectBloc>().add(EditSubjectAddCard(front: frontController.text, back: backController.text, parentSubject: recommendedSubjectParent, parentFolder: folderParent));
+                    context.read<EditSubjectBloc>().add(EditSubjectAddCard(
+                        front: frontController.text,
+                        back: backController.text,
+                        parentId: parentId));
                   }
                   Navigator.pop(context);
                 },

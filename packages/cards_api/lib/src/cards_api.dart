@@ -49,6 +49,8 @@ abstract class CardsApi {
   /// thrown
   Future<void> deleteFolder(String id);
 
+  Stream<List<Object>> getChildrenById(String id);
+
 }
 
 /// Error when a [Card] with given id is not found
