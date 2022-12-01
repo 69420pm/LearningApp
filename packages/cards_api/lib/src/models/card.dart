@@ -17,7 +17,7 @@ class Card extends Equatable {
   final String dateCreated;
   
   /// id of parent subject/group to order subjects 
-  final String parentSubjectId;
+  final String parentId;
   
   /// possibility to get asked when showing the back and hiding the front
   /// (helpful for vocab)
@@ -37,10 +37,10 @@ class Card extends Equatable {
     required this.front,
     required this.back,
     required this.dateCreated,
-    required this.parentSubjectId,
+    required this.parentId,
     required this.askCardsInverted,
     required this.typeAnswer,
-    required this.recallScore,
+    this.recallScore = 0,
     required this.dateToReview,
   });
   
@@ -62,7 +62,7 @@ class Card extends Equatable {
       front: front ?? this.front,
       back: back ?? this.back,
       dateCreated: dateCreated ?? this.dateCreated,
-      parentSubjectId: parentSubjectId ?? this.parentSubjectId,
+      parentId: parentSubjectId ?? this.parentId,
       askCardsInverted: askCardsInverted ?? this.askCardsInverted,
       typeAnswer: typeAnswer ?? this.typeAnswer,
       recallScore: recallScore ?? this.recallScore,
@@ -76,7 +76,7 @@ class Card extends Equatable {
       'front': front,
       'back': back,
       'dateCreated': dateCreated,
-      'parentSubjectId': parentSubjectId,
+      'parentId': parentId,
       'askCardsInverted': askCardsInverted,
       'typeAnswer': typeAnswer,
       'recallScore': recallScore,
@@ -90,7 +90,7 @@ class Card extends Equatable {
       front: map['front'] as String,
       back: map['back'] as String,
       dateCreated: map['dateCreated'] as String,
-      parentSubjectId: map['parentSubjectId'] as String,
+      parentId: map['parentId'] as String,
       askCardsInverted: map['askCardsInverted'] as bool,
       typeAnswer: map['typeAnswer'] as bool,
       recallScore: map['recallScore'] as int,
@@ -112,7 +112,7 @@ class Card extends Equatable {
       front,
       back,
       dateCreated,
-      parentSubjectId,
+      parentId,
       askCardsInverted,
       typeAnswer,
       recallScore,

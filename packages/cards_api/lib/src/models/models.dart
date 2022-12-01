@@ -1,3 +1,3 @@
 export 'card.dart';
-export 'group.dart';
+export 'folder.dart';
 export 'subject.dart';
