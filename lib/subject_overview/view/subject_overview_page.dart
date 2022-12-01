@@ -1,10 +1,10 @@
 import 'package:cards_api/cards_api.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:learning_app/add_folder/cubit/add_folder_cubit.dart';
 import 'package:learning_app/add_folder/view/add_folder_bottom_sheet.dart';
 import 'package:learning_app/subject_overview/bloc/subject_overview_bloc.dart';
 import 'package:learning_app/subject_overview/view/card_list_tile.dart';
+import 'package:cards_repository/cards_repository.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
 import 'package:ui_components/ui_components.dart';
 
@@ -16,7 +16,10 @@ class SubjectOverviewPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.read<EditSubjectBloc>().add(EditSubjectUpdateFoldersCards());
+    // context.read<EditSubjectBloc>().add(EditSubjectUpdateFoldersCards());
+    context
+        .read<EditSubjectBloc>()
+        .add(EditSubjectGetChildrenById(id: subjectToEdit.id));
     final nameController = TextEditingController(text: subjectToEdit.name);
     final iconController =
         TextEditingController(text: subjectToEdit.prefixIcon);
@@ -49,8 +52,8 @@ class SubjectOverviewPage extends StatelessWidget {
                     return null;
                   }
                 },
-                onLoseFocus: (_) => save(formKey, nameController.text,
-                    iconController.text, context),
+                onLoseFocus: (_) => save(
+                    formKey, nameController.text, iconController.text, context),
               ),
 
               /// Prefix icon
@@ -59,8 +62,8 @@ class SubjectOverviewPage extends StatelessWidget {
                 initialValue: subjectToEdit.prefixIcon,
                 validation: (_) => null,
                 label: "Icon String",
-                onLoseFocus: (_) => save(formKey, nameController.text,
-                    iconController.text, context),
+                onLoseFocus: (_) => save(
+                    formKey, nameController.text, iconController.text, context),
               ),
 
               Row(
@@ -69,7 +72,7 @@ class SubjectOverviewPage extends StatelessWidget {
                   IconButton(
                     onPressed: () {
                       Navigator.of(context)
-                          .pushNamed('/add_card', arguments: subjectToEdit);
+                          .pushNamed('/add_card', arguments: subjectToEdit.id);
                     },
                     icon: const Icon(
                       Icons.file_copy,
@@ -82,12 +85,38 @@ class SubjectOverviewPage extends StatelessWidget {
                         builder: (_) => BlocProvider.value(
                               value: context.read<EditSubjectBloc>(),
                               child: AddFolderBottomSheet(
-                                  parentSubject: subjectToEdit),
+                                  parentId: subjectToEdit.id),
                             )),
                     icon: const Icon(Icons.create_new_folder_rounded),
                   ),
                 ],
               ),
+              BlocBuilder<EditSubjectBloc, EditSubjectState>(
+                builder: (context, state) {
+                  // TODO retrieve getchildrenby id
+                  if (state is EditSubjectRetrieveChildren) {
+                    List<Widget> childWidgets = [];
+                    print(state.childrenStream);
+                    state.childrenStream.forEach((element) {
+                      if (element is Folder) {
+                        childWidgets.add(FolderListTile(
+                          folder: element,
+                        ));
+                      } else if (element is Card) {
+                        childWidgets.add(CardListTile(card: element));
+                      }
+                    });
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      itemBuilder: (context, index) {
+                        return Text("fd");
+                      },
+                    );
+                  }
+                  return Text("error");
+                },
+              )
               // BlocBuilder<EditSubjectBloc, EditSubjectState>(
               //     buildWhen: (previous, current) {
               //   if (current is EditSubjectFoldersCardsFetchingSuccess) {
@@ -115,7 +144,7 @@ class SubjectOverviewPage extends StatelessWidget {
               //         SizedBox(
               //           height: 100,
               //           child: ListView(
-                          
+
               //             scrollDirection: Axis.horizontal,
               //             shrinkWrap: true,
               //             children: cardListTiles,
@@ -151,7 +180,8 @@ class SubjectOverviewPage extends StatelessWidget {
     return true;
   }
 
-  Future<void> save(GlobalKey<FormState> formKey, String nameInput, String iconInput, BuildContext context) async {
+  Future<void> save(GlobalKey<FormState> formKey, String nameInput,
+      String iconInput, BuildContext context) async {
     if (formKey.currentState!.validate()) {
       if (!nothingChanged(nameInput.trim(), iconInput.trim(), subjectToEdit)) {
         context.read<EditSubjectBloc>().add(EditSubjectSaveSubject(

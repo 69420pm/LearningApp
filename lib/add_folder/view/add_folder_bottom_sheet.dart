@@ -9,11 +9,11 @@ import 'package:ui_components/ui_components.dart';
 class AddFolderBottomSheet extends StatelessWidget {
   const AddFolderBottomSheet(
       {super.key,
-      this.recommendedSubjectParentId,
+      required this.parentId,
       this.parentSubject,
       this.parentFolder});
 
-  final String? recommendedSubjectParentId;
+  final String parentId;
   final Subject? parentSubject;
   final Folder? parentFolder;
 
@@ -23,8 +23,8 @@ class AddFolderBottomSheet extends StatelessWidget {
     final locationController = TextEditingController();
     final iconController = TextEditingController();
 
-    if (recommendedSubjectParentId != null) {
-      locationController.text = recommendedSubjectParentId!;
+    if (parentId != null) {
+      locationController.text = parentId!;
     }
 
     final formKey = GlobalKey<FormState>();
@@ -50,7 +50,8 @@ class AddFolderBottomSheet extends StatelessWidget {
 
             UIButton(
                 onTap: () async {
-                  // context.read<EditSubjectBloc>().add(EditSubjectAddFolder(name: nameController.text.trim(), parentFolder: parentFolder, parentSubject: parentSubject));
+                  
+                  context.read<EditSubjectBloc>().add(EditSubjectAddFolder(name: nameController.text.trim(), parentId: parentId));
                   Navigator.pop(context);
                 },
                 lable: "Save")

@@ -31,14 +31,19 @@ class EditSubjectAddFolder extends EditSubjectEvent {
 }
 
 class EditSubjectAddCard extends EditSubjectEvent {
+  String front;
+  String back;
+  String parentId;
   EditSubjectAddCard({
     required this.front,
     required this.back,
-    this.parentSubject,
-    this.parentFolder,
+    required this.parentId,
   });
-  String front;
-  String back;
-  Subject? parentSubject;
-  Folder? parentFolder;
+}
+
+class EditSubjectGetChildrenById extends EditSubjectEvent {
+  String id;
+  EditSubjectGetChildrenById({
+    required this.id,
+  });
 }

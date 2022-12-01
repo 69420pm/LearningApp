@@ -35,10 +35,16 @@ class HiveCardsApi extends CardsApi {
   List<Folder> folders = List.empty(growable: true);
   List<Subject> subjects = List.empty(growable: true);
 
-  List<String> indexedPaths = [];
+  List<String> _indexedPaths = [];
+  Map<String, BehaviorSubject<List<Object>>> _subscribedStreams =
+      Map.identity();
 
   void _init() {
-    indexedPaths = _hiveBox.get('indexed_paths') as List<String>;
+    try {
+      _indexedPaths = _hiveBox.get('indexed_paths') as List<String>;
+    } catch (e) {
+      print("no paths saved");
+    }
   }
 
   // void _init() {
@@ -182,6 +188,31 @@ class HiveCardsApi extends CardsApi {
       _subjectStreamController.asBroadcastStream();
 
   @override
+  Stream<List<Object>> getChildrenById(String parentId) {
+    if (_subscribedStreams[parentId] != null) {
+      return _subscribedStreams[parentId]!.asBroadcastStream();
+    }
+    final newStream = BehaviorSubject<List<Object>>.seeded(const []);
+    final path = _getPath(parentId);
+    final childrenStrings = _hiveBox.get(path) as List<String>?;
+    List<Object> children = [];
+    if (childrenStrings != null) {
+      childrenStrings.forEach((element) {
+        try {
+          children.add(_cardsFromJson([element])[0]);
+        } catch (e) {}
+        try {
+          children.add(_foldersFromJson([element])[0]);
+        } catch (e) {}
+      });
+    }
+
+    newStream.add(children);
+    _subscribedStreams[parentId] = newStream;
+    return newStream;
+  }
+
+  @override
   Future<void> saveSubject(Subject subject) {
     final subjectIndex =
         subjects.indexWhere((element) => element.id == subject.id);
@@ -191,7 +222,7 @@ class HiveCardsApi extends CardsApi {
       subjects.add(subject);
     }
     _subjectStreamController.add(subjects);
-    indexedPaths.add("/subjects/" + subject.id);
+    _indexedPaths.add("/subjects/" + subject.id);
     _saveIndexedPaths();
     return _hiveBox.put('/subjects', _subjectsToJson(subjects));
   }
@@ -205,11 +236,33 @@ class HiveCardsApi extends CardsApi {
     if (path == null) {
       throw ParentNotFoundException;
     }
-    if (!indexedPaths.contains(path + '/' + folder.id)) {
-      indexedPaths.add(path + '/' + folder.id);
+    if (!_indexedPaths.contains(path + '/' + folder.id)) {
+      _indexedPaths.add(path + '/' + folder.id);
       _saveIndexedPaths();
     }
-    return _hiveBox.put(path, _foldersToJson(folders));
+    var folders = _hiveBox.get(path) as List<String>?;
+    var found = false;
+    if (folders != null) {
+      for (var element in folders) {
+        if (element.substring(8).startsWith(folder.id)) {
+          element = _foldersToJson([folder])[0];
+          found = true;
+          break;
+        }
+      }
+    } else {
+      folders = [];
+    }
+
+    if (!found) {
+      folders.add(_foldersToJson([folder])[0]);
+    }
+
+if (_subscribedStreams.containsKey(parentId)) {
+      _subscribedStreams[parentId]!.add([folder]);
+    }
+
+    return _hiveBox.put(path, folders);
   }
 
   @override
@@ -218,16 +271,37 @@ class HiveCardsApi extends CardsApi {
 
     final path = _getPath(parentId);
 
-    if(path == null){
+    if (path == null) {
       throw ParentNotFoundException;
     }
-    // TODO add checking wheter card was already saved and should only get updated, or wheter it should get appended at the list cause it is a new card, same to do with folders
-    _hiveBox.get(path) as List<String>;
-    return _hiveBox.put(path, _cardsToJson([card])[0]);
+    var cards = _hiveBox.get(path) as List<String>?;
+    var found = false;
+    if (cards != null) {
+      for (var element in cards) {
+        // contains word
+        if (element.substring(8).startsWith(card.id)) {
+          element = _cardsToJson([card])[0];
+          found = true;
+          break;
+        }
+      }
+    }else{
+      cards = [];
+    }
+
+    if (!found) {
+      cards.add(_cardsToJson([card])[0]);
+    }
+
+    if (_subscribedStreams.containsKey(parentId)) {
+      _subscribedStreams[parentId]!.add([card]);
+    }
+
+    return _hiveBox.put(path, cards);
   }
 
   String? _getPath(String parentId) {
-    for (var element in indexedPaths) {
+    for (var element in _indexedPaths) {
       if (element.endsWith(parentId)) {
         return element;
       }
@@ -236,6 +310,6 @@ class HiveCardsApi extends CardsApi {
   }
 
   void _saveIndexedPaths() {
-    _hiveBox.put('indexed_paths', indexedPaths);
+    _hiveBox.put('indexed_paths', _indexedPaths);
   }
 }
