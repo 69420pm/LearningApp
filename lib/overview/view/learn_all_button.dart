@@ -9,7 +9,7 @@ class LearnAllButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      //TODO on tap function
+      //TODO on tap function lol
       onTap: () {
         Navigator.pushNamed(context, "/learn");
       },
