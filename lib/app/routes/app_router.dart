@@ -88,9 +88,10 @@ class AppRouter {
               BlocProvider.value(
                 value: _homeCubit,
               ),
-              BlocProvider.value(
-                value: _editSubjectBloc,
-              ),
+              // BlocProvider.value(
+              //   value: _editSubjectBloc,
+              // ),
+              BlocProvider(create: ((context) => EditSubjectBloc(_cardsRepository))),
               BlocProvider.value(
                 value: _addFolderCubit,
               )

@@ -51,6 +51,8 @@ abstract class CardsApi {
 
   Stream<List<Object>> getChildrenById(String id);
 
+  void closeStreamById(String id);
+
 }
 
 /// Error when a [Card] with given id is not found

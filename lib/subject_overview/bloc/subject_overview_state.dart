@@ -19,7 +19,7 @@ class EditSubjectFailure extends EditSubjectState {
 class EditSubjectFoldersCardsFetchingSuccess extends EditSubjectState {}
 
 class EditSubjectRetrieveChildren extends EditSubjectState {
-  List<Object> childrenStream;
+  Map<String, Widget> childrenStream;
   EditSubjectRetrieveChildren({
     required this.childrenStream,
   });
