@@ -104,14 +104,22 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
     await emit.forEach(
       _cardsRepository.getChildrenById(event.id),
       onData: (data) {
-        Map<String, Widget> childListTiles = Map.identity();
-        data.forEach((element) {
+        print("data");
+        print(data);
+        var childListTiles = <String, Widget>{};
+        for (final element in data) {
           if(element is Folder){
             childListTiles[element.id] = FolderListTile(folder: element);
           }else if(element is Card){
             childListTiles[element.id] = CardListTile(card: element);
           }
-        },);
+        }
+        if(data.isEmpty){
+          print("empty list");
+          childListTiles = {};
+          childListTiles["nothing to show"] = Container(color: Color.fromARGB(255, 255, 0, 255), child: Text("Nothing to show"),);
+        }
+        print("update state retrieve children");
         return EditSubjectRetrieveChildren(childrenStream: childListTiles);
       },
       onError: (error, stackTrace) =>

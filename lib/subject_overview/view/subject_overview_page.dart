@@ -14,7 +14,6 @@ class SubjectOverviewPage extends StatefulWidget {
 
   /// when add_subject_page is used as edit_subject_page, when not let it empty
   final Subject subjectToEdit;
-  Map<String, Widget> childListTiles = Map.identity();
 
   @override
   State<SubjectOverviewPage> createState() => _SubjectOverviewPageState();
@@ -33,6 +32,9 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
     context
         .read<EditSubjectBloc>()
         .add(EditSubjectGetChildrenById(id: widget.subjectToEdit.id));
+    var childListTiles = <String, Widget>{};
+
+    print("call method");
     _editSubjectBloc = context.read<EditSubjectBloc>();
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
@@ -102,22 +104,37 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
               ),
 
               BlocBuilder<EditSubjectBloc, EditSubjectState>(
+                // buildWhen: (previous, current) {
+                //   print(previous);
+                //   print(current);
+                //   if(current is EditSubjectRetrieveChildren){
+                //     return true;
+                //   }
+                //   return previous != current;
+                // },
                 builder: (context, state) {
+                  print(state);
                   if (state is EditSubjectRetrieveChildren) {
                     // widget.childListTiles.addAll(state.childrenStream);
-                    widget.childListTiles = {...widget.childListTiles, ...state.childrenStream}; 
-                    print(widget.childListTiles);
+                    childListTiles = {
+                      ...childListTiles,
+                      ...state.childrenStream
+                    };
+                    print("children stream");
+                    print(state.childrenStream);
+                    if (state.childrenStream == {}) {
+                      childListTiles = {};
+                    }
                   }
+
                   List<Widget> _childTiles = [];
-                  widget.childListTiles
+                  childListTiles
                       .forEach((key, value) => _childTiles.add(value));
-                  return ListView.builder(
+                  print("update view");
+                  return ListView(
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
-                    itemCount: _childTiles.length,
-                    itemBuilder: (context, index) {
-                      return _childTiles[index];
-                    },
+                    children: _childTiles,
                   );
                 },
               ),
@@ -197,7 +214,6 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
     }
   }
 
-  // TODO finish method
   // void addListTile(Object object) {
   //   if (object is Folder) {
   //     widget.subjectChildTiles.forEach((element) {
