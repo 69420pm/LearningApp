@@ -47,3 +47,10 @@ class EditSubjectGetChildrenById extends EditSubjectEvent {
     required this.id,
   });
 }
+
+class EditSubjectCloseStreamById extends EditSubjectEvent {
+  String id;
+  EditSubjectCloseStreamById({
+    required this.id,
+  });
+}

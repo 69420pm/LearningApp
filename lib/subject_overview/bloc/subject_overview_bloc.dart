@@ -4,6 +4,8 @@ import 'package:bloc/bloc.dart';
 import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:learning_app/subject_overview/view/card_list_tile.dart';
+import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
 import 'package:uuid/uuid.dart';
 
 part 'subject_overview_event.dart';
@@ -29,6 +31,10 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
     );
     on<EditSubjectAddCard>(
       (event, emit) async => _saveCard(event, emit),
+    );
+
+    on<EditSubjectCloseStreamById>(
+      (event, emit) => _closeStream(event, emit),
     );
   }
 
@@ -98,11 +104,18 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
     await emit.forEach(
       _cardsRepository.getChildrenById(event.id),
       onData: (data) {
-        print("stream update");
-        // print(data);
-        return EditSubjectRetrieveChildren(childrenStream: data);
+        Map<String, Widget> childListTiles = Map.identity();
+        data.forEach((element) {
+          if(element is Folder){
+            childListTiles[element.id] = FolderListTile(folder: element);
+          }else if(element is Card){
+            childListTiles[element.id] = CardListTile(card: element);
+          }
+        },);
+        return EditSubjectRetrieveChildren(childrenStream: childListTiles);
       },
-      onError: (error, stackTrace) => EditSubjectFailure(errorMessage: "backend broken"),
+      onError: (error, stackTrace) =>
+          EditSubjectFailure(errorMessage: "backend broken"),
     );
   }
 
@@ -120,7 +133,7 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
     emit(EditSubjectSuccess());
   }
 
-  _saveCard(EditSubjectAddCard event, Emitter<EditSubjectState> emit) async {
+  Future<void> _saveCard(EditSubjectAddCard event, Emitter<EditSubjectState> emit) async {
     emit(EditSubjectLoading());
     final newCard = Card(
         id: Uuid().v4(),
@@ -134,6 +147,12 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
     await _cardsRepository.saveCard(newCard);
     emit(EditSubjectSuccess());
   }
+
+  void _closeStream(
+      EditSubjectCloseStreamById event, Emitter<EditSubjectState> emit) {
+    _cardsRepository.closeStreamById(event.id);
+  }
+
   // Future<void> _saveFolder(
   //   EditSubjectAddFolder event,
   //   Emitter<EditSubjectState> emit,

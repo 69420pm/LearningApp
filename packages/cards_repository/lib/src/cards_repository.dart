@@ -23,6 +23,8 @@ class CardsRepository {
   Stream<List<Subject>> getSubjects() => _cardsApi.getSubjects();
 
   Stream<List<Object>> getChildrenById(String id) => _cardsApi.getChildrenById(id);
+  
+  void closeStreamById(String id) => _cardsApi.closeStreamById(id);
 
   /// Saves a [card]
   /// If a [card] with same id already exists, it will be replaced

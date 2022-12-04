@@ -188,14 +188,15 @@ class HiveCardsApi extends CardsApi {
       _subjectStreamController.asBroadcastStream();
 
   @override
-  Stream<List<Object>> getChildrenById(String parentId) {
-    if (_subscribedStreams[parentId] != null) {
-      return _subscribedStreams[parentId]!.asBroadcastStream();
-    }
+  Stream<List<Object>> getChildrenById(String id) {
+    // if (_subscribedStreams[id] != null) {
+    //   return _subscribedStreams[id]!.asBroadcastStream();
+    // }
+    print(_subscribedStreams);
     final newStream = BehaviorSubject<List<Object>>.seeded(const []);
-    final path = _getPath(parentId);
+    final path = _getPath(id);
     final childrenStrings = _hiveBox.get(path) as List<String>?;
-    List<Object> children = [];
+    final children = <Object>[];
     if (childrenStrings != null) {
       childrenStrings.forEach((element) {
         try {
@@ -208,8 +209,16 @@ class HiveCardsApi extends CardsApi {
     }
 
     newStream.add(children);
-    _subscribedStreams[parentId] = newStream;
+    _subscribedStreams[id] = newStream;
     return newStream;
+  }
+
+  @override
+  void closeStreamById(String id) {
+    if (_subscribedStreams[id] != null) {
+      _subscribedStreams[id]!.close();
+      _subscribedStreams.remove(id);
+    }
   }
 
   @override
@@ -244,7 +253,7 @@ class HiveCardsApi extends CardsApi {
     var found = false;
     if (folders != null) {
       for (var element in folders) {
-        if (element.substring(8).startsWith(folder.id)) {
+        if (element.substring(8).startsWith(folder.id)) {                                      
           element = _foldersToJson([folder])[0];
           found = true;
           break;
@@ -258,7 +267,7 @@ class HiveCardsApi extends CardsApi {
       folders.add(_foldersToJson([folder])[0]);
     }
 
-if (_subscribedStreams.containsKey(parentId)) {
+    if (_subscribedStreams.containsKey(parentId)) {
       _subscribedStreams[parentId]!.add([folder]);
     }
 
@@ -285,7 +294,7 @@ if (_subscribedStreams.containsKey(parentId)) {
           break;
         }
       }
-    }else{
+    } else {
       cards = [];
     }
 

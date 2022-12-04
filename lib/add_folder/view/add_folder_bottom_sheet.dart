@@ -24,7 +24,7 @@ class AddFolderBottomSheet extends StatelessWidget {
     final iconController = TextEditingController();
 
     if (parentId != null) {
-      locationController.text = parentId!;
+      locationController.text = parentId;
     }
 
     final formKey = GlobalKey<FormState>();
