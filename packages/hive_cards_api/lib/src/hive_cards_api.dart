@@ -45,6 +45,13 @@ class HiveCardsApi extends CardsApi {
     } catch (e) {
       print("no paths saved");
     }
+    try{
+      final subjectJson = _hiveBox.get('/subjects') as List<String>;
+      final subjects = _subjectsFromJson(subjectJson);
+      _subjectStreamController.add(subjects);
+    } catch(e){
+      print('no subjects saved');
+    }
   }
 
   // void _init() {
@@ -192,20 +199,19 @@ class HiveCardsApi extends CardsApi {
     // if (_subscribedStreams[id] != null) {
     //   return _subscribedStreams[id]!.asBroadcastStream();
     // }
-    print(_subscribedStreams);
     final newStream = BehaviorSubject<List<Object>>.seeded(const []);
     final path = _getPath(id);
     final childrenStrings = _hiveBox.get(path) as List<String>?;
     final children = <Object>[];
     if (childrenStrings != null) {
-      childrenStrings.forEach((element) {
+      for (final element in childrenStrings) {
         try {
           children.add(_cardsFromJson([element])[0]);
         } catch (e) {}
         try {
           children.add(_foldersFromJson([element])[0]);
         } catch (e) {}
-      });
+      }
     }
 
     newStream.add(children);
@@ -231,7 +237,7 @@ class HiveCardsApi extends CardsApi {
       subjects.add(subject);
     }
     _subjectStreamController.add(subjects);
-    _indexedPaths.add("/subjects/" + subject.id);
+    _indexedPaths.add('/subjects/${subject.id}');
     _saveIndexedPaths();
     return _hiveBox.put('/subjects', _subjectsToJson(subjects));
   }
@@ -245,15 +251,15 @@ class HiveCardsApi extends CardsApi {
     if (path == null) {
       throw ParentNotFoundException;
     }
-    if (!_indexedPaths.contains(path + '/' + folder.id)) {
-      _indexedPaths.add(path + '/' + folder.id);
+    if (!_indexedPaths.contains('$path/${folder.id}')) {
+      _indexedPaths.add('$path/${folder.id}');
       _saveIndexedPaths();
     }
     var folders = _hiveBox.get(path) as List<String>?;
     var found = false;
     if (folders != null) {
       for (var element in folders) {
-        if (element.substring(8).startsWith(folder.id)) {                                      
+        if (element.substring(8).startsWith(folder.id)) {
           element = _foldersToJson([folder])[0];
           found = true;
           break;
@@ -310,7 +316,7 @@ class HiveCardsApi extends CardsApi {
   }
 
   String? _getPath(String parentId) {
-    for (var element in _indexedPaths) {
+    for (final element in _indexedPaths) {
       if (element.endsWith(parentId)) {
         return element;
       }

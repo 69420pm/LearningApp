@@ -68,8 +68,8 @@ class Subject extends Equatable {
       dateCreated: map['dateCreated'] as String,
       prefixIcon: map['prefixIcon'] as String,
       daysToGetNotified:
-          List<String>.from(map['daysToGetNotified'] as List<String>),
-      classTests: List<String>.from(map['classTests'] as List<String>),
+          List<String>.from(map['daysToGetNotified'] as List<dynamic>),
+      classTests: List<String>.from(map['classTests'] as List<dynamic>),
     );
   }
 
