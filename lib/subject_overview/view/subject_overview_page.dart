@@ -118,14 +118,16 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                         ...childListTiles,
                         ...state.childrenStream
                       };
-                      if (state.childrenStream == {}) {
-                        childListTiles = {};
-                      }
+                      // if (state.childrenStream == {}) {
+                      //   childListTiles = {};
+                      // }
+                      print("update");
                     }
 
                     final childTiles = <Widget>[];
                     childListTiles
                         .forEach((key, value) => childTiles.add(value));
+                    print(childListTiles);
                     return ListView(
                       shrinkWrap: true,
                       children: childTiles,

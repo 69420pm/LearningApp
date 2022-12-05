@@ -272,11 +272,11 @@ class HiveCardsApi extends CardsApi {
     if (!found) {
       folders.add(_foldersToJson([folder])[0]);
     }
-
+    // TODO fix folder view not updating and stream doesn't get recognized in bloc???
     if (_subscribedStreams.containsKey(parentId)) {
       _subscribedStreams[parentId]!.add([folder]);
+      print(_subscribedStreams.entries);
     }
-
     return _hiveBox.put(path, folders);
   }
 
