@@ -54,7 +54,7 @@ class FolderListTileView extends StatelessWidget {
                     vertical: UISizeConstants.defaultSize,
                   ),
                   child: Text(
-                    'DICKHEAD',
+                    folder.name,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Theme.of(context)
                               .colorScheme

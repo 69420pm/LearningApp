@@ -20,29 +20,22 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
     // on<EditSubjectFolderSubscriptionRequested>((event, emit) async {
     //   await _folderSubscriptionRequested(event, emit);
     // });
-    on<EditSubjectUpdateFoldersCards>(
-      (event, emit) => _updateState(event, emit),
-    );
     on<EditSubjectAddFolder>((event, emit) async {
       await _saveFolder(event, emit);
     });
     on<EditSubjectGetChildrenById>(
-      (event, emit) => _getChildren(event, emit),
+      _getChildren,
     );
     on<EditSubjectAddCard>(
       (event, emit) async => _saveCard(event, emit),
     );
 
     on<EditSubjectCloseStreamById>(
-      (event, emit) => _closeStream(event, emit),
+      _closeStream,
     );
   }
 
   final CardsRepository _cardsRepository;
-
-  void _updateState(event, emit) {
-    emit(EditSubjectFoldersCardsFetchingSuccess());
-  }
 
   Future<void> _saveSubject(
     EditSubjectSaveSubject event,
@@ -59,42 +52,7 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
     }
   }
 
-  // Future<void> _cardSubscriptionRequested(
-  //   EditSubjectCardSubscriptionRequested event,
-  //   Emitter<EditSubjectState> emit,
-  // ) async {
-  //   emit(EditSubjectFolderFetchingLoading());
-  //   await emit.forEach<List<Card>>(_cardsRepository.getCards(),
-  //       onData: (cards) {
-  //         final subjectId = event.currentSubjectId;
-  //         final cardsToSendFurther = List<Card>.empty(growable: true);
-  //         for (final element in cards) {
-  //           if (element.parentId == subjectId) {
-  //             cardsToSendFurther.add(element);
-  //           }
-  //         }
-  //         return EditSubjectCardFetchingSuccess(cards: cardsToSendFurther);
-  //       },
-  //       onError: (_, __) => EditSubjectFolderFetchingFailure(
-  //           errorMessage: 'fetching cards from hive failed'));
-  // }
 
-  // Future<void> _folderSubscriptionRequested(
-  //   EditSubjectFolderSubscriptionRequested event,
-  //   Emitter<EditSubjectState> emit,
-  // ) async {
-  //   emit(EditSubjectFolderFetchingLoading());
-  //   await emit.forEach(_cardsRepository.getSubjects(), onData: (subjects) {
-  //     final subjectId = event.currentSubjectId;
-  //     final subjectsToSendFurther = List<Subject>.empty(growable: true);
-  //     for (final element in subjects) {
-  //       // if(element.parentId == subjectId){
-  //       //   subjectsToSendFurther.add(element);
-  //       // }
-  //     }
-  //     return EditSubjectFolderFetchingSuccess(subjects: subjects);
-  //   });
-  // }
 
   Future<void> _getChildren(
     EditSubjectGetChildrenById event,
@@ -104,12 +62,14 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
     await emit.forEach(
       _cardsRepository.getChildrenById(event.id),
       onData: (data) {
-
         var childListTiles = <String, Widget>{};
         for (final element in data) {
-          if(element is Folder){
-            childListTiles[element.id] = FolderListTile(folder: element, cardsRepository: _cardsRepository,);
-          }else if(element is Card){
+          if (element is Folder) {
+            childListTiles[element.id] = FolderListTile(
+              folder: element,
+              cardsRepository: _cardsRepository,
+            );
+          } else if (element is Card) {
             childListTiles[element.id] = CardListTile(card: element);
           }
         }
@@ -127,14 +87,15 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
     emit(EditSubjectLoading());
     final newFolder = Folder(
         id: Uuid().v4(),
-        name: event.name + "fdsf",
+        name: event.name,
         dateCreated: DateTime.now().toIso8601String(),
         parentId: event.parentId);
     await _cardsRepository.saveFolder(newFolder);
     emit(EditSubjectSuccess());
   }
 
-  Future<void> _saveCard(EditSubjectAddCard event, Emitter<EditSubjectState> emit) async {
+  Future<void> _saveCard(
+      EditSubjectAddCard event, Emitter<EditSubjectState> emit) async {
     emit(EditSubjectLoading());
     final newCard = Card(
         id: Uuid().v4(),

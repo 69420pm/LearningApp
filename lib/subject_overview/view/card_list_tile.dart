@@ -1,7 +1,5 @@
 import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:ui_components/ui_components.dart';
 
 class CardListTile extends StatelessWidget {
