@@ -21,3 +21,5 @@ class FolderListTileError extends FolderListTileState {
     required this.errorMessage,
   });
 }
+
+class FolderListTileSuccess extends FolderListTileState{}

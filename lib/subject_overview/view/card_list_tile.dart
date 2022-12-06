@@ -10,27 +10,26 @@ class CardListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Draggable(
-      feedback: Text("fd"),
+      data: card,
+      feedback: CardListTile(card: card),
       child: Container(
-        width: 100,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-              horizontal: UISizeConstants.defaultSize * 2,
-              vertical: UISizeConstants.defaultSize),
-          child: Column(
-            children: [
-              Text(
-                card.front,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSecondaryContainer),
-              ),
-            ],
-          ),
-        ),
+        height: UISizeConstants.defaultSize * 5,
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.secondaryContainer,
-          borderRadius: BorderRadius.all(
+          borderRadius: const BorderRadius.all(
             Radius.circular(UISizeConstants.cornerRadius),
+          ),
+        ),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+                horizontal: UISizeConstants.defaultSize * 2,
+                vertical: UISizeConstants.defaultSize),
+            child: Text(
+              card.front,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSecondaryContainer),
+            ),
           ),
         ),
       ),
