@@ -111,23 +111,24 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                 ),
 
                 BlocBuilder<EditSubjectBloc, EditSubjectState>(
+                  buildWhen: (previous, current) {
+                    if(current is EditSubjectRetrieveChildren){
+                      return true;
+                    }
+                    return false;
+                  },
                   builder: (context, state) {
                     if (state is EditSubjectRetrieveChildren) {
-                      // widget.childListTiles.addAll(state.childrenStream);
                       childListTiles = {
                         ...childListTiles,
                         ...state.childrenStream
                       };
-                      // if (state.childrenStream == {}) {
-                      //   childListTiles = {};
-                      // }
-                      print("update");
+
                     }
 
                     final childTiles = <Widget>[];
                     childListTiles
                         .forEach((key, value) => childTiles.add(value));
-                    print(childListTiles);
                     return ListView(
                       shrinkWrap: true,
                       children: childTiles,

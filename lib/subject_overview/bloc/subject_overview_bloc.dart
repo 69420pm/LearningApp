@@ -108,14 +108,10 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
         var childListTiles = <String, Widget>{};
         for (final element in data) {
           if(element is Folder){
-            print(element);
-            childListTiles[element.id] = FolderListTile(folder: element);
+            childListTiles[element.id] = FolderListTile(folder: element, cardsRepository: _cardsRepository,);
           }else if(element is Card){
             childListTiles[element.id] = CardListTile(card: element);
           }
-        }
-        if(data.isEmpty){
-          childListTiles = {};
         }
         return EditSubjectRetrieveChildren(childrenStream: childListTiles);
       },
