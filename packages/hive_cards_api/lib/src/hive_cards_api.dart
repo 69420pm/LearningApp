@@ -33,7 +33,7 @@ class HiveCardsApi extends CardsApi {
   /// MAYBE USE MAPS ???
   List<Card> cards = List.empty(growable: true);
   List<Folder> folders = List.empty(growable: true);
-  List<Subject> subjects = List.empty(growable: true);
+  List<Subject> _subjects = List.empty(growable: true);
 
   List<String> _indexedPaths = [];
   Map<String, BehaviorSubject<List<Object>>> _subscribedStreams =
@@ -45,71 +45,14 @@ class HiveCardsApi extends CardsApi {
     } catch (e) {
       print("no paths saved");
     }
+    try{
+      final subjectJson = _hiveBox.get('/subjects') as List<String>;
+      _subjects = _subjectsFromJson(subjectJson);
+      _subjectStreamController.add(_subjects);
+    } catch(e){
+      print('no subjects saved');
+    }
   }
-
-  // void _init() {
-  //   try {
-  //     var jsonCards = _hiveBox.get('cards') as List<String>;
-  //     cards = _cardsFromJson(jsonCards);
-  //     _cardStreamController.add(cards);
-
-  //   } catch (e) {
-  //     var text = 'no cards on hive db saved';
-  //   }
-
-  //   try {
-  //     var jsonFolders = _hiveBox.get('folders') as List<String>;
-  //     folders = _foldersFromJson(jsonFolders);
-  //     _folderStreamController.add(folders);
-
-  //   } catch (e) {
-  //     var text = 'no folders on hive db saved';
-  //   }
-
-  //   try {
-  //     final jsonSubjects = _hiveBox.get('subjects') as List<String>;
-  //     subjects = _subjectsFromJson(jsonSubjects);
-  //     _subjectStreamController.add(subjects);
-  //   } catch (e) {
-  //     var text = 'no subjects on hive db saved';
-  //   }
-
-  //   folders.forEach((folder) {
-  //     subjects.forEach((subject) {
-  //       if(folder.parentId == subject.id){
-  //         subject.childFolders.add(folder);
-  //       }
-  //      });
-  //     folders.forEach((folder) {
-  //       if(folder.parentId == folder.id){
-  //         folder.childFolders.add(folder);
-  //       }
-  //     });
-  //   });    /// SHOULD GET OPTIMIZED
-  //   cards.forEach((card) {
-  //     subjects.forEach((subject) {
-  //       if(card.parentId == subject.id){
-  //         subject.childCards.add(card);
-  //       }
-  //      });
-  //     folders.forEach((folder) {
-  //       if(card.parentId == folder.id){
-  //         folder.childCards.add(card);
-  //       }
-  //     });
-  //   });
-  //   _subjectStreamController.add(subjects);
-  //   // for (var subject in subjects) {
-  //   //   for (var cards in subject.childCardIds) {
-  //   //     if (cardsMap[cards] != null) {
-  //   //       subject.childCards.add(cardsMap[cards]!);
-  //   //     } else {
-
-  //   //     }
-  //   //   }
-  //   //   for (var element in subject.childFolderIds) {}
-  //   // }
-  // }
 
   List<String> _cardsToJson(List<Card> cards) {
     List<String> jsonCards = [];
@@ -192,20 +135,19 @@ class HiveCardsApi extends CardsApi {
     // if (_subscribedStreams[id] != null) {
     //   return _subscribedStreams[id]!.asBroadcastStream();
     // }
-    print(_subscribedStreams);
     final newStream = BehaviorSubject<List<Object>>.seeded(const []);
     final path = _getPath(id);
     final childrenStrings = _hiveBox.get(path) as List<String>?;
     final children = <Object>[];
     if (childrenStrings != null) {
-      childrenStrings.forEach((element) {
+      for (final element in childrenStrings) {
         try {
           children.add(_cardsFromJson([element])[0]);
         } catch (e) {}
         try {
           children.add(_foldersFromJson([element])[0]);
         } catch (e) {}
-      });
+      }
     }
 
     newStream.add(children);
@@ -224,16 +166,16 @@ class HiveCardsApi extends CardsApi {
   @override
   Future<void> saveSubject(Subject subject) {
     final subjectIndex =
-        subjects.indexWhere((element) => element.id == subject.id);
+        _subjects.indexWhere((element) => element.id == subject.id);
     if (subjectIndex >= 0) {
-      subjects[subjectIndex] = subject;
+      _subjects[subjectIndex] = subject;
     } else {
-      subjects.add(subject);
+      _subjects.add(subject);
     }
-    _subjectStreamController.add(subjects);
-    _indexedPaths.add("/subjects/" + subject.id);
+    _subjectStreamController.add(_subjects);
+    _indexedPaths.add('/subjects/${subject.id}');
     _saveIndexedPaths();
-    return _hiveBox.put('/subjects', _subjectsToJson(subjects));
+    return _hiveBox.put('/subjects', _subjectsToJson(_subjects));
   }
 
   @override
@@ -245,15 +187,15 @@ class HiveCardsApi extends CardsApi {
     if (path == null) {
       throw ParentNotFoundException;
     }
-    if (!_indexedPaths.contains(path + '/' + folder.id)) {
-      _indexedPaths.add(path + '/' + folder.id);
+    if (!_indexedPaths.contains('$path/${folder.id}')) {
+      _indexedPaths.add('$path/${folder.id}');
       _saveIndexedPaths();
     }
     var folders = _hiveBox.get(path) as List<String>?;
     var found = false;
     if (folders != null) {
       for (var element in folders) {
-        if (element.substring(8).startsWith(folder.id)) {                                      
+        if (element.substring(8).startsWith(folder.id)) {
           element = _foldersToJson([folder])[0];
           found = true;
           break;
@@ -266,11 +208,9 @@ class HiveCardsApi extends CardsApi {
     if (!found) {
       folders.add(_foldersToJson([folder])[0]);
     }
-
     if (_subscribedStreams.containsKey(parentId)) {
       _subscribedStreams[parentId]!.add([folder]);
     }
-
     return _hiveBox.put(path, folders);
   }
 
@@ -310,7 +250,7 @@ class HiveCardsApi extends CardsApi {
   }
 
   String? _getPath(String parentId) {
-    for (var element in _indexedPaths) {
+    for (final element in _indexedPaths) {
       if (element.endsWith(parentId)) {
         return element;
       }

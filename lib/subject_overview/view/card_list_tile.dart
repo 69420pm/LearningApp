@@ -12,6 +12,7 @@ class CardListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Draggable(
+      feedback: Text("fd"),
       child: Container(
         width: 100,
         child: Padding(
@@ -35,7 +36,6 @@ class CardListTile extends StatelessWidget {
           ),
         ),
       ),
-      feedback: Text("fd"),
     );
   }
 }

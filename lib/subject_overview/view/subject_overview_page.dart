@@ -2,17 +2,12 @@ import 'package:cards_api/cards_api.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_folder/view/add_folder_bottom_sheet.dart';
-import 'package:learning_app/overview/view/subject_list_tile.dart';
 import 'package:learning_app/subject_overview/bloc/subject_overview_bloc.dart';
-import 'package:learning_app/subject_overview/view/card_list_tile.dart';
-import 'package:cards_repository/cards_repository.dart';
-import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
 import 'package:ui_components/ui_components.dart';
 
 class SubjectOverviewPage extends StatefulWidget {
-  SubjectOverviewPage({super.key, required this.subjectToEdit});
+  const SubjectOverviewPage({super.key, required this.subjectToEdit});
 
-  /// when add_subject_page is used as edit_subject_page, when not let it empty
   final Subject subjectToEdit;
 
   @override
@@ -23,173 +18,128 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
   late final EditSubjectBloc _editSubjectBloc;
   @override
   Widget build(BuildContext context) {
-    // context.read<EditSubjectBloc>().add(EditSubjectUpdateFoldersCards());
     final nameController =
         TextEditingController(text: widget.subjectToEdit.name);
     final iconController =
         TextEditingController(text: widget.subjectToEdit.prefixIcon);
     final formKey = GlobalKey<FormState>();
+
     context
         .read<EditSubjectBloc>()
         .add(EditSubjectGetChildrenById(id: widget.subjectToEdit.id));
     var childListTiles = <String, Widget>{};
 
-    print("call method");
     _editSubjectBloc = context.read<EditSubjectBloc>();
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: UIAppBar(
-        title: Text("Subject Overview"),
+        title: const Text('Subject Overview'),
       ),
       body: SafeArea(
-          child: Form(
-        key: formKey,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-              horizontal: UISizeConstants.paddingEdge),
-          child: Column(
-            children: [
-              SizedBox(height: UISizeConstants.defaultSize),
+        child: Form(
+          key: formKey,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: UISizeConstants.paddingEdge,
+            ),
+            child: Column(
+              children: [
+                const SizedBox(height: UISizeConstants.defaultSize),
 
-              /// Name
-              UITextFormField(
-                label: "Name",
-                controller: nameController,
-                initialValue: widget.subjectToEdit.name,
-                validation: (value) {
-                  if (value!.isEmpty) {
-                    return 'Enter something';
-                  } else {
-                    return null;
-                  }
-                },
-                onLoseFocus: (_) => save(
-                    formKey, nameController.text, iconController.text, context),
-              ),
-
-              /// Prefix icon
-              UITextFormField(
-                controller: iconController,
-                initialValue: widget.subjectToEdit.prefixIcon,
-                validation: (_) => null,
-                label: "Icon String",
-                onLoseFocus: (_) => save(
-                    formKey, nameController.text, iconController.text, context),
-              ),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      Navigator.of(context).pushNamed('/add_card',
-                          arguments: widget.subjectToEdit.id);
-                    },
-                    icon: const Icon(
-                      Icons.file_copy,
-                      color: Colors.red,
-                    ),
+                /// Name
+                UITextFormField(
+                  label: 'Name',
+                  controller: nameController,
+                  initialValue: widget.subjectToEdit.name,
+                  validation: (value) {
+                    if (value!.isEmpty) {
+                      return 'Enter something';
+                    } else {
+                      return null;
+                    }
+                  },
+                  onLoseFocus: (_) => save(
+                    formKey,
+                    nameController.text,
+                    iconController.text,
+                    context,
                   ),
-                  IconButton(
-                    onPressed: () => showModalBottomSheet(
+                ),
+
+                /// Prefix icon
+                UITextFormField(
+                  controller: iconController,
+                  initialValue: widget.subjectToEdit.prefixIcon,
+                  validation: (_) => null,
+                  label: 'Icon String',
+                  onLoseFocus: (_) => save(
+                    formKey,
+                    nameController.text,
+                    iconController.text,
+                    context,
+                  ),
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(
+                          '/add_card',
+                          arguments: widget.subjectToEdit.id,
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.file_copy,
+                        color: Colors.red,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () => showModalBottomSheet(
                         context: context,
                         builder: (_) => BlocProvider.value(
-                              value: context.read<EditSubjectBloc>(),
-                              child: AddFolderBottomSheet(
-                                  parentId: widget.subjectToEdit.id),
-                            )),
-                    icon: const Icon(Icons.create_new_folder_rounded),
-                  ),
-                ],
-              ),
+                          value: context.read<EditSubjectBloc>(),
+                          child: AddFolderBottomSheet(
+                            parentId: widget.subjectToEdit.id,
+                          ),
+                        ),
+                      ),
+                      icon: const Icon(Icons.create_new_folder_rounded),
+                    ),
+                  ],
+                ),
 
-              BlocBuilder<EditSubjectBloc, EditSubjectState>(
-                // buildWhen: (previous, current) {
-                //   print(previous);
-                //   print(current);
-                //   if(current is EditSubjectRetrieveChildren){
-                //     return true;
-                //   }
-                //   return previous != current;
-                // },
-                builder: (context, state) {
-                  print(state);
-                  if (state is EditSubjectRetrieveChildren) {
-                    // widget.childListTiles.addAll(state.childrenStream);
-                    childListTiles = {
-                      ...childListTiles,
-                      ...state.childrenStream
-                    };
-                    print("children stream");
-                    print(state.childrenStream);
-                    if (state.childrenStream == {}) {
-                      childListTiles = {};
+                BlocBuilder<EditSubjectBloc, EditSubjectState>(
+                  buildWhen: (previous, current) {
+                    if(current is EditSubjectRetrieveChildren){
+                      return true;
                     }
-                  }
+                    return false;
+                  },
+                  builder: (context, state) {
+                    if (state is EditSubjectRetrieveChildren) {
+                      childListTiles = {
+                        ...childListTiles,
+                        ...state.childrenStream
+                      };
 
-                  List<Widget> _childTiles = [];
-                  childListTiles
-                      .forEach((key, value) => _childTiles.add(value));
-                  print("update view");
-                  return ListView(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                    children: _childTiles,
-                  );
-                },
-              ),
+                    }
 
-              // BlocBuilder<EditSubjectBloc, EditSubjectState>(
-              //     buildWhen: (previous, current) {
-              //   if (current is EditSubjectFoldersCardsFetchingSuccess) {
-              //     return true;
-              //   }
-              //   return false;
-              // }, builder: (context, state) {
-              //   if (state is EditSubjectFoldersCardsFetchingSuccess) {
-              //     final cardListTiles =
-              //         List<CardListTile>.empty(growable: true);
-              //     final folderListTiles =
-              //         List<FolderListTile>.empty(growable: true);
-              //     subjectToEdit.childCards.forEach((element) {
-              //       cardListTiles.add(CardListTile(card: element));
-              //     });
-              //     subjectToEdit.childFolders.forEach((element) =>
-              //         folderListTiles.add(FolderListTile(folder: element)));
-              //     return Column(
-              //       children: [
-              //         ListView(
-              //           scrollDirection: Axis.vertical,
-              //           shrinkWrap: true,
-              //           children: folderListTiles,
-              //         ),
-              //         SizedBox(
-              //           height: 100,
-              //           child: ListView(
-
-              //             scrollDirection: Axis.horizontal,
-              //             shrinkWrap: true,
-              //             children: cardListTiles,
-              //           ),
-              //         ),
-              //       ],
-              //     );
-              //   }
-              //   // if (state is EditSubjectCardsFetchingSuccess) {
-              //   //   return ListView.builder(
-              //   //     itemCount: state.cards.length,
-              //   //     scrollDirection: Axis.vertical,
-              //   //     itemBuilder: (context, index) =>
-              //   //         CardListTile(card: state.cards[index]),
-              //   //     shrinkWrap: true,
-              //   //   );
-              //   // }
-              //   return Text("error");
-              // })
-            ],
+                    final childTiles = <Widget>[];
+                    childListTiles
+                        .forEach((key, value) => childTiles.add(value));
+                    return ListView(
+                      shrinkWrap: true,
+                      children: childTiles,
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
-      )),
+      ),
     );
   }
 
@@ -213,19 +163,6 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
       }
     }
   }
-
-  // void addListTile(Object object) {
-  //   if (object is Folder) {
-  //     widget.subjectChildTiles.forEach((element) {
-  //       if (element is FolderListTile) {
-  //         if ((element as FolderListTile).folder.id == (object as Folder).id) {
-  //           widget.subjectChildTiles.remove(element);
-  //           widget.subjectChildTiles.add(FolderListTile(folder: object));
-  //         }
-  //       }
-  //     });
-  //   } else if (object is Card) {}
-  // }
 
   @override
   void dispose() {
