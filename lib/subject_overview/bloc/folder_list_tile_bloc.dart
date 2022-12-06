@@ -14,6 +14,10 @@ class FolderListTileBloc
     on<FolderListTileGetChildrenById>((event, emit) async {
       await _getChildren(event, emit);
     });
+    on<FolderListTileAddFolder>(
+      _addFolder,
+    );
+    on<FolderListTileAddCard>(_addCard,);
   }
 
   final CardsRepository _cardsRepository;
@@ -29,7 +33,8 @@ class FolderListTileBloc
         final childListTiles = <String, Widget>{};
         for (final element in data) {
           if (element is Folder) {
-            childListTiles[element.id] = FolderListTile(folder: element, cardsRepository: _cardsRepository);
+            childListTiles[element.id] = FolderListTile(
+                folder: element, cardsRepository: _cardsRepository);
           } else if (element is Card) {
             childListTiles[element.id] = CardListTile(card: element);
           }
@@ -39,5 +44,29 @@ class FolderListTileBloc
       onError: (error, stackTrace) =>
           FolderListTileError(errorMessage: 'backend broken'),
     );
+  }
+
+  Future<void> _addFolder(
+      FolderListTileAddFolder event, Emitter<FolderListTileState> emit) async {
+    emit(FolderListTileLoading());
+    try {
+      final newFolder = event.folder.copyWith(parentId: event.newParentId);
+      await _cardsRepository.saveFolder(newFolder);
+      emit(FolderListTileSuccess());
+    } catch (e) {
+      emit(FolderListTileError(errorMessage: 'folder adding failed'));
+    }
+  }
+
+  Future<void> _addCard(
+      FolderListTileAddCard event, Emitter<FolderListTileState> emit) async {
+    emit(FolderListTileLoading());
+    try {
+      final newCard = event.card.copyWith(parentId: event.newParentId);
+      await _cardsRepository.saveCard(newCard);
+      emit(FolderListTileSuccess());
+    } catch (e) {
+      emit(FolderListTileError(errorMessage: 'card adding failed'));
+    }
   }
 }

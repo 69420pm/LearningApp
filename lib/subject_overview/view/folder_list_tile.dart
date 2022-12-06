@@ -35,6 +35,14 @@ class FolderListTileView extends StatelessWidget {
 
     return DragTarget(
       onAccept: (data) {
+        if (data is Folder) {
+          context.read<FolderListTileBloc>().add(
+              FolderListTileAddFolder(folder: data, newParentId: folder.id));
+        } else if (data is Card) {
+          context
+              .read<FolderListTileBloc>()
+              .add(FolderListTileAddCard(card: data, newParentId: folder.id));
+        }
         // print(data);
         // folder.childFolders.add(data);
       },
@@ -67,15 +75,21 @@ class FolderListTileView extends StatelessWidget {
                   }
                   return false;
                 }, builder: (context, state) {
+                  if(state is FolderListTileRetrieveChildren){
+
                   childListTiles = {
                     ...childListTiles,
-                    ...(state as FolderListTileRetrieveChildren).childrenStream
+                    ...state.childrenStream
                   };
+                  }
 
                   return ListView.builder(
                     itemCount: childListTiles.length,
-                    itemBuilder: (context, index) =>
-                        childListTiles.values.elementAt(index),
+                    itemBuilder: (context, index) => Padding(
+                      padding: const EdgeInsets.only(
+                          bottom: UISizeConstants.defaultSize),
+                      child: childListTiles.values.elementAt(index),
+                    ),
                     shrinkWrap: true,
                   );
                 }),
