@@ -13,6 +13,8 @@ class CardListTile extends StatelessWidget {
       data: card,
       feedback: CardListTile(card: card),
       child: Container(
+        width:
+            MediaQuery.of(context).size.width - UISizeConstants.paddingEdge * 2,
         height: UISizeConstants.defaultSize * 5,
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.secondaryContainer,
