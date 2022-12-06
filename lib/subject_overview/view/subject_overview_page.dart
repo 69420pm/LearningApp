@@ -112,7 +112,7 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
 
                 BlocBuilder<EditSubjectBloc, EditSubjectState>(
                   buildWhen: (previous, current) {
-                    if(current is EditSubjectRetrieveChildren){
+                    if (current is EditSubjectRetrieveChildren) {
                       return true;
                     }
                     return false;
@@ -123,15 +123,16 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                         ...childListTiles,
                         ...state.childrenStream
                       };
-
                     }
 
                     final childTiles = <Widget>[];
                     childListTiles
                         .forEach((key, value) => childTiles.add(value));
-                    return ListView(
+                    return ListView.builder(
+                      itemCount: childListTiles.length,
+                      itemBuilder: (context, index) =>
+                          childListTiles.values.elementAt(index),
                       shrinkWrap: true,
-                      children: childTiles,
                     );
                   },
                 ),
