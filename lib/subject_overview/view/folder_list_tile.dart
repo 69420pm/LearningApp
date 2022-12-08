@@ -72,6 +72,7 @@ class FolderListTileView extends StatelessWidget {
                 children: [
                   BlocBuilder<FolderListTileBloc, FolderListTileState>(
                       buildWhen: (previous, current) {
+                        print("update");
                     if (current is FolderListTileRetrieveChildren) {
                       return true;
                     }
