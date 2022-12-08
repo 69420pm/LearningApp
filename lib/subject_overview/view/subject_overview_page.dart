@@ -125,9 +125,6 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                       };
                     }
 
-                    final childTiles = <Widget>[];
-                    childListTiles
-                        .forEach((key, value) => childTiles.add(value));
                     return ListView.builder(
                       itemCount: childListTiles.length,
                       itemBuilder: (context, index) =>
