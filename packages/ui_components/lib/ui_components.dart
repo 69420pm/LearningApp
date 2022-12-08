@@ -5,3 +5,4 @@ export 'src/ui_size_constants.dart';
 export 'src/widgets/app_bar.dart';
 export 'src/widgets/button.dart';
 export 'src/widgets/text_form_field.dart';
+export 'src/widgets/expansion_tile.dart';
