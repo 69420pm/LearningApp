@@ -5,8 +5,6 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-import 'dart:convert';
-
 import 'package:cards_api/cards_api.dart';
 import 'package:hive/hive.dart';
 import 'package:rxdart/rxdart.dart' hide Subject;
@@ -45,11 +43,11 @@ class HiveCardsApi extends CardsApi {
     } catch (e) {
       print("no paths saved");
     }
-    try{
+    try {
       final subjectJson = _hiveBox.get('/subjects') as List<String>;
       _subjects = _subjectsFromJson(subjectJson);
       _subjectStreamController.add(_subjects);
-    } catch(e){
+    } catch (e) {
       print('no subjects saved');
     }
   }
@@ -103,9 +101,30 @@ class HiveCardsApi extends CardsApi {
   }
 
   @override
-  Future<void> deleteCard(String id) {
-    // TODO: implement deleteCard
-    throw UnimplementedError();
+  Future<void> deleteCard(String id, String parentId) async {
+    final path = _getPath(parentId);
+    if (path == null) {
+      throw ParentNotFoundException();
+    }
+
+    final cards = _hiveBox.get(path) as List<String>?;
+    var found = false;
+    if (cards != null) {
+      for (var element in cards) {
+        if (element.substring(7).startsWith(id)) {
+          cards.remove(element);
+          found = true;
+          break;
+        }
+      }
+    }
+    if (found == false) {
+      throw ParentNotFoundException();
+    } 
+    if(_subscribedStreams.containsKey(parentId)){
+      _subscribedStreams[parentId]!.add([Removed(id: id)]);
+    }
+    return _hiveBox.put(path, cards);
   }
 
   @override
@@ -115,9 +134,30 @@ class HiveCardsApi extends CardsApi {
   }
 
   @override
-  Future<void> deleteFolder(String id) {
-    // TODO: implement deleteFolder
-    throw UnimplementedError();
+  Future<void> deleteFolder(String id, String parentId) {
+    final path = _getPath(parentId);
+    if (path == null) {
+      throw ParentNotFoundException();
+    }
+    final folders = _hiveBox.get(path) as List<String>?;
+    var found = false;
+    if(folders != null){
+      for(final element in folders){
+        if(element.substring(7).startsWith(id)){
+          folders.remove(element);
+          found = true;
+          break;
+        }
+      }
+    }
+    if(found == false){
+      throw ParentNotFoundException();
+    }
+    _deleteChildPaths(id);
+    if (_subscribedStreams.containsKey(parentId)) {
+      _subscribedStreams[parentId]!.add([Removed(id: id)]);
+    }
+    return _hiveBox.put(path, folders);
   }
 
   @override
@@ -185,7 +225,7 @@ class HiveCardsApi extends CardsApi {
     final path = _getPath(parentId);
 
     if (path == null) {
-      throw ParentNotFoundException;
+      throw ParentNotFoundException();
     }
     if (!_indexedPaths.contains('$path/${folder.id}')) {
       _indexedPaths.add('$path/${folder.id}');
@@ -195,7 +235,7 @@ class HiveCardsApi extends CardsApi {
     var found = false;
     if (folders != null) {
       for (var element in folders) {
-        if (element.substring(8).startsWith(folder.id)) {
+        if (element.substring(7).startsWith(folder.id)) {
           element = _foldersToJson([folder])[0];
           found = true;
           break;
@@ -221,14 +261,14 @@ class HiveCardsApi extends CardsApi {
     final path = _getPath(parentId);
 
     if (path == null) {
-      throw ParentNotFoundException;
+      throw ParentNotFoundException();
     }
     var cards = _hiveBox.get(path) as List<String>?;
     var found = false;
     if (cards != null) {
       for (var element in cards) {
         // contains word
-        if (element.substring(8).startsWith(card.id)) {
+        if (element.substring(7).startsWith(card.id)) {
           element = _cardsToJson([card])[0];
           found = true;
           break;
@@ -258,7 +298,33 @@ class HiveCardsApi extends CardsApi {
     return null;
   }
 
+  void _deleteChildPaths(String id){
+    print(_indexedPaths);
+    List<String> newIndexedPaths = [];
+    for(final element in _indexedPaths){
+      if(element.contains(id)){
+        _hiveBox.delete(element);
+      }else{
+        newIndexedPaths.add(element);
+      }
+    }
+    _indexedPaths = newIndexedPaths;    
+    print(_indexedPaths);
+  }
+
   void _saveIndexedPaths() {
     _hiveBox.put('indexed_paths', _indexedPaths);
+  }
+  
+  @override
+  Future<void> moveCard(String id, String previousParentId, String newParentId) {
+    // TODO: implement moveCard
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<void> moveFolder(String id, String previousParentId, String newParentId) {
+    // TODO: implement moveFolder
+    throw UnimplementedError();
   }
 }

@@ -20,7 +20,7 @@ Future<void> main() async {
   final appDocumentDirectory =
       await path_provider.getApplicationDocumentsDirectory();
   Hive.init(appDocumentDirectory.path);
-
+  print(appDocumentDirectory.path);
   final cardsApi = HiveCardsApi(await Hive.openBox('hive_cards'));
   final cardsRepository = CardsRepository(cardsApi: cardsApi);
 

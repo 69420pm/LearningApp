@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
@@ -18,6 +20,7 @@ class FolderListTileBloc
       _addFolder,
     );
     on<FolderListTileAddCard>(_addCard,);
+    on<FolderListTileDeleteFolder>(_deleteFolder);
   }
 
   final CardsRepository _cardsRepository;
@@ -36,7 +39,7 @@ class FolderListTileBloc
             childListTiles[element.id] = FolderListTile(
                 folder: element, cardsRepository: _cardsRepository);
           } else if (element is Card) {
-            childListTiles[element.id] = CardListTile(card: element);
+            childListTiles[element.id] = CardListTile(card: element, cardsRepository: _cardsRepository,);
           }
         }
         return FolderListTileRetrieveChildren(childrenStream: childListTiles);
@@ -68,5 +71,15 @@ class FolderListTileBloc
     } catch (e) {
       emit(FolderListTileError(errorMessage: 'card adding failed'));
     }
+  }
+
+  FutureOr<void> _deleteFolder(FolderListTileDeleteFolder event, Emitter<FolderListTileState> emit) async {
+    emit(FolderListTileLoading());
+    // try{
+      await _cardsRepository.deleteFolder(event.id, event.parentId);
+      emit(FolderListTileSuccess());
+    // }catch(e){
+    //   emit(FolderListTileError(errorMessage: 'folder deleting failed'));
+    // }
   }
 }

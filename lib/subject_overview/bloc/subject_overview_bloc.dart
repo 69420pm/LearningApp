@@ -52,8 +52,6 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
     }
   }
 
-
-
   Future<void> _getChildren(
     EditSubjectGetChildrenById event,
     Emitter<EditSubjectState> emit,
@@ -62,7 +60,8 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
     await emit.forEach(
       _cardsRepository.getChildrenById(event.id),
       onData: (data) {
-        var childListTiles = <String, Widget>{};
+        final childListTiles = <String, Widget>{};
+        final widgetsToRemove = <Removed>[];
         for (final element in data) {
           if (element is Folder) {
             childListTiles[element.id] = FolderListTile(
@@ -70,10 +69,16 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
               cardsRepository: _cardsRepository,
             );
           } else if (element is Card) {
-            childListTiles[element.id] = CardListTile(card: element);
+            childListTiles[element.id] = CardListTile(
+              card: element,
+              cardsRepository: _cardsRepository,
+            );
+          } else if (element is Removed) {
+            widgetsToRemove.add(element);
           }
         }
-        return EditSubjectRetrieveChildren(childrenStream: childListTiles);
+        return EditSubjectRetrieveChildren(
+            childrenStream: childListTiles, removedWidgets: widgetsToRemove);
       },
       onError: (error, stackTrace) =>
           EditSubjectFailure(errorMessage: "backend broken"),

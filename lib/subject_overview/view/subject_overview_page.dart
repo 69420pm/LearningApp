@@ -123,11 +123,13 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                         ...childListTiles,
                         ...state.childrenStream
                       };
+                      for (var element in state.removedWidgets) {
+                        if (childListTiles.containsKey(element.id)) {
+                          childListTiles.remove(element.id);
+                        }
+                      }
                     }
 
-                    final childTiles = <Widget>[];
-                    childListTiles
-                        .forEach((key, value) => childTiles.add(value));
                     return ListView.builder(
                       itemCount: childListTiles.length,
                       itemBuilder: (context, index) =>

@@ -35,7 +35,7 @@ class FolderListTileView extends StatelessWidget {
 
     return DragTarget(
       onAccept: (data) {
-        if (data is Folder) {
+        if (data is Folder && data != folder) {
           context.read<FolderListTileBloc>().add(
               FolderListTileAddFolder(folder: data, newParentId: folder.id));
         } else if (data is Card) {
@@ -60,42 +60,41 @@ class FolderListTileView extends StatelessWidget {
             padding:
                 const EdgeInsets.only(left: UISizeConstants.defaultSize * 2),
             child: SingleChildScrollView(
-              child: ExpansionTile(
-                controlAffinity: ListTileControlAffinity.leading,
-                title: Text(
-                  folder.name,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color:
-                            Theme.of(context).colorScheme.onSecondaryContainer,
-                      ),
-                ),
-                children: [
-                  BlocBuilder<FolderListTileBloc, FolderListTileState>(
-                      buildWhen: (previous, current) {
-                        print("update");
-                    if (current is FolderListTileRetrieveChildren) {
-                      return true;
-                    }
-                    return false;
-                  }, builder: (context, state) {
-                    if (state is FolderListTileRetrieveChildren) {
-                      childListTiles = {
-                        ...childListTiles,
-                        ...state.childrenStream
-                      };
-                    }
+              child: BlocBuilder<FolderListTileBloc, FolderListTileState>(
+                buildWhen: (previous, current) {
+                  if (current is FolderListTileRetrieveChildren) {
+                    return true;
+                  }
+                  return false;
+                },
+                builder: (context, state) {
+                  if (state is FolderListTileRetrieveChildren) {
+                    childListTiles = {
+                      ...childListTiles,
+                      ...state.childrenStream
+                    };
+                  }
 
-                    return ListView.builder(
-                      itemCount: childListTiles.length,
-                      itemBuilder: (context, index) => Padding(
-                        padding: const EdgeInsets.only(
-                            bottom: UISizeConstants.defaultSize),
-                        child: childListTiles.values.elementAt(index),
+                  return UIExpansionTile(
+                    title: folder.name,
+                    children: [
+                      ListView.builder(
+                        itemCount: childListTiles.length,
+                        itemBuilder: (context, index) => Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: UISizeConstants.defaultSize,
+                          ),
+                          child: childListTiles.values.elementAt(index),
+                        ),
+                        shrinkWrap: true,
                       ),
-                      shrinkWrap: true,
-                    );
-                  }),
-                ],
+                    ],
+                    onPressedCallback: () => context
+                        .read<FolderListTileBloc>()
+                        .add(FolderListTileDeleteFolder(
+                            id: folder.id, parentId: folder.parentId)),
+                  );
+                },
               ),
             ),
           ),
