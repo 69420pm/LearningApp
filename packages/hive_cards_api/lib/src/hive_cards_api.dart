@@ -34,8 +34,7 @@ class HiveCardsApi extends CardsApi {
   List<Subject> _subjects = List.empty(growable: true);
 
   List<String> _indexedPaths = [];
-  Map<String, BehaviorSubject<List<Object>>> _subscribedStreams =
-      Map.identity();
+  Map<String, BehaviorSubject<List<Object>>> _subscribedStreams = {};
 
   void _init() {
     try {
@@ -120,8 +119,9 @@ class HiveCardsApi extends CardsApi {
     }
     if (found == false) {
       throw ParentNotFoundException();
-    } 
-    if(_subscribedStreams.containsKey(parentId)){
+    }
+    print(_subscribedStreams);
+    if (_subscribedStreams.containsKey(parentId)) {
       _subscribedStreams[parentId]!.add([Removed(id: id)]);
     }
     return _hiveBox.put(path, cards);
@@ -141,22 +141,22 @@ class HiveCardsApi extends CardsApi {
     }
     final folders = _hiveBox.get(path) as List<String>?;
     var found = false;
-    if(folders != null){
-      for(final element in folders){
-        if(element.substring(7).startsWith(id)){
+    if (folders != null) {
+      for (final element in folders) {
+        if (element.substring(7).startsWith(id)) {
           folders.remove(element);
           found = true;
           break;
         }
       }
     }
-    if(found == false){
+    if (found == false) {
       throw ParentNotFoundException();
     }
-    _deleteChildPaths(id);
     if (_subscribedStreams.containsKey(parentId)) {
       _subscribedStreams[parentId]!.add([Removed(id: id)]);
     }
+    _deleteChildPaths(id);
     return _hiveBox.put(path, folders);
   }
 
@@ -289,6 +289,37 @@ class HiveCardsApi extends CardsApi {
     return _hiveBox.put(path, cards);
   }
 
+  @override
+  Future<void> moveCard(
+      String id, String previousParentId, String newParentId) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> moveFolder(
+      String id, String previousParentId, String newParentId) async {
+    final path = _getPath(previousParentId);
+    if (path == null) {
+      throw ParentNotFoundException();
+    }
+    print("move folder");
+    final objects = await _hiveBox.get(path) as List<String>?;
+    var found = false;
+    if (objects != null) {
+      for (final element in objects) {
+        if (element.substring(7).startsWith(id)) {
+          objects.remove(element);
+          found = true;
+          break;
+        }
+      }
+    }
+    if (found == false) {
+      throw ParentNotFoundException();
+    }
+    _moveChildPaths(previousParentId, newParentId);
+  }
+
   String? _getPath(String parentId) {
     for (final element in _indexedPaths) {
       if (element.endsWith(parentId)) {
@@ -298,33 +329,33 @@ class HiveCardsApi extends CardsApi {
     return null;
   }
 
-  void _deleteChildPaths(String id){
-    print(_indexedPaths);
+  void _deleteChildPaths(String id) {
     List<String> newIndexedPaths = [];
-    for(final element in _indexedPaths){
-      if(element.contains(id)){
+    for (final element in _indexedPaths) {
+      if (element.contains(id)) {
         _hiveBox.delete(element);
-      }else{
+      } else {
         newIndexedPaths.add(element);
       }
     }
-    _indexedPaths = newIndexedPaths;    
-    print(_indexedPaths);
+    _indexedPaths = newIndexedPaths;
+  }
+
+  void _moveChildPaths(String oldId, String newId) {
+    String? newPrefix = _getPath(newId);
+    if (newPrefix == null) {
+      throw ParentNotFoundException();
+    }
+    for (var element in _indexedPaths) {
+      if (element.contains(oldId)) {
+        // element = newPrefix + element.substring(element.indexOf(oldId));
+        print(element);
+        print(newPrefix + element.substring(element.indexOf(oldId)));
+      }
+    }
   }
 
   void _saveIndexedPaths() {
     _hiveBox.put('indexed_paths', _indexedPaths);
-  }
-  
-  @override
-  Future<void> moveCard(String id, String previousParentId, String newParentId) {
-    // TODO: implement moveCard
-    throw UnimplementedError();
-  }
-  
-  @override
-  Future<void> moveFolder(String id, String previousParentId, String newParentId) {
-    // TODO: implement moveFolder
-    throw UnimplementedError();
   }
 }

@@ -33,3 +33,14 @@ class FolderListTileDeleteFolder extends FolderListTileEvent {
     required this.parentId,
   });
 }
+
+class FolderLIstTileMoveFolder extends FolderListTileEvent {
+  String id;
+  String previousParentId;
+  String newParentId;
+  FolderLIstTileMoveFolder({
+    required this.id,
+    required this.previousParentId,
+    required this.newParentId,
+  });
+}

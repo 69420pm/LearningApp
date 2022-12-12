@@ -8,8 +8,10 @@ class FolderListTileInitial extends FolderListTileState {}
 
 class FolderListTileRetrieveChildren extends FolderListTileState {
   Map<String, Widget> childrenStream;
+  List<Removed> removedWidgets;
   FolderListTileRetrieveChildren({
     required this.childrenStream,
+    required this.removedWidgets,
   });
 }
 
