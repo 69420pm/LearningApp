@@ -5,6 +5,8 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
+import 'dart:html';
+
 import 'package:cards_api/cards_api.dart';
 import 'package:cards_api/src/models/card.dart';
 import 'package:cards_api/src/models/subject.dart';
@@ -49,7 +51,7 @@ abstract class CardsApi {
   /// thrown
   Future<void> deleteFolder(String id, String parentId);
 
-  Future<void> moveFolder(String id, String previousParentId, String newParentId);
+  Future<void> moveFolder(Folder folder, String newParentId);
 
   Future<void> moveCard(String id, String previousParentId, String newParentId);
 
@@ -70,3 +72,5 @@ class SubjectNotFoundException implements Exception {}
 class FolderNotFoundException implements Exception {}
 
 class ParentNotFoundException implements Exception{}
+
+class StreamNotFoundException implements Exception {}

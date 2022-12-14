@@ -51,8 +51,8 @@ class CardsRepository {
   Future<void> deleteFolder(String id, String parentId) =>
     _cardsApi.deleteFolder(id, parentId);
 
-  Future<void> moveFolder(String id, String previousParentId, String newParentId) => 
-    _cardsApi.moveFolder(id, previousParentId, newParentId);
+  Future<void> moveFolder(Folder folder, String newParentId) => 
+    _cardsApi.moveFolder(folder, newParentId);
 
 Future<void> moveCard(String id, String previousParentId, String newParentId) => 
     _cardsApi.moveCard(id, previousParentId, newParentId);

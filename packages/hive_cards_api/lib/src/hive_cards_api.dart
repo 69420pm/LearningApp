@@ -177,6 +177,10 @@ class HiveCardsApi extends CardsApi {
     // }
     final newStream = BehaviorSubject<List<Object>>.seeded(const []);
     final path = _getPath(id);
+    if(path == null) {
+      throw StreamNotFoundException();
+    }
+    print(_hiveBox.get(path));
     final childrenStrings = _hiveBox.get(path) as List<String>?;
     final children = <Object>[];
     if (childrenStrings != null) {
@@ -296,19 +300,17 @@ class HiveCardsApi extends CardsApi {
   }
 
   @override
-  Future<void> moveFolder(
-      String id, String previousParentId, String newParentId) async {
-    final path = _getPath(previousParentId);
+  Future<void> moveFolder(Folder folder, String newParentId) async {
+    final path = _getPath(folder.parentId);
     if (path == null) {
       throw ParentNotFoundException();
     }
-    print("move folder");
-    final objects = await _hiveBox.get(path) as List<String>?;
+    final folders = _hiveBox.get(path) as List<String>?;
     var found = false;
-    if (objects != null) {
-      for (final element in objects) {
-        if (element.substring(7).startsWith(id)) {
-          objects.remove(element);
+    if (folders != null) {
+      for (final element in folders) {
+        if (element.substring(7).startsWith(folder.id)) {
+          folders.remove(element);
           found = true;
           break;
         }
@@ -317,7 +319,13 @@ class HiveCardsApi extends CardsApi {
     if (found == false) {
       throw ParentNotFoundException();
     }
-    _moveChildPaths(previousParentId, newParentId);
+    _hiveBox.put(folder.parentId, folders);
+    if (_subscribedStreams.containsKey(folder.parentId)) {
+      _subscribedStreams[folder.parentId]!.add([Removed(id: folder.id)]);
+    }
+    await _moveChildPaths(folder.id, newParentId);
+    final newFolder = folder.copyWith(parentId: newParentId);
+    await saveFolder(newFolder);
   }
 
   String? _getPath(String parentId) {
@@ -341,21 +349,32 @@ class HiveCardsApi extends CardsApi {
     _indexedPaths = newIndexedPaths;
   }
 
-  void _moveChildPaths(String oldId, String newId) {
-    String? newPrefix = _getPath(newId);
+  Future<void> _moveChildPaths(String oldId, String newId) async {
+    final newPrefix = _getPath(newId);
     if (newPrefix == null) {
       throw ParentNotFoundException();
     }
-    for (var element in _indexedPaths) {
+    final newIndexPaths = <String>[];
+    for (final element in _indexedPaths) {
       if (element.contains(oldId)) {
-        // element = newPrefix + element.substring(element.indexOf(oldId));
-        print(element);
-        print(newPrefix + element.substring(element.indexOf(oldId)));
+        final newPath =
+            '$newPrefix/${element.substring(element.indexOf(oldId))}';
+        newIndexPaths.add(newPath);
+        final previousStoredObjects = _hiveBox.get(element) as List<String>?;
+        if (previousStoredObjects != null) {
+          await _hiveBox.delete(element);
+          await _hiveBox.put(newPath, previousStoredObjects);
+        }
+      } else {
+        newIndexPaths.add(element);
       }
     }
+    _indexedPaths = newIndexPaths;
+    return _saveIndexedPaths();
   }
 
-  void _saveIndexedPaths() {
-    _hiveBox.put('indexed_paths', _indexedPaths);
+  Future<void> _saveIndexedPaths() async {
+    final newIndexPaths = _indexedPaths.toSet().toList();
+    await _hiveBox.put('indexed_paths', newIndexPaths);
   }
 }

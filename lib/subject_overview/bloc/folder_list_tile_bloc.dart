@@ -23,7 +23,7 @@ class FolderListTileBloc
       _addCard,
     );
     on<FolderListTileDeleteFolder>(_deleteFolder);
-    on<FolderLIstTileMoveFolder>(_moveFolder);
+    on<FolderListTileMoveFolder>(_moveFolder);
   }
 
   final CardsRepository _cardsRepository;
@@ -62,25 +62,28 @@ class FolderListTileBloc
   Future<void> _addFolder(
       FolderListTileAddFolder event, Emitter<FolderListTileState> emit) async {
     emit(FolderListTileLoading());
-    try {
-      final newFolder = event.folder.copyWith(parentId: event.newParentId);
-      await _cardsRepository.saveFolder(newFolder);
-      emit(FolderListTileSuccess());
-    } catch (e) {
-      emit(FolderListTileError(errorMessage: 'folder adding failed'));
-    }
+    // try {
+    final newFolder = event.folder.copyWith(parentId: event.newParentId);
+    await _cardsRepository.saveFolder(newFolder);
+    await _cardsRepository.deleteFolder(event.folder.id, event.folder.parentId);
+    emit(FolderListTileSuccess());
+    // } catch (e) {
+    //   emit(FolderListTileError(errorMessage: 'folder adding failed'));
+    // }
   }
 
   Future<void> _addCard(
       FolderListTileAddCard event, Emitter<FolderListTileState> emit) async {
     emit(FolderListTileLoading());
-    try {
-      final newCard = event.card.copyWith(parentId: event.newParentId);
-      await _cardsRepository.saveCard(newCard);
-      emit(FolderListTileSuccess());
-    } catch (e) {
-      emit(FolderListTileError(errorMessage: 'card adding failed'));
-    }
+    // try {
+    final newCard = event.card.copyWith(parentId: event.newParentId);
+    await _cardsRepository.saveCard(newCard);
+    await _cardsRepository.deleteCard(event.card.id, event.card.parentId);
+
+    emit(FolderListTileSuccess());
+    // } catch (e) {
+    //   emit(FolderListTileError(errorMessage: 'card adding failed'));
+    // }
   }
 
   FutureOr<void> _deleteFolder(FolderListTileDeleteFolder event,
@@ -95,11 +98,9 @@ class FolderListTileBloc
   }
 
   Future<FutureOr<void>> _moveFolder(
-      FolderLIstTileMoveFolder event, Emitter<FolderListTileState> emit) async {
+      FolderListTileMoveFolder event, Emitter<FolderListTileState> emit) async {
     emit(FolderListTileLoading());
-    print("movjdv");
-    await _cardsRepository.moveFolder(
-        event.id, event.previousParentId, event.newParentId);
+    await _cardsRepository.moveFolder(event.folder, event.newParentId);
     emit(FolderListTileSuccess());
   }
 }

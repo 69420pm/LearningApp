@@ -35,9 +35,23 @@ class FolderListTileView extends StatelessWidget {
 
     return DragTarget(
       onAccept: (data) {
+        // if (data is Folder && data != folder) {
+        //   context.read<FolderListTileBloc>().add(
+        //         FolderListTileAddFolder(folder: data, newParentId: folder.id),
+        //       );
+        // } else if (data is Card) {
+        //   context
+        //       .read<FolderListTileBloc>()
+        //       .add(FolderListTileAddCard(card: data, newParentId: folder.id));
+        // }
+        // TODO fix newParentId gets changed while transfering to hive_cards_api
         if (data is Folder && data != folder) {
           context.read<FolderListTileBloc>().add(
-              FolderListTileAddFolder(folder: data, newParentId: folder.id));
+                FolderListTileMoveFolder(
+                  folder: data,
+                  newParentId: folder.id,
+                ),
+              );
         } else if (data is Card) {
           context
               .read<FolderListTileBloc>()
@@ -74,10 +88,10 @@ class FolderListTileView extends StatelessWidget {
                       ...state.childrenStream
                     };
                     for (var element in state.removedWidgets) {
-                        if (childListTiles.containsKey(element.id)) {
-                          childListTiles.remove(element.id);
-                        }
+                      if (childListTiles.containsKey(element.id)) {
+                        childListTiles.remove(element.id);
                       }
+                    }
                   }
 
                   return UIExpansionTile(
