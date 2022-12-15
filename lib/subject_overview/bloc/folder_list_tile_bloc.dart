@@ -100,7 +100,11 @@ class FolderListTileBloc
   Future<FutureOr<void>> _moveFolder(
       FolderListTileMoveFolder event, Emitter<FolderListTileState> emit) async {
     emit(FolderListTileLoading());
-    await _cardsRepository.moveFolder(event.folder, event.newParentId);
-    emit(FolderListTileSuccess());
+    try {
+      await _cardsRepository.moveFolder(event.folder, event.newParentId);
+      emit(FolderListTileSuccess());
+    } catch (e) {
+      emit(FolderListTileError(errorMessage: "folder moving failed"));
+    }
   }
 }

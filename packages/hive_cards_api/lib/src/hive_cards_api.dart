@@ -295,7 +295,7 @@ class HiveCardsApi extends CardsApi {
 
   @override
   Future<void> moveCard(
-      String id, String previousParentId, String newParentId) {
+      String id, String previousParentId, String newParentId,) {
     throw UnimplementedError();
   }
 
@@ -305,6 +305,11 @@ class HiveCardsApi extends CardsApi {
     if (path == null) {
       throw ParentNotFoundException();
     }
+    final newParentPath = _getPath(newParentId);
+    if(newParentPath != null && newParentPath.contains(folder.id)) {
+      throw ParentNotFoundException();
+    }
+      
     final folders = _hiveBox.get(path) as List<String>?;
     var found = false;
     if (folders != null) {
