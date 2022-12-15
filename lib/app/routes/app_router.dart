@@ -6,7 +6,7 @@ import 'package:learning_app/add_card/cubit/add_card_cubit.dart';
 import 'package:learning_app/add_folder/cubit/add_folder_cubit.dart';
 import 'package:learning_app/add_folder/view/add_folder_bottom_sheet.dart';
 import 'package:learning_app/add_subject/cubit/add_subject_cubit.dart';
-import 'package:learning_app/add_subject/view/add_subject_page.dart';
+import 'package:learning_app/add_subject/view/add_subject_bottom_sheet.dart';
 
 import 'package:learning_app/app/view/error.dart';
 import 'package:learning_app/home/cubit/home_cubit.dart';
@@ -64,22 +64,22 @@ class AppRouter {
             child: AddCardPage(parentId: routeSettings.arguments as String),
           ),
         );
-      case '/add_subject':
-        return MaterialPageRoute(
-          builder: (_) => MultiBlocProvider(
-            providers: [
-              BlocProvider.value(
-                value: _homeCubit,
-              ),
-              BlocProvider.value(
-                value: _addSubjectCubit,
-              ),
-            ],
-            child: AddSubjectPage(
-              recommendedSubjectParentId: routeSettings.arguments as String?,
-            ),
-          ),
-        );
+      // case '/add_subject':
+      //   return MaterialPageRoute(
+      //     builder: (_) => MultiBlocProvider(
+      //       providers: [
+      //         BlocProvider.value(
+      //           value: _homeCubit,
+      //         ),
+      //         BlocProvider.value(
+      //           value: _addSubjectCubit,
+      //         ),
+      //       ],
+      //       child: AddSubjectPage(
+      //         recommendedSubjectParentId: routeSettings.arguments as String?,
+      //       ),
+      //     ),
+      //   );
 
       case '/subject_overview':
         return MaterialPageRoute(
@@ -91,7 +91,8 @@ class AppRouter {
               // BlocProvider.value(
               //   value: _editSubjectBloc,
               // ),
-              BlocProvider(create: ((context) => EditSubjectBloc(_cardsRepository))),
+              BlocProvider(
+                  create: ((context) => EditSubjectBloc(_cardsRepository))),
               BlocProvider.value(
                 value: _addFolderCubit,
               )
