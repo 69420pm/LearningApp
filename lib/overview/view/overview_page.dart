@@ -31,7 +31,10 @@ class OverviewPage extends StatelessWidget {
                   ?.copyWith(color: Theme.of(context).colorScheme.onSurface),
             ),
             heroTag: 'subject',
-            onPressed: () => AddSubjectBottomSheet(context, null),
+            onPressed: () => showModalBottomSheet(
+                backgroundColor: Colors.transparent,
+                context: context,
+                builder: (context) => AddSubjectBottomSheet()),
             backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
           ),
           const SizedBox(
