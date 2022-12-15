@@ -5,8 +5,6 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-import 'dart:html';
-
 import 'package:cards_api/cards_api.dart';
 import 'package:cards_api/src/models/card.dart';
 import 'package:cards_api/src/models/subject.dart';

@@ -39,6 +39,7 @@ class HiveCardsApi extends CardsApi {
   void _init() {
     try {
       _indexedPaths = _hiveBox.get('indexed_paths') as List<String>;
+      print(_indexedPaths);
     } catch (e) {
       print("no paths saved");
     }
@@ -109,7 +110,7 @@ class HiveCardsApi extends CardsApi {
     final cards = _hiveBox.get(path) as List<String>?;
     var found = false;
     if (cards != null) {
-      for (var element in cards) {
+      for (final element in cards) {
         if (element.substring(7).startsWith(id)) {
           cards.remove(element);
           found = true;
@@ -120,7 +121,6 @@ class HiveCardsApi extends CardsApi {
     if (found == false) {
       throw ParentNotFoundException();
     }
-    print(_subscribedStreams);
     if (_subscribedStreams.containsKey(parentId)) {
       _subscribedStreams[parentId]!.add([Removed(id: id)]);
     }
@@ -337,7 +337,7 @@ class HiveCardsApi extends CardsApi {
     return null;
   }
 
-  void _deleteChildPaths(String id) {
+  Future<void> _deleteChildPaths(String id) {
     List<String> newIndexedPaths = [];
     for (final element in _indexedPaths) {
       if (element.contains(id)) {
@@ -347,6 +347,7 @@ class HiveCardsApi extends CardsApi {
       }
     }
     _indexedPaths = newIndexedPaths;
+    return _saveIndexedPaths();
   }
 
   Future<void> _moveChildPaths(String oldId, String newId) async {

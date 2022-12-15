@@ -87,7 +87,7 @@ class FolderListTileView extends StatelessWidget {
                       ...childListTiles,
                       ...state.childrenStream
                     };
-                    for (var element in state.removedWidgets) {
+                    for (final element in state.removedWidgets) {
                       if (childListTiles.containsKey(element.id)) {
                         childListTiles.remove(element.id);
                       }
