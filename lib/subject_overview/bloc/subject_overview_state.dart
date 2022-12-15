@@ -20,7 +20,9 @@ class EditSubjectFoldersCardsFetchingSuccess extends EditSubjectState {}
 
 class EditSubjectRetrieveChildren extends EditSubjectState {
   Map<String, Widget> childrenStream;
+  List<Removed> removedWidgets;
   EditSubjectRetrieveChildren({
     required this.childrenStream,
+    required this.removedWidgets,
   });
 }

@@ -24,3 +24,21 @@ class FolderListTileAddCard extends FolderListTileEvent {
     required this.newParentId,
   });
 }
+
+class FolderListTileDeleteFolder extends FolderListTileEvent {
+  String id;
+  String parentId;
+  FolderListTileDeleteFolder({
+    required this.id,
+    required this.parentId,
+  });
+}
+
+class FolderListTileMoveFolder extends FolderListTileEvent {
+  Folder folder;
+  String newParentId;
+  FolderListTileMoveFolder({
+    required this.folder,
+    required this.newParentId,
+  });
+}

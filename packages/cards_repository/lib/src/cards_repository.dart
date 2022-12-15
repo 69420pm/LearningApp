@@ -22,8 +22,9 @@ class CardsRepository {
   /// provide a [Stream] of all subjects
   Stream<List<Subject>> getSubjects() => _cardsApi.getSubjects();
 
-  Stream<List<Object>> getChildrenById(String id) => _cardsApi.getChildrenById(id);
-  
+  Stream<List<Object>> getChildrenById(String id) =>
+      _cardsApi.getChildrenById(id);
+
   void closeStreamById(String id) => _cardsApi.closeStreamById(id);
 
   /// Saves a [card]
@@ -37,12 +38,22 @@ class CardsRepository {
   Future<void> saveFolder(Folder folder) => _cardsApi.saveFolder(folder);
 
   /// Deletes card with given id
-  /// If no card with given id exists, a [CardNotFoundException] error is 
+  /// If no card with given id exists, a [CardNotFoundException] error is
   /// thrown
-  Future<void> deleteCard(String id) => _cardsApi.deleteCard(id);
+  Future<void> deleteCard(String id, String parentId) =>
+      _cardsApi.deleteCard(id, parentId);
 
   /// Deletes subject and every children with given id
-  /// If no card with given id exists, a [SubjectNotFoundException] error is 
+  /// If no card with given id exists, a [SubjectNotFoundException] error is
   /// thrown
   Future<void> deleteSubject(String id) => _cardsApi.deleteSubject(id);
+
+  Future<void> deleteFolder(String id, String parentId) =>
+    _cardsApi.deleteFolder(id, parentId);
+
+  Future<void> moveFolder(Folder folder, String newParentId) => 
+    _cardsApi.moveFolder(folder, newParentId);
+
+Future<void> moveCard(String id, String previousParentId, String newParentId) => 
+    _cardsApi.moveCard(id, previousParentId, newParentId);
 }

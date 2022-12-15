@@ -37,7 +37,7 @@ abstract class CardsApi {
   /// Deletes card with given id
   /// If no card with given id exists, a [CardNotFoundException] error is 
   /// thrown
-  Future<void> deleteCard(String id);
+  Future<void> deleteCard(String id, String parentId);
 
   /// Deletes subject and every children with given id
   /// If no card with given id exists, a [SubjectNotFoundException] error is 
@@ -47,7 +47,12 @@ abstract class CardsApi {
 /// Deletes subject and every children with given id
   /// If no card with given id exists, a [FolderNotFoundException] error is 
   /// thrown
-  Future<void> deleteFolder(String id);
+  Future<void> deleteFolder(String id, String parentId);
+
+  Future<void> moveFolder(Folder folder, String newParentId);
+
+  Future<void> moveCard(String id, String previousParentId, String newParentId);
+
 
   Stream<List<Object>> getChildrenById(String id);
 
@@ -65,3 +70,5 @@ class SubjectNotFoundException implements Exception {}
 class FolderNotFoundException implements Exception {}
 
 class ParentNotFoundException implements Exception{}
+
+class StreamNotFoundException implements Exception {}

@@ -35,9 +35,23 @@ class FolderListTileView extends StatelessWidget {
 
     return DragTarget(
       onAccept: (data) {
+        // if (data is Folder && data != folder) {
+        //   context.read<FolderListTileBloc>().add(
+        //         FolderListTileAddFolder(folder: data, newParentId: folder.id),
+        //       );
+        // } else if (data is Card) {
+        //   context
+        //       .read<FolderListTileBloc>()
+        //       .add(FolderListTileAddCard(card: data, newParentId: folder.id));
+        // }
+        // TODO fix newParentId gets changed while transfering to hive_cards_api
         if (data is Folder && data != folder) {
           context.read<FolderListTileBloc>().add(
-              FolderListTileAddFolder(folder: data, newParentId: folder.id));
+                FolderListTileMoveFolder(
+                  folder: data,
+                  newParentId: folder.id,
+                ),
+              );
         } else if (data is Card) {
           context
               .read<FolderListTileBloc>()
@@ -73,6 +87,11 @@ class FolderListTileView extends StatelessWidget {
                       ...childListTiles,
                       ...state.childrenStream
                     };
+                    for (final element in state.removedWidgets) {
+                      if (childListTiles.containsKey(element.id)) {
+                        childListTiles.remove(element.id);
+                      }
+                    }
                   }
 
                   return UIExpansionTile(
@@ -82,51 +101,20 @@ class FolderListTileView extends StatelessWidget {
                         itemCount: childListTiles.length,
                         itemBuilder: (context, index) => Padding(
                           padding: const EdgeInsets.only(
-                              bottom: UISizeConstants.defaultSize),
+                            bottom: UISizeConstants.defaultSize,
+                          ),
                           child: childListTiles.values.elementAt(index),
                         ),
                         shrinkWrap: true,
                       ),
                     ],
+                    onPressedCallback: () => context
+                        .read<FolderListTileBloc>()
+                        .add(FolderListTileDeleteFolder(
+                            id: folder.id, parentId: folder.parentId)),
                   );
                 },
               ),
-              // ExpansionTile(
-              //   controlAffinity: ListTileControlAffinity.leading,
-              //   title: Text(
-              //     folder.name,
-              //     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              //           color:
-              //               Theme.of(context).colorScheme.onSecondaryContainer,
-              //         ),
-              //   ),
-              //   children: [
-              //     BlocBuilder<FolderListTileBloc, FolderListTileState>(
-              //         buildWhen: (previous, current) {
-              //       if (current is FolderListTileRetrieveChildren) {
-              //         return true;
-              //       }
-              //       return false;
-              //     }, builder: (context, state) {
-              //       if (state is FolderListTileRetrieveChildren) {
-              //         childListTiles = {
-              //           ...childListTiles,
-              //           ...state.childrenStream
-              //         };
-              //       }
-
-              //       return ListView.builder(
-              //         itemCount: childListTiles.length,
-              //         itemBuilder: (context, index) => Padding(
-              //           padding: const EdgeInsets.only(
-              //               bottom: UISizeConstants.defaultSize),
-              //           child: childListTiles.values.elementAt(index),
-              //         ),
-              //         shrinkWrap: true,
-              //       );
-              //     }),
-              //   ],
-              // ),
             ),
           ),
         ),

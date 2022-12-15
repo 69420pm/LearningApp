@@ -1,14 +1,17 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:material/material.dart';
 
 class UIExpansionTile extends StatefulWidget {
   List<Widget> children;
   String title;
+  void Function() onPressedCallback;
   UIExpansionTile({
-    super.key,
+    Key? key,
     required this.children,
     required this.title,
-  });
+    required this.onPressedCallback,
+  }) : super(key: key);
 
   @override
   State<UIExpansionTile> createState() => _UIExpansionTileState();
@@ -29,6 +32,7 @@ class _UIExpansionTileState extends State<UIExpansionTile> {
               onPressed: () => update(),
             ),
             Text(widget.title),
+            IconButton(icon: Icon(MaterialIcons.delete_circle_outline), onPressed: widget.onPressedCallback)
           ],
         ),
         if (_isOpened) ...widget.children
