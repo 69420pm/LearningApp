@@ -18,28 +18,22 @@ class HiveCardsApi extends CardsApi {
     _init();
   }
 
-  Box<dynamic> _hiveBox;
+  final Box<dynamic> _hiveBox;
 
   final _cardStreamController = BehaviorSubject<List<Card>>.seeded(const []);
-  final _folderStreamController =
-      BehaviorSubject<List<Folder>>.seeded(const []);
   final _subjectStreamController =
       BehaviorSubject<List<Subject>>.seeded(const []);
 
-  // Map<String, BehaviorSubject<List<Object>>> as = {};
-
-  /// MAYBE USE MAPS ???
   List<Card> cards = List.empty(growable: true);
   List<Folder> folders = List.empty(growable: true);
   List<Subject> _subjects = List.empty(growable: true);
 
   List<String> _indexedPaths = [];
-  Map<String, BehaviorSubject<List<Object>>> _subscribedStreams = {};
+  final Map<String, BehaviorSubject<List<Object>>> _subscribedStreams = {};
 
   void _init() {
     try {
       _indexedPaths = _hiveBox.get('indexed_paths') as List<String>;
-      print(_indexedPaths);
     } catch (e) {
       print("no paths saved");
     }
@@ -53,48 +47,48 @@ class HiveCardsApi extends CardsApi {
   }
 
   List<String> _cardsToJson(List<Card> cards) {
-    List<String> jsonCards = [];
-    for (var element in cards) {
+    final jsonCards = <String>[];
+    for (final element in cards) {
       jsonCards.add(element.toJson());
     }
     return jsonCards;
   }
 
   List<String> _foldersToJson(List<Folder> folders) {
-    List<String> jsonFolders = [];
-    for (var element in folders) {
+    final jsonFolders = <String>[];
+    for (final element in folders) {
       jsonFolders.add(element.toJson());
     }
     return jsonFolders;
   }
 
   List<String> _subjectsToJson(List<Subject> cards) {
-    List<String> jsonSubjects = [];
-    for (var element in cards) {
+    final jsonSubjects = <String>[];
+    for (final element in cards) {
       jsonSubjects.add(element.toJson());
     }
     return jsonSubjects;
   }
 
   List<Card> _cardsFromJson(List<String> json) {
-    List<Card> cards = [];
-    for (var element in json) {
+    final cards = <Card>[];
+    for (final element in json) {
       cards.add(Card.fromJson(element));
     }
     return cards;
   }
 
   List<Folder> _foldersFromJson(List<String> json) {
-    List<Folder> folders = [];
-    for (var element in json) {
+    final folders = <Folder>[];
+    for (final element in json) {
       folders.add(Folder.fromJson(element));
     }
     return folders;
   }
 
   List<Subject> _subjectsFromJson(List<String> json) {
-    List<Subject> subjects = List.empty(growable: true);
-    for (var element in json) {
+    final subjects = List<Subject>.empty(growable: true);
+    for (final element in json) {
       subjects.add(Subject.fromJson(element));
     }
     return subjects;
@@ -119,7 +113,8 @@ class HiveCardsApi extends CardsApi {
       }
     }
     if (found == false) {
-      throw ParentNotFoundException();
+      // ! ADD PARENTNOTFOUNDEXCEPTION THROW
+      // throw ParentNotFoundException();
     }
     if (_subscribedStreams.containsKey(parentId)) {
       _subscribedStreams[parentId]!.add([Removed(id: id)]);
@@ -163,8 +158,6 @@ class HiveCardsApi extends CardsApi {
   @override
   Stream<List<Card>> getCards() => _cardStreamController.asBroadcastStream();
 
-  Stream<List<Folder>> getFolders() =>
-      _folderStreamController.asBroadcastStream();
 
   @override
   Stream<List<Subject>> getSubjects() =>
@@ -291,12 +284,6 @@ class HiveCardsApi extends CardsApi {
     }
 
     return _hiveBox.put(path, cards);
-  }
-
-  @override
-  Future<void> moveCard(
-      String id, String previousParentId, String newParentId,) {
-    throw UnimplementedError();
   }
 
   @override
