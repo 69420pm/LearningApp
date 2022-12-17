@@ -28,7 +28,7 @@ class AddSubjectBottomSheet {
     final iconController = TextEditingController();
 
     if (recommendedSubjectParentId != null) {
-      locationController.text = recommendedSubjectParentId!;
+      locationController.text = recommendedSubjectParentId;
     }
 
     final formKey = GlobalKey<FormState>();
@@ -37,59 +37,62 @@ class AddSubjectBottomSheet {
       backgroundColor: Colors.transparent,
       context: context,
       builder: (context) {
-        return UIBottomSheet(
-          children: [
-            Form(
-              key: formKey,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
+        return BlocProvider.value(
+          value: context.read<AddSubjectCubit>(),
+          child: UIBottomSheet(
+            children: [
+              Form(
+                key: formKey,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: UISizeConstants.paddingEdge,
-                      vertical: UISizeConstants.defaultSize),
-                  child: Column(
-                    children: [
-                      /// Name
-                      UITextFormField(
-                        controller: nameController,
-                        validation: (value) {
-                          if (value!.isEmpty) {
-                            return 'Enter something';
-                          } else {
-                            return null;
-                          }
-                        },
-                        label: "Subject name",
-                      ),
+                  padding: const EdgeInsets.all(8.0),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: UISizeConstants.paddingEdge,
+                        vertical: UISizeConstants.defaultSize),
+                    child: Column(
+                      children: [
+                        /// Name
+                        UITextFormField(
+                          controller: nameController,
+                          validation: (value) {
+                            if (value!.isEmpty) {
+                              return 'Enter something';
+                            } else {
+                              return null;
+                            }
+                          },
+                          label: "Subject name",
+                        ),
 
-                      // /// File Location can be empty
-                      // TextFormField(
-                      //   controller: locationController,
-                      // ),
+                        // /// File Location can be empty
+                        // TextFormField(
+                        //   controller: locationController,
+                        // ),
 
-                      // /// Prefix icon
-                      // TextFormField(
-                      //   controller: iconController,
-                      // ),
+                        // /// Prefix icon
+                        // TextFormField(
+                        //   controller: iconController,
+                        // ),
 
-                      UIButton(
-                        onTap: () async {
-                          if (formKey.currentState!.validate()) {
-                            await context.read<AddSubjectCubit>().saveSubject(
-                                nameController.text,
-                                locationController.text,
-                                iconController.text);
-                          }
-                          Navigator.pop(context);
-                        },
-                        lable: "Save",
-                      )
-                    ],
+                        UIButton(
+                          onTap: () async {
+                            if (formKey.currentState!.validate()) {
+                              await context.read<AddSubjectCubit>().saveSubject(
+                                  nameController.text,
+                                  locationController.text,
+                                  iconController.text);
+                            }
+                            Navigator.pop(context);
+                          },
+                          lable: "Save",
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );

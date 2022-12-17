@@ -307,7 +307,7 @@ class HiveCardsApi extends CardsApi {
     }
     final newParentPath = _getPath(newParentId);
     if(newParentPath != null && newParentPath.contains(folder.id)) {
-      throw ParentNotFoundException();
+      return;
     }
       
     final folders = _hiveBox.get(path) as List<String>?;
