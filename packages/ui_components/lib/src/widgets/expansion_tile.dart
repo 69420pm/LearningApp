@@ -7,6 +7,7 @@ class UIExpansionTile extends StatefulWidget {
   String title;
   void Function() onPressedCallback;
   void Function()? testCallback;
+
   UIExpansionTile(
       {Key? key,
       required this.children,
@@ -29,17 +30,16 @@ class _UIExpansionTileState extends State<UIExpansionTile> {
         Row(
           children: [
             IconButton(
-              icon:
-                  _isOpened ? Icon(Icons.expand_less) : Icon(Icons.expand_more),
+              icon: Icon(_isOpened ? Icons.expand_less : Icons.expand_more),
               onPressed: update,
             ),
             Text(widget.title),
-            IconButton(
-              icon: const Icon(MaterialIcons.account_alert_outline),
-              onPressed: () {
-                widget.testCallback?.call();
-              },
-            ),
+            // IconButton(
+            //   icon: const Icon(Icons.flutter_dash),
+            //   onPressed: () {
+            //     widget.testCallback?.call();
+            //   },
+            // ),
             IconButton(
                 icon: Icon(MaterialIcons.delete_circle_outline),
                 onPressed: widget.onPressedCallback)

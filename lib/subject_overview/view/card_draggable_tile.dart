@@ -2,11 +2,10 @@ import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/card_list_tile_bloc.dart';
-import 'package:learning_app/subject_overview/view/card_draggable_tile.dart';
 import 'package:ui_components/ui_components.dart';
 
-class CardListTile extends StatelessWidget {
-  const CardListTile(
+class CardDraggableListTile extends StatelessWidget {
+  const CardDraggableListTile(
       {super.key, required this.card, required this.cardsRepository});
 
   final Card card;
@@ -36,7 +35,7 @@ class CardListTileView extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: UISizeConstants.defaultSize),
       child: Container(
-        width: double.infinity,
+        width: UISizeConstants.defaultSize * 20,
         height: UISizeConstants.defaultSize * 5,
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.secondaryContainer,
@@ -66,13 +65,9 @@ class CardListTileView extends StatelessWidget {
                 },
                 icon: const Icon(Icons.delete),
               ),
-              Draggable(
-                  data: card,
-                  feedback: CardDraggableListTile(
-                    card: card,
-                    cardsRepository: cardsRepository,
-                  ),
-                  child: Icon(Icons.drag_indicator_sharp)),
+              const Icon(
+                Icons.drag_indicator_sharp,
+              ),
             ],
           ),
         ),

@@ -130,11 +130,13 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                       }
                     }
 
-                    return ListView.builder(
-                      itemCount: childListTiles.length,
-                      itemBuilder: (context, index) =>
-                          childListTiles.values.elementAt(index),
-                      shrinkWrap: true,
+                    return Expanded(
+                      child: ListView.builder(
+                        itemCount: childListTiles.length,
+                        itemBuilder: (context, index) =>
+                            childListTiles.values.elementAt(index),
+                        // shrinkWrap: true,
+                      ),
                     );
                   },
                 ),

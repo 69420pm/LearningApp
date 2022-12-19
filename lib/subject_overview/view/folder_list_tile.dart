@@ -1,5 +1,6 @@
 import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/folder_list_tile_bloc.dart';
@@ -34,110 +35,124 @@ class FolderListTileView extends StatelessWidget {
         .read<FolderListTileBloc>()
         .add(FolderListTileGetChildrenById(id: folder.id));
 
-    return DragTarget(
-      onAccept: (data) {
-        // if (data is Folder && data != folder) {
-        //   context.read<FolderListTileBloc>().add(
-        //         FolderListTileAddFolder(folder: data, newParentId: folder.id),
-        //       );
-        // } else if (data is Card) {
-        //   context
-        //       .read<FolderListTileBloc>()
-        //       .add(FolderListTileAddCard(card: data, newParentId: folder.id));
-        // }
-        // TODO fix newParentId gets changed while transfering to hive_cards_api
-        if (data is Folder && data != folder) {
-          context.read<FolderListTileBloc>().add(
-                FolderListTileMoveFolder(
-                  folder: data,
-                  newParentId: folder.id,
-                ),
-              );
-        } else if (data is Card) {
-          context
-              .read<FolderListTileBloc>()
-              .add(FolderListTileAddCard(card: data, newParentId: folder.id));
-        }
-        // print(data);
-        // folder.childFolders.add(data);
-      },
-      builder: (context, candidateData, rejectedData) => Draggable<Folder>(
-        data: folder,
-        feedback: FolderDraggableTile(folder: folder),
-        child: Container(
+    return Padding(
+      padding: const EdgeInsets.only(bottom: UISizeConstants.defaultSize),
+      child: DragTarget(
+        onAccept: (data) {
+          // if (data is Folder && data != folder) {
+          //   context.read<FolderListTileBloc>().add(
+          //         FolderListTileAddFolder(folder: data, newParentId: folder.id),
+          //       );
+          // } else if (data is Card) {
+          //   context
+          //       .read<FolderListTileBloc>()
+          //       .add(FolderListTileAddCard(card: data, newParentId: folder.id));
+          // }
+          // TODO fix newParentId gets changed while transfering to hive_cards_api
+          if (data is Folder && data != folder) {
+            context.read<FolderListTileBloc>().add(
+                  FolderListTileMoveFolder(
+                    folder: data,
+                    newParentId: folder.id,
+                  ),
+                );
+          } else if (data is Card) {
+            context
+                .read<FolderListTileBloc>()
+                .add(FolderListTileAddCard(card: data, newParentId: folder.id));
+          }
+          // print(data);
+          // folder.childFolders.add(data);
+        },
+        builder: (context, candidateData, rejectedData) => Container(
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.error,
-            borderRadius: const BorderRadius.all(
-              Radius.circular(UISizeConstants.cornerRadius),
-            ),
-          ),
+              color: Theme.of(context).colorScheme.background,
+              borderRadius: const BorderRadius.horizontal(
+                left: Radius.circular(UISizeConstants.cornerRadius),
+              ),
+              border: Border.all(
+                  color: Theme.of(context).colorScheme.secondary,
+                  width: UISizeConstants.borderWidth)),
           child: Padding(
             padding:
                 const EdgeInsets.only(left: UISizeConstants.defaultSize * 2),
-            child: SingleChildScrollView(
-              child: BlocBuilder<FolderListTileBloc, FolderListTileState>(
-                buildWhen: (previous, current) {
-                  if (current is FolderListTileRetrieveChildren) {
-                    return true;
-                  }
-                  return false;
-                },
-                builder: (context, state) {
-                  if (state is FolderListTileRetrieveChildren) {
-                    childListTiles = {
-                      ...childListTiles,
-                      ...state.childrenStream
-                    };
-                    for (final element in state.removedWidgets) {
-                      if (childListTiles.containsKey(element.id)) {
-                        childListTiles.remove(element.id);
-                      }
+            child: BlocBuilder<FolderListTileBloc, FolderListTileState>(
+              buildWhen: (previous, current) {
+                if (current is FolderListTileRetrieveChildren) {
+                  return true;
+                }
+                return false;
+              },
+              builder: (context, state) {
+                if (state is FolderListTileRetrieveChildren) {
+                  childListTiles = {...childListTiles, ...state.childrenStream};
+                  for (final element in state.removedWidgets) {
+                    if (childListTiles.containsKey(element.id)) {
+                      childListTiles.remove(element.id);
                     }
                   }
+                }
 
-                  return UIExpansionTile(
-                    title: folder.name,
-                    testCallback: () {
-                      print("test");
-                      for (int i = 0; i <= 20; i++) {
-                        context
-                            .read<FolderListTileBloc>()
-                            .add(FolderListTileAddCard(
-                                card: Card(
-                                  back: '',
-                                  front: "",
-                                  askCardsInverted: false,
-                                  id: const Uuid().v4(),
-                                  dateCreated: "",
-                                  parentId: folder.id,
-                                  dateToReview: '',
-                                  typeAnswer: false,
-                                ),
-                                newParentId: folder.id));
-                      }
-                    },
+                return ExpansionTile(
+                  controlAffinity: ListTileControlAffinity.leading,
+
+                  collapsedTextColor:
+                      Theme.of(context).colorScheme.onSecondaryContainer,
+                  textColor: Theme.of(context).colorScheme.onSecondaryContainer,
+                  title: Text(folder.name),
+
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      ListView.builder(
-                        itemCount: childListTiles.length,
-                        itemBuilder: (context, index) => Padding(
-                          padding: const EdgeInsets.only(
-                            bottom: UISizeConstants.defaultSize,
-                          ),
-                          child: childListTiles.values.elementAt(index),
-                        ),
-                        shrinkWrap: true,
-                      ),
-                    ],
-                    onPressedCallback: () =>
-                        context.read<FolderListTileBloc>().add(
+                      IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () => context.read<FolderListTileBloc>().add(
                               FolderListTileDeleteFolder(
                                 id: folder.id,
                                 parentId: folder.parentId,
                               ),
                             ),
-                  );
-                },
-              ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.flutter_dash),
+                        onPressed: () {
+                          for (int i = 0; i <= 20; i++) {
+                            context
+                                .read<FolderListTileBloc>()
+                                .add(FolderListTileAddCard(
+                                    card: Card(
+                                      back: '',
+                                      front: "",
+                                      askCardsInverted: false,
+                                      id: const Uuid().v4(),
+                                      dateCreated: "",
+                                      parentId: folder.id,
+                                      dateToReview: '',
+                                      typeAnswer: false,
+                                    ),
+                                    newParentId: folder.id));
+                          }
+                        },
+                      ),
+                      Draggable<Folder>(
+                        data: folder,
+                        feedback: FolderDraggableTile(folder: folder),
+                        child: const Icon(Icons.drag_indicator),
+                      )
+                    ],
+                  ),
+                  //
+                  children: [
+                    ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: childListTiles.length,
+                      itemBuilder: (context, index) =>
+                          childListTiles.values.elementAt(index),
+                      shrinkWrap: true,
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ),
