@@ -47,6 +47,9 @@ class AppRouter {
               BlocProvider.value(
                 value: _overviewBloc,
               ),
+              BlocProvider(
+                create: (context) => AddSubjectCubit(_cardsRepository),
+              ),
             ],
             child: HomePage(),
           ),

@@ -22,9 +22,11 @@ class CardsRepository {
   /// provide a [Stream] of all subjects
   Stream<List<Subject>> getSubjects() => _cardsApi.getSubjects();
 
+  /// return all children for a given parentId in a stream
   Stream<List<Object>> getChildrenById(String id) =>
       _cardsApi.getChildrenById(id);
 
+  /// Close stream for a given parentId to avoid stream leaks
   void closeStreamById(String id) => _cardsApi.closeStreamById(id);
 
   /// Saves a [card]
@@ -35,6 +37,8 @@ class CardsRepository {
   /// If a [subject] with same id already exists, it will be replaced
   Future<void> saveSubject(Subject subject) => _cardsApi.saveSubject(subject);
 
+  /// Saves a [folder]
+  /// If a [folder] with same id already exists it will get replaced
   Future<void> saveFolder(Folder folder) => _cardsApi.saveFolder(folder);
 
   /// Deletes card with given id
@@ -48,12 +52,11 @@ class CardsRepository {
   /// thrown
   Future<void> deleteSubject(String id) => _cardsApi.deleteSubject(id);
 
+  /// Delete subject and every children inheriting from it
   Future<void> deleteFolder(String id, String parentId) =>
     _cardsApi.deleteFolder(id, parentId);
 
+  /// Move folder and every children to [newParentId]
   Future<void> moveFolder(Folder folder, String newParentId) => 
     _cardsApi.moveFolder(folder, newParentId);
-
-Future<void> moveCard(String id, String previousParentId, String newParentId) => 
-    _cardsApi.moveCard(id, previousParentId, newParentId);
 }

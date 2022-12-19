@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/add_subject/cubit/add_subject_cubit.dart';
 import 'package:learning_app/add_subject/view/add_subject_bottom_sheet.dart';
 import 'package:learning_app/home/cubit/home_cubit.dart';
 import 'package:learning_app/overview/bloc/overview_bloc.dart';
@@ -34,7 +35,10 @@ class OverviewPage extends StatelessWidget {
             onPressed: () => showModalBottomSheet(
                 backgroundColor: Colors.transparent,
                 context: context,
-                builder: (context) => AddSubjectBottomSheet()),
+                builder: (_) => BlocProvider.value(
+                      value: context.read<AddSubjectCubit>(),
+                      child: AddSubjectBottomSheet(),
+                    )),
             backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
           ),
           const SizedBox(

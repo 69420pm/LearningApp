@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/folder_list_tile_bloc.dart';
 import 'package:learning_app/subject_overview/view/folder_draggable_tile.dart';
 import 'package:ui_components/ui_components.dart';
+import 'package:uuid/uuid.dart';
 
 class FolderListTile extends StatelessWidget {
   const FolderListTile(
@@ -96,6 +97,25 @@ class FolderListTileView extends StatelessWidget {
 
                   return UIExpansionTile(
                     title: folder.name,
+                    testCallback: () {
+                      print("test");
+                      for (int i = 0; i <= 20; i++) {
+                        context
+                            .read<FolderListTileBloc>()
+                            .add(FolderListTileAddCard(
+                                card: Card(
+                                  back: '',
+                                  front: "",
+                                  askCardsInverted: false,
+                                  id: const Uuid().v4(),
+                                  dateCreated: "",
+                                  parentId: folder.id,
+                                  dateToReview: '',
+                                  typeAnswer: false,
+                                ),
+                                newParentId: folder.id));
+                      }
+                    },
                     children: [
                       ListView.builder(
                         itemCount: childListTiles.length,
@@ -108,10 +128,13 @@ class FolderListTileView extends StatelessWidget {
                         shrinkWrap: true,
                       ),
                     ],
-                    onPressedCallback: () => context
-                        .read<FolderListTileBloc>()
-                        .add(FolderListTileDeleteFolder(
-                            id: folder.id, parentId: folder.parentId)),
+                    onPressedCallback: () =>
+                        context.read<FolderListTileBloc>().add(
+                              FolderListTileDeleteFolder(
+                                id: folder.id,
+                                parentId: folder.parentId,
+                              ),
+                            ),
                   );
                 },
               ),

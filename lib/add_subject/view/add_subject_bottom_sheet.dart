@@ -1,10 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import "package:flutter/material.dart";
-import 'package:cards_api/cards_api.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ui_components/ui_components.dart';
-
 import 'package:learning_app/add_subject/cubit/add_subject_cubit.dart';
+import 'package:ui_components/ui_components.dart';
 
 // class AddSubjectPage extends StatelessWidget {
 //   const AddSubjectPage({super.key, this.recommendedSubjectParentId});
@@ -24,9 +22,9 @@ import 'package:learning_app/add_subject/cubit/add_subject_cubit.dart';
 
 class AddSubjectBottomSheet extends StatelessWidget {
   AddSubjectBottomSheet({
-    Key? key,
+    super.key,
     this.recommendedSubjectParentId,
-  }) : super(key: key);
+  });
 
   final String? recommendedSubjectParentId;
   final nameController = TextEditingController();
