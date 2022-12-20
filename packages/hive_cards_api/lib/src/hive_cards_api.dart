@@ -24,8 +24,6 @@ class HiveCardsApi extends CardsApi {
   final _subjectStreamController =
       BehaviorSubject<List<Subject>>.seeded(const []);
 
-  List<Card> cards = List.empty(growable: true);
-  List<Folder> folders = List.empty(growable: true);
   List<Subject> _subjects = List.empty(growable: true);
 
   List<String> _indexedPaths = [];
@@ -158,32 +156,26 @@ class HiveCardsApi extends CardsApi {
   @override
   Stream<List<Card>> getCards() => _cardStreamController.asBroadcastStream();
 
-
   @override
   Stream<List<Subject>> getSubjects() =>
       _subjectStreamController.asBroadcastStream();
 
   @override
   Stream<List<Object>> getChildrenById(String id) {
-    // if (_subscribedStreams[id] != null) {
-    //   return _subscribedStreams[id]!.asBroadcastStream();
-    // }
     final newStream = BehaviorSubject<List<Object>>.seeded(const []);
     final path = _getPath(id);
-    if(path == null) {
+    if (path == null) {
       throw StreamNotFoundException();
     }
-    print(_hiveBox.get(path));
     final childrenStrings = _hiveBox.get(path) as List<String>?;
     final children = <Object>[];
     if (childrenStrings != null) {
       for (final element in childrenStrings) {
         try {
           children.add(_cardsFromJson([element])[0]);
-        } catch (e) {}
-        try {
+        } catch (e) {
           children.add(_foldersFromJson([element])[0]);
-        } catch (e) {}
+        }
       }
     }
 
@@ -293,10 +285,10 @@ class HiveCardsApi extends CardsApi {
       throw ParentNotFoundException();
     }
     final newParentPath = _getPath(newParentId);
-    if(newParentPath != null && newParentPath.contains(folder.id)) {
+    if (newParentPath != null && newParentPath.contains(folder.id)) {
       return;
     }
-      
+
     final folders = _hiveBox.get(path) as List<String>?;
     var found = false;
     if (folders != null) {
@@ -311,7 +303,7 @@ class HiveCardsApi extends CardsApi {
     if (found == false) {
       throw ParentNotFoundException();
     }
-    _hiveBox.put(folder.parentId, folders);
+    await _hiveBox.put(folder.parentId, folders);
     if (_subscribedStreams.containsKey(folder.parentId)) {
       _subscribedStreams[folder.parentId]!.add([Removed(id: folder.id)]);
     }
@@ -328,6 +320,10 @@ class HiveCardsApi extends CardsApi {
     }
     return null;
   }
+
+  /// /subjects/subject_0
+  /// /subjects/subject_0/folder_0
+  /// /subjects/subject_0/folder_0/folder_1
 
   Future<void> _deleteChildPaths(String id) {
     List<String> newIndexedPaths = [];

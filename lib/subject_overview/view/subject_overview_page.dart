@@ -6,16 +6,16 @@ import 'package:learning_app/subject_overview/bloc/subject_overview_bloc.dart';
 import 'package:ui_components/ui_components.dart';
 
 class SubjectOverviewPage extends StatefulWidget {
-  const SubjectOverviewPage({super.key, required this.subjectToEdit});
+  const SubjectOverviewPage({super.key, required this.subjectToEdit, required this.editSubjectBloc});
 
   final Subject subjectToEdit;
+  final EditSubjectBloc editSubjectBloc;
 
   @override
   State<SubjectOverviewPage> createState() => _SubjectOverviewPageState();
 }
 
 class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
-  late final EditSubjectBloc _editSubjectBloc;
   @override
   Widget build(BuildContext context) {
     final nameController =
@@ -29,7 +29,6 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
         .add(EditSubjectGetChildrenById(id: widget.subjectToEdit.id));
     var childListTiles = <String, Widget>{};
 
-    _editSubjectBloc = context.read<EditSubjectBloc>();
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: UIAppBar(
@@ -172,7 +171,7 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
 
   @override
   void dispose() {
-    _editSubjectBloc
+    widget.editSubjectBloc
         .add(EditSubjectCloseStreamById(id: widget.subjectToEdit.id));
     super.dispose();
   }
