@@ -28,35 +28,31 @@ class AddFolderBottomSheet extends StatelessWidget {
     }
 
     final formKey = GlobalKey<FormState>();
-    return BottomSheet(
-      ///* hier auch save oder cancle?
-      onClosing: () {},
-      builder: (context) => SafeArea(
-          child: Form(
+    return UIBottomSheet(
+      child: Form(
         key: formKey,
-        child: Column(
-          children: [
-            /// Name
-            UITextFormField(
-              controller: nameController,
-              validation: (value) {
-                if (value!.isEmpty) {
-                  return 'Enter something';
-                } else {
-                  return null;
-                }
-              },
-            ),
-
-            UIButton(
-                onTap: () async {
-                  context.read<EditSubjectBloc>().add(EditSubjectAddFolder(name: nameController.text.trim(), parentId: parentId));
-                  Navigator.pop(context);
-                },
-                lable: "Save")
-          ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+              horizontal: UISizeConstants.defaultSize),
+          child: UITextFormField(
+            controller: nameController,
+            autofocus: true,
+            label: "Add Folder",
+            onFieldSubmitted: (_) {
+              context.read<EditSubjectBloc>().add(EditSubjectAddFolder(
+                  name: nameController.text.trim(), parentId: parentId));
+              Navigator.pop(context);
+            },
+            validation: (value) {
+              if (value!.isEmpty) {
+                return 'Enter something';
+              } else {
+                return null;
+              }
+            },
+          ),
         ),
-      )),
+      ),
     );
   }
 }
