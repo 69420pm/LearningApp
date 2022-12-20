@@ -85,6 +85,7 @@ class AppRouter {
       //   );
 
       case '/subject_overview':
+      EditSubjectBloc newBloc = EditSubjectBloc(_cardsRepository);
         return MaterialPageRoute(
           builder: (_) => MultiBlocProvider(
             providers: [
@@ -95,13 +96,14 @@ class AppRouter {
               //   value: _editSubjectBloc,
               // ),
               BlocProvider(
-                  create: ((context) => EditSubjectBloc(_cardsRepository))),
+                  create: ((context) => newBloc)),
               BlocProvider.value(
                 value: _addFolderCubit,
               )
             ],
             child: SubjectOverviewPage(
               subjectToEdit: routeSettings.arguments! as Subject,
+              editSubjectBloc: newBloc,
             ),
           ),
         );
