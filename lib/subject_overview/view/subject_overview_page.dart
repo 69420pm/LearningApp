@@ -97,6 +97,7 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                     ),
                     IconButton(
                       onPressed: () => showModalBottomSheet(
+                        backgroundColor: Colors.transparent,
                         context: context,
                         builder: (_) => BlocProvider.value(
                           value: context.read<EditSubjectBloc>(),

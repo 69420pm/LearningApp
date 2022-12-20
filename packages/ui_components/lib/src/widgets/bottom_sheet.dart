@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:ui_components/ui_components.dart';
 
 class UIBottomSheet extends StatelessWidget {
-  final List<Widget> children;
-  const UIBottomSheet({Key? key, required this.children}) : super(key: key);
+  final Widget child;
+  const UIBottomSheet({Key? key, required this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,7 @@ class UIBottomSheet extends StatelessWidget {
                             const BorderRadius.all(Radius.circular(100))),
                   ),
                 ),
-                ...children,
+                child,
               ],
             ),
           )
