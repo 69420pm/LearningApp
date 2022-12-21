@@ -5,30 +5,9 @@ import 'package:learning_app/subject_overview/bloc/card_list_tile_bloc.dart';
 import 'package:ui_components/ui_components.dart';
 
 class CardDraggableListTile extends StatelessWidget {
-  const CardDraggableListTile(
-      {super.key, required this.card, required this.cardsRepository});
+  const CardDraggableListTile({super.key, required this.card});
 
   final Card card;
-  final CardsRepository cardsRepository;
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => CardListTileBloc(cardsRepository),
-      child: CardListTileView(
-        card: card,
-        cardsRepository: cardsRepository,
-      ),
-    );
-  }
-}
-
-class CardListTileView extends StatelessWidget {
-  const CardListTileView(
-      {super.key, required this.card, required this.cardsRepository});
-
-  final Card card;
-  final CardsRepository cardsRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +15,7 @@ class CardListTileView extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: UISizeConstants.defaultSize),
       child: Container(
         width: UISizeConstants.defaultSize * 20,
-        height: UISizeConstants.defaultSize * 5,
+        height: UISizeConstants.defaultSize * 20,
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.secondaryContainer,
           borderRadius: const BorderRadius.all(
@@ -51,22 +30,6 @@ class CardListTileView extends StatelessWidget {
                 card.front,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Theme.of(context).colorScheme.onSecondaryContainer),
-              ),
-              Spacer(),
-              IconButton(
-                onPressed: () {
-                  /// delete card
-                  context.read<CardListTileBloc>().add(
-                        CardListTileDeleteCard(
-                          id: card.id,
-                          parentId: card.parentId,
-                        ),
-                      );
-                },
-                icon: const Icon(Icons.delete),
-              ),
-              const Icon(
-                Icons.drag_indicator_sharp,
               ),
             ],
           ),

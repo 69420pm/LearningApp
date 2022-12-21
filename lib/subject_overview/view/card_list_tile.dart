@@ -24,22 +24,36 @@ class CardListTile extends StatelessWidget {
   }
 }
 
-class CardListTileView extends StatelessWidget {
-  const CardListTileView(
+class CardListTileView extends StatefulWidget {
+  CardListTileView(
       {super.key, required this.card, required this.cardsRepository});
 
   final Card card;
   final CardsRepository cardsRepository;
 
   @override
+  State<CardListTileView> createState() => _CardListTileViewState();
+}
+
+class _CardListTileViewState extends State<CardListTileView> {
+  bool isDragged = false;
+  final GlobalKey globalKey = GlobalKey();
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: UISizeConstants.defaultSize),
       child: Container(
+        key: globalKey,
         width: double.infinity,
         height: UISizeConstants.defaultSize * 5,
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.secondaryContainer,
+          color: isDragged
+              ? Theme.of(context)
+                  .colorScheme
+                  .secondaryContainer
+                  .withOpacity(0.4)
+              : Theme.of(context).colorScheme.secondaryContainer,
           borderRadius: const BorderRadius.all(
             Radius.circular(UISizeConstants.cornerRadius),
           ),
@@ -49,7 +63,7 @@ class CardListTileView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                card.front,
+                widget.card.front,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Theme.of(context).colorScheme.onSecondaryContainer),
               ),
@@ -59,19 +73,24 @@ class CardListTileView extends StatelessWidget {
                   /// delete card
                   context.read<CardListTileBloc>().add(
                         CardListTileDeleteCard(
-                          id: card.id,
-                          parentId: card.parentId,
+                          id: widget.card.id,
+                          parentId: widget.card.parentId,
                         ),
                       );
                 },
                 icon: const Icon(Icons.delete),
               ),
               Draggable(
-                  data: card,
+                  data: widget.card,
                   feedback: CardDraggableListTile(
-                    card: card,
-                    cardsRepository: cardsRepository,
+                    card: widget.card,
                   ),
+                  onDragStarted: () => setState(
+                        () => isDragged = true,
+                      ),
+                  onDragEnd: (_) => setState(
+                        () => isDragged = false,
+                      ),
                   child: Icon(Icons.drag_indicator_sharp)),
             ],
           ),
