@@ -24,8 +24,6 @@ class HiveCardsApi extends CardsApi {
   final _subjectStreamController =
       BehaviorSubject<List<Subject>>.seeded(const []);
 
-  List<Subject> _subjects = List.empty(growable: true);
-
   List<String> _indexedPaths = [];
   final Map<String, BehaviorSubject<List<Object>>> _subscribedStreams = {};
 
@@ -37,8 +35,7 @@ class HiveCardsApi extends CardsApi {
     }
     try {
       final subjectJson = _hiveBox.get('/subjects') as List<String>;
-      _subjects = _subjectsFromJson(subjectJson);
-      _subjectStreamController.add(_subjects);
+      _subjectStreamController.add(_subjectsFromJson(subjectJson));
     } catch (e) {
       print('no subjects saved');
     }
@@ -114,16 +111,24 @@ class HiveCardsApi extends CardsApi {
       // ! ADD PARENTNOTFOUNDEXCEPTION THROW
       // throw ParentNotFoundException();
     }
-    if (_subscribedStreams.containsKey(parentId)) {
-      _subscribedStreams[parentId]!.add([Removed(id: id)]);
+    if (_subscribedStreams.containsKey(path)) {
+      _subscribedStreams[path]!.add([Removed(id: id)]);
     }
     return _hiveBox.put(path, cards);
   }
 
   @override
   Future<void> deleteSubject(String id) {
-    // TODO: implement deleteSubject
-    throw UnimplementedError();
+    final subjects = _subjectStreamController.value;
+    final subjectIndex = subjects.indexWhere((element) => element.id == id);
+    if (subjectIndex == -1) {
+      throw SubjectNotFoundException();
+    } else {
+      subjects.removeAt(subjectIndex);
+      _deleteChildPaths('/subjects/$id');
+      _subjectStreamController.add(subjects);
+      return _hiveBox.put('/subjects', subjects);
+    }
   }
 
   @override
@@ -146,8 +151,8 @@ class HiveCardsApi extends CardsApi {
     if (found == false) {
       throw ParentNotFoundException();
     }
-    if (_subscribedStreams.containsKey(parentId)) {
-      _subscribedStreams[parentId]!.add([Removed(id: id)]);
+    if (_subscribedStreams.containsKey(path)) {
+      _subscribedStreams[path]!.add([Removed(id: id)]);
     }
     _deleteChildPaths(id);
     return _hiveBox.put(path, folders);
@@ -180,31 +185,44 @@ class HiveCardsApi extends CardsApi {
     }
 
     newStream.add(children);
-    _subscribedStreams[id] = newStream;
+    _subscribedStreams[path] = newStream;
     return newStream;
   }
 
   @override
-  void closeStreamById(String id) {
-    if (_subscribedStreams[id] != null) {
-      _subscribedStreams[id]!.close();
-      _subscribedStreams.remove(id);
+  void closeStreamById(String id, {bool deleteChildren = false}) {
+    final path = _getPath(id);
+    if (deleteChildren) {
+      final childPaths = _getChildrenPaths(id);
+      if (childPaths != null) {
+        for (final element in childPaths) {
+          if (_subscribedStreams[element] != null) {
+            _subscribedStreams[element]!.close();
+            _subscribedStreams.remove(element);
+          }
+        }
+      }
+    }
+    if (_subscribedStreams[path] != null) {
+      _subscribedStreams[path]!.close();
+      _subscribedStreams.remove(path);
     }
   }
 
   @override
   Future<void> saveSubject(Subject subject) {
+    final subjects = _subjectStreamController.value;
     final subjectIndex =
-        _subjects.indexWhere((element) => element.id == subject.id);
+        subjects.indexWhere((element) => element.id == subject.id);
     if (subjectIndex >= 0) {
-      _subjects[subjectIndex] = subject;
+      subjects[subjectIndex] = subject;
     } else {
-      _subjects.add(subject);
+      subjects.add(subject);
     }
-    _subjectStreamController.add(_subjects);
+    _subjectStreamController.add(subjects);
     _indexedPaths.add('/subjects/${subject.id}');
     _saveIndexedPaths();
-    return _hiveBox.put('/subjects', _subjectsToJson(_subjects));
+    return _hiveBox.put('/subjects', _subjectsToJson(subjects));
   }
 
   @override
@@ -237,8 +255,8 @@ class HiveCardsApi extends CardsApi {
     if (!found) {
       folders.add(_foldersToJson([folder])[0]);
     }
-    if (_subscribedStreams.containsKey(parentId)) {
-      _subscribedStreams[parentId]!.add([folder]);
+    if (_subscribedStreams.containsKey(path)) {
+      _subscribedStreams[path]!.add([folder]);
     }
     return _hiveBox.put(path, folders);
   }
@@ -271,8 +289,8 @@ class HiveCardsApi extends CardsApi {
       cards.add(_cardsToJson([card])[0]);
     }
 
-    if (_subscribedStreams.containsKey(parentId)) {
-      _subscribedStreams[parentId]!.add([card]);
+    if (_subscribedStreams.containsKey(path)) {
+      _subscribedStreams[path]!.add([card]);
     }
 
     return _hiveBox.put(path, cards);
@@ -304,8 +322,8 @@ class HiveCardsApi extends CardsApi {
       throw ParentNotFoundException();
     }
     await _hiveBox.put(folder.parentId, folders);
-    if (_subscribedStreams.containsKey(folder.parentId)) {
-      _subscribedStreams[folder.parentId]!.add([Removed(id: folder.id)]);
+    if (_subscribedStreams.containsKey(path)) {
+      _subscribedStreams[path]!.add([Removed(id: folder.id)]);
     }
     await _moveChildPaths(folder.id, newParentId);
     final newFolder = folder.copyWith(parentId: newParentId);
@@ -319,6 +337,16 @@ class HiveCardsApi extends CardsApi {
       }
     }
     return null;
+  }
+
+  List<String>? _getChildrenPaths(String parentId) {
+    final paths = <String>[];
+    for (final element in _indexedPaths) {
+      if (element.contains(parentId)) {
+        paths.add(element);
+      }
+    }
+    return paths;
   }
 
   /// /subjects/subject_0

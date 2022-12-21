@@ -9,8 +9,11 @@ import 'package:ui_components/ui_components.dart';
 import 'package:uuid/uuid.dart';
 
 class FolderListTile extends StatelessWidget {
-  const FolderListTile(
-      {super.key, required this.folder, required this.cardsRepository});
+  FolderListTile({
+    super.key,
+    required this.folder,
+    required this.cardsRepository,
+  });
 
   final Folder folder;
   final CardsRepository cardsRepository;
@@ -19,21 +22,29 @@ class FolderListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => FolderListTileBloc(cardsRepository),
-      child: FolderListTileView(folder: folder),
+      child: FolderListTileView(
+        folder: folder,
+      ),
     );
   }
 }
 
-class FolderListTileView extends StatelessWidget {
+class FolderListTileView extends StatefulWidget {
   const FolderListTileView({super.key, required this.folder});
   final Folder folder;
+
+  @override
+  State<FolderListTileView> createState() => _FolderListTileViewState();
+}
+
+class _FolderListTileViewState extends State<FolderListTileView> {
   @override
   Widget build(BuildContext context) {
     var childListTiles = <String, Widget>{};
 
     context
         .read<FolderListTileBloc>()
-        .add(FolderListTileGetChildrenById(id: folder.id));
+        .add(FolderListTileGetChildrenById(id: widget.folder.id));
 
     return Padding(
       padding: const EdgeInsets.only(bottom: UISizeConstants.defaultSize),
@@ -49,17 +60,16 @@ class FolderListTileView extends StatelessWidget {
           //       .add(FolderListTileAddCard(card: data, newParentId: folder.id));
           // }
           // TODO fix newParentId gets changed while transfering to hive_cards_api
-          if (data is Folder && data != folder) {
+          if (data is Folder && data != widget.folder) {
             context.read<FolderListTileBloc>().add(
                   FolderListTileMoveFolder(
                     folder: data,
-                    newParentId: folder.id,
+                    newParentId: widget.folder.id,
                   ),
                 );
           } else if (data is Card) {
-            context
-                .read<FolderListTileBloc>()
-                .add(FolderListTileAddCard(card: data, newParentId: folder.id));
+            context.read<FolderListTileBloc>().add(FolderListTileAddCard(
+                card: data, newParentId: widget.folder.id));
           }
           // print(data);
           // folder.childFolders.add(data);
@@ -99,44 +109,45 @@ class FolderListTileView extends StatelessWidget {
                   collapsedTextColor:
                       Theme.of(context).colorScheme.onSecondaryContainer,
                   textColor: Theme.of(context).colorScheme.onSecondaryContainer,
-                  title: Text(folder.name),
+                  title: Text(widget.folder.name),
 
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.delete),
+                        icon: const Icon(Icons.delete),
                         onPressed: () => context.read<FolderListTileBloc>().add(
                               FolderListTileDeleteFolder(
-                                id: folder.id,
-                                parentId: folder.parentId,
+                                id: widget.folder.id,
+                                parentId: widget.folder.parentId,
                               ),
                             ),
                       ),
                       IconButton(
-                        icon: Icon(Icons.flutter_dash),
+                        icon: const Icon(Icons.flutter_dash),
                         onPressed: () {
-                          for (int i = 0; i <= 20; i++) {
-                            context
-                                .read<FolderListTileBloc>()
-                                .add(FolderListTileAddCard(
+                          for (var i = 0; i <= 20; i++) {
+                            context.read<FolderListTileBloc>().add(
+                                  FolderListTileAddCard(
                                     card: Card(
                                       back: '',
-                                      front: "",
+                                      front: '',
                                       askCardsInverted: false,
                                       id: const Uuid().v4(),
-                                      dateCreated: "",
-                                      parentId: folder.id,
+                                      dateCreated: '',
+                                      parentId: widget.folder.id,
                                       dateToReview: '',
                                       typeAnswer: false,
                                     ),
-                                    newParentId: folder.id));
+                                    newParentId: widget.folder.id,
+                                  ),
+                                );
                           }
                         },
                       ),
                       Draggable<Folder>(
-                        data: folder,
-                        feedback: FolderDraggableTile(folder: folder),
+                        data: widget.folder,
+                        feedback: FolderDraggableTile(folder: widget.folder),
                         child: const Icon(Icons.drag_indicator),
                       )
                     ],
@@ -144,7 +155,7 @@ class FolderListTileView extends StatelessWidget {
                   //
                   children: [
                     ListView.builder(
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       itemCount: childListTiles.length,
                       itemBuilder: (context, index) =>
                           childListTiles.values.elementAt(index),

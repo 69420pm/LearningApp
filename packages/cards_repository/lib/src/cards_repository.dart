@@ -27,7 +27,8 @@ class CardsRepository {
       _cardsApi.getChildrenById(id);
 
   /// Close stream for a given parentId to avoid stream leaks
-  void closeStreamById(String id) => _cardsApi.closeStreamById(id);
+  void closeStreamById(String id, {bool deleteChildren = false}) =>
+      _cardsApi.closeStreamById(id, deleteChildren: deleteChildren);
 
   /// Saves a [card]
   /// If a [card] with same id already exists, it will be replaced
@@ -54,9 +55,9 @@ class CardsRepository {
 
   /// Delete subject and every children inheriting from it
   Future<void> deleteFolder(String id, String parentId) =>
-    _cardsApi.deleteFolder(id, parentId);
+      _cardsApi.deleteFolder(id, parentId);
 
   /// Move folder and every children to [newParentId]
-  Future<void> moveFolder(Folder folder, String newParentId) => 
-    _cardsApi.moveFolder(folder, newParentId);
+  Future<void> moveFolder(Folder folder, String newParentId) =>
+      _cardsApi.moveFolder(folder, newParentId);
 }

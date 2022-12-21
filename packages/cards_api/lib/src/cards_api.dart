@@ -47,14 +47,14 @@ abstract class CardsApi {
   /// thrown
   Future<void> deleteFolder(String id, String parentId);
 
-    /// Move folder and every children to [newParentId]
+  /// Move folder and every children to [newParentId]
   Future<void> moveFolder(Folder folder, String newParentId);
 
-  /// return all children in stream to a given parentId 
+  /// return all children in stream to a given parentId
   Stream<List<Object>> getChildrenById(String id);
 
   /// close stream for given parentId to avoid stream leaks
-  void closeStreamById(String id);
+  void closeStreamById(String id, {bool deleteChildren = false});
 }
 
 /// Error when a [Card] with given id is not found
@@ -66,7 +66,7 @@ class SubjectNotFoundException implements Exception {}
 /// Error when a [Folder] with given id is not found
 class FolderNotFoundException implements Exception {}
 
-/// Error when a parent ([Folder] or [Card]) doesn't exist  
+/// Error when a parent ([Folder] or [Card]) doesn't exist
 class ParentNotFoundException implements Exception {}
 
 /// Error when a stream for a given parentId wasn't found

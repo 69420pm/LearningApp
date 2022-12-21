@@ -32,4 +32,14 @@ class AddSubjectCubit extends Cubit<AddSubjectState> {
       );
     }
   }
+
+  Future<void> deleteSubject(String id) async{
+    emit(AddSubjectLoading());
+    try{
+      await _cardsRepository.deleteSubject(id);
+      emit(AddSubjectSuccess());
+    }catch(e){
+      emit(AddSubjectFailure(errorMessage: 'Subject deletion failed'));
+    }
+  }
 }

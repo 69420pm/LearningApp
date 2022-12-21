@@ -103,21 +103,22 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
       EditSubjectAddCard event, Emitter<EditSubjectState> emit) async {
     emit(EditSubjectLoading());
     final newCard = Card(
-        id: Uuid().v4(),
-        front: event.front,
-        back: event.back,
-        dateCreated: DateTime.now().toIso8601String(),
-        parentId: event.parentId,
-        askCardsInverted: true,
-        typeAnswer: true,
-        dateToReview: "");
+      id: const Uuid().v4(),
+      front: event.front,
+      back: event.back,
+      dateCreated: DateTime.now().toIso8601String(),
+      parentId: event.parentId,
+      askCardsInverted: true,
+      typeAnswer: true,
+      dateToReview: '',
+    );
     await _cardsRepository.saveCard(newCard);
     emit(EditSubjectSuccess());
   }
 
   void _closeStream(
       EditSubjectCloseStreamById event, Emitter<EditSubjectState> emit) {
-    _cardsRepository.closeStreamById(event.id);
+    _cardsRepository.closeStreamById(event.id, deleteChildren: true);
   }
 
   // Future<void> _saveFolder(
