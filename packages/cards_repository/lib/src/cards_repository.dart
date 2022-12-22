@@ -15,10 +15,7 @@ class CardsRepository {
   const CardsRepository({required CardsApi cardsApi}) : _cardsApi = cardsApi;
 
   final CardsApi _cardsApi;
-
-  /// provide a [Stream] of all cards
-  Stream<List<Card>> getCards() => _cardsApi.getCards();
-
+  
   /// provide a [Stream] of all subjects
   Stream<List<Subject>> getSubjects() => _cardsApi.getSubjects();
 

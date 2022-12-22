@@ -14,9 +14,6 @@ abstract class CardsApi {
   /// {@macro cards_api}
   const CardsApi();
 
-  /// provide a [Stream] of all cards
-  Stream<List<Card>> getCards();
-
   /// provide a [Stream] of all subjects
   Stream<List<Subject>> getSubjects();
 
