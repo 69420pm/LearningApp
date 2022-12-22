@@ -12,3 +12,10 @@ class CardListTileDeleteCard extends CardListTileEvent {
     required this.parentId,
   });
 }
+
+class CardListTileChangeSelection extends CardListTileEvent {
+  bool isSelected;
+  CardListTileChangeSelection({
+    required this.isSelected,
+  });
+}
