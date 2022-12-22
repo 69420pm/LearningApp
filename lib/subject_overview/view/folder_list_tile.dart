@@ -10,8 +10,11 @@ import 'package:ui_components/ui_components.dart';
 import 'package:uuid/uuid.dart';
 
 class FolderListTile extends StatelessWidget {
-  const FolderListTile(
-      {super.key, required this.folder, required this.cardsRepository});
+  const FolderListTile({
+    super.key,
+    required this.folder,
+    required this.cardsRepository,
+  });
 
   final Folder folder;
   final CardsRepository cardsRepository;
@@ -37,7 +40,9 @@ class FolderListTileView extends StatelessWidget {
         .add(FolderListTileGetChildrenById(id: folder.id));
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: UISizeConstants.defaultSize),
+      padding: const EdgeInsets.only(
+        bottom: UISizeConstants.defaultSize,
+      ),
       child: DragTarget(
         onAccept: (data) {
           // if (data is Folder && data != folder) {
@@ -57,7 +62,7 @@ class FolderListTileView extends StatelessWidget {
                     newParentId: folder.id,
                   ),
                 );
-          } else if (data is Card) {
+          } else if (data is Card && data.parentId != folder.id) {
             context
                 .read<FolderListTileBloc>()
                 .add(FolderListTileAddCard(card: data, newParentId: folder.id));
@@ -67,34 +72,36 @@ class FolderListTileView extends StatelessWidget {
         },
         builder: (context, candidateData, rejectedData) => Container(
           decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.background,
-              borderRadius: const BorderRadius.horizontal(
-                left: Radius.circular(UISizeConstants.cornerRadius),
-              ),
-              border: Border.all(
-                  color: Theme.of(context).colorScheme.secondary,
-                  width: UISizeConstants.borderWidth)),
-          child: Padding(
-            padding:
-                const EdgeInsets.only(left: UISizeConstants.defaultSize * 2),
-            child: BlocBuilder<FolderListTileBloc, FolderListTileState>(
-              buildWhen: (previous, current) {
-                if (current is FolderListTileRetrieveChildren) {
-                  return true;
-                }
-                return false;
-              },
-              builder: (context, state) {
-                if (state is FolderListTileRetrieveChildren) {
-                  childListTiles = {...childListTiles, ...state.childrenStream};
-                  for (final element in state.removedWidgets) {
-                    if (childListTiles.containsKey(element.id)) {
-                      childListTiles.remove(element.id);
-                    }
+            color: Theme.of(context).colorScheme.background,
+            // borderRadius: const BorderRadius.horizontal(
+            //   left: Radius.circular(UISizeConstants.cornerRadius),
+            // ),
+            // border: Border.all(
+            //   color: Theme.of(context).colorScheme.secondary,
+            //   width: UISizeConstants.borderWidth,
+            // ),
+          ),
+          child: BlocBuilder<FolderListTileBloc, FolderListTileState>(
+            buildWhen: (previous, current) {
+              if (current is FolderListTileRetrieveChildren) {
+                return true;
+              }
+              return false;
+            },
+            builder: (context, state) {
+              if (state is FolderListTileRetrieveChildren) {
+                childListTiles = {...childListTiles, ...state.childrenStream};
+                for (final element in state.removedWidgets) {
+                  if (childListTiles.containsKey(element.id)) {
+                    childListTiles.remove(element.id);
                   }
                 }
+              }
 
-                return ExpansionTile(
+              return Theme(
+                data: Theme.of(context)
+                    .copyWith(dividerColor: Colors.transparent),
+                child: ExpansionTile(
                   controlAffinity: ListTileControlAffinity.leading,
 
                   collapsedTextColor:
@@ -118,12 +125,11 @@ class FolderListTileView extends StatelessWidget {
                         icon: Icon(Icons.flutter_dash),
                         onPressed: () {
                           for (int i = 0; i <= 20; i++) {
-                            context
-                                .read<FolderListTileBloc>()
-                                .add(FolderListTileAddCard(
+                            context.read<FolderListTileBloc>().add(
+                                  FolderListTileAddCard(
                                     card: Card(
-                                      back: '',
-                                      front: "",
+                                      back: 'Servus123',
+                                      front: "Moin Test lol 69420",
                                       askCardsInverted: false,
                                       id: const Uuid().v4(),
                                       dateCreated: "",
@@ -131,7 +137,9 @@ class FolderListTileView extends StatelessWidget {
                                       dateToReview: '',
                                       typeAnswer: false,
                                     ),
-                                    newParentId: folder.id));
+                                    newParentId: folder.id,
+                                  ),
+                                );
                           }
                         },
                       ),
@@ -144,39 +152,54 @@ class FolderListTileView extends StatelessWidget {
                   ),
                   //
                   children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: childListTiles.values
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: UISizeConstants.defaultSize * 2),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (childListTiles.values
                               .where((element) => element is FolderListTile)
-                              .length,
-                          itemBuilder: (context, index) => childListTiles.values
-                              .where((element) => element is FolderListTile)
-                              .elementAt(index),
-                        ),
-                        GridView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: childListTiles.values
+                              .isNotEmpty)
+                            ListView.builder(
+                              physics: NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: childListTiles.values
+                                  .where((element) => element is FolderListTile)
+                                  .length,
+                              itemBuilder: (context, index) => childListTiles
+                                  .values
+                                  .where((element) => element is FolderListTile)
+                                  .elementAt(index),
+                            ),
+                          if (childListTiles.values
                               .where((element) => element is CardListTile)
-                              .length,
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 3),
-                          itemBuilder: (context, index) => childListTiles.values
-                              .where((element) => element is CardListTile)
-                              .elementAt(index),
-                          // shrinkWrap: true,
-                        ),
-                      ],
+                              .isNotEmpty)
+                            GridView.builder(
+                              physics: NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: childListTiles.values
+                                  .where((element) => element is CardListTile)
+                                  .length,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                childAspectRatio: 3 / 1,
+                                crossAxisCount: 2,
+                                crossAxisSpacing: UISizeConstants.defaultSize,
+                              ),
+                              itemBuilder: (context, index) => childListTiles
+                                  .values
+                                  .where((element) => element is CardListTile)
+                                  .elementAt(index),
+                              // shrinkWrap: true,
+                            ),
+                        ],
+                      ),
                     ),
                   ],
-                );
-              },
-            ),
+                ),
+              );
+            },
           ),
         ),
       ),

@@ -24,7 +24,8 @@ class CardListTile extends StatelessWidget {
   }
 }
 
-class CardListTileView extends StatefulWidget {
+class CardListTileView extends StatelessWidget {
+  final GlobalKey globalKey = GlobalKey();
   CardListTileView(
       {super.key, required this.card, required this.cardsRepository});
 
@@ -32,69 +33,70 @@ class CardListTileView extends StatefulWidget {
   final CardsRepository cardsRepository;
 
   @override
-  State<CardListTileView> createState() => _CardListTileViewState();
-}
-
-class _CardListTileViewState extends State<CardListTileView> {
-  bool isDragged = false;
-  final GlobalKey globalKey = GlobalKey();
-
-  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: UISizeConstants.defaultSize),
-      child: Container(
-        key: globalKey,
-        width: double.infinity,
-        height: UISizeConstants.defaultSize * 5,
-        decoration: BoxDecoration(
-          color: isDragged
-              ? Theme.of(context)
-                  .colorScheme
-                  .secondaryContainer
-                  .withOpacity(0.4)
-              : Theme.of(context).colorScheme.secondaryContainer,
-          borderRadius: const BorderRadius.all(
-            Radius.circular(UISizeConstants.cornerRadius),
-          ),
-        ),
-        child: Center(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                widget.card.front,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSecondaryContainer),
-              ),
-              Spacer(),
-              IconButton(
-                onPressed: () {
-                  /// delete card
-                  context.read<CardListTileBloc>().add(
-                        CardListTileDeleteCard(
-                          id: widget.card.id,
-                          parentId: widget.card.parentId,
-                        ),
-                      );
-                },
-                icon: const Icon(Icons.delete),
-              ),
-              Draggable(
-                  data: widget.card,
-                  feedback: CardDraggableListTile(
-                    card: widget.card,
+      child: BlocBuilder<CardListTileBloc, CardListTileState>(
+        builder: (context, state) {
+          return LongPressDraggable(
+            data: card,
+            onDragEnd: (details) => context.read<CardListTileBloc>().add(
+                CardListTileChangeSelection(isSelected: details.wasAccepted)),
+            feedback: CardDraggableListTile(
+              card: card,
+            ),
+            childWhenDragging: Container(),
+            child: Container(
+              key: globalKey,
+              decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.secondaryContainer,
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(UISizeConstants.cornerRadius),
                   ),
-                  onDragStarted: () => setState(
-                        () => isDragged = true,
+                  border: Border.all(
+                      color: (state is CardListTileSelected)
+                          ? Theme.of(context).colorScheme.primary
+                          : Colors.transparent,
+                      width: UISizeConstants.borderWidth)),
+              child: Center(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: UISizeConstants.defaultSize),
+                        child: Text(
+                          card.front,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSecondaryContainer),
+                        ),
                       ),
-                  onDragEnd: (_) => setState(
-                        () => isDragged = false,
-                      ),
-                  child: Icon(Icons.drag_indicator_sharp)),
-            ],
-          ),
-        ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        /// delete card
+                        context.read<CardListTileBloc>().add(
+                              CardListTileDeleteCard(
+                                id: card.id,
+                                parentId: card.parentId,
+                              ),
+                            );
+                      },
+                      icon: const Icon(Icons.delete),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
