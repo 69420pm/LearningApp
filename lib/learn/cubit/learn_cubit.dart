@@ -14,4 +14,8 @@ class LearnCubit extends Cubit<LearnState> {
   void newCard(int raitingLastCard) {
     emit(FrontState());
   }
+
+  void learnAllCards(){
+    
+  }
 }

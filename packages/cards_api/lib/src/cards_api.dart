@@ -17,6 +17,9 @@ abstract class CardsApi {
   /// provide a [Stream] of all subjects
   Stream<List<Subject>> getSubjects();
 
+  /// return all cards which should get learned
+  List<Card> learnAllCards();
+
   /// Saves a [card]
   /// If a [card] with same id already exists, it will be replaced
   Future<void> saveCard(Card card);

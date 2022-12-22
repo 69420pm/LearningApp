@@ -15,7 +15,7 @@ class LearningScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: UIAppBar(
-        title: Text("Learning Site"),
+        title: const Text('Learning Site'),
         scrolledUnderElevation: 0,
       ),
       body: Padding(
@@ -23,33 +23,33 @@ class LearningScreen extends StatelessWidget {
             const EdgeInsets.symmetric(horizontal: UISizeConstants.paddingEdge),
         child: Column(
           children: [
-            SizedBox(height: UISizeConstants.defaultSize * 2),
-            LearningCard(),
+            const SizedBox(height: UISizeConstants.defaultSize * 2),
+            const LearningCard(),
             BlocBuilder<LearnCubit, LearnState>(
               builder: (context, state) {
                 return Opacity(
                   opacity: state is BackState ? 1 : 0,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                        vertical: UISizeConstants.defaultSize * 3),
+                        vertical: UISizeConstants.defaultSize * 3,),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         UIButton(
                           onTap: () => context.read<LearnCubit>().newCard(-1),
-                          lable: "D runter",
+                          lable: 'D runter',
                           color: Colors.red,
                           textColor: Colors.black,
                         ),
                         UIButton(
                           onTap: () => context.read<LearnCubit>().newCard(0),
-                          lable: "D mitte",
+                          lable: 'D mitte',
                           textColor: Colors.black,
                           color: Colors.yellow,
                         ),
                         UIButton(
                           onTap: () => context.read<LearnCubit>().newCard(1),
-                          lable: "D hoch",
+                          lable: 'D hoch',
                           textColor: Colors.black,
                           color: Colors.green,
                         ),

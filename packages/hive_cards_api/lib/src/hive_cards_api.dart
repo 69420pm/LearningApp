@@ -5,8 +5,6 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-import 'dart:ffi';
-
 import 'package:cards_api/cards_api.dart';
 import 'package:hive/hive.dart';
 import 'package:rxdart/rxdart.dart' hide Subject;
@@ -21,7 +19,7 @@ class HiveCardsApi extends CardsApi {
   }
 
   final Box<dynamic> _hiveBox;
-  static const List<String> ASCIICHARS = [
+  static const List<String> _ASCIICHARS = [
     '!',
     '"',
     '#',
@@ -505,15 +503,16 @@ class HiveCardsApi extends CardsApi {
 
   String _makePathStorable(String path) {
     final singleIds = path.split('/');
-    singleIds.removeAt(0);
-    singleIds.removeAt(0);
-    String newPath = '/subjects';
+    singleIds
+      ..removeAt(0)
+      ..removeAt(0);
+    var newPath = '/subjects';
     for (final id in singleIds) {
       if (_storeIds.containsKey(id)) {
         newPath += '/${_storeIds[id]!}';
       } else {
-        String newKey = ASCIICHARS[0];
-        if (!_storeIds.isEmpty) {
+        var newKey = _ASCIICHARS[0];
+        if (_storeIds.isNotEmpty) {
           newKey = (_addOneToString(_storeIds.values.last)).toString();
         }
         _storeIds[id] = newKey;
@@ -581,16 +580,35 @@ class HiveCardsApi extends CardsApi {
 
   String _addOneToString(String previous) {
     if (previous.isEmpty) return '';
-    final currentIndex = ASCIICHARS.indexOf(previous[previous.length - 1]);
-    if (currentIndex == ASCIICHARS.length - 1) {
+    final currentIndex = _ASCIICHARS.indexOf(previous[previous.length - 1]);
+    if (currentIndex == _ASCIICHARS.length - 1) {
       if ((previous.substring(0, previous.length - 1)).isEmpty) {
-        return ASCIICHARS[1] + ASCIICHARS[0];
+        return _ASCIICHARS[1] + _ASCIICHARS[0];
       }
       return _addOneToString(previous.substring(0, previous.length - 1)) +
-          ASCIICHARS[0];
+          _ASCIICHARS[0];
     } else {
       return previous.substring(0, previous.length - 1) +
-          ASCIICHARS[currentIndex + 1];
+          _ASCIICHARS[currentIndex + 1];
     }
+  }
+  
+  @override
+  List<Card> learnAllCards() {
+    final cardsToLearn = <Card>[];
+    DateTime now = DateTime.now();
+    for(final element in _indexedPaths){
+      final loadedCardStrings = _hiveBox.get(element) as List<String>;
+      for(final loadedCardString in loadedCardStrings){
+        print(loadedCardString);
+        if(loadedCardString.substring(20).startsWith('front')){
+          Card card = Card.fromJson(loadedCardString);
+          if(DateTime.parse(card.dateToReview).compareTo(now) < 0){
+            cardsToLearn.add(card);
+          }
+        }
+      }
+    }
+    return cardsToLearn;
   }
 }

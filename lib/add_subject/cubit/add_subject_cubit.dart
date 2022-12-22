@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:cards_repository/cards_repository.dart';
+import 'package:learning_app/app/helper/uid.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
@@ -13,7 +14,7 @@ class AddSubjectCubit extends Cubit<AddSubjectState> {
   Future<void> saveSubject(String name, String parentId, String icon) async {
     emit(AddSubjectLoading());
     final newSubject = Subject(
-        id: const Uuid().v4(),
+       id: Uid().uid(),
         name: name,
         dateCreated: DateTime.now().toIso8601String(),
         prefixIcon: icon,

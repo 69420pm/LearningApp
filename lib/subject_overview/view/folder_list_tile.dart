@@ -3,6 +3,7 @@ import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/app/helper/uid.dart';
 import 'package:learning_app/subject_overview/bloc/folder_list_tile_bloc.dart';
 import 'package:learning_app/subject_overview/view/folder_draggable_tile.dart';
 import 'package:ui_components/ui_components.dart';
@@ -133,7 +134,7 @@ class _FolderListTileViewState extends State<FolderListTileView> {
                                       back: '',
                                       front: '',
                                       askCardsInverted: false,
-                                      id: const Uuid().v4(),
+                                      id: Uid().uid(),
                                       dateCreated: '',
                                       parentId: widget.folder.id,
                                       dateToReview: '',
