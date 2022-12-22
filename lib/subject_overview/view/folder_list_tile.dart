@@ -5,6 +5,7 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/app/helper/uid.dart';
 import 'package:learning_app/subject_overview/bloc/folder_list_tile_bloc.dart';
+import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_draggable_tile.dart';
 import 'package:ui_components/ui_components.dart';
 import 'package:uuid/uuid.dart';
@@ -155,12 +156,34 @@ class _FolderListTileViewState extends State<FolderListTileView> {
                   ),
                   //
                   children: [
-                    ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: childListTiles.length,
-                      itemBuilder: (context, index) =>
-                          childListTiles.values.elementAt(index),
-                      shrinkWrap: true,
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ListView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: childListTiles.values
+                              .where((element) => element is FolderListTile)
+                              .length,
+                          itemBuilder: (context, index) => childListTiles.values
+                              .where((element) => element is FolderListTile)
+                              .elementAt(index),
+                        ),
+                        GridView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: childListTiles.values
+                              .where((element) => element is CardListTile)
+                              .length,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3),
+                          itemBuilder: (context, index) => childListTiles.values
+                              .where((element) => element is CardListTile)
+                              .elementAt(index),
+                          // shrinkWrap: true,
+                        ),
+                      ],
                     ),
                   ],
                 );

@@ -45,57 +45,31 @@ class AddSubjectBottomSheet extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Padding(
             padding: const EdgeInsets.symmetric(
-                horizontal: UISizeConstants.paddingEdge,
-                vertical: UISizeConstants.defaultSize),
-            child: Column(children: [
-              /// Name
-              UITextFormField(
-                autofocus: true,
-                controller: nameController,
-                onChanged: (_) => print("change"),
-                onLoseFocus: (_) => print("lose Focus"),
-                onFieldSubmitted: (_) async {
-                  if (formKey.currentState!.validate()) {
-                    await context.read<AddSubjectCubit>().saveSubject(
-                        nameController.text,
-                        locationController.text,
-                        iconController.text);
-                  }
-                  Navigator.pop(context);
-                },
-                validation: (value) {
-                  if (value!.isEmpty) {
-                    return 'Enter something';
-                  } else {
-                    return null;
-                  }
-                },
-                label: "Subject name",
-              ),
-
-              // /// File Location can be empty
-              // TextFormField(
-              //   controller: locationController,
-              // ),
-
-              // /// Prefix icon
-              // TextFormField(
-              //   controller: iconController,
-              // ),
-
-              // UIButton(
-              //   onTap: () async {
-              //     if (formKey.currentState!.validate()) {
-              //       await context.read<AddSubjectCubit>().saveSubject(
-              //           nameController.text,
-              //           locationController.text,
-              //           iconController.text);
-              //     }
-              //     Navigator.pop(context);
-              //   },
-              //   lable: "Save",
-              // )
-            ]),
+              horizontal: UISizeConstants.defaultSize,
+            ),
+            child: UITextFormField(
+              autofocus: true,
+              controller: nameController,
+              onChanged: (_) => print("change"),
+              onLoseFocus: (_) => print("lose Focus"),
+              onFieldSubmitted: (_) async {
+                if (formKey.currentState!.validate()) {
+                  await context.read<AddSubjectCubit>().saveSubject(
+                      nameController.text,
+                      locationController.text,
+                      iconController.text);
+                }
+                Navigator.pop(context);
+              },
+              validation: (value) {
+                if (value!.isEmpty) {
+                  return 'Enter something';
+                } else {
+                  return null;
+                }
+              },
+              label: "Subject name",
+            ),
           ),
         ),
       ),
