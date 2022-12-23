@@ -111,7 +111,7 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
       parentId: event.parentId,
       askCardsInverted: true,
       typeAnswer: true,
-      dateToReview: '',
+      dateToReview: DateTime.now().toIso8601String(),
     );
     await _cardsRepository.saveCard(newCard);
     emit(EditSubjectSuccess());

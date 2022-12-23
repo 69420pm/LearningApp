@@ -260,7 +260,7 @@ class HiveCardsApi extends CardsApi {
       throw ParentNotFoundException();
     }
 
-    final cards = _hiveBox.get(path) as List<String>?;
+    final cards = _hiveBox.get(_makePathStorable(path)) as List<String>?;
     var found = false;
     if (cards != null) {
       for (final element in cards) {
@@ -278,7 +278,7 @@ class HiveCardsApi extends CardsApi {
     if (_subscribedStreams.containsKey(path)) {
       _subscribedStreams[path]!.add([Removed(id: id)]);
     }
-    return _hiveBox.put(path, cards);
+    return _hiveBox.put(_makePathStorable(path), cards);
   }
 
   @override
@@ -301,7 +301,7 @@ class HiveCardsApi extends CardsApi {
     if (path == null) {
       throw ParentNotFoundException();
     }
-    final folders = _hiveBox.get(path) as List<String>?;
+    final folders = _hiveBox.get(_makePathStorable(path)) as List<String>?;
     var found = false;
     if (folders != null) {
       for (final element in folders) {
@@ -319,7 +319,7 @@ class HiveCardsApi extends CardsApi {
       _subscribedStreams[path]!.add([Removed(id: id)]);
     }
     _deleteChildPaths(id);
-    return _hiveBox.put(path, folders);
+    return _hiveBox.put(_makePathStorable(path), folders);
   }
 
   @override
@@ -333,7 +333,8 @@ class HiveCardsApi extends CardsApi {
     if (path == null) {
       throw StreamNotFoundException();
     }
-    final childrenStrings = _hiveBox.get(path) as List<String>?;
+    final childrenStrings =
+        _hiveBox.get(_makePathStorable(path)) as List<String>?;
     final children = <Object>[];
     if (childrenStrings != null) {
       for (final element in childrenStrings) {
@@ -372,7 +373,8 @@ class HiveCardsApi extends CardsApi {
 
   @override
   Future<void> saveSubject(Subject subject) {
-    final subjects = _subjectStreamController.value;
+    var subjects = _subjectStreamController.value;
+    if (subjects.isEmpty) subjects = [];
     final subjectIndex =
         subjects.indexWhere((element) => element.id == subject.id);
     if (subjectIndex >= 0) {
@@ -399,7 +401,7 @@ class HiveCardsApi extends CardsApi {
       _indexedPaths.add('$path/${folder.id}');
       _saveIndexedPaths();
     }
-    var folders = _hiveBox.get(path) as List<String>?;
+    var folders = _hiveBox.get(_makePathStorable(path)) as List<String>?;
     var found = false;
     if (folders != null) {
       for (var element in folders) {
@@ -419,7 +421,7 @@ class HiveCardsApi extends CardsApi {
     if (_subscribedStreams.containsKey(path)) {
       _subscribedStreams[path]!.add([folder]);
     }
-    return _hiveBox.put(path, folders);
+    return _hiveBox.put(_makePathStorable(path), folders);
   }
 
   @override
@@ -431,7 +433,7 @@ class HiveCardsApi extends CardsApi {
     if (path == null) {
       throw ParentNotFoundException();
     }
-    var cards = _hiveBox.get(path) as List<String>?;
+    var cards = _hiveBox.get(_makePathStorable(path)) as List<String>?;
     var found = false;
     if (cards != null) {
       for (var element in cards) {
@@ -454,7 +456,7 @@ class HiveCardsApi extends CardsApi {
       _subscribedStreams[path]!.add([card]);
     }
 
-    return _hiveBox.put(path, cards);
+    return _hiveBox.put(_makePathStorable(path), cards);
   }
 
   @override
@@ -468,7 +470,7 @@ class HiveCardsApi extends CardsApi {
       return;
     }
 
-    final folders = _hiveBox.get(path) as List<String>?;
+    final folders = _hiveBox.get(_makePathStorable(path)) as List<String>?;
     var found = false;
     if (folders != null) {
       for (final element in folders) {
@@ -482,6 +484,7 @@ class HiveCardsApi extends CardsApi {
     if (found == false) {
       throw ParentNotFoundException();
     }
+    //! dafaq
     await _hiveBox.put(folder.parentId, folders);
     if (_subscribedStreams.containsKey(path)) {
       _subscribedStreams[path]!.add([Removed(id: folder.id)]);
@@ -520,7 +523,6 @@ class HiveCardsApi extends CardsApi {
         _hiveBox.put('/store_ids', _storeIds as Map<dynamic, dynamic>);
       }
     }
-    print(newPath + '   ' + path);
     return newPath;
   }
 
@@ -560,10 +562,11 @@ class HiveCardsApi extends CardsApi {
         final newPath =
             '$newPrefix/${element.substring(element.indexOf(oldId))}';
         newIndexPaths.add(newPath);
-        final previousStoredObjects = _hiveBox.get(element) as List<String>?;
+        final previousStoredObjects =
+            _hiveBox.get(_makePathStorable(element)) as List<String>?;
         if (previousStoredObjects != null) {
           await _hiveBox.delete(element);
-          await _hiveBox.put(newPath, previousStoredObjects);
+          await _hiveBox.put(_makePathStorable(newPath), previousStoredObjects);
         }
       } else {
         newIndexPaths.add(element);
@@ -592,20 +595,27 @@ class HiveCardsApi extends CardsApi {
           _ASCIICHARS[currentIndex + 1];
     }
   }
-  
+
   @override
   List<Card> learnAllCards() {
     final cardsToLearn = <Card>[];
     DateTime now = DateTime.now();
-    for(final element in _indexedPaths){
-      final loadedCardStrings = _hiveBox.get(element) as List<String>?;
-      if(loadedCardStrings == null) continue;
-      for(final loadedCardString in loadedCardStrings){
-        print(loadedCardString);
-        if(loadedCardString.substring(20).startsWith('front')){
+    for (final element in _indexedPaths) {
+      final loadedCardStrings =
+          _hiveBox.get(_makePathStorable(element)) as List<String>?;
+      if (loadedCardStrings == null) continue;
+      for (final loadedCardString in loadedCardStrings) {
+        if (loadedCardString.substring(46).startsWith('front')) {
           Card card = Card.fromJson(loadedCardString);
-          if(DateTime.parse(card.dateToReview).compareTo(now) < 0){
+          try {
+            if (DateTime.parse(card.dateToReview).compareTo(now) < 0) {
+              cardsToLearn.add(card);
+            }
+          } catch (e) {
             cardsToLearn.add(card);
+            final newCard =
+                card.copyWith(dateToReview: DateTime.now().toIso8601String());
+            saveCard(newCard);
           }
         }
       }
