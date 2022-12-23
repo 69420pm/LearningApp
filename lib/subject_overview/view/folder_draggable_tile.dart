@@ -20,12 +20,14 @@ class FolderDraggableTile extends StatelessWidget {
       child: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(
-              horizontal: UISizeConstants.defaultSize * 2,
-              vertical: UISizeConstants.defaultSize),
+            horizontal: UISizeConstants.defaultSize * 2,
+            vertical: UISizeConstants.defaultSize,
+          ),
           child: Text(
             folder.name,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSecondaryContainer),
+                  color: Theme.of(context).colorScheme.onSecondaryContainer,
+                ),
           ),
         ),
       ),

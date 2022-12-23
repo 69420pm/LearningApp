@@ -101,15 +101,16 @@ class _FolderListTileViewState extends State<FolderListTileView> {
                 for (final element in state.removedWidgets) {
                   if (childListTiles.containsKey(element.id)) {
                     childListTiles.remove(element.id);
+
                   }
                 }
-              }
 
-              return Theme(
-                data: Theme.of(context)
-                    .copyWith(dividerColor: Colors.transparent),
-                child: ExpansionTile(
-                  controlAffinity: ListTileControlAffinity.leading,
+                return Theme(
+                  data: Theme.of(context)
+                      .copyWith(dividerColor: Colors.transparent),
+                  child: ExpansionTile(
+                    controlAffinity: ListTileControlAffinity.leading,
+
 
                   collapsedTextColor:
                       Theme.of(context).colorScheme.onSecondaryContainer,
@@ -145,71 +146,98 @@ class _FolderListTileViewState extends State<FolderListTileView> {
                                       typeAnswer: false,
                                     ),
                                     newParentId: widget.folder.id,
+
                                   ),
-                                );
-                          }
-                        },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.flutter_dash),
+                          onPressed: () {
+                            for (var i = 0; i <= 20; i++) {
+                              context.read<FolderListTileBloc>().add(
+                                    FolderListTileAddCard(
+                                      card: Card(
+                                        back: 'test$i',
+                                        front: 'test$i',
+                                        askCardsInverted: false,
+                                        id: const Uuid().v4(),
+                                        dateCreated: '',
+                                        parentId: folder.id,
+                                        dateToReview: '',
+                                        typeAnswer: false,
+                                      ),
+                                      newParentId: folder.id,
+                                    ),
+                                  );
+                            }
+                          },
+                        ),
+                        Draggable<Folder>(
+                          data: folder,
+                          feedback: FolderDraggableTile(folder: folder),
+                          child: const Icon(Icons.drag_indicator),
+                        )
+                      ],
+                    ),
+                    //
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: UISizeConstants.defaultSize * 2,
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (childListTiles.values
+                                .whereType<FolderListTile>()
+                                .isNotEmpty)
+                              ListView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: childListTiles.values
+                                    .whereType<FolderListTile>()
+                                    .length,
+                                itemBuilder: (context, index) => childListTiles
+                                    .values
+                                    .whereType<FolderListTile>()
+                                    .elementAt(index),
+                              ),
+                            if (childListTiles.values
+                                .whereType<CardListTile>()
+                                .isNotEmpty)
+                              GridView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: childListTiles.values
+                                    .whereType<CardListTile>()
+                                    .length,
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  childAspectRatio: 3 / 1,
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: UISizeConstants.defaultSize,
+                                ),
+                                itemBuilder: (context, index) => childListTiles
+                                    .values
+                                    .whereType<CardListTile>()
+                                    .elementAt(index),
+                                // shrinkWrap: true,
+                              ),
+                          ],
+                        ),
                       ),
+
                       Draggable<Folder>(
                         data: widget.folder,
                         feedback: FolderDraggableTile(folder: widget.folder),
                         child: const Icon(Icons.drag_indicator),
                       )
+
                     ],
                   ),
-                  //
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: UISizeConstants.defaultSize * 2),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (childListTiles.values
-                              .where((element) => element is FolderListTile)
-                              .isNotEmpty)
-                            ListView.builder(
-                              physics: NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: childListTiles.values
-                                  .where((element) => element is FolderListTile)
-                                  .length,
-                              itemBuilder: (context, index) => childListTiles
-                                  .values
-                                  .where((element) => element is FolderListTile)
-                                  .elementAt(index),
-                            ),
-                          if (childListTiles.values
-                              .where((element) => element is CardListTile)
-                              .isNotEmpty)
-                            GridView.builder(
-                              physics: NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: childListTiles.values
-                                  .where((element) => element is CardListTile)
-                                  .length,
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                childAspectRatio: 3 / 1,
-                                crossAxisCount: 2,
-                                crossAxisSpacing: UISizeConstants.defaultSize,
-                              ),
-                              itemBuilder: (context, index) => childListTiles
-                                  .values
-                                  .where((element) => element is CardListTile)
-                                  .elementAt(index),
-                              // shrinkWrap: true,
-                            ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 }
