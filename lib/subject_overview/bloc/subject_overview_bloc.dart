@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:learning_app/app/helper/uid.dart';
 import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
 import 'package:uuid/uuid.dart';
@@ -91,7 +92,7 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
   ) async {
     emit(EditSubjectLoading());
     final newFolder = Folder(
-        id: Uuid().v4(),
+        id: Uid().uid(),
         name: event.name,
         dateCreated: DateTime.now().toIso8601String(),
         parentId: event.parentId);
@@ -103,21 +104,22 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
       EditSubjectAddCard event, Emitter<EditSubjectState> emit) async {
     emit(EditSubjectLoading());
     final newCard = Card(
-        id: Uuid().v4(),
-        front: event.front,
-        back: event.back,
-        dateCreated: DateTime.now().toIso8601String(),
-        parentId: event.parentId,
-        askCardsInverted: true,
-        typeAnswer: true,
-        dateToReview: "");
+      id: Uid().uid(),
+      front: event.front,
+      back: event.back,
+      dateCreated: DateTime.now().toIso8601String(),
+      parentId: event.parentId,
+      askCardsInverted: true,
+      typeAnswer: true,
+      dateToReview: '',
+    );
     await _cardsRepository.saveCard(newCard);
     emit(EditSubjectSuccess());
   }
 
   void _closeStream(
       EditSubjectCloseStreamById event, Emitter<EditSubjectState> emit) {
-    _cardsRepository.closeStreamById(event.id);
+    _cardsRepository.closeStreamById(event.id, deleteChildren: true);
   }
 
   // Future<void> _saveFolder(

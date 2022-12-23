@@ -41,7 +41,9 @@ class FolderListTileBloc
         for (final element in data) {
           if (element is Folder) {
             childListTiles[element.id] = FolderListTile(
-                folder: element, cardsRepository: _cardsRepository);
+              folder: element,
+              cardsRepository: _cardsRepository,
+            );
           } else if (element is Card) {
             childListTiles[element.id] = CardListTile(
               card: element,
@@ -101,10 +103,11 @@ class FolderListTileBloc
       FolderListTileMoveFolder event, Emitter<FolderListTileState> emit) async {
     emit(FolderListTileLoading());
     // try {
-      await _cardsRepository.moveFolder(event.folder, event.newParentId);
-      emit(FolderListTileSuccess());
+    await _cardsRepository.moveFolder(event.folder, event.newParentId);
+    emit(FolderListTileSuccess());
     // } catch (e) {
     //   emit(FolderListTileError(errorMessage: "folder moving failed"));
     // }
   }
+
 }
