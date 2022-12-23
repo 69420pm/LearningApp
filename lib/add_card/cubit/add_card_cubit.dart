@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:cards_repository/cards_repository.dart';
 import 'package:learning_app/add_subject/cubit/add_subject_cubit.dart';
+import 'package:learning_app/app/helper/uid.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
@@ -15,14 +16,14 @@ class AddCardCubit extends Cubit<AddCardState> {
       String front, String back, Subject parentSubject, String icon) async {
     emit(AddCardLoading());
     final newCard = Card(
-        id: const Uuid().v4(),
+        id: Uid().uid(),
         front: front,
         back: back,
         dateCreated: DateTime.now().toIso8601String(),
         parentId: parentSubject.id,
         askCardsInverted: false,
         typeAnswer: true,
-        dateToReview: DateTime.thursday.toString());
+        dateToReview: DateTime.now().toIso8601String());
     try {
       // parentSubject.childCards.add(newCard);
       await _cardsRepository.saveCard(newCard);

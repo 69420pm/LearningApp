@@ -15,19 +15,20 @@ class CardsRepository {
   const CardsRepository({required CardsApi cardsApi}) : _cardsApi = cardsApi;
 
   final CardsApi _cardsApi;
-
-  /// provide a [Stream] of all cards
-  Stream<List<Card>> getCards() => _cardsApi.getCards();
-
+  
   /// provide a [Stream] of all subjects
   Stream<List<Subject>> getSubjects() => _cardsApi.getSubjects();
+
+  /// return all cards to learn
+  List<Card> learnAllCards() => _cardsApi.learnAllCards();
 
   /// return all children for a given parentId in a stream
   Stream<List<Object>> getChildrenById(String id) =>
       _cardsApi.getChildrenById(id);
 
   /// Close stream for a given parentId to avoid stream leaks
-  void closeStreamById(String id) => _cardsApi.closeStreamById(id);
+  void closeStreamById(String id, {bool deleteChildren = false}) =>
+      _cardsApi.closeStreamById(id, deleteChildren: deleteChildren);
 
   /// Saves a [card]
   /// If a [card] with same id already exists, it will be replaced
@@ -54,9 +55,9 @@ class CardsRepository {
 
   /// Delete subject and every children inheriting from it
   Future<void> deleteFolder(String id, String parentId) =>
-    _cardsApi.deleteFolder(id, parentId);
+      _cardsApi.deleteFolder(id, parentId);
 
   /// Move folder and every children to [newParentId]
-  Future<void> moveFolder(Folder folder, String newParentId) => 
-    _cardsApi.moveFolder(folder, newParentId);
+  Future<void> moveFolder(Folder folder, String newParentId) =>
+      _cardsApi.moveFolder(folder, newParentId);
 }

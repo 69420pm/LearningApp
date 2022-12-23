@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
+import 'package:learning_app/app/helper/uid.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
@@ -24,7 +25,7 @@ class AddFolderCubit extends Cubit<AddFolderState> {
       return;
     }
     final newFolder = Folder(
-        id: const Uuid().v4(),
+        id: Uid().uid(),
         name: name,
         parentId: parentId,
         dateCreated: DateTime.now().toIso8601String(),
