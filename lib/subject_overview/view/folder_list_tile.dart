@@ -1,6 +1,5 @@
 import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/app/helper/uid.dart';
@@ -8,14 +7,9 @@ import 'package:learning_app/subject_overview/bloc/folder_list_tile_bloc.dart';
 import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_draggable_tile.dart';
 import 'package:ui_components/ui_components.dart';
-import 'package:uuid/uuid.dart';
 
 class FolderListTile extends StatelessWidget {
-<<<<<<< HEAD
-  FolderListTile({
-=======
   const FolderListTile({
->>>>>>> 7cdcb4cf446508b7f345ee20e674be527c66fcf4
     super.key,
     required this.folder,
     required this.cardsRepository,
@@ -75,16 +69,10 @@ class _FolderListTileViewState extends State<FolderListTileView> {
                     newParentId: widget.folder.id,
                   ),
                 );
-<<<<<<< HEAD
-          } else if (data is Card) {
-            context.read<FolderListTileBloc>().add(FolderListTileAddCard(
-                card: data, newParentId: widget.folder.id));
-=======
-          } else if (data is Card && data.parentId != folder.id) {
+          } else if (data is Card && data.parentId != widget.folder.id) {
             context
                 .read<FolderListTileBloc>()
-                .add(FolderListTileAddCard(card: data, newParentId: folder.id));
->>>>>>> 7cdcb4cf446508b7f345ee20e674be527c66fcf4
+                .add(FolderListTileAddCard(card: data, newParentId: widget.folder.id));
           }
           // print(data);
           // folder.childFolders.add(data);
@@ -143,21 +131,12 @@ class _FolderListTileViewState extends State<FolderListTileView> {
                       IconButton(
                         icon: const Icon(Icons.flutter_dash),
                         onPressed: () {
-<<<<<<< HEAD
-                          for (var i = 0; i <= 20; i++) {
-                            context.read<FolderListTileBloc>().add(
-                                  FolderListTileAddCard(
-                                    card: Card(
-                                      back: '',
-                                      front: '',
-=======
                           for (int i = 0; i <= 20; i++) {
                             context.read<FolderListTileBloc>().add(
                                   FolderListTileAddCard(
                                     card: Card(
                                       back: 'Servus123',
                                       front: "Moin Test lol 69420",
->>>>>>> 7cdcb4cf446508b7f345ee20e674be527c66fcf4
                                       askCardsInverted: false,
                                       id: Uid().uid(),
                                       dateCreated: '',
@@ -165,11 +144,7 @@ class _FolderListTileViewState extends State<FolderListTileView> {
                                       dateToReview: '',
                                       typeAnswer: false,
                                     ),
-<<<<<<< HEAD
                                     newParentId: widget.folder.id,
-=======
-                                    newParentId: folder.id,
->>>>>>> 7cdcb4cf446508b7f345ee20e674be527c66fcf4
                                   ),
                                 );
                           }
