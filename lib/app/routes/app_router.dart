@@ -29,8 +29,8 @@ class AppRouter {
   late final AddCardCubit _addCardCubit = AddCardCubit(_cardsRepository);
   late final OverviewBloc _overviewBloc = OverviewBloc(_cardsRepository)
     ..add(OverviewSubjectSubscriptionRequested());
-  late final LearnCubit _learnCubit = LearnCubit();
-
+  late final LearnCubit _learnCubit = LearnCubit(_cardsRepository);
+  
   Route<dynamic> onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
       // home page, with bottom navigation bar
@@ -128,5 +128,5 @@ class AppRouter {
 }
 
 class LearnPageArguments{
-  
+
 }

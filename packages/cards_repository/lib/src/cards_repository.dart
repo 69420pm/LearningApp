@@ -19,6 +19,9 @@ class CardsRepository {
   /// provide a [Stream] of all subjects
   Stream<List<Subject>> getSubjects() => _cardsApi.getSubjects();
 
+  /// return all cards to learn
+  List<Card> learnAllCards() => _cardsApi.learnAllCards();
+
   /// return all children for a given parentId in a stream
   Stream<List<Object>> getChildrenById(String id) =>
       _cardsApi.getChildrenById(id);

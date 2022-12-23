@@ -9,6 +9,10 @@ class CardListTileLoading extends CardListTileState {}
 
 class CardListTileSuccess extends CardListTileState {}
 
+class CardListTileSelected extends CardListTileState {}
+
+class CardListTileUnselected extends CardListTileState {}
+
 class CardListTileError extends CardListTileState {
   String errorMessage;
   CardListTileError({

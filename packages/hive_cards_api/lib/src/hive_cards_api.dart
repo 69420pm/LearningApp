@@ -598,7 +598,8 @@ class HiveCardsApi extends CardsApi {
     final cardsToLearn = <Card>[];
     DateTime now = DateTime.now();
     for(final element in _indexedPaths){
-      final loadedCardStrings = _hiveBox.get(element) as List<String>;
+      final loadedCardStrings = _hiveBox.get(element) as List<String>?;
+      if(loadedCardStrings == null) continue;
       for(final loadedCardString in loadedCardStrings){
         print(loadedCardString);
         if(loadedCardString.substring(20).startsWith('front')){

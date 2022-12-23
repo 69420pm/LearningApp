@@ -12,6 +12,7 @@ class LearningScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.read<LearnCubit>().learnAllCards();
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: UIAppBar(

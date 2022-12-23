@@ -10,13 +10,29 @@ class CardListTileBloc extends Bloc<CardListTileEvent, CardListTileState> {
     on<CardListTileDeleteCard>((event, emit) async {
       await _deleteCard(event, emit);
     });
+    on<CardListTileChangeSelection>(
+      _changeSelection,
+    );
   }
   CardsRepository _cardsRepository;
 
   Future<void> _deleteCard(
-      CardListTileDeleteCard event, Emitter<CardListTileState> emit) async {
+    CardListTileDeleteCard event,
+    Emitter<CardListTileState> emit,
+  ) async {
     emit(CardListTileLoading());
     await _cardsRepository.deleteCard(event.id, event.parentId);
     emit(CardListTileSuccess());
+  }
+
+  _changeSelection(
+    CardListTileChangeSelection event,
+    Emitter<CardListTileState> emit,
+  ) {
+    if (event.isSelected) {
+      emit(CardListTileSelected());
+    } else {
+      emit(CardListTileUnselected());
+    }
   }
 }
