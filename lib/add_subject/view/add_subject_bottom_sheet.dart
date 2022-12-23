@@ -1,24 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import "package:flutter/material.dart";
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_subject/cubit/add_subject_cubit.dart';
 import 'package:ui_components/ui_components.dart';
-
-// class AddSubjectPage extends StatelessWidget {
-//   const AddSubjectPage({super.key, this.recommendedSubjectParentId});
-
-//   final String? recommendedSubjectParentId;
-
-//   @override
-//   Widget build(BuildContext context) {
-
-//     return Scaffold(
-//       appBar: UIAppBar(title: Text('Add subject')),
-//       body: SafeArea(
-//           child: ,
-//     );
-//   }
-// }
 
 class AddSubjectBottomSheet extends StatelessWidget {
   AddSubjectBottomSheet({

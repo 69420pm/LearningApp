@@ -23,7 +23,7 @@ class AddCardCubit extends Cubit<AddCardState> {
         parentId: parentSubject.id,
         askCardsInverted: false,
         typeAnswer: true,
-        dateToReview: DateTime.thursday.toString());
+        dateToReview: DateTime.now().toIso8601String());
     try {
       // parentSubject.childCards.add(newCard);
       await _cardsRepository.saveCard(newCard);

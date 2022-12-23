@@ -141,7 +141,7 @@ class _FolderListTileViewState extends State<FolderListTileView> {
                                       id: Uid().uid(),
                                       dateCreated: '',
                                       parentId: widget.folder.id,
-                                      dateToReview: '',
+                                      dateToReview: DateTime.now().toIso8601String(),
                                       typeAnswer: false,
                                     ),
                                     newParentId: widget.folder.id,

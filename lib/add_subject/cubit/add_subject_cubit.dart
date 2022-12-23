@@ -14,32 +14,31 @@ class AddSubjectCubit extends Cubit<AddSubjectState> {
   Future<void> saveSubject(String name, String parentId, String icon) async {
     emit(AddSubjectLoading());
     final newSubject = Subject(
-       id: Uid().uid(),
+        id: Uid().uid(),
         name: name,
         dateCreated: DateTime.now().toIso8601String(),
         prefixIcon: icon,
-        // childCards: List.empty(growable: true),
-        // childFolders: List.empty(growable: true),
         classTests: List<String>.empty(growable: true),
         daysToGetNotified: List<String>.empty(growable: true));
     try {
       await _cardsRepository.saveSubject(newSubject);
+
       emit(AddSubjectSuccess());
     } catch (e) {
       emit(
         AddSubjectFailure(
-            errorMessage:
-                'Subject saving failed, while communicating with hive'),
+          errorMessage: 'Subject saving failed, while communicating with hive',
+        ),
       );
     }
   }
 
-  Future<void> deleteSubject(String id) async{
+  Future<void> deleteSubject(String id) async {
     emit(AddSubjectLoading());
-    try{
+    try {
       await _cardsRepository.deleteSubject(id);
       emit(AddSubjectSuccess());
-    }catch(e){
+    } catch (e) {
       emit(AddSubjectFailure(errorMessage: 'Subject deletion failed'));
     }
   }
