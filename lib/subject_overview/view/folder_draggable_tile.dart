@@ -11,13 +11,15 @@ class FolderDraggableTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: UISizeConstants.defaultSize * 5,
+      width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.secondaryContainer,
+        color: Theme.of(context).colorScheme.background,
         borderRadius: const BorderRadius.all(
           Radius.circular(UISizeConstants.cornerRadius),
         ),
       ),
-      child: Center(
+      child: Align(
+        alignment: Alignment.centerLeft,
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: UISizeConstants.defaultSize * 2,
