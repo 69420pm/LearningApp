@@ -1,5 +1,6 @@
 import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/card_list_tile_bloc.dart';
 import 'package:ui_components/ui_components.dart';
@@ -16,7 +17,7 @@ class CardListTile extends StatelessWidget {
       create: (context) => CardListTileBloc(cardsRepository),
       child: BlocBuilder<CardListTileBloc, CardListTileState>(
         builder: (context, state) {
-          return LongPressDraggable(
+          return LongPressDraggable<Card>(
             data: card,
             onDragEnd: (details) => context.read<CardListTileBloc>().add(
                   CardListTileChangeSelection(isSelected: details.wasAccepted),
@@ -31,8 +32,8 @@ class CardListTile extends StatelessWidget {
                   globalKey: globalKey,
                   isSelected: true,
                   card: card,
-                  height: size?.height,
-                  width: size?.width,
+                  height: (size?.height ?? 0) * 1.1,
+                  width: (size?.width ?? 0),
                 );
               },
             ),
@@ -53,7 +54,7 @@ class CardListTileView extends StatelessWidget {
   const CardListTileView({
     super.key,
     required this.card,
-    this.isDragged,
+    this.isDragged = false,
     this.height,
     this.width,
     required this.isSelected,
@@ -62,7 +63,7 @@ class CardListTileView extends StatelessWidget {
 
   final GlobalKey globalKey;
   final Card card;
-  final bool? isDragged;
+  final bool isDragged;
   final bool isSelected;
   final double? height;
   final double? width;
