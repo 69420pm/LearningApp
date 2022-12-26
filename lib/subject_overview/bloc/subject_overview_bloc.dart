@@ -13,7 +13,7 @@ part 'subject_overview_event.dart';
 part 'subject_overview_state.dart';
 
 class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
-  EditSubjectBloc(this._cardsRepository) : super(EditSubjectInitial()) {
+  EditSubjectBloc(this.cardsRepository) : super(EditSubjectInitial()) {
     on<EditSubjectSaveSubject>(_saveSubject);
     // on<EditSubjectCardSubscriptionRequested>((event, emit) async {
     //   await _cardSubscriptionRequested(event, emit);
@@ -34,9 +34,11 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
     on<EditSubjectCloseStreamById>(
       _closeStream,
     );
+    on<EditSubjectSetFolderParent>(_setParent);
+    on<EditSubjectSetCardParent>(_setParentCard);
   }
 
-  final CardsRepository _cardsRepository;
+  final CardsRepository cardsRepository;
 
   Future<void> _saveSubject(
     EditSubjectSaveSubject event,
@@ -44,7 +46,7 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
   ) async {
     emit(EditSubjectLoading());
     try {
-      await _cardsRepository.saveSubject(event.newSubject);
+      await cardsRepository.saveSubject(event.newSubject);
       emit(EditSubjectSuccess());
     } catch (e) {
       EditSubjectFailure(
@@ -59,7 +61,7 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
   ) async {
     emit(EditSubjectLoading());
     await emit.forEach(
-      _cardsRepository.getChildrenById(event.id),
+      cardsRepository.getChildrenById(event.id),
       onData: (data) {
         final childListTiles = <String, Widget>{};
         final widgetsToRemove = <Removed>[];
@@ -67,12 +69,12 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
           if (element is Folder) {
             childListTiles[element.id] = FolderListTile(
               folder: element,
-              cardsRepository: _cardsRepository,
+              cardsRepository: cardsRepository,
             );
           } else if (element is Card) {
             childListTiles[element.id] = CardListTile(
               card: element,
-              cardsRepository: _cardsRepository,
+              cardsRepository: cardsRepository,
             );
           } else if (element is Removed) {
             widgetsToRemove.add(element);
@@ -96,7 +98,7 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
         name: event.name,
         dateCreated: DateTime.now().toIso8601String(),
         parentId: event.parentId);
-    await _cardsRepository.saveFolder(newFolder);
+    await cardsRepository.saveFolder(newFolder);
     emit(EditSubjectSuccess());
   }
 
@@ -113,13 +115,13 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
       typeAnswer: true,
       dateToReview: DateTime.now().toIso8601String(),
     );
-    await _cardsRepository.saveCard(newCard);
+    await cardsRepository.saveCard(newCard);
     emit(EditSubjectSuccess());
   }
 
   void _closeStream(
       EditSubjectCloseStreamById event, Emitter<EditSubjectState> emit) {
-    _cardsRepository.closeStreamById(event.id, deleteChildren: true);
+    cardsRepository.closeStreamById(event.id, deleteChildren: true);
   }
 
   // Future<void> _saveFolder(
@@ -197,4 +199,16 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
   //     );
   //   }
   // }
+
+  FutureOr<void> _setParent(
+      EditSubjectSetFolderParent event, Emitter<EditSubjectState> emit) {
+    cardsRepository.moveFolder(event.folder, event.parentId);
+  }
+
+  FutureOr<void> _setParentCard(
+      EditSubjectSetCardParent event, Emitter<EditSubjectState> emit) {
+    cardsRepository
+      ..deleteCard(event.card.id, event.card.parentId)
+      ..saveCard(event.card.copyWith(parentId: event.parentId));
+  }
 }

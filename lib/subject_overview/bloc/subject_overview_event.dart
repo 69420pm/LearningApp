@@ -54,3 +54,23 @@ class EditSubjectCloseStreamById extends EditSubjectEvent {
     required this.id,
   });
 }
+
+class EditSubjectSetFolderParent extends EditSubjectEvent {
+  String parentId;
+  Folder folder;
+
+  EditSubjectSetFolderParent({
+    required this.parentId,
+    required this.folder,
+  });
+}
+
+class EditSubjectSetCardParent extends EditSubjectEvent {
+  String parentId;
+  Card card;
+
+  EditSubjectSetCardParent({
+    required this.parentId,
+    required this.card,
+  });
+}
