@@ -1,5 +1,6 @@
 import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/card_list_tile_bloc.dart';
 import 'package:ui_components/ui_components.dart';
@@ -47,7 +48,7 @@ class CardListTileView extends StatelessWidget {
   const CardListTileView({
     super.key,
     required this.card,
-    this.isDragged,
+    this.isDragged = false,
     this.height,
     this.width,
     required this.isSelected,
@@ -56,7 +57,7 @@ class CardListTileView extends StatelessWidget {
 
   final GlobalKey globalKey;
   final Card card;
-  final bool? isDragged;
+  final bool isDragged;
   final bool isSelected;
   final double? height;
   final double? width;
