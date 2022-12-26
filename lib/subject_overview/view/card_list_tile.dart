@@ -12,38 +12,32 @@ class CardListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => CardListTileBloc(cardsRepository),
-      child: BlocBuilder<CardListTileBloc, CardListTileState>(
-        builder: (context, state) {
-          return LongPressDraggable(
-            data: card,
-            onDragEnd: (details) => context.read<CardListTileBloc>().add(
-                  CardListTileChangeSelection(isSelected: details.wasAccepted),
-                ),
-            feedback: Builder(
-              builder: (context) {
-                final renderBox =
-                    globalKey.currentContext?.findRenderObject() as RenderBox?;
+    return LongPressDraggable(
+      data: card,
+      // TODO implement drag and drop
+      onDragEnd: (details) => print("onDragEnd"),/* context.read<CardListTileBloc>().add(
+            CardListTileChangeSelection(isSelected: details.wasAccepted),
+          ), */
+      feedback: Builder(
+        builder: (context) {
+          final renderBox =
+              globalKey.currentContext?.findRenderObject() as RenderBox?;
 
-                final size = renderBox?.size;
-                return CardListTileView(
-                  globalKey: globalKey,
-                  isSelected: true,
-                  card: card,
-                  height: size?.height,
-                  width: size?.width,
-                );
-              },
-            ),
-            childWhenDragging: Container(),
-            child: CardListTileView(
-              globalKey: globalKey,
-              isSelected: state is CardListTileSelected,
-              card: card,
-            ),
+          final size = renderBox?.size;
+          return CardListTileView(
+            globalKey: globalKey,
+            isSelected: true,
+            card: card,
+            height: size?.height,
+            width: size?.width,
           );
         },
+      ),
+      childWhenDragging: Container(),
+      child: CardListTileView(
+        globalKey: globalKey,
+        isSelected: false,
+        card: card,
       ),
     );
   }
@@ -87,18 +81,22 @@ class CardListTileView extends StatelessWidget {
             width: UISizeConstants.borderWidth,
           ),
         ),
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: Padding(
-            padding: const EdgeInsets.only(left: UISizeConstants.defaultSize),
-            child: Text(
-              card.front,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSecondaryContainer,
-                  ),
+        child: Row(
+          children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(left: UISizeConstants.defaultSize),
+                child: Text(
+                  card.front,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onSecondaryContainer,
+                      ),
+                ),
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );

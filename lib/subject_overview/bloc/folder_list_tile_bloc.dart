@@ -88,8 +88,10 @@ class FolderListTileBloc
     // }
   }
 
-  FutureOr<void> _deleteFolder(FolderListTileDeleteFolder event,
-      Emitter<FolderListTileState> emit) async {
+  FutureOr<void> _deleteFolder(
+    FolderListTileDeleteFolder event,
+    Emitter<FolderListTileState> emit,
+  ) async {
     emit(FolderListTileLoading());
     // try{
     await _cardsRepository.deleteFolder(event.id, event.parentId);
@@ -100,7 +102,9 @@ class FolderListTileBloc
   }
 
   Future<FutureOr<void>> _moveFolder(
-      FolderListTileMoveFolder event, Emitter<FolderListTileState> emit) async {
+    FolderListTileMoveFolder event,
+    Emitter<FolderListTileState> emit,
+  ) async {
     emit(FolderListTileLoading());
     // try {
     await _cardsRepository.moveFolder(event.folder, event.newParentId);
@@ -109,5 +113,4 @@ class FolderListTileBloc
     //   emit(FolderListTileError(errorMessage: "folder moving failed"));
     // }
   }
-
 }

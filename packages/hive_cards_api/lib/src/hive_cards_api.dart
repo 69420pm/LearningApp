@@ -433,15 +433,19 @@ class HiveCardsApi extends CardsApi {
     if (path == null) {
       throw ParentNotFoundException();
     }
+
     var cards = _hiveBox.get(_makePathStorable(path)) as List<String>?;
+    final newCards = <String>[];
     var found = false;
     if (cards != null) {
-      for (var element in cards) {
+      for (final element in cards) {
         // contains word
         if (element.substring(7).startsWith(card.id)) {
-          element = _cardsToJson([card])[0];
+          newCards.add(_cardsToJson([card])[0]);
           found = true;
           break;
+        } else {
+          newCards.add(element);
         }
       }
     } else {
@@ -449,14 +453,13 @@ class HiveCardsApi extends CardsApi {
     }
 
     if (!found) {
-      cards.add(_cardsToJson([card])[0]);
+      newCards.add(_cardsToJson([card])[0]);
     }
 
     if (_subscribedStreams.containsKey(path)) {
       _subscribedStreams[path]!.add([card]);
     }
-
-    return _hiveBox.put(_makePathStorable(path), cards);
+    return _hiveBox.put(_makePathStorable(path), newCards);
   }
 
   @override
@@ -497,7 +500,6 @@ class HiveCardsApi extends CardsApi {
   String? _getPath(String parentId) {
     for (final element in _indexedPaths) {
       if (element.endsWith(parentId)) {
-        print(_makePathStorable(element));
         return element;
       }
     }

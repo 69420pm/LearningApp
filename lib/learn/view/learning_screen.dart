@@ -1,8 +1,5 @@
 import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
-import 'package:flutter/rendering.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/learn/cubit/learn_cubit.dart';
 import 'package:learning_app/learn/view/learning_card.dart';
@@ -13,7 +10,7 @@ class LearningScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Card card = context.read<LearnCubit>().learnAllCards();
+    context.read<LearnCubit>().learnAllCards();
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: UIAppBar(
@@ -23,45 +20,57 @@ class LearningScreen extends StatelessWidget {
       body: Padding(
         padding:
             const EdgeInsets.symmetric(horizontal: UISizeConstants.paddingEdge),
-        child: Column(
-          children: [
-            const SizedBox(height: UISizeConstants.defaultSize * 2),
-            LearningCard(card: card),
-            BlocBuilder<LearnCubit, LearnState>(
-              builder: (context, state) {
-                return Opacity(
-                  opacity: state is BackState ? 1 : 0,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: UISizeConstants.defaultSize * 3,),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        UIButton(
-                          onTap: () => context.read<LearnCubit>().newCard(-1),
-                          lable: 'bad',
-                          color: Colors.red,
-                          textColor: Colors.black,
+        child: BlocBuilder<LearnCubit, LearnState>(
+          builder: (context, state) {
+            final card = context.read<LearnCubit>().getNextCard();
+            if(card == null){
+              return Text("all cards finished");
+            }
+            return Column(
+              children: [
+                const SizedBox(height: UISizeConstants.defaultSize * 2),
+                LearningCard(card: card),
+                Column(
+                  children: [
+                    Opacity(
+                      opacity: state is BackState ? 1 : 0,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: UISizeConstants.defaultSize * 3,
                         ),
-                        UIButton(
-                          onTap: () => context.read<LearnCubit>().newCard(0),
-                          lable: 'middle',
-                          textColor: Colors.black,
-                          color: Colors.yellow,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            UIButton(
+                              onTap: () =>
+                                  context.read<LearnCubit>().newCard(LearnFeedback.bad, card),
+                              lable: 'again',
+                              color: Colors.red,
+                              textColor: Colors.black,
+                            ),
+                            UIButton(
+                              onTap: () =>
+                                  context.read<LearnCubit>().newCard(LearnFeedback.medium, card),
+                              lable: 'almost',
+                              textColor: Colors.black,
+                              color: Colors.yellow,
+                            ),
+                            UIButton(
+                              onTap: () =>
+                                  context.read<LearnCubit>().newCard(LearnFeedback.good, card),
+                              lable: 'easy',
+                              textColor: Colors.black,
+                              color: Colors.green,
+                            ),
+                          ],
                         ),
-                        UIButton(
-                          onTap: () => context.read<LearnCubit>().newCard(1),
-                          lable: 'good',
-                          textColor: Colors.black,
-                          color: Colors.green,
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                );
-              },
-            )
-          ],
+                  ],
+                )
+              ],
+            );
+          },
         ),
       ),
     );
