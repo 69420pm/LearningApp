@@ -7,9 +7,7 @@ part 'learn_state.dart';
 class LearnCubit extends Cubit<LearnState> {
   LearnCubit(this._cardsRepository) : super(FrontState());
 
-  var cardsToLearn = <Card>[];
-  var cardsToRepeatFurther = <Card>[];
-
+  List<Card> cardsToLearn = <Card>[];
   final CardsRepository _cardsRepository;
 
   void turnOverCard() {
@@ -17,33 +15,48 @@ class LearnCubit extends Cubit<LearnState> {
   }
 
   void newCard(LearnFeedback feedbackLastCard, Card card) {
-    final currentRecallScore = card.recallScore;
-    var nextRecallScore = currentRecallScore;
+    var nextRecallScore = card.recallScore;
     var nextTimeToReview = DateTime.now();
+    // GOOD
     if (feedbackLastCard == LearnFeedback.good) {
       cardsToLearn.removeAt(0);
       nextTimeToReview = nextTimeToReview
-          .add(Duration(hours: _getDuration(currentRecallScore)));
+          .add(Duration(seconds: _getDuration(nextRecallScore)));
       nextRecallScore += 1;
-    } else if (feedbackLastCard == LearnFeedback.medium) {
-      nextTimeToReview = nextTimeToReview
-          .add(Duration(hours: _getDuration((currentRecallScore / 4).round())));
-      if (currentRecallScore < 2) {
-        cardsToLearn.add(card);
-      }
-    } else {
+    }
+    // MEDIUM
+    else if (feedbackLastCard == LearnFeedback.medium) {
+      cardsToLearn.removeAt(0);
       nextRecallScore -= 1;
-      if (nextRecallScore < 0) nextRecallScore = 0;
-      cardsToLearn
-        ..removeAt(0)
-        ..add(card);
+      nextTimeToReview = nextTimeToReview
+          .add(Duration(seconds: _getDuration((nextRecallScore / 4).round())));
+      if (nextRecallScore < 2) {
+        final newCard = card.copyWith(
+          recallScore: nextRecallScore,
+          dateToReview: nextTimeToReview.toIso8601String(),
+        );
+        cardsToLearn.add(newCard);
+      }
+    }
+    // BAD
+    else {
+      cardsToLearn.removeAt(0);
+      nextRecallScore = 0;
+      nextTimeToReview = DateTime.now();
+      final newCard = card.copyWith(
+        recallScore: nextRecallScore,
+        dateToReview: nextTimeToReview.toIso8601String(),
+      );
+      cardsToLearn.add(newCard);
     }
     final newCard = card.copyWith(
       recallScore: nextRecallScore,
       dateToReview: nextTimeToReview.toIso8601String(),
     );
+    print("card alla");
+    print(nextRecallScore);
+    print(nextTimeToReview);
     _cardsRepository.saveCard(newCard);
-    print(newCard);
     emit(FrontState());
   }
 
@@ -82,7 +95,6 @@ int _getDuration(int currentRecallScore) {
     // 3 weeks later
     case 3:
       return 21 * 24;
-
     // 2 months later
     case 4:
       return 60 * 24;

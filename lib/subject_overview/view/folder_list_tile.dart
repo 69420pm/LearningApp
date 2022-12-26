@@ -51,7 +51,6 @@ class FolderListTile extends StatelessWidget {
                   //       .read<FolderListTileBloc>()
                   //       .add(FolderListTileAddCard(card: data, newParentId: folder.id));
                   // }
-                  // TODO fix newParentId gets changed while transfering to hive_cards_api
                   if (data is Folder && data != folder) {
                     context.read<FolderListTileBloc>().add(
                           FolderListTileMoveFolder(
