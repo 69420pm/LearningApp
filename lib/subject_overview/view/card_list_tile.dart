@@ -3,42 +3,83 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/card_list_tile_bloc.dart';
+import 'package:learning_app/subject_overview/bloc/subject_overview_bloc.dart';
+import 'package:learning_app/subject_overview/view/subject_overview_page.dart';
 import 'package:ui_components/ui_components.dart';
 
-class CardListTile extends StatelessWidget {
-  CardListTile({super.key, required this.card, required this.cardsRepository});
-  final GlobalKey globalKey = GlobalKey();
+class CardListTile extends StatefulWidget {
+  CardListTile({super.key, required this.card, required this.editSubjectBloc});
   final Card card;
-  final CardsRepository cardsRepository;
+  final EditSubjectBloc editSubjectBloc;
+  var isCardSelected = false;
+  var isInSelectMode = false;
+
+  @override
+  State<CardListTile> createState() => _CardListTileState();
+}
+
+class _CardListTileState extends State<CardListTile> {
+  final GlobalKey globalKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
-    return LongPressDraggable(
-      data: card,
-      // TODO implement drag and drop
-      onDragEnd: (details) => print("onDragEnd"),/* context.read<CardListTileBloc>().add(
-            CardListTileChangeSelection(isSelected: details.wasAccepted),
-          ), */
-      feedback: Builder(
-        builder: (context) {
-          final renderBox =
-              globalKey.currentContext?.findRenderObject() as RenderBox?;
-
-          final size = renderBox?.size;
-          return CardListTileView(
-            globalKey: globalKey,
-            isSelected: true,
-            card: card,
-            height: size?.height,
-            width: size?.width,
-          );
+    return BlocConsumer(
+      bloc: widget.editSubjectBloc,
+      listener: (context, state) {
+        if (state is EditSubjectFoldersSelectModeOn) {
+          widget.isInSelectMode = true;
+        }
+        if (state is EditSubjectFoldersSelectModeOff) {
+          widget.isInSelectMode = false;
+          setState(() {
+            widget.isCardSelected = false;
+          });
+        }
+      },
+      builder: (context, state) => GestureDetector(
+        onTap: () {
+          print("shortpress");
+          if (widget.isInSelectMode) {
+            setState(() {
+              widget.isCardSelected = true;
+            });
+          }
         },
-      ),
-      childWhenDragging: Container(),
-      child: CardListTileView(
-        globalKey: globalKey,
-        isSelected: false,
-        card: card,
+        child: LongPressDraggable(
+          data: widget.card,
+          onDragStarted: () {
+            print("longpress");
+            if (!widget.isInSelectMode) {
+              setState(() {
+                widget.isCardSelected = true;
+                context
+                    .read<EditSubjectBloc>()
+                    .add(EditSubjectToggleSelectMode(inSelectMode: true));
+              });
+            }
+          },
+          feedback: Builder(
+            builder: (context) {
+              final renderBox =
+                  globalKey.currentContext?.findRenderObject() as RenderBox?;
+
+              final size = renderBox?.size;
+              return CardListTileView(
+                globalKey: globalKey,
+                isSelected: widget.isCardSelected,
+                card: widget.card,
+                height: size?.height,
+                width: size?.width,
+              );
+            },
+          ),
+          childWhenDragging: Container(),
+          child: CardListTileView(
+            globalKey: globalKey,
+            isSelected: widget.isCardSelected,
+            card: widget.card,
+          ),
+        ),
       ),
     );
   }
@@ -87,12 +128,14 @@ class CardListTileView extends StatelessWidget {
             Align(
               alignment: Alignment.centerLeft,
               child: Padding(
-                padding: const EdgeInsets.only(left: UISizeConstants.defaultSize),
+                padding:
+                    const EdgeInsets.only(left: UISizeConstants.defaultSize),
                 child: Text(
                   card.front,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSecondaryContainer,
+                        color:
+                            Theme.of(context).colorScheme.onSecondaryContainer,
                       ),
                 ),
               ),
