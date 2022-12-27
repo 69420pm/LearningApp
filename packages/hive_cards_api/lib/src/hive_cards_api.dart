@@ -184,7 +184,7 @@ class HiveCardsApi extends CardsApi {
   List<String> _indexedPaths = [];
 
   final Map<String, BehaviorSubject<List<Object>>> _subscribedStreams = {};
-  Map<String, String> _storeIds = {};
+  Map<dynamic, dynamic> _storeIds = {};
 
   void _init() {
     try {
@@ -199,7 +199,7 @@ class HiveCardsApi extends CardsApi {
       print('no subjects saved');
     }
     try {
-      _storeIds = _hiveBox.get('/store_ids') as Map<String, String>;
+      _storeIds = _hiveBox.get('/store_ids') as Map<dynamic, dynamic>;
     } catch (e) {
       print('no storeIds saved');
     }
@@ -518,7 +518,7 @@ class HiveCardsApi extends CardsApi {
       } else {
         var newKey = _ASCIICHARS[0];
         if (_storeIds.isNotEmpty) {
-          newKey = (_addOneToString(_storeIds.values.last)).toString();
+          newKey = (_addOneToString(_storeIds.values.last as String)).toString();
         }
         _storeIds[id] = newKey;
         newPath += '/${_storeIds[id]!}';

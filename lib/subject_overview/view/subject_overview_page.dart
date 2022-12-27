@@ -8,8 +8,11 @@ import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
 import 'package:ui_components/ui_components.dart';
 
 class SubjectOverviewPage extends StatefulWidget {
-  const SubjectOverviewPage(
-      {super.key, required this.subjectToEdit, required this.editSubjectBloc});
+  const SubjectOverviewPage({
+    super.key,
+    required this.subjectToEdit,
+    required this.editSubjectBloc,
+  });
 
   final Subject subjectToEdit;
   final EditSubjectBloc editSubjectBloc;
@@ -126,7 +129,7 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                         ...childListTiles,
                         ...state.childrenStream
                       };
-                      for (var element in state.removedWidgets) {
+                      for (final element in state.removedWidgets) {
                         if (childListTiles.containsKey(element.id)) {
                           childListTiles.remove(element.id);
                         }
@@ -134,32 +137,77 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                     }
 
                     return Expanded(
-                      child: CustomScrollView(
-                        slivers: [
-                          SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (context, index) => childListTiles.values
-                                  .where((element) => element is FolderListTile)
-                                  .elementAt(index),
-                              childCount: childListTiles.values
-                                  .where((element) => element is FolderListTile)
-                                  .length,
+                      child: Stack(
+                        clipBehavior: Clip.hardEdge,
+                        children: [
+                          BlocProvider(
+                            create: (context) => EditSubjectBloc(
+                              widget.editSubjectBloc.cardsRepository,
+                            ),
+                            child: DragTarget(
+                              onAccept: (data) {
+                                if (data is Folder) {
+                                  context.read<EditSubjectBloc>().add(
+                                        EditSubjectSetFolderParent(
+                                          folder: data,
+                                          parentId: widget.subjectToEdit.id,
+                                        ),
+                                      );
+                                } else if (data is Card &&
+                                    data.parentId != widget.subjectToEdit.id) {
+                                  context.read<EditSubjectBloc>().add(
+                                        EditSubjectSetCardParent(
+                                          card: data,
+                                          parentId: widget.subjectToEdit.id,
+                                        ),
+                                      );
+                                }
+                                // print(data);
+                                // folder.childFolders.add(data);
+                              },
+                              builder: (context, candidateData, rejectedData) {
+                                return Container(
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                  color: Colors.blue,
+                                );
+                              },
                             ),
                           ),
-                          SliverGrid(
-                            delegate: SliverChildBuilderDelegate(
-                              (context, index) => childListTiles.values
-                                  .where((element) => element is CardListTile)
-                                  .elementAt(index),
-                              childCount: childListTiles.values
-                                  .where((element) => element is CardListTile)
-                                  .length,
+                          CustomScrollView(
+                            shrinkWrap: true,
+                            slivers: [
+                              SliverList(
+                                delegate: SliverChildBuilderDelegate(
+                                  (context, index) => childListTiles.values
+                                      .whereType<FolderListTile>()
+                                      .elementAt(index),
+                                  childCount: childListTiles.values
+                                      .whereType<FolderListTile>()
+                                      .length,
+                                ),
+                              ),
+                              if (childListTiles.values
+                                  .whereType<CardListTile>()
+                                  .isNotEmpty)
+                                SliverGrid(
+                                  delegate: SliverChildBuilderDelegate(
+                                    (context, index) => childListTiles.values
+                                        .whereType<CardListTile>()
+                                        .elementAt(index),
+                                    childCount: childListTiles.values
+                                        .whereType<CardListTile>()
+                                        .length,
 
-                              // shrinkWrap: true,
-                            ),
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 3),
+                                    // shrinkWrap: true,
+                                  ),
+                                  gridDelegate:
+                                      // ignore: lines_longer_than_80_chars
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 2,
+                                          childAspectRatio: 3 / 1),
+                                ),
+                            ],
                           ),
                         ],
                       ),
@@ -185,14 +233,24 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
     return true;
   }
 
-  Future<void> save(GlobalKey<FormState> formKey, String nameInput,
-      String iconInput, BuildContext context) async {
+  Future<void> save(
+    GlobalKey<FormState> formKey,
+    String nameInput,
+    String iconInput,
+    BuildContext context,
+  ) async {
     if (formKey.currentState!.validate()) {
       if (!nothingChanged(
-          nameInput.trim(), iconInput.trim(), widget.subjectToEdit)) {
-        context.read<EditSubjectBloc>().add(EditSubjectSaveSubject(widget
-            .subjectToEdit
-            .copyWith(name: nameInput, prefixIcon: iconInput)));
+        nameInput.trim(),
+        iconInput.trim(),
+        widget.subjectToEdit,
+      )) {
+        context.read<EditSubjectBloc>().add(
+              EditSubjectSaveSubject(
+                widget.subjectToEdit
+                    .copyWith(name: nameInput, prefixIcon: iconInput),
+              ),
+            );
       }
     }
   }

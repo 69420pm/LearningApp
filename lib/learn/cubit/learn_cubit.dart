@@ -79,7 +79,7 @@ enum LearnFeedback { good, medium, bad }
 
 int _getDuration(int currentRecallScore) {
   final nextTimeToReview = DateTime.now();
-  if (currentRecallScore > 4) {
+  if (currentRecallScore > 5) {
     return 120 * 24;
   }
   switch (currentRecallScore) {
@@ -88,15 +88,17 @@ int _getDuration(int currentRecallScore) {
       return 24;
     // 4 days later
     case 1:
+      return 2 * 24;
+    case 2:
       return 4 * 24;
     // 1 week later
-    case 2:
+    case 3:
       return 7 * 24;
     // 3 weeks later
-    case 3:
+    case 4:
       return 21 * 24;
     // 2 months later
-    case 4:
+    case 5:
       return 60 * 24;
     // 4 months later
 
