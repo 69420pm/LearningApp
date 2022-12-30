@@ -11,12 +11,14 @@ import 'package:learning_app/subject_overview/view/subject_overview_page.dart';
 
 class CardListTile extends StatefulWidget {
   CardListTile({
-    Key? key,
+    super.key,
     required this.card,
-  }) : super(key: key);
+    required this.isCardSelected,
+    required this.isInSelectMode,
+  });
   final Card card;
-  bool isCardSelected = false;
-  bool isInSelectMode = false;
+  bool isCardSelected;
+  bool isInSelectMode;
 
   @override
   State<CardListTile> createState() => _CardListTileState();
@@ -55,10 +57,14 @@ class _CardListTileState extends State<CardListTile> {
             if (!widget.isInSelectMode || widget.isCardSelected == false) {
               setState(() {
                 widget.isCardSelected = true;
-                context
-                    .read<EditSubjectBloc>()
-                    .add(EditSubjectToggleSelectMode(inSelectMode: true));
               });
+            }
+          },
+          onDragEnd: (details) {
+            if (!details.wasAccepted) {
+              context
+                  .read<EditSubjectBloc>()
+                  .add(EditSubjectToggleSelectMode(inSelectMode: true));
             }
           },
           feedback: Builder(

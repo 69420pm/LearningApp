@@ -48,6 +48,8 @@ class FolderListTileBloc
           } else if (element is Card) {
             childListTiles[element.id] = CardListTile(
               card: element,
+              isCardSelected: false,
+              isInSelectMode: false,
             );
           } else if (element is Removed) {
             widgetsToRemove.add(element);
