@@ -1,18 +1,22 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ui_components/ui_components.dart';
+
 import 'package:learning_app/subject_overview/bloc/card_list_tile_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/subject_overview_bloc.dart';
 import 'package:learning_app/subject_overview/view/subject_overview_page.dart';
-import 'package:ui_components/ui_components.dart';
 
 class CardListTile extends StatefulWidget {
-  CardListTile({super.key, required this.card, required this.editSubjectBloc});
+  CardListTile({
+    Key? key,
+    required this.card,
+  }) : super(key: key);
   final Card card;
-  final EditSubjectBloc editSubjectBloc;
-  var isCardSelected = false;
-  var isInSelectMode = false;
+  bool isCardSelected = false;
+  bool isInSelectMode = false;
 
   @override
   State<CardListTile> createState() => _CardListTileState();
@@ -23,8 +27,7 @@ class _CardListTileState extends State<CardListTile> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer(
-      bloc: widget.editSubjectBloc,
+    return BlocConsumer<EditSubjectBloc, EditSubjectState>(
       listener: (context, state) {
         if (state is EditSubjectFoldersSelectModeOn) {
           widget.isInSelectMode = true;
@@ -49,7 +52,7 @@ class _CardListTileState extends State<CardListTile> {
           data: widget.card,
           onDragStarted: () {
             print("longpress");
-            if (!widget.isInSelectMode) {
+            if (!widget.isInSelectMode || widget.isCardSelected == false) {
               setState(() {
                 widget.isCardSelected = true;
                 context

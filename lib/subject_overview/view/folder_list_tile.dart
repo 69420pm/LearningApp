@@ -15,19 +15,16 @@ class FolderListTile extends StatelessWidget {
     super.key,
     required this.folder,
     required this.cardsRepository,
-    required this.editSubjectBloc,
   });
 
   final Folder folder;
   final CardsRepository cardsRepository;
-  final EditSubjectBloc editSubjectBloc;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => FolderListTileBloc(
         cardsRepository,
-        editSubjectBloc,
       ),
       child: Builder(
         builder: (context) {
