@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
+import 'package:learning_app/subject_overview/bloc/subject_overview_bloc.dart';
 import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
 
@@ -12,7 +13,8 @@ part 'folder_list_tile_state.dart';
 
 class FolderListTileBloc
     extends Bloc<FolderListTileEvent, FolderListTileState> {
-  FolderListTileBloc(this._cardsRepository) : super(FolderListTileInitial()) {
+  FolderListTileBloc(this._cardsRepository, this._editSubjectBloc)
+      : super(FolderListTileInitial()) {
     on<FolderListTileGetChildrenById>((event, emit) async {
       await _getChildren(event, emit);
     });
@@ -27,6 +29,7 @@ class FolderListTileBloc
   }
 
   final CardsRepository _cardsRepository;
+  final EditSubjectBloc _editSubjectBloc;
 
   Future<void> _getChildren(
     FolderListTileGetChildrenById event,
@@ -43,11 +46,12 @@ class FolderListTileBloc
             childListTiles[element.id] = FolderListTile(
               folder: element,
               cardsRepository: _cardsRepository,
+              editSubjectBloc: _editSubjectBloc,
             );
           } else if (element is Card) {
             childListTiles[element.id] = CardListTile(
+              editSubjectBloc: _editSubjectBloc,
               card: element,
-              cardsRepository: _cardsRepository,
             );
           } else if (element is Removed) {
             widgetsToRemove.add(element);
