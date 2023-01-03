@@ -26,3 +26,7 @@ class EditSubjectRetrieveChildren extends EditSubjectState {
     required this.removedWidgets,
   });
 }
+
+class EditSubjectFoldersSelectModeOn extends EditSubjectState {}
+
+class EditSubjectFoldersSelectModeOff extends EditSubjectState {}

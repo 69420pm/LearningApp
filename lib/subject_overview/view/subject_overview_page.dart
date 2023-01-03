@@ -29,6 +29,11 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
     final iconController =
         TextEditingController(text: widget.subjectToEdit.prefixIcon);
     final formKey = GlobalKey<FormState>();
+    final globalKey = GlobalKey();
+    final scrollController = ScrollController();
+
+    var isMovingDown = false;
+    var isMovingUp = false;
 
     context
         .read<EditSubjectBloc>()
@@ -86,8 +91,24 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                 ),
 
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    BlocBuilder<EditSubjectBloc, EditSubjectState>(
+                      builder: (context, state) => Opacity(
+                        opacity:
+                            state is EditSubjectFoldersSelectModeOn ? 1 : 0,
+                        child: IconButton(
+                          onPressed: () {
+                            context.read<EditSubjectBloc>().add(
+                                EditSubjectToggleSelectMode(
+                                    inSelectMode: false));
+                          },
+                          icon: const Icon(
+                            Icons.cancel,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Spacer(),
                     IconButton(
                       onPressed: () {
                         Navigator.of(context).pushNamed(
@@ -97,7 +118,6 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                       },
                       icon: const Icon(
                         Icons.file_copy,
-                        color: Colors.red,
                       ),
                     ),
                     IconButton(
@@ -169,45 +189,86 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                                 return Container(
                                   width: double.infinity,
                                   height: double.infinity,
-                                  color: Colors.blue,
                                 );
                               },
                             ),
                           ),
-                          CustomScrollView(
-                            shrinkWrap: true,
-                            slivers: [
-                              SliverList(
-                                delegate: SliverChildBuilderDelegate(
-                                  (context, index) => childListTiles.values
-                                      .whereType<FolderListTile>()
-                                      .elementAt(index),
-                                  childCount: childListTiles.values
-                                      .whereType<FolderListTile>()
-                                      .length,
-                                ),
-                              ),
-                              if (childListTiles.values
-                                  .whereType<CardListTile>()
-                                  .isNotEmpty)
-                                SliverGrid(
+                          Listener(
+                            onPointerMove: (event) {
+                              final render = globalKey.currentContext
+                                  ?.findRenderObject() as RenderBox?;
+                              final top =
+                                  render?.localToGlobal(Offset.zero).dy ?? 0;
+                              final bottom = MediaQuery.of(context).size.height;
+
+                              final relPos =
+                                  (event.localPosition.dy / (bottom - top))
+                                      .clamp(0, 1);
+
+                              if (relPos < .2 && isMovingUp == false) {
+                                isMovingUp = true;
+                                isMovingDown = false;
+
+                                scrollController.animateTo(
+                                  0,
+                                  duration: const Duration(seconds: 1),
+                                  curve: Curves.easeIn,
+                                );
+                              } else if (relPos > .8 && isMovingDown == false) {
+                                isMovingDown = true;
+                                isMovingUp = false;
+                                scrollController.animateTo(
+                                  scrollController.position.maxScrollExtent,
+                                  duration: const Duration(seconds: 1),
+                                  curve: Curves.easeIn,
+                                );
+                              } else if (relPos > .2 && relPos < .8) {
+                                if (isMovingUp || isMovingDown) {
+                                  scrollController
+                                      .jumpTo(scrollController.offset);
+                                }
+                                isMovingDown = false;
+                                isMovingUp = false;
+                              }
+                            },
+                            child: CustomScrollView(
+                              key: globalKey,
+                              controller: scrollController,
+                              shrinkWrap: true,
+                              slivers: [
+                                SliverList(
                                   delegate: SliverChildBuilderDelegate(
                                     (context, index) => childListTiles.values
-                                        .whereType<CardListTile>()
+                                        .whereType<FolderListTile>()
                                         .elementAt(index),
                                     childCount: childListTiles.values
-                                        .whereType<CardListTile>()
+                                        .whereType<FolderListTile>()
                                         .length,
-
-                                    // shrinkWrap: true,
                                   ),
-                                  gridDelegate:
-                                      // ignore: lines_longer_than_80_chars
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 2,
-                                          childAspectRatio: 3 / 1),
                                 ),
-                            ],
+                                if (childListTiles.values
+                                    .whereType<CardListTile>()
+                                    .isNotEmpty)
+                                  SliverGrid(
+                                    delegate: SliverChildBuilderDelegate(
+                                      (context, index) => childListTiles.values
+                                          .whereType<CardListTile>()
+                                          .elementAt(index),
+                                      childCount: childListTiles.values
+                                          .whereType<CardListTile>()
+                                          .length,
+
+                                      // shrinkWrap: true,
+                                    ),
+                                    gridDelegate:
+                                        // ignore: lines_longer_than_80_chars
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2,
+                                      childAspectRatio: 3 / 1,
+                                    ),
+                                  ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
