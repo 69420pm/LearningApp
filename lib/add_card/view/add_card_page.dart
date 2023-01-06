@@ -1,12 +1,11 @@
-import 'package:cards_api/cards_api.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:learning_app/add_card/cubit/add_card_cubit.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:learning_app/subject_overview/bloc/subject_overview_bloc.dart';
 import 'package:ui_components/ui_components.dart';
 
 class AddCardPage extends StatelessWidget {
-  AddCardPage({super.key, required this.parentId});
+  const AddCardPage({super.key, required this.parentId});
 
   /// when add_Card_page is used as edit_Card_page, when not let it empty
   final String parentId;
@@ -20,37 +19,44 @@ class AddCardPage extends StatelessWidget {
 
     final formKey = GlobalKey<FormState>();
     return Scaffold(
-      appBar: UIAppBar(title: Text("Add Card Page")),
+      appBar: UIAppBar(title: const Text('Add Card Page')),
       body: SafeArea(
-          child: Form(
-        key: formKey,
-        child: Column(
-          children: [
-            /// Name
-            TextFormField(
-              controller: frontController,
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Enter something';
-                } else {
-                  return null;
-                }
-              },
-            ),
-            TextFormField(
-              controller: backController,
-            ),
+        child: Form(
+          key: formKey,
+          child: Column(
+            children: [
+              /// Name
+              TextFormField(
+                controller: frontController,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Enter something';
+                  } else {
+                    return null;
+                  }
+                },
+              ),
+              TextFormField(
+                controller: backController,
+              ),
 
-            /// File Location
-            TextFormField(
-              controller: locationController,
-            ),
+              /// File Location
+              TextFormField(
+                controller: locationController,
+              ),
+              const SizedBox(
+                height: 200,
+                child: Markdown(
+                  selectable: true,
+                  data: '# hey guys \n# hey guys \n**what is up**',
+                ),
+              ),
 
-            /// Prefix icon
-            TextFormField(
-              controller: iconController,
-            ),
-            ElevatedButton(
+              /// Prefix icon
+              TextFormField(
+                controller: iconController,
+              ),
+              ElevatedButton(
                 onPressed: () async {
                   if (formKey.currentState!.validate()) {
                     // await context.read<AddCardCubit>().saveCard(
@@ -58,17 +64,22 @@ class AddCardPage extends StatelessWidget {
                     //     backController.text,
                     //     recommendedSubjectParent!,
                     //     iconController.text);
-                    context.read<EditSubjectBloc>().add(EditSubjectAddCard(
-                        front: frontController.text,
-                        back: backController.text,
-                        parentId: parentId));
+                    context.read<EditSubjectBloc>().add(
+                          EditSubjectAddCard(
+                            front: frontController.text,
+                            back: backController.text,
+                            parentId: parentId,
+                          ),
+                        );
                   }
                   Navigator.pop(context);
                 },
-                child: Text("Save"))
-          ],
+                child: const Text('Save'),
+              )
+            ],
+          ),
         ),
-      )),
+      ),
     );
   }
 }

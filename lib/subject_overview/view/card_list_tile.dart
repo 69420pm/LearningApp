@@ -25,6 +25,9 @@ class _CardListTileState extends State<CardListTile> {
   Widget build(BuildContext context) {
     return BlocConsumer(
       bloc: widget.editSubjectBloc,
+      listenWhen: (previous, current) =>
+          current is EditSubjectFoldersSelectModeOn ||
+          current is EditSubjectFoldersSelectModeOff,
       listener: (context, state) {
         if (state is EditSubjectFoldersSelectModeOn) {
           widget.isInSelectMode = true;
@@ -41,7 +44,16 @@ class _CardListTileState extends State<CardListTile> {
           print("shortpress");
           if (widget.isInSelectMode) {
             setState(() {
-              widget.isCardSelected = true;
+              widget.isCardSelected = !widget.isCardSelected;
+              if (widget.isCardSelected) {
+                context
+                    .read<EditSubjectBloc>()
+                    .add(EditSubjectAddSelection(card: widget.card));
+              } else {
+                context
+                    .read<EditSubjectBloc>()
+                    .add(EditSubjectRemoveSelection(card: widget.card));
+              }
             });
           }
         },
@@ -49,14 +61,23 @@ class _CardListTileState extends State<CardListTile> {
           data: widget.card,
           onDragStarted: () {
             print("longpress");
-            if (!widget.isInSelectMode) {
-              setState(() {
-                widget.isCardSelected = true;
+            // if (!widget.isInSelectMode) {
+            setState(() {
+              widget.isCardSelected = !widget.isCardSelected;
+              if (widget.isCardSelected) {
                 context
                     .read<EditSubjectBloc>()
-                    .add(EditSubjectToggleSelectMode(inSelectMode: true));
-              });
-            }
+                    .add(EditSubjectAddSelection(card: widget.card));
+              } else {
+                context
+                    .read<EditSubjectBloc>()
+                    .add(EditSubjectRemoveSelection(card: widget.card));
+              }
+              // context
+              //     .read<EditSubjectBloc>()
+              //     .add(EditSubjectToggleSelectMode(inSelectMode: true));
+            });
+            // }
           },
           feedback: Builder(
             builder: (context) {

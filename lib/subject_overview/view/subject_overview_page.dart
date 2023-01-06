@@ -108,7 +108,7 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                         ),
                       ),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     IconButton(
                       onPressed: () {
                         Navigator.of(context).pushNamed(
@@ -186,7 +186,7 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                                 // folder.childFolders.add(data);
                               },
                               builder: (context, candidateData, rejectedData) {
-                                return Container(
+                                return const SizedBox(
                                   width: double.infinity,
                                   height: double.infinity,
                                 );

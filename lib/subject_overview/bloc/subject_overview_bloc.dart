@@ -37,9 +37,15 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
     on<EditSubjectSetFolderParent>(_setParent);
     on<EditSubjectSetCardParent>(_setParentCard);
     on<EditSubjectToggleSelectMode>(_toggleSelectMode);
+    on<EditSubjectAddSelection>(_addSelection);
+    on<EditSubjectRemoveSelection>(_removeSelection);
   }
 
   final CardsRepository cardsRepository;
+
+  bool _selectionMode = false;
+
+  final List<Card> _selectedCards = <Card>[];
 
   Future<void> _saveSubject(
     EditSubjectSaveSubject event,
@@ -216,9 +222,27 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
 
   FutureOr<void> _toggleSelectMode(
       EditSubjectToggleSelectMode event, Emitter<EditSubjectState> emit) {
-    if (event.inSelectMode) {
+    _selectionMode = !_selectionMode;
+    if (_selectionMode) {
       emit(EditSubjectFoldersSelectModeOn());
     } else {
+      emit(EditSubjectFoldersSelectModeOff());
+    }
+  }
+
+  FutureOr<void> _addSelection(
+      EditSubjectAddSelection event, Emitter<EditSubjectState> emit) {
+    print("add selecion");
+    _selectedCards.add(event.card);
+    if(_selectedCards.length == 1){
+      emit(EditSubjectFoldersSelectModeOn());
+    }
+  }
+
+  FutureOr<void> _removeSelection(
+      EditSubjectRemoveSelection event, Emitter<EditSubjectState> emit) {
+    _selectedCards.remove(event.card);
+    if (_selectedCards.isEmpty) {
       emit(EditSubjectFoldersSelectModeOff());
     }
   }
