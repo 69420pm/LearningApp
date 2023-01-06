@@ -3,6 +3,7 @@ import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:ui_components/ui_components.dart';
 
 import 'package:learning_app/subject_overview/bloc/card_list_tile_bloc.dart';
@@ -29,12 +30,13 @@ class _CardListTileState extends State<CardListTile> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<EditSubjectBloc, EditSubjectState>(
+    return BlocConsumer<SubjectOverviewSelectionBloc,
+        SubjectOverviewSelectionState>(
       listener: (context, state) {
-        if (state is EditSubjectFoldersSelectModeOn) {
+        if (state is SubjectOverviewSelectionModeOn) {
           widget.isInSelectMode = true;
         }
-        if (state is EditSubjectFoldersSelectModeOff) {
+        if (state is SubjectOverviewSelectionModeOff) {
           widget.isInSelectMode = false;
           setState(() {
             widget.isCardSelected = false;
@@ -43,17 +45,16 @@ class _CardListTileState extends State<CardListTile> {
       },
       builder: (context, state) => GestureDetector(
         onTap: () {
-          print("shortpress");
           if (widget.isInSelectMode) {
             setState(() {
-              widget.isCardSelected = true;
+              widget.isCardSelected = !widget.isCardSelected;
             });
           }
         },
         child: LongPressDraggable(
           data: widget.card,
+          maxSimultaneousDrags: widget.isInSelectMode ? 0 : 1,
           onDragStarted: () {
-            print("longpress");
             if (!widget.isInSelectMode || widget.isCardSelected == false) {
               setState(() {
                 widget.isCardSelected = true;
@@ -62,9 +63,8 @@ class _CardListTileState extends State<CardListTile> {
           },
           onDragEnd: (details) {
             if (!details.wasAccepted) {
-              context
-                  .read<EditSubjectBloc>()
-                  .add(EditSubjectToggleSelectMode(inSelectMode: true));
+              context.read<SubjectOverviewSelectionBloc>().add(
+                  SubjectOverviewSelectionToggleSelectMode(inSelectMode: true));
             }
           },
           feedback: Builder(

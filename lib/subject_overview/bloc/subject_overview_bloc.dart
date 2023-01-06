@@ -36,7 +36,6 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
     );
     on<EditSubjectSetFolderParent>(_setParent);
     on<EditSubjectSetCardParent>(_setParentCard);
-    on<EditSubjectToggleSelectMode>(_toggleSelectMode);
   }
 
   final CardsRepository cardsRepository;
@@ -212,14 +211,5 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
     cardsRepository
       ..deleteCard(event.card.id, event.card.parentId)
       ..saveCard(event.card.copyWith(parentId: event.parentId));
-  }
-
-  FutureOr<void> _toggleSelectMode(
-      EditSubjectToggleSelectMode event, Emitter<EditSubjectState> emit) {
-    if (event.inSelectMode) {
-      emit(EditSubjectFoldersSelectModeOn());
-    } else {
-      emit(EditSubjectFoldersSelectModeOff());
-    }
   }
 }
