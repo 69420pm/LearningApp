@@ -34,8 +34,6 @@ class AddSubjectBottomSheet extends StatelessWidget {
             child: UITextFormField(
               autofocus: true,
               controller: nameController,
-              onChanged: (_) => print("change"),
-              onLoseFocus: (_) => print("lose Focus"),
               onFieldSubmitted: (_) async {
                 if (formKey.currentState!.validate()) {
                   await context.read<AddSubjectCubit>().saveSubject(

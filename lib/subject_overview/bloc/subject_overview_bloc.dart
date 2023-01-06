@@ -36,7 +36,6 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
     );
     on<EditSubjectSetFolderParent>(_setParent);
     on<EditSubjectSetCardParent>(_setParentCard);
-    on<EditSubjectToggleSelectMode>(_toggleSelectMode);
   }
 
   final CardsRepository cardsRepository;
@@ -71,12 +70,12 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
             childListTiles[element.id] = FolderListTile(
               folder: element,
               cardsRepository: cardsRepository,
-              editSubjectBloc: this,
             );
           } else if (element is Card) {
             childListTiles[element.id] = CardListTile(
-              editSubjectBloc: this,
               card: element,
+              isCardSelected: false,
+              isInSelectMode: false,
             );
           } else if (element is Removed) {
             widgetsToRemove.add(element);
@@ -212,14 +211,5 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
     cardsRepository
       ..deleteCard(event.card.id, event.card.parentId)
       ..saveCard(event.card.copyWith(parentId: event.parentId));
-  }
-
-  FutureOr<void> _toggleSelectMode(
-      EditSubjectToggleSelectMode event, Emitter<EditSubjectState> emit) {
-    if (event.inSelectMode) {
-      emit(EditSubjectFoldersSelectModeOn());
-    } else {
-      emit(EditSubjectFoldersSelectModeOff());
-    }
   }
 }
