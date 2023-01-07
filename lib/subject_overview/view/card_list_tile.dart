@@ -1,18 +1,25 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
+import 'package:ui_components/ui_components.dart';
+
 import 'package:learning_app/subject_overview/bloc/card_list_tile_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/subject_overview_bloc.dart';
 import 'package:learning_app/subject_overview/view/subject_overview_page.dart';
-import 'package:ui_components/ui_components.dart';
 
 class CardListTile extends StatefulWidget {
-  CardListTile({super.key, required this.card, required this.editSubjectBloc});
+  CardListTile({
+    super.key,
+    required this.card,
+    required this.isCardSelected,
+    required this.isInSelectMode,
+  });
   final Card card;
-  final EditSubjectBloc editSubjectBloc;
-  var isCardSelected = false;
-  var isInSelectMode = false;
+  bool isCardSelected;
+  bool isInSelectMode;
 
   @override
   State<CardListTile> createState() => _CardListTileState();
@@ -23,16 +30,13 @@ class _CardListTileState extends State<CardListTile> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer(
-      bloc: widget.editSubjectBloc,
-      listenWhen: (previous, current) =>
-          current is EditSubjectFoldersSelectModeOn ||
-          current is EditSubjectFoldersSelectModeOff,
+    return BlocConsumer<SubjectOverviewSelectionBloc,
+        SubjectOverviewSelectionState>(
       listener: (context, state) {
-        if (state is EditSubjectFoldersSelectModeOn) {
+        if (state is SubjectOverviewSelectionModeOn) {
           widget.isInSelectMode = true;
         }
-        if (state is EditSubjectFoldersSelectModeOff) {
+        if (state is SubjectOverviewSelectionModeOff) {
           widget.isInSelectMode = false;
           setState(() {
             widget.isCardSelected = false;
@@ -41,43 +45,27 @@ class _CardListTileState extends State<CardListTile> {
       },
       builder: (context, state) => GestureDetector(
         onTap: () {
-          print("shortpress");
           if (widget.isInSelectMode) {
             setState(() {
               widget.isCardSelected = !widget.isCardSelected;
-              if (widget.isCardSelected) {
-                context
-                    .read<EditSubjectBloc>()
-                    .add(EditSubjectAddSelection(card: widget.card));
-              } else {
-                context
-                    .read<EditSubjectBloc>()
-                    .add(EditSubjectRemoveSelection(card: widget.card));
-              }
             });
           }
         },
         child: LongPressDraggable(
           data: widget.card,
+          maxSimultaneousDrags: widget.isInSelectMode ? 0 : 1,
           onDragStarted: () {
-            print("longpress");
-            // if (!widget.isInSelectMode) {
-            setState(() {
-              widget.isCardSelected = !widget.isCardSelected;
-              if (widget.isCardSelected) {
-                context
-                    .read<EditSubjectBloc>()
-                    .add(EditSubjectAddSelection(card: widget.card));
-              } else {
-                context
-                    .read<EditSubjectBloc>()
-                    .add(EditSubjectRemoveSelection(card: widget.card));
-              }
-              // context
-              //     .read<EditSubjectBloc>()
-              //     .add(EditSubjectToggleSelectMode(inSelectMode: true));
-            });
-            // }
+            if (!widget.isInSelectMode || widget.isCardSelected == false) {
+              setState(() {
+                widget.isCardSelected = true;
+              });
+            }
+          },
+          onDragEnd: (details) {
+            if (!details.wasAccepted) {
+              context.read<SubjectOverviewSelectionBloc>().add(
+                  SubjectOverviewSelectionToggleSelectMode(inSelectMode: true));
+            }
           },
           feedback: Builder(
             builder: (context) {

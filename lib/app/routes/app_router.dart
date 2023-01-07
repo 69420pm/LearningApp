@@ -11,6 +11,7 @@ import 'package:learning_app/home/view/home_page.dart';
 import 'package:learning_app/learn/cubit/learn_cubit.dart';
 import 'package:learning_app/learn/view/learning_screen.dart';
 import 'package:learning_app/overview/bloc/overview_bloc.dart';
+import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/subject_overview_bloc.dart';
 import 'package:learning_app/subject_overview/view/subject_overview_page.dart';
 
@@ -30,7 +31,7 @@ class AppRouter {
   late final OverviewBloc _overviewBloc = OverviewBloc(_cardsRepository)
     ..add(OverviewSubjectSubscriptionRequested());
   late final LearnCubit _learnCubit = LearnCubit(_cardsRepository);
-  
+
   Route<dynamic> onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
       // home page, with bottom navigation bar
@@ -82,7 +83,8 @@ class AppRouter {
       //   );
 
       case '/subject_overview':
-      final newBloc = EditSubjectBloc(_cardsRepository);
+        final esb = EditSubjectBloc(_cardsRepository);
+        final sosb = SubjectOverviewSelectionBloc();
         return MaterialPageRoute(
           builder: (_) => MultiBlocProvider(
             providers: [
@@ -93,14 +95,18 @@ class AppRouter {
               //   value: _editSubjectBloc,
               // ),
               BlocProvider(
-                  create: (context) => newBloc,),
+                create: (context) => esb,
+              ),
+              BlocProvider(
+                create: (context) => sosb,
+              ),
               BlocProvider.value(
                 value: _addFolderCubit,
               )
             ],
             child: SubjectOverviewPage(
               subjectToEdit: routeSettings.arguments! as Subject,
-              editSubjectBloc: newBloc,
+              editSubjectBloc: esb,
             ),
           ),
         );
@@ -127,6 +133,4 @@ class AppRouter {
   }
 }
 
-class LearnPageArguments{
-
-}
+class LearnPageArguments {}

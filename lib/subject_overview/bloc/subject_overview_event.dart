@@ -74,24 +74,3 @@ class EditSubjectSetCardParent extends EditSubjectEvent {
     required this.card,
   });
 }
-
-class EditSubjectToggleSelectMode extends EditSubjectEvent {
-  bool inSelectMode;
-  EditSubjectToggleSelectMode({
-    required this.inSelectMode,
-  });
-}
-
-class EditSubjectAddSelection extends EditSubjectEvent {
-  Card card;
-  EditSubjectAddSelection({
-    required this.card,
-  });
-}
-
-class EditSubjectRemoveSelection extends EditSubjectEvent {
-  Card card;
-  EditSubjectRemoveSelection({
-    required this.card,
-  });
-}

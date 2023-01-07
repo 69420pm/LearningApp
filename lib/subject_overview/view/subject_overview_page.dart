@@ -2,6 +2,7 @@ import 'package:cards_api/cards_api.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_folder/view/add_folder_bottom_sheet.dart';
+import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/subject_overview_bloc.dart';
 import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
@@ -92,14 +93,15 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
 
                 Row(
                   children: [
-                    BlocBuilder<EditSubjectBloc, EditSubjectState>(
+                    BlocBuilder<SubjectOverviewSelectionBloc,
+                        SubjectOverviewSelectionState>(
                       builder: (context, state) => Opacity(
                         opacity:
-                            state is EditSubjectFoldersSelectModeOn ? 1 : 0,
+                            state is SubjectOverviewSelectionModeOn ? 1 : 0,
                         child: IconButton(
                           onPressed: () {
-                            context.read<EditSubjectBloc>().add(
-                                EditSubjectToggleSelectMode(
+                            context.read<SubjectOverviewSelectionBloc>().add(
+                                SubjectOverviewSelectionToggleSelectMode(
                                     inSelectMode: false));
                           },
                           icon: const Icon(

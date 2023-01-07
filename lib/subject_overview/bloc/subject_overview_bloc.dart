@@ -36,16 +36,9 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
     );
     on<EditSubjectSetFolderParent>(_setParent);
     on<EditSubjectSetCardParent>(_setParentCard);
-    on<EditSubjectToggleSelectMode>(_toggleSelectMode);
-    on<EditSubjectAddSelection>(_addSelection);
-    on<EditSubjectRemoveSelection>(_removeSelection);
   }
 
   final CardsRepository cardsRepository;
-
-  bool _selectionMode = false;
-
-  final List<Card> _selectedCards = <Card>[];
 
   Future<void> _saveSubject(
     EditSubjectSaveSubject event,
@@ -77,12 +70,12 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
             childListTiles[element.id] = FolderListTile(
               folder: element,
               cardsRepository: cardsRepository,
-              editSubjectBloc: this,
             );
           } else if (element is Card) {
             childListTiles[element.id] = CardListTile(
-              editSubjectBloc: this,
               card: element,
+              isCardSelected: false,
+              isInSelectMode: false,
             );
           } else if (element is Removed) {
             widgetsToRemove.add(element);
@@ -218,32 +211,5 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
     cardsRepository
       ..deleteCard(event.card.id, event.card.parentId)
       ..saveCard(event.card.copyWith(parentId: event.parentId));
-  }
-
-  FutureOr<void> _toggleSelectMode(
-      EditSubjectToggleSelectMode event, Emitter<EditSubjectState> emit) {
-    _selectionMode = !_selectionMode;
-    if (_selectionMode) {
-      emit(EditSubjectFoldersSelectModeOn());
-    } else {
-      emit(EditSubjectFoldersSelectModeOff());
-    }
-  }
-
-  FutureOr<void> _addSelection(
-      EditSubjectAddSelection event, Emitter<EditSubjectState> emit) {
-    print("add selecion");
-    _selectedCards.add(event.card);
-    if(_selectedCards.length == 1){
-      emit(EditSubjectFoldersSelectModeOn());
-    }
-  }
-
-  FutureOr<void> _removeSelection(
-      EditSubjectRemoveSelection event, Emitter<EditSubjectState> emit) {
-    _selectedCards.remove(event.card);
-    if (_selectedCards.isEmpty) {
-      emit(EditSubjectFoldersSelectModeOff());
-    }
   }
 }
