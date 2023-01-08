@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:learning_app/add_card/cubit/add_card_cubit.dart';
 import 'package:learning_app/subject_overview/bloc/subject_overview_bloc.dart';
+import 'package:tex_markdown/tex_markdown.dart';
 import 'package:ui_components/ui_components.dart';
 
 class AddCardPage extends StatelessWidget {
@@ -20,6 +22,17 @@ class AddCardPage extends StatelessWidget {
     final formKey = GlobalKey<FormState>();
     return Scaffold(
       appBar: UIAppBar(title: const Text('Add Card Page')),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => context.read<AddCardCubit>().switchMarkdownMode(),
+        child: BlocBuilder<AddCardCubit, AddCardState>(
+          builder: (context, state) {
+            if (state is AddCardRenderMode) {
+              return Icon(Icons.edit);
+            }
+            return Icon(Icons.visibility);
+          },
+        ),
+      ),
       body: SafeArea(
         child: Form(
           key: formKey,
@@ -36,26 +49,50 @@ class AddCardPage extends StatelessWidget {
                   }
                 },
               ),
-              TextFormField(
-                controller: backController,
-              ),
+              // TextFormField(
+              //   controller: backController,
+              // ),
 
               /// File Location
-              TextFormField(
-                controller: locationController,
-              ),
-              const SizedBox(
-                height: 200,
-                child: Markdown(
-                  selectable: true,
-                  data: '# hey guys \n# hey guys \n**what is up**',
-                ),
+              // TextFormField(
+              //   controller: locationController,
+              // ),
+              BlocBuilder<AddCardCubit, AddCardState>(
+                builder: (context, state) {
+                  print(backController.text as String);
+                  if (state is AddCardRenderMode) {
+                    // return Expanded(
+                    //   child:  Markdown(
+                    //     data: backController.text,
+                    //   ),
+                    // );
+                    return Expanded(child: 
+                    TexMarkdown(
+                      backController.text,
+                      style: TextStyle(color: Colors.white, fontStyle: FontStyle.italic),
+                      
+                    ),);
+                  }
+                  return UITextFormField(
+                    controller: backController,
+                    initialValue: backController.text,
+                    validation: (value) {
+                      if (value!.isEmpty) {
+                        return 'Enter something';
+                      } else {
+                        return null;
+                      }
+                    },
+                    inputType: TextInputType.multiline,
+                    maxLines: null,
+                  );
+                },
               ),
 
               /// Prefix icon
-              TextFormField(
-                controller: iconController,
-              ),
+              // TextFormField(
+              //   controller: iconController,
+              // ),
               ElevatedButton(
                 onPressed: () async {
                   if (formKey.currentState!.validate()) {

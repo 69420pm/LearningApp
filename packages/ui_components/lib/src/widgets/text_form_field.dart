@@ -15,6 +15,8 @@ class UITextFormField extends StatefulWidget {
   final Function(String)? onChanged, onFieldSubmitted, onLoseFocus;
   final bool? autofocus;
   final TextInputAction? textInputAction;
+  final int? maxLines;
+  final Widget? prefixIcon;
 
   const UITextFormField({
     Key? key,
@@ -33,6 +35,8 @@ class UITextFormField extends StatefulWidget {
     this.icon,
     this.textInputAction,
     this.onLoseFocus,
+    this.maxLines = 1,
+    this.prefixIcon
   }) : super(key: key);
 
   @override
@@ -86,6 +90,7 @@ class _UITextFormFieldState extends State<UITextFormField> {
               controller: widget.controller,
               maxLength: widget.maxLength != 0 ? widget.maxLength : null,
               focusNode: focusNode,
+              maxLines: widget.maxLines,
               style: Theme.of(context)
                   .textTheme
                   .bodyMedium
@@ -94,6 +99,7 @@ class _UITextFormFieldState extends State<UITextFormField> {
                 label: Text(widget.label ?? ""),
                 suffixIcon: widget.suffixIcon,
                 icon: widget.icon,
+                prefixIcon: widget.prefixIcon,
                 hintText: widget.hintText,
                 focusedBorder: OutlineInputBorder(
                   borderRadius:
