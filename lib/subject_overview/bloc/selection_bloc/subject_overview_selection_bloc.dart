@@ -26,6 +26,7 @@ class SubjectOverviewSelectionBloc
     if (event.inSelectMode) {
       emit(SubjectOverviewSelectionModeOn());
     } else {
+      _cardsSelected.clear();
       emit(SubjectOverviewSelectionModeOff());
     }
   }
