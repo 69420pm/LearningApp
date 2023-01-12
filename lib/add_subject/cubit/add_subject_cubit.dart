@@ -1,8 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:cards_repository/cards_repository.dart';
 import 'package:learning_app/app/helper/uid.dart';
-import 'package:meta/meta.dart';
-import 'package:uuid/uuid.dart';
 
 part 'add_subject_state.dart';
 
@@ -19,7 +17,7 @@ class AddSubjectCubit extends Cubit<AddSubjectState> {
         dateCreated: DateTime.now().toIso8601String(),
         prefixIcon: icon,
         classTests: List<String>.empty(growable: true),
-        daysToGetNotified: List<String>.empty(growable: true));
+        daysToGetNotified: List<String>.empty(growable: true),);
     try {
       await _cardsRepository.saveSubject(newSubject);
 

@@ -3,21 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:ui_components/src/ui_size_constants.dart';
 
 class UITextFormField extends StatefulWidget {
-  final String? label, hintText;
-  final Widget? suffixIcon;
-  final Widget? icon;
-  final TextEditingController controller;
-  final int? maxLength;
-  final String? initialValue;
-  final TextInputType? inputType;
-  final List<TextInputFormatter>? formater;
-  final String? Function(String?) validation;
-  final Function(String)? onChanged, onFieldSubmitted, onLoseFocus;
-  final bool? autofocus;
-  final TextInputAction? textInputAction;
 
   const UITextFormField({
-    Key? key,
+    super.key,
     this.label,
     required this.controller,
     this.inputType,
@@ -33,7 +21,19 @@ class UITextFormField extends StatefulWidget {
     this.icon,
     this.textInputAction,
     this.onLoseFocus,
-  }) : super(key: key);
+  });
+  final String? label, hintText;
+  final Widget? suffixIcon;
+  final Widget? icon;
+  final TextEditingController controller;
+  final int? maxLength;
+  final String? initialValue;
+  final TextInputType? inputType;
+  final List<TextInputFormatter>? formater;
+  final String? Function(String?) validation;
+  final Function(String)? onChanged, onFieldSubmitted, onLoseFocus;
+  final bool? autofocus;
+  final TextInputAction? textInputAction;
 
   @override
   State<UITextFormField> createState() => _UITextFormFieldState();
@@ -51,7 +51,7 @@ class _UITextFormFieldState extends State<UITextFormField> {
         widget.onLoseFocus!(widget.controller.text);
       }
     });
-    widget.controller.text = widget.initialValue ?? "";
+    widget.controller.text = widget.initialValue ?? '';
     super.initState();
   }
 
@@ -91,7 +91,7 @@ class _UITextFormFieldState extends State<UITextFormField> {
                   .bodyMedium
                   ?.copyWith(color: Theme.of(context).colorScheme.onSurface),
               decoration: InputDecoration(
-                label: Text(widget.label ?? ""),
+                label: Text(widget.label ?? ''),
                 suffixIcon: widget.suffixIcon,
                 icon: widget.icon,
                 hintText: widget.hintText,
@@ -99,7 +99,7 @@ class _UITextFormFieldState extends State<UITextFormField> {
                   borderRadius:
                       BorderRadius.circular(UISizeConstants.cornerRadius),
                   borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.outline, width: 2),
+                      color: Theme.of(context).colorScheme.outline, width: 2,),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius:
@@ -117,7 +117,7 @@ class _UITextFormFieldState extends State<UITextFormField> {
                   borderRadius:
                       BorderRadius.circular(UISizeConstants.cornerRadius),
                   borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.error, width: 2),
+                      color: Theme.of(context).colorScheme.error, width: 2,),
                 ),
                 border: OutlineInputBorder(
                   borderRadius:

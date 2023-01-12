@@ -1,10 +1,7 @@
 import 'package:cards_api/cards_api.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_subject/cubit/add_subject_cubit.dart';
-import 'package:learning_app/overview/bloc/overview_bloc.dart';
 import 'package:ui_components/ui_components.dart';
 
 class SubjectListTile extends StatelessWidget {
@@ -38,10 +35,10 @@ class SubjectListTile extends StatelessWidget {
                 Text(subject.name),
                 const Icon(Icons.drag_indicator),
                 IconButton(
-                    onPressed: (() => context
+                    onPressed: () => context
                         .read<AddSubjectCubit>()
-                        .deleteSubject(subject.id)),
-                    icon: Icon(Icons.abc))
+                        .deleteSubject(subject.id),
+                    icon: const Icon(Icons.abc),)
               ],
             ),
           ),

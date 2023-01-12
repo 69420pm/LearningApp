@@ -1,9 +1,7 @@
 import 'package:cards_api/cards_api.dart';
-import "package:flutter/material.dart";
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:learning_app/add_folder/cubit/add_folder_cubit.dart';
-import 'package:learning_app/add_subject/cubit/add_subject_cubit.dart';
-import 'package:learning_app/subject_overview/bloc/subject_overview_bloc.dart';
+import 'package:learning_app/subject_overview/bloc/edit_subject_bloc/subject_overview_bloc.dart';
 import 'package:ui_components/ui_components.dart';
 
 class AddFolderBottomSheet extends StatelessWidget {
@@ -11,7 +9,7 @@ class AddFolderBottomSheet extends StatelessWidget {
       {super.key,
       required this.parentId,
       this.parentSubject,
-      this.parentFolder});
+      this.parentFolder,});
 
   final String parentId;
   final Subject? parentSubject;
@@ -23,9 +21,7 @@ class AddFolderBottomSheet extends StatelessWidget {
     final locationController = TextEditingController();
     final iconController = TextEditingController();
 
-    if (parentId != null) {
-      locationController.text = parentId;
-    }
+    locationController.text = parentId;
 
     final formKey = GlobalKey<FormState>();
     return UIBottomSheet(
@@ -33,14 +29,14 @@ class AddFolderBottomSheet extends StatelessWidget {
         key: formKey,
         child: Padding(
           padding: const EdgeInsets.symmetric(
-              horizontal: UISizeConstants.defaultSize),
+              horizontal: UISizeConstants.defaultSize,),
           child: UITextFormField(
             controller: nameController,
             autofocus: true,
-            label: "Add Folder",
+            label: 'Add Folder',
             onFieldSubmitted: (_) {
               context.read<EditSubjectBloc>().add(EditSubjectAddFolder(
-                  name: nameController.text.trim(), parentId: parentId));
+                  name: nameController.text.trim(), parentId: parentId,),);
               Navigator.pop(context);
             },
             validation: (value) {

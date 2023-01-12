@@ -8,7 +8,7 @@ class CalendarPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: UIAppBar(
-      title: Text('Calender'),
-    ));
+      title: const Text('Calender'),
+    ),);
   }
 }

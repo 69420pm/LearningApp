@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/app/view/error.dart';
 import 'package:learning_app/calendar/view/calendar_page.dart';
@@ -12,12 +11,12 @@ class HomePage extends StatelessWidget {
   HomePage({super.key});
 
   /// index of current navbar status
-  PageController _pageController = PageController(initialPage: 0);
+  final PageController _pageController = PageController();
   int pageIndex = 0;
   final pages = <Widget>[
-    OverviewPage(),
-    CalendarPage(),
-    SettingsPage(),
+    const OverviewPage(),
+    const CalendarPage(),
+    const SettingsPage(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -53,7 +52,6 @@ class HomePage extends StatelessWidget {
 
 class _BottomNavBar extends StatelessWidget {
   const _BottomNavBar({
-    super.key,
     required this.navbarIndex,
     required this.pageController,
   });

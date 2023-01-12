@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:ui_components/ui_components.dart';
 
 class UIBottomSheet extends StatelessWidget {
+  const UIBottomSheet({super.key, required this.child});
   final Widget child;
-  const UIBottomSheet({Key? key, required this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class UIBottomSheet extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      vertical: UISizeConstants.defaultSize),
+                      vertical: UISizeConstants.defaultSize,),
                   child: Container(
                     height: 4,
                     width: 32,
@@ -36,7 +36,7 @@ class UIBottomSheet extends StatelessWidget {
                             .onSurfaceVariant
                             .withOpacity(.4),
                         borderRadius:
-                            const BorderRadius.all(Radius.circular(100))),
+                            const BorderRadius.all(Radius.circular(100)),),
                   ),
                 ),
                 child,

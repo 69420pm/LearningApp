@@ -76,8 +76,8 @@ class OverviewPage extends StatelessWidget {
                     } else if (state is OverviewLoading) {
                       // TODO add loading placeholder
                     }
-                    return Text("error");
-                  }),
+                    return const Text('error');
+                  },),
             ],
           ),
         ),
