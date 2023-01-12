@@ -27,6 +27,9 @@ class FolderListTileView extends StatelessWidget {
 
       collapsedTextColor: Theme.of(context).colorScheme.onSecondaryContainer,
       textColor: Theme.of(context).colorScheme.onSecondaryContainer,
+
+      maintainState: true,
+
       title: Text(folder.name),
 
       trailing: Row(
@@ -85,22 +88,15 @@ class FolderListTileView extends StatelessWidget {
                       .elementAt(index),
                 ),
               if (childListTiles.values.whereType<CardListTile>().isNotEmpty)
-                GridView.builder(
+                ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemCount:
                       childListTiles.values.whereType<CardListTile>().length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    childAspectRatio: 3 / 1,
-                    crossAxisCount: 2,
-                    crossAxisSpacing: UISizeConstants.defaultSize,
-                  ),
                   itemBuilder: (context, index) => childListTiles.values
                       .whereType<CardListTile>()
                       .elementAt(index)
                     ..isInSelectMode = inSelectionMode,
-
-                  // shrinkWrap: true,
                 ),
             ],
           ),

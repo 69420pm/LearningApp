@@ -6,7 +6,7 @@ class CardListTileView extends StatelessWidget {
   const CardListTileView({
     super.key,
     required this.card,
-    this.isDragged = false,
+    this.isChildWhenDragging = false,
     this.height,
     this.width,
     required this.isSelected,
@@ -15,7 +15,7 @@ class CardListTileView extends StatelessWidget {
 
   final GlobalKey? globalKey;
   final Card card;
-  final bool isDragged;
+  final bool isChildWhenDragging;
   final bool isSelected;
   final double? height;
   final double? width;
@@ -25,11 +25,14 @@ class CardListTileView extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: UISizeConstants.defaultSize),
       child: Container(
-        height: height,
+        height: UISizeConstants.defaultSize * 5,
         width: width,
         key: globalKey,
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.secondaryContainer,
+          color: Theme.of(context)
+              .colorScheme
+              .secondaryContainer
+              .withOpacity(isChildWhenDragging ? 0.5 : 1),
           borderRadius: const BorderRadius.all(
             Radius.circular(UISizeConstants.cornerRadius),
           ),
@@ -42,21 +45,23 @@ class CardListTileView extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding:
-                    const EdgeInsets.only(left: UISizeConstants.defaultSize),
-                child: Text(
-                  card.front,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color:
-                            Theme.of(context).colorScheme.onSecondaryContainer,
-                      ),
+            if (!isChildWhenDragging)
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.only(left: UISizeConstants.defaultSize),
+                  child: Text(
+                    card.front,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSecondaryContainer,
+                        ),
+                  ),
                 ),
               ),
-            ),
           ],
         ),
       ),

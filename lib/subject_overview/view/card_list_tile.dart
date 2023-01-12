@@ -36,8 +36,11 @@ class _CardListTileState extends State<CardListTile> {
           setState(() {
             widget.isCardSelected = false;
             context.read<SubjectOverviewSelectionBloc>().add(
-                SubjectOverviewSelectionChange(
-                    card: widget.card, addCard: widget.isCardSelected,),);
+                  SubjectOverviewSelectionChange(
+                    card: widget.card,
+                    addCard: widget.isCardSelected,
+                  ),
+                );
           });
         }
       },
@@ -47,8 +50,11 @@ class _CardListTileState extends State<CardListTile> {
             setState(() {
               widget.isCardSelected = !widget.isCardSelected;
               context.read<SubjectOverviewSelectionBloc>().add(
-                  SubjectOverviewSelectionChange(
-                      card: widget.card, addCard: widget.isCardSelected,),);
+                    SubjectOverviewSelectionChange(
+                      card: widget.card,
+                      addCard: widget.isCardSelected,
+                    ),
+                  );
             });
           }
         },
@@ -63,12 +69,15 @@ class _CardListTileState extends State<CardListTile> {
             }
           },
           onDraggableCanceled: (_, __) {
-            print('drag to select');
             context.read<SubjectOverviewSelectionBloc>().add(
-                SubjectOverviewSelectionToggleSelectMode(inSelectMode: true),);
+                  SubjectOverviewSelectionToggleSelectMode(inSelectMode: true),
+                );
             context.read<SubjectOverviewSelectionBloc>().add(
-                SubjectOverviewSelectionChange(
-                    card: widget.card, addCard: true,),);
+                  SubjectOverviewSelectionChange(
+                    card: widget.card,
+                    addCard: true,
+                  ),
+                );
           },
           feedback: Builder(
             builder: (context) {
@@ -85,7 +94,11 @@ class _CardListTileState extends State<CardListTile> {
               );
             },
           ),
-          childWhenDragging: Container(),
+          childWhenDragging: CardListTileView(
+            isSelected: false,
+            isChildWhenDragging: true,
+            card: widget.card,
+          ),
           child: CardListTileView(
             globalKey: globalKey,
             isSelected: widget.isCardSelected,
