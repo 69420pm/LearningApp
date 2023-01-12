@@ -272,13 +272,57 @@ class HiveCardsApi extends CardsApi {
       }
     }
     if (found == false) {
-      // ! ADD PARENTNOTFOUNDEXCEPTION THROW
-      // throw ParentNotFoundException();
+      throw ParentNotFoundException();
     }
     if (_subscribedStreams.containsKey(path)) {
       _subscribedStreams[path]!.add([Removed(id: id)]);
     }
-    return _hiveBox.put(_makePathStorable(path), cards);
+    await _hiveBox.put(_makePathStorable(path), cards);
+  }
+
+  @override
+  Future<void> deleteCards(List<String> id, List<String> parentId) async {
+    if (id.length != parentId.length) throw WrongInput();
+    final parentIdToDeletedIds = <String, List<String>>{};
+    final paths = <String>[];
+    for (var i = 0; i < id.length; i++) {
+      final path = _getPath(parentId[i]);
+      if (path == null) {
+        throw ParentNotFoundException();
+      }
+      if (!paths.contains(path)) {
+        paths.add(path);
+      }
+      if (parentIdToDeletedIds[path] == null) {
+        parentIdToDeletedIds[path] = [id[i]];
+      } else {
+        parentIdToDeletedIds[path]!.add(id[i]);
+      }
+      final cards = _hiveBox.get(_makePathStorable(path)) as List<String>?;
+      var found = false;
+      if (cards != null) {
+        for (final element in cards) {
+          if (element.substring(7).startsWith(id[i])) {
+            cards.remove(element);
+            found = true;
+            break;
+          }
+        }
+      }
+      if (found == false) {
+        throw ParentNotFoundException();
+      }
+
+      await _hiveBox.put(_makePathStorable(path), cards);
+    }
+    for (var path in paths) {
+      if (_subscribedStreams.containsKey(path)) {
+        for(final id in parentIdToDeletedIds[path]!){
+        _subscribedStreams[path]!.add([Removed(id: id)]);
+
+        }
+      }
+    }
   }
 
   @override
@@ -486,7 +530,6 @@ class HiveCardsApi extends CardsApi {
     if (found == false) {
       throw ParentNotFoundException();
     }
-    //! dafaq
     await _hiveBox.put(folder.parentId, folders);
     if (_subscribedStreams.containsKey(path)) {
       _subscribedStreams[path]!.add([Removed(id: folder.id)]);
@@ -642,29 +685,4 @@ class HiveCardsApi extends CardsApi {
     }
     return foundedCards;
   }
-
-  //   @override
-  // Stream<List<Object>> getChildrenById(String id) {
-  //   final newStream = BehaviorSubject<List<Object>>.seeded(const []);
-  //   final path = _getPath(id);
-  //   if (path == null) {
-  //     throw StreamNotFoundException();
-  //   }
-  //   final childrenStrings =
-  //       _hiveBox.get(_makePathStorable(path)) as List<String>?;
-  //   final children = <Object>[];
-  //   if (childrenStrings != null) {
-  //     for (final element in childrenStrings) {
-  //       try {
-  //         children.add(_cardsFromJson([element])[0]);
-  //       } catch (e) {
-  //         children.add(_foldersFromJson([element])[0]);
-  //       }
-  //     }
-  //   }
-
-  //   newStream.add(children);
-  //   _subscribedStreams[path] = newStream;
-  //   return newStream;
-  // }
 }

@@ -40,6 +40,11 @@ abstract class CardsApi {
   /// thrown
   Future<void> deleteCard(String id, String parentId);
 
+/// Deletes cards with given id
+  /// If no cards with given id exists, a [CardNotFoundException] error is
+  /// thrown
+  Future<void> deleteCards(List<String> id, List<String> parentId);
+
   /// Deletes subject and every children with given id
   /// If no card with given id exists, a [SubjectNotFoundException] error is
   /// thrown
@@ -74,3 +79,6 @@ class ParentNotFoundException implements Exception {}
 
 /// Error when a stream for a given parentId wasn't found
 class StreamNotFoundException implements Exception {}
+
+/// when given input doesn't work
+class WrongInput implements Exception{}

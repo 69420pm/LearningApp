@@ -50,6 +50,9 @@ class CardsRepository {
   Future<void> deleteCard(String id, String parentId) =>
       _cardsApi.deleteCard(id, parentId);
 
+  Future<void> deleteCards(List<String> ids, List<String> parentIds) =>
+      _cardsApi.deleteCards(ids, parentIds);
+
   /// Deletes subject and every children with given id
   /// If no card with given id exists, a [SubjectNotFoundException] error is
   /// thrown
