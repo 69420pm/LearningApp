@@ -444,15 +444,14 @@ class HiveCardsApi extends CardsApi {
           indexToChange = cards.indexOf(element);
           found = true;
           break;
-        } 
+        }
       }
     } else {
       cards = [];
     }
     if (!found) {
       cards.add(_cardsToJson([card])[0]);
-    }else{
-
+    } else {
       cards[indexToChange] = _cardsToJson([card])[0];
     }
 
@@ -518,7 +517,8 @@ class HiveCardsApi extends CardsApi {
       } else {
         var newKey = _ASCIICHARS[0];
         if (_storeIds.isNotEmpty) {
-          newKey = (_addOneToString(_storeIds.values.last as String)).toString();
+          newKey =
+              (_addOneToString(_storeIds.values.last as String)).toString();
         }
         _storeIds[id] = newKey;
         newPath += '/${_storeIds[id]!}';
@@ -599,14 +599,14 @@ class HiveCardsApi extends CardsApi {
   @override
   List<Card> learnAllCards() {
     final cardsToLearn = <Card>[];
-    DateTime now = DateTime.now();
+    final now = DateTime.now();
     for (final element in _indexedPaths) {
       final loadedCardStrings =
           _hiveBox.get(_makePathStorable(element)) as List<String>?;
       if (loadedCardStrings == null) continue;
       for (final loadedCardString in loadedCardStrings) {
         if (loadedCardString.substring(46).startsWith('front')) {
-          Card card = Card.fromJson(loadedCardString);
+          final card = Card.fromJson(loadedCardString);
           try {
             if (DateTime.parse(card.dateToReview).compareTo(now) < 0) {
               cardsToLearn.add(card);
@@ -622,4 +622,49 @@ class HiveCardsApi extends CardsApi {
     }
     return cardsToLearn;
   }
+
+  @override
+  List<Card> search(String searchRequest) {
+    final foundedCards = <Card>[];
+    for (final element in _indexedPaths) {
+      final loadedCardStrings =
+          _hiveBox.get(_makePathStorable(element)) as List<String>?;
+      if (loadedCardStrings == null) continue;
+      for (final loadedCardString in loadedCardStrings) {
+        if (loadedCardString.substring(46).startsWith('front')) {
+          final card = Card.fromJson(loadedCardString);
+          if (card.front.contains(searchRequest) ||
+              card.back.contains(searchRequest)) {
+            foundedCards.add(card);
+          }
+        }
+      }
+    }
+    return foundedCards;
+  }
+
+  //   @override
+  // Stream<List<Object>> getChildrenById(String id) {
+  //   final newStream = BehaviorSubject<List<Object>>.seeded(const []);
+  //   final path = _getPath(id);
+  //   if (path == null) {
+  //     throw StreamNotFoundException();
+  //   }
+  //   final childrenStrings =
+  //       _hiveBox.get(_makePathStorable(path)) as List<String>?;
+  //   final children = <Object>[];
+  //   if (childrenStrings != null) {
+  //     for (final element in childrenStrings) {
+  //       try {
+  //         children.add(_cardsFromJson([element])[0]);
+  //       } catch (e) {
+  //         children.add(_foldersFromJson([element])[0]);
+  //       }
+  //     }
+  //   }
+
+  //   newStream.add(children);
+  //   _subscribedStreams[path] = newStream;
+  //   return newStream;
+  // }
 }

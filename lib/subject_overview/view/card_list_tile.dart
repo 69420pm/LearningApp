@@ -102,10 +102,10 @@ class CardListTileView extends StatelessWidget {
     this.height,
     this.width,
     required this.isSelected,
-    required this.globalKey,
+    this.globalKey,
   });
 
-  final GlobalKey globalKey;
+  final GlobalKey? globalKey;
   final Card card;
   final bool isDragged;
   final bool isSelected;

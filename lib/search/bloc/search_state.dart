@@ -8,7 +8,12 @@ class SearchInitial extends SearchState {}
 
 class SearchLoading extends SearchState {}
 
-class SearchSuccess extends SearchState {}
+class SearchSuccess extends SearchState {
+  List<CardListTileView> foundCards;
+  SearchSuccess({
+    required this.foundCards,
+  });
+}
 
 class SearchFailure extends SearchState {
   String errorMessage;

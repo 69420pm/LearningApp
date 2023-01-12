@@ -15,12 +15,14 @@ class CardsRepository {
   const CardsRepository({required CardsApi cardsApi}) : _cardsApi = cardsApi;
 
   final CardsApi _cardsApi;
-  
+
   /// provide a [Stream] of all subjects
   Stream<List<Subject>> getSubjects() => _cardsApi.getSubjects();
 
   /// return all cards to learn
   List<Card> learnAllCards() => _cardsApi.learnAllCards();
+
+  List<Card> search(String searchRequest) => _cardsApi.search(searchRequest);
 
   /// return all children for a given parentId in a stream
   Stream<List<Object>> getChildrenById(String id) =>
