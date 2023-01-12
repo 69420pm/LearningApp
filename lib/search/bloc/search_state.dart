@@ -12,7 +12,7 @@ class SearchSuccess extends SearchState {
   List<CardListTileView> foundCards;
   SearchSuccess({
     required this.foundCards,
-  });
+});
 }
 
 class SearchFailure extends SearchState {

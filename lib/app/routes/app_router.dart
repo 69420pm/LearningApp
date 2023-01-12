@@ -13,8 +13,8 @@ import 'package:learning_app/learn/view/learning_screen.dart';
 import 'package:learning_app/overview/bloc/overview_bloc.dart';
 import 'package:learning_app/search/bloc/search_bloc.dart';
 import 'package:learning_app/search/view/search_page.dart';
+import 'package:learning_app/subject_overview/bloc/edit_subject_bloc/subject_overview_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
-import 'package:learning_app/subject_overview/bloc/subject_overview_bloc.dart';
 import 'package:learning_app/subject_overview/view/subject_overview_page.dart';
 
 /// Handles complete app routing and is injected in MaterialApp()
@@ -78,7 +78,7 @@ class AppRouter {
 
       case '/subject_overview':
         final esb = EditSubjectBloc(_cardsRepository);
-        final sosb = SubjectOverviewSelectionBloc();
+        final sosb = SubjectOverviewSelectionBloc(_cardsRepository);
         return MaterialPageRoute(
           builder: (_) => MultiBlocProvider(
             providers: [
@@ -113,7 +113,7 @@ class AppRouter {
                 value: _learnCubit,
               ),
             ],
-            child: LearningScreen(),
+            child: const LearningScreen(),
           ),
         );
       // error route

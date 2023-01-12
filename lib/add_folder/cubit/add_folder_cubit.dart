@@ -2,8 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
 import 'package:learning_app/app/helper/uid.dart';
-import 'package:meta/meta.dart';
-import 'package:uuid/uuid.dart';
 
 part 'add_folder_state.dart';
 
@@ -13,7 +11,7 @@ class AddFolderCubit extends Cubit<AddFolderState> {
   final CardsRepository _cardsRepository;
 
   Future<void> saveFolder(
-      String name, Subject? parentSubject, Folder? parentFolder) async {
+      String name, Subject? parentSubject, Folder? parentFolder,) async {
     emit(AddFolderLoading());
     final String parentId;
     if (parentFolder != null) {
@@ -21,7 +19,7 @@ class AddFolderCubit extends Cubit<AddFolderState> {
     } else if (parentSubject != null) {
       parentId = parentSubject.id;
     } else {
-      emit(AddFolderFailure(errorMessage: "no parent was given"));
+      emit(AddFolderFailure(errorMessage: 'no parent was given'));
       return;
     }
     final newFolder = Folder(
@@ -44,7 +42,7 @@ class AddFolderCubit extends Cubit<AddFolderState> {
       emit(
         AddFolderFailure(
             errorMessage:
-                'Subject saving failed, while communicating with hive'),
+                'Subject saving failed, while communicating with hive',),
       );
     }
   }

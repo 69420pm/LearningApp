@@ -18,26 +18,25 @@ class UITextFormField extends StatefulWidget {
   final int? maxLines;
   final Widget? prefixIcon;
 
-  const UITextFormField({
-    Key? key,
-    this.label,
-    required this.controller,
-    this.inputType,
-    this.maxLength,
-    this.formater,
-    this.initialValue,
-    required this.validation,
-    this.onChanged,
-    this.autofocus,
-    this.onFieldSubmitted,
-    this.hintText,
-    this.suffixIcon,
-    this.icon,
-    this.textInputAction,
-    this.onLoseFocus,
-    this.maxLines = 1,
-    this.prefixIcon
-  }) : super(key: key);
+  const UITextFormField(
+      {super.key,
+      this.label,
+      required this.controller,
+      this.inputType,
+      this.maxLength,
+      this.formater,
+      this.initialValue,
+      required this.validation,
+      this.onChanged,
+      this.autofocus,
+      this.onFieldSubmitted,
+      this.hintText,
+      this.suffixIcon,
+      this.icon,
+      this.textInputAction,
+      this.onLoseFocus,
+      this.maxLines = 1,
+      this.prefixIcon});
 
   @override
   State<UITextFormField> createState() => _UITextFormFieldState();
@@ -55,7 +54,7 @@ class _UITextFormFieldState extends State<UITextFormField> {
         widget.onLoseFocus!(widget.controller.text);
       }
     });
-    widget.controller.text = widget.initialValue ?? "";
+    widget.controller.text = widget.initialValue ?? '';
     super.initState();
   }
 
@@ -96,7 +95,7 @@ class _UITextFormFieldState extends State<UITextFormField> {
                   .bodyMedium
                   ?.copyWith(color: Theme.of(context).colorScheme.onSurface),
               decoration: InputDecoration(
-                label: Text(widget.label ?? ""),
+                label: Text(widget.label ?? ''),
                 suffixIcon: widget.suffixIcon,
                 icon: widget.icon,
                 prefixIcon: widget.prefixIcon,
@@ -105,7 +104,9 @@ class _UITextFormFieldState extends State<UITextFormField> {
                   borderRadius:
                       BorderRadius.circular(UISizeConstants.cornerRadius),
                   borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.outline, width: 2),
+                    color: Theme.of(context).colorScheme.outline,
+                    width: 2,
+                  ),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius:
@@ -123,7 +124,9 @@ class _UITextFormFieldState extends State<UITextFormField> {
                   borderRadius:
                       BorderRadius.circular(UISizeConstants.cornerRadius),
                   borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.error, width: 2),
+                    color: Theme.of(context).colorScheme.error,
+                    width: 2,
+                  ),
                 ),
                 border: OutlineInputBorder(
                   borderRadius:

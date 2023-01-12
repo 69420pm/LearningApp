@@ -1,14 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
-import 'package:ui_components/ui_components.dart';
-
-import 'package:learning_app/subject_overview/bloc/card_list_tile_bloc.dart';
-import 'package:learning_app/subject_overview/bloc/subject_overview_bloc.dart';
-import 'package:learning_app/subject_overview/view/subject_overview_page.dart';
+import 'package:learning_app/subject_overview/view/card_list_tile_view.dart';
 
 class CardListTile extends StatefulWidget {
   CardListTile({
@@ -40,6 +35,9 @@ class _CardListTileState extends State<CardListTile> {
           widget.isInSelectMode = false;
           setState(() {
             widget.isCardSelected = false;
+            context.read<SubjectOverviewSelectionBloc>().add(
+                SubjectOverviewSelectionChange(
+                    card: widget.card, addCard: widget.isCardSelected,),);
           });
         }
       },
@@ -48,6 +46,9 @@ class _CardListTileState extends State<CardListTile> {
           if (widget.isInSelectMode) {
             setState(() {
               widget.isCardSelected = !widget.isCardSelected;
+              context.read<SubjectOverviewSelectionBloc>().add(
+                  SubjectOverviewSelectionChange(
+                      card: widget.card, addCard: widget.isCardSelected,),);
             });
           }
         },
@@ -61,11 +62,13 @@ class _CardListTileState extends State<CardListTile> {
               });
             }
           },
-          onDragEnd: (details) {
-            if (!details.wasAccepted) {
-              context.read<SubjectOverviewSelectionBloc>().add(
-                  SubjectOverviewSelectionToggleSelectMode(inSelectMode: true));
-            }
+          onDraggableCanceled: (_, __) {
+            print('drag to select');
+            context.read<SubjectOverviewSelectionBloc>().add(
+                SubjectOverviewSelectionToggleSelectMode(inSelectMode: true),);
+            context.read<SubjectOverviewSelectionBloc>().add(
+                SubjectOverviewSelectionChange(
+                    card: widget.card, addCard: true,),);
           },
           feedback: Builder(
             builder: (context) {
@@ -88,68 +91,6 @@ class _CardListTileState extends State<CardListTile> {
             isSelected: widget.isCardSelected,
             card: widget.card,
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class CardListTileView extends StatelessWidget {
-  const CardListTileView({
-    super.key,
-    required this.card,
-    this.isDragged = false,
-    this.height,
-    this.width,
-    required this.isSelected,
-    this.globalKey,
-  });
-
-  final GlobalKey? globalKey;
-  final Card card;
-  final bool isDragged;
-  final bool isSelected;
-  final double? height;
-  final double? width;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: UISizeConstants.defaultSize),
-      child: Container(
-        height: height,
-        width: width,
-        key: globalKey,
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.secondaryContainer,
-          borderRadius: const BorderRadius.all(
-            Radius.circular(UISizeConstants.cornerRadius),
-          ),
-          border: Border.all(
-            color: isSelected
-                ? Theme.of(context).colorScheme.primary
-                : Colors.transparent,
-            width: UISizeConstants.borderWidth,
-          ),
-        ),
-        child: Row(
-          children: [
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding:
-                    const EdgeInsets.only(left: UISizeConstants.defaultSize),
-                child: Text(
-                  card.front,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color:
-                            Theme.of(context).colorScheme.onSecondaryContainer,
-                      ),
-                ),
-              ),
-            ),
-          ],
         ),
       ),
     );

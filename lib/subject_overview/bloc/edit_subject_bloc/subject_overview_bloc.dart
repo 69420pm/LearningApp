@@ -7,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:learning_app/app/helper/uid.dart';
 import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
-import 'package:uuid/uuid.dart';
 
 part 'subject_overview_event.dart';
 part 'subject_overview_state.dart';
@@ -82,10 +81,10 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
           }
         }
         return EditSubjectRetrieveChildren(
-            childrenStream: childListTiles, removedWidgets: widgetsToRemove);
+            childrenStream: childListTiles, removedWidgets: widgetsToRemove,);
       },
       onError: (error, stackTrace) =>
-          EditSubjectFailure(errorMessage: "backend broken"),
+          EditSubjectFailure(errorMessage: 'backend broken'),
     );
   }
 
@@ -98,13 +97,13 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
         id: Uid().uid(),
         name: event.name,
         dateCreated: DateTime.now().toIso8601String(),
-        parentId: event.parentId);
+        parentId: event.parentId,);
     await cardsRepository.saveFolder(newFolder);
     emit(EditSubjectSuccess());
   }
 
   Future<void> _saveCard(
-      EditSubjectAddCard event, Emitter<EditSubjectState> emit) async {
+      EditSubjectAddCard event, Emitter<EditSubjectState> emit,) async {
     emit(EditSubjectLoading());
     final newCard = Card(
       id: Uid().uid(),
@@ -121,7 +120,7 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
   }
 
   void _closeStream(
-      EditSubjectCloseStreamById event, Emitter<EditSubjectState> emit) {
+      EditSubjectCloseStreamById event, Emitter<EditSubjectState> emit,) {
     cardsRepository.closeStreamById(event.id, deleteChildren: true);
   }
 
@@ -202,12 +201,12 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
   // }
 
   FutureOr<void> _setParent(
-      EditSubjectSetFolderParent event, Emitter<EditSubjectState> emit) {
+      EditSubjectSetFolderParent event, Emitter<EditSubjectState> emit,) {
     cardsRepository.moveFolder(event.folder, event.parentId);
   }
 
   FutureOr<void> _setParentCard(
-      EditSubjectSetCardParent event, Emitter<EditSubjectState> emit) {
+      EditSubjectSetCardParent event, Emitter<EditSubjectState> emit,) {
     cardsRepository
       ..deleteCard(event.card.id, event.card.parentId)
       ..saveCard(event.card.copyWith(parentId: event.parentId));

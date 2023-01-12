@@ -25,7 +25,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return RepositoryProvider.value(
       value: cardsRepository,
-      child: AppView(),
+      child: const AppView(),
     );
   }
 }
@@ -43,9 +43,9 @@ class AppView extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Learning App',
         theme: _themeData(
-            isLightMode: true, colorScheme: lightDynamic ?? lightColorScheme),
+            isLightMode: true, colorScheme: lightDynamic ?? lightColorScheme,),
         darkTheme: _themeData(
-            isLightMode: false, colorScheme: darkDynamic ?? darkColorScheme),
+            isLightMode: false, colorScheme: darkDynamic ?? darkColorScheme,),
         themeMode: ThemeMode.dark, //TODO change later
         localizationsDelegates: const [
           AppLocalizations.delegate,

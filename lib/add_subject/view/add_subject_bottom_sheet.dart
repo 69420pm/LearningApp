@@ -26,7 +26,7 @@ class AddSubjectBottomSheet extends StatelessWidget {
       child: Form(
         key: formKey,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8),
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: UISizeConstants.defaultSize,
@@ -39,7 +39,7 @@ class AddSubjectBottomSheet extends StatelessWidget {
                   await context.read<AddSubjectCubit>().saveSubject(
                       nameController.text,
                       locationController.text,
-                      iconController.text);
+                      iconController.text,);
                 }
                 Navigator.pop(context);
               },
@@ -50,7 +50,7 @@ class AddSubjectBottomSheet extends StatelessWidget {
                   return null;
                 }
               },
-              label: "Subject name",
+              label: 'Subject name',
             ),
           ),
         ),

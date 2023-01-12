@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
-import 'package:learning_app/subject_overview/bloc/subject_overview_bloc.dart';
+
 import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
 
@@ -56,7 +56,7 @@ class FolderListTileBloc
           }
         }
         return FolderListTileRetrieveChildren(
-            childrenStream: childListTiles, removedWidgets: widgetsToRemove);
+            childrenStream: childListTiles, removedWidgets: widgetsToRemove,);
       },
       onError: (error, stackTrace) =>
           FolderListTileError(errorMessage: 'backend broken'),
@@ -64,7 +64,7 @@ class FolderListTileBloc
   }
 
   Future<void> _addFolder(
-      FolderListTileAddFolder event, Emitter<FolderListTileState> emit) async {
+      FolderListTileAddFolder event, Emitter<FolderListTileState> emit,) async {
     emit(FolderListTileLoading());
     // try {
     final newFolder = event.folder.copyWith(parentId: event.newParentId);
@@ -77,7 +77,7 @@ class FolderListTileBloc
   }
 
   Future<void> _addCard(
-      FolderListTileAddCard event, Emitter<FolderListTileState> emit) async {
+      FolderListTileAddCard event, Emitter<FolderListTileState> emit,) async {
     emit(FolderListTileLoading());
     // try {
     final newCard = event.card.copyWith(parentId: event.newParentId);

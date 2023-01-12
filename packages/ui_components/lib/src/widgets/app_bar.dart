@@ -1,6 +1,3 @@
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-
 import 'package:flutter/material.dart';
 import 'package:ui_components/ui_components.dart';
 
@@ -10,7 +7,7 @@ class UIAppBar extends AppBar {
   @override
   Widget build(BuildContext context) {
     return PreferredSize(
-      preferredSize: Size.fromHeight(UISizeConstants.defaultSize * 4),
+      preferredSize: const Size.fromHeight(UISizeConstants.defaultSize * 4),
       child: this,
     );
   }

@@ -9,12 +9,11 @@ class UIExpansionTile extends StatefulWidget {
   void Function()? testCallback;
 
   UIExpansionTile(
-      {Key? key,
+      {super.key,
       required this.children,
       required this.title,
       required this.onPressedCallback,
-      this.testCallback})
-      : super(key: key);
+      this.testCallback,});
 
   @override
   State<UIExpansionTile> createState() => _UIExpansionTileState();
@@ -41,8 +40,8 @@ class _UIExpansionTileState extends State<UIExpansionTile> {
             //   },
             // ),
             IconButton(
-                icon: Icon(MaterialIcons.delete_circle_outline),
-                onPressed: widget.onPressedCallback)
+                icon: const Icon(MaterialIcons.delete_circle_outline),
+                onPressed: widget.onPressedCallback,)
           ],
         ),
         if (_isOpened) ...widget.children

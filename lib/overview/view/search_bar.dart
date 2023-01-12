@@ -17,17 +17,17 @@ class SearchBar extends StatelessWidget {
         width: double.infinity,
         decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surfaceVariant,
-            borderRadius: BorderRadius.all(
-                Radius.circular(UISizeConstants.cornerRadius))),
+            borderRadius: const BorderRadius.all(
+                Radius.circular(UISizeConstants.cornerRadius),),),
         child: Row(
           children: [
             const SizedBox(width: UISizeConstants.defaultSize * 2),
-            Icon(Icons.search),
+            const Icon(Icons.search),
             const SizedBox(width: UISizeConstants.defaultSize * 2),
             Text(
               'Search',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,),
             ),
           ],
         ),

@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
 
 part 'overview_event.dart';
@@ -23,6 +22,6 @@ class OverviewBloc extends Bloc<OverviewEvent, OverviewState> {
         onData: (subjects) {
           return OverviewSuccess(subjects: subjects);
         },
-        onError: (_, __) => OverviewFailure(errorMessage: 'Subject loading failed'));
+        onError: (_, __) => OverviewFailure(errorMessage: 'Subject loading failed'),);
   }
 }

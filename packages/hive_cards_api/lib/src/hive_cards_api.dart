@@ -522,7 +522,7 @@ class HiveCardsApi extends CardsApi {
         }
         _storeIds[id] = newKey;
         newPath += '/${_storeIds[id]!}';
-        _hiveBox.put('/store_ids', _storeIds as Map<dynamic, dynamic>);
+        _hiveBox.put('/store_ids', _storeIds);
       }
     }
     return newPath;
