@@ -54,7 +54,8 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                       onPressed: () {
                         context.read<SubjectOverviewSelectionBloc>().add(
                               SubjectOverviewSelectionToggleSelectMode(
-                                  inSelectMode: false,),
+                                inSelectMode: false,
+                              ),
                             );
                       },
                       icon: const Icon(
@@ -130,19 +131,19 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                       ),
                     ),
 
-                    /// Prefix icon
-                    UITextFormField(
-                      controller: iconController,
-                      initialValue: widget.subjectToEdit.prefixIcon,
-                      validation: (_) => null,
-                      label: 'Icon String',
-                      onLoseFocus: (_) => save(
-                        formKey,
-                        nameController.text,
-                        iconController.text,
-                        context,
-                      ),
-                    ),
+                    // /// Prefix icon
+                    // UITextFormField(
+                    //   controller: iconController,
+                    //   initialValue: widget.subjectToEdit.prefixIcon,
+                    //   validation: (_) => null,
+                    //   label: 'Icon String',
+                    //   onLoseFocus: (_) => save(
+                    //     formKey,
+                    //     nameController.text,
+                    //     iconController.text,
+                    //     context,
+                    //   ),
+                    // ),
 
                     BlocBuilder<EditSubjectBloc, EditSubjectState>(
                       buildWhen: (previous, current) {
@@ -193,12 +194,18 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                                       context
                                           .read<SubjectOverviewSelectionBloc>()
                                           .add(
-                                              SubjectOverviewSelectionToggleSelectMode(
-                                                  inSelectMode: true,),);
+                                            SubjectOverviewSelectionToggleSelectMode(
+                                              inSelectMode: true,
+                                            ),
+                                          );
                                       context
                                           .read<SubjectOverviewSelectionBloc>()
-                                          .add(SubjectOverviewSelectionChange(
-                                              card: data, addCard: true,),);
+                                          .add(
+                                            SubjectOverviewSelectionChange(
+                                              card: data,
+                                              addCard: true,
+                                            ),
+                                          );
                                     }
                                     // print(data);
                                     // folder.childFolders.add(data);
@@ -272,7 +279,7 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                                     if (childListTiles.values
                                         .whereType<CardListTile>()
                                         .isNotEmpty)
-                                      SliverGrid(
+                                      SliverList(
                                         delegate: SliverChildBuilderDelegate(
                                           (context, index) => childListTiles
                                               .values
@@ -283,12 +290,6 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                                               .length,
 
                                           // shrinkWrap: true,
-                                        ),
-                                        gridDelegate:
-                                            // ignore: lines_longer_than_80_chars
-                                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 2,
-                                          childAspectRatio: 3 / 1,
                                         ),
                                       ),
                                   ],

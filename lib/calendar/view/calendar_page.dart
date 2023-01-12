@@ -7,8 +7,10 @@ class CalendarPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: UIAppBar(
-      title: const Text('Calender'),
-    ),);
+      backgroundColor: Theme.of(context).colorScheme.background,
+      appBar: UIAppBar(
+        title: const Text('Calender'),
+      ),
+    );
   }
 }

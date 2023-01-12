@@ -30,12 +30,13 @@ class OverviewPage extends StatelessWidget {
             ),
             heroTag: 'subject',
             onPressed: () => showModalBottomSheet(
-                backgroundColor: Colors.transparent,
-                context: context,
-                builder: (_) => BlocProvider.value(
-                      value: context.read<AddSubjectCubit>(),
-                      child: AddSubjectBottomSheet(),
-                    ),),
+              backgroundColor: Colors.transparent,
+              context: context,
+              builder: (_) => BlocProvider.value(
+                value: context.read<AddSubjectCubit>(),
+                child: AddSubjectBottomSheet(),
+              ),
+            ),
             backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
           ),
           const SizedBox(
@@ -64,20 +65,22 @@ class OverviewPage extends StatelessWidget {
               const SizedBox(height: UISizeConstants.defaultSize * 2),
               const LearnAllButton(),
               BlocBuilder<OverviewBloc, OverviewState>(
-                  buildWhen: (previous, current) => previous != current,
-                  builder: (context, state) {
-                    if (state is OverviewSuccess) {
-                      return ListView.builder(
+                buildWhen: (previous, current) => previous != current,
+                builder: (context, state) {
+                  if (state is OverviewSuccess) {
+                    return Expanded(
+                      child: ListView.builder(
                         itemCount: state.subjects.length,
                         itemBuilder: (context, index) =>
                             SubjectListTile(subject: state.subjects[index]),
-                        shrinkWrap: true,
-                      );
-                    } else if (state is OverviewLoading) {
-                      // TODO add loading placeholder
-                    }
-                    return const Text('error');
-                  },),
+                      ),
+                    );
+                  } else if (state is OverviewLoading) {
+                    // TODO add loading placeholder
+                  }
+                  return const Text('error');
+                },
+              ),
             ],
           ),
         ),

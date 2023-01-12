@@ -17,7 +17,7 @@ class SubjectListTile extends StatelessWidget {
         onTap: () => Navigator.of(context)
             .pushNamed('/subject_overview', arguments: subject),
         child: Container(
-          height: UISizeConstants.defaultSize * 5,
+          height: UISizeConstants.defaultSize * 6,
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surfaceVariant,
             borderRadius: const BorderRadius.all(
@@ -32,13 +32,16 @@ class SubjectListTile extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(subject.name),
-                const Icon(Icons.drag_indicator),
+                Text(
+                  subject.name,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface),
+                ),
                 IconButton(
-                    onPressed: () => context
-                        .read<AddSubjectCubit>()
-                        .deleteSubject(subject.id),
-                    icon: const Icon(Icons.abc),)
+                  onPressed: () =>
+                      context.read<AddSubjectCubit>().deleteSubject(subject.id),
+                  icon: const Icon(Icons.delete),
+                )
               ],
             ),
           ),
