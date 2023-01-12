@@ -7,7 +7,6 @@ import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overvi
 import 'package:learning_app/subject_overview/view/card_list_tile_view.dart';
 import 'package:ui_components/ui_components.dart';
 
-import 'package:learning_app/subject_overview/bloc/card_list_tile_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/subject_overview_bloc.dart';
 import 'package:learning_app/subject_overview/view/subject_overview_page.dart';
 
@@ -67,6 +66,14 @@ class _CardListTileState extends State<CardListTile> {
                 widget.isCardSelected = true;
               });
             }
+          },
+          onDraggableCanceled: (_, __) {
+            print("drag to select");
+            context.read<SubjectOverviewSelectionBloc>().add(
+                SubjectOverviewSelectionToggleSelectMode(inSelectMode: true));
+            context.read<SubjectOverviewSelectionBloc>().add(
+                SubjectOverviewSelectionChange(
+                    card: widget.card, addCard: true));
           },
           feedback: Builder(
             builder: (context) {

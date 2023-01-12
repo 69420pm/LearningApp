@@ -84,7 +84,7 @@ class AppRouter {
 
       case '/subject_overview':
         final esb = EditSubjectBloc(_cardsRepository);
-        final sosb = SubjectOverviewSelectionBloc();
+        final sosb = SubjectOverviewSelectionBloc(_cardsRepository);
         return MaterialPageRoute(
           builder: (_) => MultiBlocProvider(
             providers: [

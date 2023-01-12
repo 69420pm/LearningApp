@@ -20,3 +20,6 @@ class SubjectOverviewSelectionChange extends SubjectOverviewSelectionEvent {
     required this.addCard,
   });
 }
+
+class SubjectOverviewSelectionDeleteSelectedCards
+    extends SubjectOverviewSelectionEvent {}

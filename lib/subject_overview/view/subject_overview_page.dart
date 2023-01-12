@@ -41,76 +41,38 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
         .add(EditSubjectGetChildrenById(id: widget.subjectToEdit.id));
     var childListTiles = <String, Widget>{};
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
-      appBar: UIAppBar(
-        title: const Text('Subject Overview'),
-      ),
-      body: SafeArea(
-        child: Form(
-          key: formKey,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: UISizeConstants.paddingEdge,
-            ),
-            child: Column(
-              children: [
-                const SizedBox(height: UISizeConstants.defaultSize),
-
-                /// Name
-                UITextFormField(
-                  label: 'Name',
-                  controller: nameController,
-                  initialValue: widget.subjectToEdit.name,
-                  validation: (value) {
-                    if (value!.isEmpty) {
-                      return 'Enter something';
-                    } else {
-                      return null;
-                    }
-                  },
-                  onLoseFocus: (_) => save(
-                    formKey,
-                    nameController.text,
-                    iconController.text,
-                    context,
-                  ),
-                ),
-
-                /// Prefix icon
-                UITextFormField(
-                  controller: iconController,
-                  initialValue: widget.subjectToEdit.prefixIcon,
-                  validation: (_) => null,
-                  label: 'Icon String',
-                  onLoseFocus: (_) => save(
-                    formKey,
-                    nameController.text,
-                    iconController.text,
-                    context,
-                  ),
-                ),
-
-                Row(
-                  children: [
-                    BlocBuilder<SubjectOverviewSelectionBloc,
-                        SubjectOverviewSelectionState>(
-                      builder: (context, state) => Opacity(
-                        opacity:
-                            state is SubjectOverviewSelectionModeOn ? 1 : 0,
-                        child: IconButton(
-                          onPressed: () {
-                            context.read<SubjectOverviewSelectionBloc>().add(
-                                SubjectOverviewSelectionToggleSelectMode(
-                                    inSelectMode: false));
-                          },
-                          icon: const Icon(
-                            Icons.cancel,
-                          ),
-                        ),
+    return BlocBuilder<SubjectOverviewSelectionBloc,
+        SubjectOverviewSelectionState>(
+      builder: (context, state) {
+        return Scaffold(
+          backgroundColor: Theme.of(context).colorScheme.background,
+          appBar: AppBar(
+            title: Text(widget.subjectToEdit.name),
+            actions: (state is SubjectOverviewSelectionModeOn)
+                ? [
+                    IconButton(
+                      onPressed: () {
+                        context.read<SubjectOverviewSelectionBloc>().add(
+                              SubjectOverviewSelectionToggleSelectMode(
+                                  inSelectMode: false),
+                            );
+                      },
+                      icon: const Icon(
+                        Icons.cancel,
                       ),
                     ),
-                    Spacer(),
+                    IconButton(
+                      onPressed: () {
+                        context.read<SubjectOverviewSelectionBloc>().add(
+                              SubjectOverviewSelectionDeleteSelectedCards(),
+                            );
+                      },
+                      icon: const Icon(
+                        Icons.delete,
+                      ),
+                    ),
+                  ]
+                : [
                     IconButton(
                       onPressed: () {
                         Navigator.of(context).pushNamed(
@@ -136,154 +98,217 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                       icon: const Icon(Icons.create_new_folder_rounded),
                     ),
                   ],
+          ),
+          body: SafeArea(
+            child: Form(
+              key: formKey,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: UISizeConstants.paddingEdge,
                 ),
+                child: Column(
+                  children: [
+                    const SizedBox(height: UISizeConstants.defaultSize),
 
-                BlocBuilder<EditSubjectBloc, EditSubjectState>(
-                  buildWhen: (previous, current) {
-                    if (current is EditSubjectRetrieveChildren) {
-                      return true;
-                    }
-                    return false;
-                  },
-                  builder: (context, state) {
-                    if (state is EditSubjectRetrieveChildren) {
-                      childListTiles = {
-                        ...childListTiles,
-                        ...state.childrenStream
-                      };
-                      for (final element in state.removedWidgets) {
-                        if (childListTiles.containsKey(element.id)) {
-                          childListTiles.remove(element.id);
+                    /// Name
+                    UITextFormField(
+                      label: 'Name',
+                      controller: nameController,
+                      initialValue: widget.subjectToEdit.name,
+                      validation: (value) {
+                        if (value!.isEmpty) {
+                          return 'Enter something';
+                        } else {
+                          return null;
                         }
-                      }
-                    }
-
-                    return Expanded(
-                      child: Stack(
-                        clipBehavior: Clip.hardEdge,
-                        children: [
-                          BlocProvider(
-                            create: (context) => EditSubjectBloc(
-                              widget.editSubjectBloc.cardsRepository,
-                            ),
-                            child: DragTarget(
-                              onAccept: (data) {
-                                if (data is Folder) {
-                                  context.read<EditSubjectBloc>().add(
-                                        EditSubjectSetFolderParent(
-                                          folder: data,
-                                          parentId: widget.subjectToEdit.id,
-                                        ),
-                                      );
-                                } else if (data is Card &&
-                                    data.parentId != widget.subjectToEdit.id) {
-                                  context.read<EditSubjectBloc>().add(
-                                        EditSubjectSetCardParent(
-                                          card: data,
-                                          parentId: widget.subjectToEdit.id,
-                                        ),
-                                      );
-                                }
-                                // print(data);
-                                // folder.childFolders.add(data);
-                              },
-                              builder: (context, candidateData, rejectedData) {
-                                return Container(
-                                  width: double.infinity,
-                                  height: double.infinity,
-                                );
-                              },
-                            ),
-                          ),
-                          Listener(
-                            onPointerMove: (event) {
-                              final render = globalKey.currentContext
-                                  ?.findRenderObject() as RenderBox?;
-                              final top =
-                                  render?.localToGlobal(Offset.zero).dy ?? 0;
-                              final bottom = MediaQuery.of(context).size.height;
-
-                              final relPos =
-                                  (event.localPosition.dy / (bottom - top))
-                                      .clamp(0, 1);
-
-                              if (relPos < .2 && isMovingUp == false) {
-                                isMovingUp = true;
-                                isMovingDown = false;
-
-                                scrollController.animateTo(
-                                  0,
-                                  duration: const Duration(seconds: 1),
-                                  curve: Curves.easeIn,
-                                );
-                              } else if (relPos > .8 && isMovingDown == false) {
-                                isMovingDown = true;
-                                isMovingUp = false;
-                                scrollController.animateTo(
-                                  scrollController.position.maxScrollExtent,
-                                  duration: const Duration(seconds: 1),
-                                  curve: Curves.easeIn,
-                                );
-                              } else if (relPos > .2 && relPos < .8) {
-                                if (isMovingUp || isMovingDown) {
-                                  scrollController
-                                      .jumpTo(scrollController.offset);
-                                }
-                                isMovingDown = false;
-                                isMovingUp = false;
-                              }
-                            },
-                            child: CustomScrollView(
-                              key: globalKey,
-                              controller: scrollController,
-                              shrinkWrap: true,
-                              slivers: [
-                                SliverList(
-                                  delegate: SliverChildBuilderDelegate(
-                                    (context, index) => childListTiles.values
-                                        .whereType<FolderListTile>()
-                                        .elementAt(index),
-                                    childCount: childListTiles.values
-                                        .whereType<FolderListTile>()
-                                        .length,
-                                  ),
-                                ),
-                                if (childListTiles.values
-                                    .whereType<CardListTile>()
-                                    .isNotEmpty)
-                                  SliverGrid(
-                                    delegate: SliverChildBuilderDelegate(
-                                      (context, index) => childListTiles.values
-                                          .whereType<CardListTile>()
-                                          .elementAt(index),
-                                      childCount: childListTiles.values
-                                          .whereType<CardListTile>()
-                                          .length,
-
-                                      // shrinkWrap: true,
-                                    ),
-                                    gridDelegate:
-                                        // ignore: lines_longer_than_80_chars
-                                        const SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2,
-                                      childAspectRatio: 3 / 1,
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ),
-                        ],
+                      },
+                      onLoseFocus: (_) => save(
+                        formKey,
+                        nameController.text,
+                        iconController.text,
+                        context,
                       ),
+                    ),
 
-                      // SingleChildScrollView(child: FolderListTile(folder: Folder(dateCreated: "",id: "root",), cardsRepository: ,),)
-                    );
-                  },
+                    /// Prefix icon
+                    UITextFormField(
+                      controller: iconController,
+                      initialValue: widget.subjectToEdit.prefixIcon,
+                      validation: (_) => null,
+                      label: 'Icon String',
+                      onLoseFocus: (_) => save(
+                        formKey,
+                        nameController.text,
+                        iconController.text,
+                        context,
+                      ),
+                    ),
+
+                    BlocBuilder<EditSubjectBloc, EditSubjectState>(
+                      buildWhen: (previous, current) {
+                        if (current is EditSubjectRetrieveChildren) {
+                          return true;
+                        }
+                        return false;
+                      },
+                      builder: (context, state) {
+                        if (state is EditSubjectRetrieveChildren) {
+                          childListTiles = {
+                            ...childListTiles,
+                            ...state.childrenStream
+                          };
+                          for (final element in state.removedWidgets) {
+                            if (childListTiles.containsKey(element.id)) {
+                              childListTiles.remove(element.id);
+                            }
+                          }
+                        }
+
+                        return Expanded(
+                          child: Stack(
+                            clipBehavior: Clip.hardEdge,
+                            children: [
+                              BlocProvider(
+                                create: (context) => EditSubjectBloc(
+                                  widget.editSubjectBloc.cardsRepository,
+                                ),
+                                child: DragTarget(
+                                  onAccept: (data) {
+                                    if (data is Folder) {
+                                      context.read<EditSubjectBloc>().add(
+                                            EditSubjectSetFolderParent(
+                                              folder: data,
+                                              parentId: widget.subjectToEdit.id,
+                                            ),
+                                          );
+                                    } else if (data is Card &&
+                                        data.parentId !=
+                                            widget.subjectToEdit.id) {
+                                      context.read<EditSubjectBloc>().add(
+                                            EditSubjectSetCardParent(
+                                              card: data,
+                                              parentId: widget.subjectToEdit.id,
+                                            ),
+                                          );
+                                    } else if (data is Card) {
+                                      context
+                                          .read<SubjectOverviewSelectionBloc>()
+                                          .add(
+                                              SubjectOverviewSelectionToggleSelectMode(
+                                                  inSelectMode: true));
+                                      context
+                                          .read<SubjectOverviewSelectionBloc>()
+                                          .add(SubjectOverviewSelectionChange(
+                                              card: data, addCard: true));
+                                    }
+                                    // print(data);
+                                    // folder.childFolders.add(data);
+                                  },
+                                  builder:
+                                      (context, candidateData, rejectedData) {
+                                    return Container(
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                    );
+                                  },
+                                ),
+                              ),
+                              Listener(
+                                onPointerMove: (event) {
+                                  final render = globalKey.currentContext
+                                      ?.findRenderObject() as RenderBox?;
+                                  final top =
+                                      render?.localToGlobal(Offset.zero).dy ??
+                                          0;
+                                  final bottom =
+                                      MediaQuery.of(context).size.height;
+
+                                  final relPos =
+                                      (event.localPosition.dy / (bottom - top))
+                                          .clamp(0, 1);
+
+                                  if (relPos < .2 && isMovingUp == false) {
+                                    isMovingUp = true;
+                                    isMovingDown = false;
+
+                                    scrollController.animateTo(
+                                      0,
+                                      duration: const Duration(seconds: 1),
+                                      curve: Curves.easeIn,
+                                    );
+                                  } else if (relPos > .8 &&
+                                      isMovingDown == false) {
+                                    isMovingDown = true;
+                                    isMovingUp = false;
+                                    scrollController.animateTo(
+                                      scrollController.position.maxScrollExtent,
+                                      duration: const Duration(seconds: 1),
+                                      curve: Curves.easeIn,
+                                    );
+                                  } else if (relPos > .2 && relPos < .8) {
+                                    if (isMovingUp || isMovingDown) {
+                                      scrollController
+                                          .jumpTo(scrollController.offset);
+                                    }
+                                    isMovingDown = false;
+                                    isMovingUp = false;
+                                  }
+                                },
+                                child: CustomScrollView(
+                                  key: globalKey,
+                                  controller: scrollController,
+                                  shrinkWrap: true,
+                                  slivers: [
+                                    SliverList(
+                                      delegate: SliverChildBuilderDelegate(
+                                        (context, index) => childListTiles
+                                            .values
+                                            .whereType<FolderListTile>()
+                                            .elementAt(index),
+                                        childCount: childListTiles.values
+                                            .whereType<FolderListTile>()
+                                            .length,
+                                      ),
+                                    ),
+                                    if (childListTiles.values
+                                        .whereType<CardListTile>()
+                                        .isNotEmpty)
+                                      SliverGrid(
+                                        delegate: SliverChildBuilderDelegate(
+                                          (context, index) => childListTiles
+                                              .values
+                                              .whereType<CardListTile>()
+                                              .elementAt(index),
+                                          childCount: childListTiles.values
+                                              .whereType<CardListTile>()
+                                              .length,
+
+                                          // shrinkWrap: true,
+                                        ),
+                                        gridDelegate:
+                                            // ignore: lines_longer_than_80_chars
+                                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 2,
+                                          childAspectRatio: 3 / 1,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          // SingleChildScrollView(child: FolderListTile(folder: Folder(dateCreated: "",id: "root",), cardsRepository: ,),)
+                        );
+                      },
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 

@@ -10,12 +10,15 @@ part 'subject_overview_selection_state.dart';
 
 class SubjectOverviewSelectionBloc
     extends Bloc<SubjectOverviewSelectionEvent, SubjectOverviewSelectionState> {
-  SubjectOverviewSelectionBloc() : super(SubjectOverviewSelectionInitial()) {
+  SubjectOverviewSelectionBloc(this._cardsRepository)
+      : super(SubjectOverviewSelectionInitial()) {
     on<SubjectOverviewSelectionToggleSelectMode>(_toggleSelectMode);
     on<SubjectOverviewSelectionChange>(_change);
+    on<SubjectOverviewSelectionDeleteSelectedCards>(_deleteCards);
   }
 
   final List<Card> _cardsSelected = List.empty(growable: true);
+  final CardsRepository _cardsRepository;
 
   FutureOr<void> _toggleSelectMode(
       SubjectOverviewSelectionToggleSelectMode event,
@@ -38,5 +41,17 @@ class SubjectOverviewSelectionBloc
         emit(SubjectOverviewSelectionModeOff());
       }
     }
+    print(_cardsSelected.map((e) => e.front).toString());
+  }
+
+  FutureOr<void> _deleteCards(SubjectOverviewSelectionDeleteSelectedCards event,
+      Emitter<SubjectOverviewSelectionState> emit) async {
+    print(_cardsSelected.map((e) => e.front).toString());
+    for (var i = 0; i < _cardsSelected.length; i++) {
+      await _cardsRepository.deleteCard(
+          _cardsSelected[i].id, _cardsSelected[i].parentId);
+    }
+
+    // emit(SubjectOverviewSelectionModeOff());
   }
 }
