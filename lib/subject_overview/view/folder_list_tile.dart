@@ -63,13 +63,13 @@ class FolderListTile extends StatelessWidget {
                               ),
                             );
                       } else if (data is Card) {
-                        print("drag to select");
+                        print('drag to select');
                         context.read<SubjectOverviewSelectionBloc>().add(
                             SubjectOverviewSelectionToggleSelectMode(
-                                inSelectMode: true));
+                                inSelectMode: true,),);
                         context.read<SubjectOverviewSelectionBloc>().add(
                             SubjectOverviewSelectionChange(
-                                card: data, addCard: true));
+                                card: data, addCard: true,),);
                       }
                       // print(data);
                       // folder.childFolders.add(data);

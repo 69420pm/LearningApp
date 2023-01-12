@@ -37,7 +37,7 @@ class _CardListTileState extends State<CardListTile> {
             widget.isCardSelected = false;
             context.read<SubjectOverviewSelectionBloc>().add(
                 SubjectOverviewSelectionChange(
-                    card: widget.card, addCard: widget.isCardSelected));
+                    card: widget.card, addCard: widget.isCardSelected,),);
           });
         }
       },
@@ -48,7 +48,7 @@ class _CardListTileState extends State<CardListTile> {
               widget.isCardSelected = !widget.isCardSelected;
               context.read<SubjectOverviewSelectionBloc>().add(
                   SubjectOverviewSelectionChange(
-                      card: widget.card, addCard: widget.isCardSelected));
+                      card: widget.card, addCard: widget.isCardSelected,),);
             });
           }
         },
@@ -63,12 +63,12 @@ class _CardListTileState extends State<CardListTile> {
             }
           },
           onDraggableCanceled: (_, __) {
-            print("drag to select");
+            print('drag to select');
             context.read<SubjectOverviewSelectionBloc>().add(
-                SubjectOverviewSelectionToggleSelectMode(inSelectMode: true));
+                SubjectOverviewSelectionToggleSelectMode(inSelectMode: true),);
             context.read<SubjectOverviewSelectionBloc>().add(
                 SubjectOverviewSelectionChange(
-                    card: widget.card, addCard: true));
+                    card: widget.card, addCard: true,),);
           },
           feedback: Builder(
             builder: (context) {

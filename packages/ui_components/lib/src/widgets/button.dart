@@ -1,6 +1,3 @@
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-
 import 'package:flutter/material.dart';
 import 'package:ui_components/src/ui_size_constants.dart';
 
@@ -12,7 +9,7 @@ class UIButton extends StatelessWidget {
       this.onTap,
       this.height,
       this.width,
-      this.lable});
+      this.lable,});
 
   final Color? color, textColor;
   final void Function()? onTap;
@@ -28,7 +25,7 @@ class UIButton extends StatelessWidget {
         width: width,
         decoration: BoxDecoration(
           color: color ?? Theme.of(context).colorScheme.primaryContainer,
-          borderRadius: BorderRadius.all(
+          borderRadius: const BorderRadius.all(
             Radius.circular(UISizeConstants.cornerRadius),
           ),
         ),
@@ -36,11 +33,11 @@ class UIButton extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(
                 horizontal: UISizeConstants.defaultSize * 2,
-                vertical: UISizeConstants.defaultSize),
-            child: Text(lable ?? "",
+                vertical: UISizeConstants.defaultSize,),
+            child: Text(lable ?? '',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: textColor ??
-                        Theme.of(context).colorScheme.onPrimaryContainer)),
+                        Theme.of(context).colorScheme.onPrimaryContainer,),),
           ),
         ),
       ),

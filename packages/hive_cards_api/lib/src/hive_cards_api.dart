@@ -522,7 +522,7 @@ class HiveCardsApi extends CardsApi {
         }
         _storeIds[id] = newKey;
         newPath += '/${_storeIds[id]!}';
-        _hiveBox.put('/store_ids', _storeIds as Map<dynamic, dynamic>);
+        _hiveBox.put('/store_ids', _storeIds);
       }
     }
     return newPath;
@@ -601,14 +601,14 @@ class HiveCardsApi extends CardsApi {
   @override
   List<Card> learnAllCards() {
     final cardsToLearn = <Card>[];
-    DateTime now = DateTime.now();
+    final now = DateTime.now();
     for (final element in _indexedPaths) {
       final loadedCardStrings =
           _hiveBox.get(_makePathStorable(element)) as List<String>?;
       if (loadedCardStrings == null) continue;
       for (final loadedCardString in loadedCardStrings) {
         if (loadedCardString.substring(46).startsWith('front')) {
-          Card card = Card.fromJson(loadedCardString);
+          final card = Card.fromJson(loadedCardString);
           try {
             if (DateTime.parse(card.dateToReview).compareTo(now) < 0) {
               cardsToLearn.add(card);

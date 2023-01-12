@@ -7,8 +7,8 @@ part 'learn_state.dart';
 class LearnCubit extends Cubit<LearnState> {
   LearnCubit(this._cardsRepository) : super(FrontState());
 
-  var cardsToLearn = <Card>[];
-  var cardsToRepeatFurther = <Card>[];
+  List<Card> cardsToLearn = <Card>[];
+  List<Card> cardsToRepeatFurther = <Card>[];
 
   final CardsRepository _cardsRepository;
 
@@ -57,7 +57,7 @@ class LearnCubit extends Cubit<LearnState> {
   }
 
   Card? getNextCard() {
-    if (cardsToLearn.length == 0) return null;
+    if (cardsToLearn.isEmpty) return null;
     return cardsToLearn[0];
   }
 }

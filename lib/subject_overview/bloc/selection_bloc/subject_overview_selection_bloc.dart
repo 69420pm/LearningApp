@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:cards_repository/cards_repository.dart';
@@ -22,7 +21,7 @@ class SubjectOverviewSelectionBloc
 
   FutureOr<void> _toggleSelectMode(
       SubjectOverviewSelectionToggleSelectMode event,
-      Emitter<SubjectOverviewSelectionState> emit) {
+      Emitter<SubjectOverviewSelectionState> emit,) {
     if (event.inSelectMode) {
       emit(SubjectOverviewSelectionModeOn());
     } else {
@@ -32,7 +31,7 @@ class SubjectOverviewSelectionBloc
   }
 
   FutureOr<void> _change(SubjectOverviewSelectionChange event,
-      Emitter<SubjectOverviewSelectionState> emit) {
+      Emitter<SubjectOverviewSelectionState> emit,) {
     if (event.addCard) {
       _cardsSelected.add(event.card);
     } else {
@@ -46,11 +45,11 @@ class SubjectOverviewSelectionBloc
   }
 
   FutureOr<void> _deleteCards(SubjectOverviewSelectionDeleteSelectedCards event,
-      Emitter<SubjectOverviewSelectionState> emit) async {
+      Emitter<SubjectOverviewSelectionState> emit,) async {
     print(_cardsSelected.map((e) => e.front).toString());
     for (var i = 0; i < _cardsSelected.length; i++) {
       await _cardsRepository.deleteCard(
-          _cardsSelected[i].id, _cardsSelected[i].parentId);
+          _cardsSelected[i].id, _cardsSelected[i].parentId,);
     }
 
     // emit(SubjectOverviewSelectionModeOff());

@@ -119,7 +119,7 @@ class AppRouter {
                 value: _learnCubit,
               ),
             ],
-            child: LearningScreen(),
+            child: const LearningScreen(),
           ),
         );
       // error route

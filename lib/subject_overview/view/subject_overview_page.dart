@@ -54,7 +54,7 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                       onPressed: () {
                         context.read<SubjectOverviewSelectionBloc>().add(
                               SubjectOverviewSelectionToggleSelectMode(
-                                  inSelectMode: false),
+                                  inSelectMode: false,),
                             );
                       },
                       icon: const Icon(
@@ -166,7 +166,6 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
 
                         return Expanded(
                           child: Stack(
-                            clipBehavior: Clip.hardEdge,
                             children: [
                               BlocProvider(
                                 create: (context) => EditSubjectBloc(
@@ -195,18 +194,18 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                                           .read<SubjectOverviewSelectionBloc>()
                                           .add(
                                               SubjectOverviewSelectionToggleSelectMode(
-                                                  inSelectMode: true));
+                                                  inSelectMode: true,),);
                                       context
                                           .read<SubjectOverviewSelectionBloc>()
                                           .add(SubjectOverviewSelectionChange(
-                                              card: data, addCard: true));
+                                              card: data, addCard: true,),);
                                     }
                                     // print(data);
                                     // folder.childFolders.add(data);
                                   },
                                   builder:
                                       (context, candidateData, rejectedData) {
-                                    return Container(
+                                    return const SizedBox(
                                       width: double.infinity,
                                       height: double.infinity,
                                     );
