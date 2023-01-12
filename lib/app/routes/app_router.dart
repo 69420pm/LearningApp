@@ -11,6 +11,8 @@ import 'package:learning_app/home/view/home_page.dart';
 import 'package:learning_app/learn/cubit/learn_cubit.dart';
 import 'package:learning_app/learn/view/learning_screen.dart';
 import 'package:learning_app/overview/bloc/overview_bloc.dart';
+import 'package:learning_app/search/bloc/search_bloc.dart';
+import 'package:learning_app/search/view/search_page.dart';
 import 'package:learning_app/subject_overview/bloc/edit_subject_bloc/subject_overview_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/view/subject_overview_page.dart';
@@ -31,6 +33,7 @@ class AppRouter {
   late final OverviewBloc _overviewBloc = OverviewBloc(_cardsRepository)
     ..add(OverviewSubjectSubscriptionRequested());
   late final LearnCubit _learnCubit = LearnCubit(_cardsRepository);
+  late final SearchBloc _searchBloc = SearchBloc(_cardsRepository);
 
   Route<dynamic> onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
@@ -65,22 +68,13 @@ class AppRouter {
             child: AddCardPage(parentId: routeSettings.arguments as String),
           ),
         );
-      // case '/add_subject':
-      //   return MaterialPageRoute(
-      //     builder: (_) => MultiBlocProvider(
-      //       providers: [
-      //         BlocProvider.value(
-      //           value: _homeCubit,
-      //         ),
-      //         BlocProvider.value(
-      //           value: _addSubjectCubit,
-      //         ),
-      //       ],
-      //       child: AddSubjectPage(
-      //         recommendedSubjectParentId: routeSettings.arguments as String?,
-      //       ),
-      //     ),
-      //   );
+      case '/search':
+        return MaterialPageRoute(
+          builder: (_) => MultiBlocProvider(
+            providers: [BlocProvider.value(value: _searchBloc)],
+            child: SearchPage(),
+          ),
+        );
 
       case '/subject_overview':
         final esb = EditSubjectBloc(_cardsRepository);

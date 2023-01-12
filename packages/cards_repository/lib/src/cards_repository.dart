@@ -15,12 +15,14 @@ class CardsRepository {
   const CardsRepository({required CardsApi cardsApi}) : _cardsApi = cardsApi;
 
   final CardsApi _cardsApi;
-  
+
   /// provide a [Stream] of all subjects
   Stream<List<Subject>> getSubjects() => _cardsApi.getSubjects();
 
   /// return all cards to learn
   List<Card> learnAllCards() => _cardsApi.learnAllCards();
+
+  List<Card> search(String searchRequest) => _cardsApi.search(searchRequest);
 
   /// return all children for a given parentId in a stream
   Stream<List<Object>> getChildrenById(String id) =>
@@ -47,6 +49,9 @@ class CardsRepository {
   /// thrown
   Future<void> deleteCard(String id, String parentId) =>
       _cardsApi.deleteCard(id, parentId);
+
+  Future<void> deleteCards(List<String> ids, List<String> parentIds) =>
+      _cardsApi.deleteCards(ids, parentIds);
 
   /// Deletes subject and every children with given id
   /// If no card with given id exists, a [SubjectNotFoundException] error is

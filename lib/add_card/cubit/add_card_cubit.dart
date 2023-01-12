@@ -9,6 +9,7 @@ class AddCardCubit extends Cubit<AddCardState> {
   AddCardCubit(this._cardsRepository) : super(AddCardInitial());
 
   final CardsRepository _cardsRepository;
+  bool _editMarkDownMode = false;
 
   Future<void> saveCard(
       String front, String back, Subject parentSubject, String icon,) async {
@@ -32,5 +33,13 @@ class AddCardCubit extends Cubit<AddCardState> {
             errorMessage: 'Card saving failed, while communicating with hive',),
       );
     }
+  }
+  void switchMarkdownMode(){
+    if(_editMarkDownMode){
+      emit(AddCardRenderMode());
+    }else{
+      emit(AddCardEditMode());
+    }
+    _editMarkDownMode = !_editMarkDownMode;
   }
 }

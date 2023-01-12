@@ -22,8 +22,8 @@ class LearningScreen extends StatelessWidget {
         child: BlocBuilder<LearnCubit, LearnState>(
           builder: (context, state) {
             final card = context.read<LearnCubit>().getNextCard();
-            if(card == null){
-              return const Text('all cards finished');
+            if (card == null) {
+              return Text("all cards finished");
             }
             return Column(
               children: [
@@ -41,22 +41,25 @@ class LearningScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             UIButton(
-                              onTap: () =>
-                                  context.read<LearnCubit>().newCard(LearnFeedback.bad, card),
+                              onTap: () => context
+                                  .read<LearnCubit>()
+                                  .newCard(LearnFeedback.bad, card),
                               lable: 'again',
                               color: Colors.red,
                               textColor: Colors.black,
                             ),
                             UIButton(
-                              onTap: () =>
-                                  context.read<LearnCubit>().newCard(LearnFeedback.medium, card),
+                              onTap: () => context
+                                  .read<LearnCubit>()
+                                  .newCard(LearnFeedback.medium, card),
                               lable: 'almost',
                               textColor: Colors.black,
                               color: Colors.yellow,
                             ),
                             UIButton(
-                              onTap: () =>
-                                  context.read<LearnCubit>().newCard(LearnFeedback.good, card),
+                              onTap: () => context
+                                  .read<LearnCubit>()
+                                  .newCard(LearnFeedback.good, card),
                               lable: 'easy',
                               textColor: Colors.black,
                               color: Colors.green,

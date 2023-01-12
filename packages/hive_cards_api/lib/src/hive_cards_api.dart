@@ -184,7 +184,7 @@ class HiveCardsApi extends CardsApi {
   List<String> _indexedPaths = [];
 
   final Map<String, BehaviorSubject<List<Object>>> _subscribedStreams = {};
-  Map<String, String> _storeIds = {};
+  Map<dynamic, dynamic> _storeIds = {};
 
   void _init() {
     try {
@@ -199,7 +199,7 @@ class HiveCardsApi extends CardsApi {
       print('no subjects saved');
     }
     try {
-      _storeIds = _hiveBox.get('/store_ids') as Map<String, String>;
+      _storeIds = _hiveBox.get('/store_ids') as Map<dynamic, dynamic>;
     } catch (e) {
       print('no storeIds saved');
     }
@@ -272,13 +272,57 @@ class HiveCardsApi extends CardsApi {
       }
     }
     if (found == false) {
-      // ! ADD PARENTNOTFOUNDEXCEPTION THROW
-      // throw ParentNotFoundException();
+      throw ParentNotFoundException();
     }
     if (_subscribedStreams.containsKey(path)) {
       _subscribedStreams[path]!.add([Removed(id: id)]);
     }
-    return _hiveBox.put(_makePathStorable(path), cards);
+    await _hiveBox.put(_makePathStorable(path), cards);
+  }
+
+  @override
+  Future<void> deleteCards(List<String> id, List<String> parentId) async {
+    if (id.length != parentId.length) throw WrongInput();
+    final parentIdToDeletedIds = <String, List<String>>{};
+    final paths = <String>[];
+    for (var i = 0; i < id.length; i++) {
+      final path = _getPath(parentId[i]);
+      if (path == null) {
+        throw ParentNotFoundException();
+      }
+      if (!paths.contains(path)) {
+        paths.add(path);
+      }
+      if (parentIdToDeletedIds[path] == null) {
+        parentIdToDeletedIds[path] = [id[i]];
+      } else {
+        parentIdToDeletedIds[path]!.add(id[i]);
+      }
+      final cards = _hiveBox.get(_makePathStorable(path)) as List<String>?;
+      var found = false;
+      if (cards != null) {
+        for (final element in cards) {
+          if (element.substring(7).startsWith(id[i])) {
+            cards.remove(element);
+            found = true;
+            break;
+          }
+        }
+      }
+      if (found == false) {
+        throw ParentNotFoundException();
+      }
+
+      await _hiveBox.put(_makePathStorable(path), cards);
+    }
+    for (var path in paths) {
+      if (_subscribedStreams.containsKey(path)) {
+        for(final id in parentIdToDeletedIds[path]!){
+        _subscribedStreams[path]!.add([Removed(id: id)]);
+
+        }
+      }
+    }
   }
 
   @override
@@ -435,31 +479,30 @@ class HiveCardsApi extends CardsApi {
     }
 
     var cards = _hiveBox.get(_makePathStorable(path)) as List<String>?;
-    final newCards = <String>[];
     var found = false;
+    var indexToChange = 0;
     if (cards != null) {
       for (final element in cards) {
         // contains word
         if (element.substring(7).startsWith(card.id)) {
-          newCards.add(_cardsToJson([card])[0]);
+          indexToChange = cards.indexOf(element);
           found = true;
           break;
-        } else {
-          newCards.add(element);
         }
       }
     } else {
       cards = [];
     }
-
     if (!found) {
-      newCards.add(_cardsToJson([card])[0]);
+      cards.add(_cardsToJson([card])[0]);
+    } else {
+      cards[indexToChange] = _cardsToJson([card])[0];
     }
 
     if (_subscribedStreams.containsKey(path)) {
       _subscribedStreams[path]!.add([card]);
     }
-    return _hiveBox.put(_makePathStorable(path), newCards);
+    return _hiveBox.put(_makePathStorable(path), cards);
   }
 
   @override
@@ -487,7 +530,6 @@ class HiveCardsApi extends CardsApi {
     if (found == false) {
       throw ParentNotFoundException();
     }
-    //! dafaq
     await _hiveBox.put(folder.parentId, folders);
     if (_subscribedStreams.containsKey(path)) {
       _subscribedStreams[path]!.add([Removed(id: folder.id)]);
@@ -518,7 +560,8 @@ class HiveCardsApi extends CardsApi {
       } else {
         var newKey = _ASCIICHARS[0];
         if (_storeIds.isNotEmpty) {
-          newKey = (_addOneToString(_storeIds.values.last)).toString();
+          newKey =
+              (_addOneToString(_storeIds.values.last as String)).toString();
         }
         _storeIds[id] = newKey;
         newPath += '/${_storeIds[id]!}';
@@ -527,8 +570,6 @@ class HiveCardsApi extends CardsApi {
     }
     return newPath;
   }
-
-  void _convertStoredPathToNormalPath(String storedPath) {}
 
   List<String>? _getChildrenPaths(String parentId) {
     final paths = <String>[];
@@ -623,5 +664,25 @@ class HiveCardsApi extends CardsApi {
       }
     }
     return cardsToLearn;
+  }
+
+  @override
+  List<Card> search(String searchRequest) {
+    final foundedCards = <Card>[];
+    for (final element in _indexedPaths) {
+      final loadedCardStrings =
+          _hiveBox.get(_makePathStorable(element)) as List<String>?;
+      if (loadedCardStrings == null) continue;
+      for (final loadedCardString in loadedCardStrings) {
+        if (loadedCardString.substring(46).startsWith('front')) {
+          final card = Card.fromJson(loadedCardString);
+          if (card.front.contains(searchRequest) ||
+              card.back.contains(searchRequest)) {
+            foundedCards.add(card);
+          }
+        }
+      }
+    }
+    return foundedCards;
   }
 }

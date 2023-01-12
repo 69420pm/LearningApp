@@ -81,7 +81,7 @@ class FolderListTileBloc
     emit(FolderListTileLoading());
     // try {
     final newCard = event.card.copyWith(parentId: event.newParentId);
-    await _cardsRepository.deleteCard(event.card.id, event.card.parentId);
+    // await _cardsRepository.deleteCard(event.card.id, event.card.parentId);
     await _cardsRepository.saveCard(newCard);
 
     emit(FolderListTileSuccess());

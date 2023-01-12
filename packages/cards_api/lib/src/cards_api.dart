@@ -20,6 +20,9 @@ abstract class CardsApi {
   /// return all cards which should get learned
   List<Card> learnAllCards();
 
+  /// search for cards or folders
+  List<Card> search(String searchRequest);
+
   /// Saves a [card]
   /// If a [card] with same id already exists, it will be replaced
   Future<void> saveCard(Card card);
@@ -36,6 +39,11 @@ abstract class CardsApi {
   /// If no card with given id exists, a [CardNotFoundException] error is
   /// thrown
   Future<void> deleteCard(String id, String parentId);
+
+/// Deletes cards with given id
+  /// If no cards with given id exists, a [CardNotFoundException] error is
+  /// thrown
+  Future<void> deleteCards(List<String> id, List<String> parentId);
 
   /// Deletes subject and every children with given id
   /// If no card with given id exists, a [SubjectNotFoundException] error is
@@ -71,3 +79,6 @@ class ParentNotFoundException implements Exception {}
 
 /// Error when a stream for a given parentId wasn't found
 class StreamNotFoundException implements Exception {}
+
+/// when given input doesn't work
+class WrongInput implements Exception{}

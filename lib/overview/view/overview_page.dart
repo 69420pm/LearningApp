@@ -30,12 +30,13 @@ class OverviewPage extends StatelessWidget {
             ),
             heroTag: 'subject',
             onPressed: () => showModalBottomSheet(
-                backgroundColor: Colors.transparent,
-                context: context,
-                builder: (_) => BlocProvider.value(
-                      value: context.read<AddSubjectCubit>(),
-                      child: AddSubjectBottomSheet(),
-                    ),),
+              backgroundColor: Colors.transparent,
+              context: context,
+              builder: (_) => BlocProvider.value(
+                value: context.read<AddSubjectCubit>(),
+                child: AddSubjectBottomSheet(),
+              ),
+            ),
             backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
           ),
           const SizedBox(
@@ -60,7 +61,9 @@ class OverviewPage extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: UISizeConstants.defaultSize * 1),
-              const SearchBar(),
+              SearchBar(
+                  onTap: () =>
+                      Navigator.of(context).pushNamed('/search')),
               const SizedBox(height: UISizeConstants.defaultSize * 2),
               const LearnAllButton(),
               BlocBuilder<OverviewBloc, OverviewState>(

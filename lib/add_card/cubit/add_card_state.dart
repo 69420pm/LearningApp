@@ -16,3 +16,7 @@ class AddCardFailure extends AddCardState {
   });
   String errorMessage;
 }
+
+class AddCardEditMode extends AddCardState {}
+
+class AddCardRenderMode extends AddCardState {}

@@ -20,8 +20,9 @@ class SubjectOverviewSelectionBloc
   final CardsRepository _cardsRepository;
 
   FutureOr<void> _toggleSelectMode(
-      SubjectOverviewSelectionToggleSelectMode event,
-      Emitter<SubjectOverviewSelectionState> emit,) {
+    SubjectOverviewSelectionToggleSelectMode event,
+    Emitter<SubjectOverviewSelectionState> emit,
+  ) {
     if (event.inSelectMode) {
       emit(SubjectOverviewSelectionModeOn());
     } else {
@@ -30,8 +31,10 @@ class SubjectOverviewSelectionBloc
     }
   }
 
-  FutureOr<void> _change(SubjectOverviewSelectionChange event,
-      Emitter<SubjectOverviewSelectionState> emit,) {
+  FutureOr<void> _change(
+    SubjectOverviewSelectionChange event,
+    Emitter<SubjectOverviewSelectionState> emit,
+  ) {
     if (event.addCard) {
       _cardsSelected.add(event.card);
     } else {
@@ -41,16 +44,27 @@ class SubjectOverviewSelectionBloc
         emit(SubjectOverviewSelectionModeOff());
       }
     }
-    print(_cardsSelected.map((e) => e.front).toString());
   }
 
-  FutureOr<void> _deleteCards(SubjectOverviewSelectionDeleteSelectedCards event,
-      Emitter<SubjectOverviewSelectionState> emit,) async {
+  FutureOr<void> _deleteCards(
+    SubjectOverviewSelectionDeleteSelectedCards event,
+    Emitter<SubjectOverviewSelectionState> emit,
+  ) async {
     print(_cardsSelected.map((e) => e.front).toString());
+    List<String> ids = [];
+    List<String> parentIds = [];
     for (var i = 0; i < _cardsSelected.length; i++) {
-      await _cardsRepository.deleteCard(
-          _cardsSelected[i].id, _cardsSelected[i].parentId,);
+        ids.add(_cardsSelected[i].id);
+        parentIds.add(_cardsSelected[i].parentId);
+        await _cardsRepository.deleteCard(_cardsSelected[i].id, _cardsSelected[i].parentId);
+        
+
+await new Future.delayed(const Duration(milliseconds: 10));
+
+
+      print("card deleted");
     }
+    // _cardsRepository.deleteCards(ids, parentIds);
 
     // emit(SubjectOverviewSelectionModeOff());
   }

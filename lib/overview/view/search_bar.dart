@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:ui_components/ui_components.dart';
 
 class SearchBar extends StatelessWidget {
-  const SearchBar({
-    super.key,
-  });
-
+  SearchBar({
+    Key? key,
+    required this.onTap,
+  }) : super(key: key);
+  final void Function() onTap;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       //TODO Search methode here
-      onTap: () {},
+      onTap: onTap,
       child: Container(
         height: UISizeConstants.defaultSize * 6,
         width: double.infinity,
