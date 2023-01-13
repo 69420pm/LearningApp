@@ -79,7 +79,7 @@ class FolderListTileView extends StatelessWidget {
             ),
           )
         ],
-        onSelected: (value) {
+        onSelected: (value) async {
           if (value == 0) {
             context.read<FolderListTileBloc>().add(
                   FolderListTileDeleteFolder(
@@ -90,7 +90,7 @@ class FolderListTileView extends StatelessWidget {
           } else if (value == 1) {
             for (var i = 0; i <= 20; i++) {
               context.read<FolderListTileBloc>().add(
-                    FolderListTileAddCard(
+                    FolderListTileDEBUGAddCard(
                       card: Card(
                         back: 'test$i',
                         front: 'test$i',
@@ -101,9 +101,9 @@ class FolderListTileView extends StatelessWidget {
                         dateToReview: DateTime.now().toIso8601String(),
                         typeAnswer: false,
                       ),
-                      newParentId: folder.id,
                     ),
                   );
+              await Future.delayed(const Duration(milliseconds: 5));
             }
           }
         },
