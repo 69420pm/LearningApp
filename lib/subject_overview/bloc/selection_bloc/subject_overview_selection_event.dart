@@ -39,4 +39,4 @@ class SubjectOverviewDraggingChange extends SubjectOverviewSelectionEvent {
   });
 }
 
-class SubjectOverviewCheckDragging extends SubjectOverviewSelectionEvent {}
+class SubjectOverviewGetSelectedCards extends SubjectOverviewSelectionEvent {}

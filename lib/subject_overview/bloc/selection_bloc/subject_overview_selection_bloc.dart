@@ -16,24 +16,23 @@ class SubjectOverviewSelectionBloc
     on<SubjectOverviewSelectionDeleteSelectedCards>(_deleteCards);
     on<SubjectOverviewSelectionMoveSelectedCards>(_moveSelectedCards);
     on<SubjectOverviewDraggingChange>(_toggleDragging);
-    on<SubjectOverviewCheckDragging>(_checkDragging);
   }
 
-  final List<Card> _cardsSelected = List.empty(growable: true);
+  final List<Card> cardsSelected = List.empty(growable: true);
   final CardsRepository _cardsRepository;
-  bool isInDragging = false;
-  bool isInSelectMode = false;
+  bool _isInDragging = false;
+  bool _isInSelectMode = false;
 
   FutureOr<void> _toggleSelectMode(
     SubjectOverviewSelectionToggleSelectMode event,
     Emitter<SubjectOverviewSelectionState> emit,
   ) {
     if (event.inSelectMode) {
-      isInSelectMode = true;
+      _isInSelectMode = true;
       emit(SubjectOverviewSelectionModeOn());
     } else {
-      isInSelectMode = false;
-      _cardsSelected.clear();
+      _isInSelectMode = false;
+      cardsSelected.clear();
       emit(SubjectOverviewSelectionModeOff());
     }
   }
@@ -43,12 +42,12 @@ class SubjectOverviewSelectionBloc
     Emitter<SubjectOverviewSelectionState> emit,
   ) {
     if (event.addCard) {
-      _cardsSelected.add(event.card);
+      cardsSelected.add(event.card);
     } else {
-      _cardsSelected.remove(event.card);
+      cardsSelected.remove(event.card);
 
-      if (_cardsSelected.isEmpty && state is SubjectOverviewSelectionModeOn) {
-        isInSelectMode = false;
+      if (cardsSelected.isEmpty && state is SubjectOverviewSelectionModeOn) {
+        _isInSelectMode = false;
         emit(SubjectOverviewSelectionModeOff());
       }
     }
@@ -60,9 +59,9 @@ class SubjectOverviewSelectionBloc
   ) async {
     final ids = <String>[];
     final parentIds = <String>[];
-    for (var i = 0; i < _cardsSelected.length; i++) {
-      ids.add(_cardsSelected[i].id);
-      parentIds.add(_cardsSelected[i].parentId);
+    for (var i = 0; i < cardsSelected.length; i++) {
+      ids.add(cardsSelected[i].id);
+      parentIds.add(cardsSelected[i].parentId);
     }
     await _cardsRepository.deleteCards(ids, parentIds);
 
@@ -72,10 +71,10 @@ class SubjectOverviewSelectionBloc
   FutureOr<void> _moveSelectedCards(
       SubjectOverviewSelectionMoveSelectedCards event,
       Emitter<SubjectOverviewSelectionState> emit) {
-    //TODO move all cards in _cardsSelected to event.parentId
+    //TODO move all cards in _cardsSelected to event.parentId @IHaveHackedYou
 
-    _cardsSelected.clear();
-    isInSelectMode = false;
+    cardsSelected.clear();
+    _isInSelectMode = false;
     emit(SubjectOverviewSelectionModeOff());
   }
 
@@ -83,21 +82,16 @@ class SubjectOverviewSelectionBloc
     SubjectOverviewDraggingChange event,
     Emitter<SubjectOverviewSelectionState> emit,
   ) {
-    if (event.inDragg && isInDragging == false) {
-      isInDragging = true;
-      if (isInSelectMode) {
-        emit(SubjectOverviewSelectionMultiDraggingOn());
+    if (event.inDragg && _isInDragging == false) {
+      _isInDragging = true;
+      if (_isInSelectMode) {
+        emit(SubjectOverviewSelectionMultiDragging());
       }
-    } else if (!event.inDragg && isInDragging == true) {
-      isInDragging = false;
-      if (isInSelectMode) {
+    } else if (!event.inDragg && _isInDragging == true) {
+      _isInDragging = false;
+      if (_isInSelectMode) {
         emit(SubjectOverviewSelectionModeOn());
       }
     }
-  }
-
-  FutureOr<bool> _checkDragging(
-      event, Emitter<SubjectOverviewSelectionState> emit) {
-    return isInDragging;
   }
 }

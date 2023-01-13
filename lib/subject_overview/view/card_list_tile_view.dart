@@ -29,7 +29,11 @@ class CardListTileView extends StatelessWidget {
         width: width,
         key: globalKey,
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.background,
+          color: isChildWhenDragging
+              ? Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3)
+              : isSelected
+                  ? Theme.of(context).colorScheme.primaryContainer
+                  : Theme.of(context).colorScheme.background,
           borderRadius: const BorderRadius.all(
             Radius.circular(UISizeConstants.cornerRadius),
           ),
