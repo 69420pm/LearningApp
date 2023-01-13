@@ -80,6 +80,7 @@ class FolderListTileView extends StatelessWidget {
           )
         ],
         onSelected: (value) {
+          print(value);
           if (value == 0) {
             context.read<FolderListTileBloc>().add(
                   FolderListTileDeleteFolder(

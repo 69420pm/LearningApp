@@ -60,14 +60,20 @@ class _CardListTileState extends State<CardListTile> {
         },
         child: LongPressDraggable(
           data: widget.card,
-          maxSimultaneousDrags: widget.isInSelectMode ? 0 : 1,
+          maxSimultaneousDrags: 1,
           onDragStarted: () {
+            context
+                .read<SubjectOverviewSelectionBloc>()
+                .add(SubjectOverviewDraggingChange(inDragg: true));
             if (!widget.isInSelectMode || widget.isCardSelected == false) {
               setState(() {
                 widget.isCardSelected = true;
               });
             }
           },
+          onDragEnd: (details) => context
+              .read<SubjectOverviewSelectionBloc>()
+              .add(SubjectOverviewDraggingChange(inDragg: false)),
           onDraggableCanceled: (_, __) {
             context.read<SubjectOverviewSelectionBloc>().add(
                   SubjectOverviewSelectionToggleSelectMode(inSelectMode: true),
@@ -101,8 +107,12 @@ class _CardListTileState extends State<CardListTile> {
           ),
           child: CardListTileView(
             globalKey: globalKey,
-            isSelected: widget.isCardSelected,
+            isSelected: widget.isCardSelected &&
+                !(state is SubjectOverviewSelectionMultiDraggingOn),
             card: widget.card,
+            isChildWhenDragging:
+                state is SubjectOverviewSelectionMultiDraggingOn &&
+                    widget.isCardSelected,
           ),
         ),
       ),
