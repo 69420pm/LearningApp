@@ -29,10 +29,7 @@ class CardListTileView extends StatelessWidget {
         width: width,
         key: globalKey,
         decoration: BoxDecoration(
-          color: Theme.of(context)
-              .colorScheme
-              .secondaryContainer
-              .withOpacity(isChildWhenDragging ? 0.5 : 1),
+          color: Colors.transparent,
           borderRadius: const BorderRadius.all(
             Radius.circular(UISizeConstants.cornerRadius),
           ),
@@ -44,14 +41,9 @@ class CardListTileView extends StatelessWidget {
           ),
         ),
         child: Row(
-          children: [
-            if (!isChildWhenDragging)
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.only(left: UISizeConstants.defaultSize),
-                  child: Text(
+          children: !isChildWhenDragging
+              ? [
+                  Text(
                     card.front,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -60,9 +52,8 @@ class CardListTileView extends StatelessWidget {
                               .onSecondaryContainer,
                         ),
                   ),
-                ),
-              ),
-          ],
+                ]
+              : [],
         ),
       ),
     );

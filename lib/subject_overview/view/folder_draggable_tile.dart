@@ -9,28 +9,41 @@ class FolderDraggableTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: UISizeConstants.defaultSize * 5,
-      width: MediaQuery.of(context).size.width,
+    return DecoratedBox(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surfaceVariant,
         borderRadius: const BorderRadius.all(
           Radius.circular(UISizeConstants.cornerRadius),
         ),
       ),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: UISizeConstants.defaultSize * 2,
-            vertical: UISizeConstants.defaultSize,
-          ),
-          child: Text(
-            folder.name,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSecondaryContainer,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: UISizeConstants.defaultSize * 2,
+          vertical: UISizeConstants.defaultSize,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.folder),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: UISizeConstants.defaultSize * 2,
+                vertical: UISizeConstants.defaultSize,
+              ),
+              child: SizedBox(
+                width: UISizeConstants.defaultSize * 10,
+                child: Text(
+                  folder.name,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color:
+                            Theme.of(context).colorScheme.onSecondaryContainer,
+                      ),
                 ),
-          ),
+              ),
+            ),
+          ],
         ),
       ),
     );

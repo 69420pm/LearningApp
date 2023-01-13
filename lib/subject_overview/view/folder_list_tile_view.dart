@@ -24,51 +24,90 @@ class FolderListTileView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExpansionTile(
       controlAffinity: ListTileControlAffinity.leading,
-
       collapsedTextColor: Theme.of(context).colorScheme.onSecondaryContainer,
       textColor: Theme.of(context).colorScheme.onSecondaryContainer,
-
       maintainState: true,
-
-      title: Text(folder.name),
-
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
+      title: Row(
         children: [
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () => context.read<FolderListTileBloc>().add(
+          const Icon(Icons.folder),
+          const SizedBox(
+            width: UISizeConstants.defaultSize * 1,
+          ),
+          Expanded(
+            child: Text(
+              folder.name,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+      trailing: PopupMenuButton<int>(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(UISizeConstants.cornerRadius),
+          ),
+        ),
+        itemBuilder: (context) => [
+          PopupMenuItem(
+            value: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Icon(Icons.delete),
+                Text(
+                  'delete',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                ),
+              ],
+            ),
+          ),
+          PopupMenuItem(
+            value: 1,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Icon(Icons.delete),
+                Text(
+                  'spawn 20 cards',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                ),
+              ],
+            ),
+          )
+        ],
+        onSelected: (value) {
+          if (value == 0) {
+            context.read<FolderListTileBloc>().add(
                   FolderListTileDeleteFolder(
                     id: folder.id,
                     parentId: folder.parentId,
                   ),
-                ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.flutter_dash),
-            onPressed: () {
-              for (var i = 0; i <= 20; i++) {
-                context.read<FolderListTileBloc>().add(
-                      FolderListTileAddCard(
-                        card: Card(
-                          back: 'test$i',
-                          front: 'test$i',
-                          askCardsInverted: false,
-                          id: const Uuid().v4(),
-                          dateCreated: '',
-                          parentId: folder.id,
-                          dateToReview: DateTime.now().toIso8601String(),
-                          typeAnswer: false,
-                        ),
-                        newParentId: folder.id,
+                );
+          } else if (value == 1) {
+            for (var i = 0; i <= 20; i++) {
+              context.read<FolderListTileBloc>().add(
+                    FolderListTileAddCard(
+                      card: Card(
+                        back: 'test$i',
+                        front: 'test$i',
+                        askCardsInverted: false,
+                        id: const Uuid().v4(),
+                        dateCreated: '',
+                        parentId: folder.id,
+                        dateToReview: DateTime.now().toIso8601String(),
+                        typeAnswer: false,
                       ),
-                    );
-              }
-            },
-          ),
-        ],
+                      newParentId: folder.id,
+                    ),
+                  );
+            }
+          }
+        },
       ),
-      //
       children: [
         Padding(
           padding: const EdgeInsets.only(
