@@ -56,15 +56,8 @@ class SubjectOverviewSelectionBloc
     for (var i = 0; i < _cardsSelected.length; i++) {
         ids.add(_cardsSelected[i].id);
         parentIds.add(_cardsSelected[i].parentId);
-        await _cardsRepository.deleteCard(_cardsSelected[i].id, _cardsSelected[i].parentId);
-        
-
-await new Future.delayed(const Duration(milliseconds: 10));
-
-
-      print("card deleted");
     }
-    // _cardsRepository.deleteCards(ids, parentIds);
+    await _cardsRepository.deleteCards(ids, parentIds);
 
     // emit(SubjectOverviewSelectionModeOff());
   }

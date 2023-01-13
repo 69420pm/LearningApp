@@ -147,11 +147,10 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
 
                     BlocBuilder<EditSubjectBloc, EditSubjectState>(
                       buildWhen: (previous, current) {
-                        // if (current is EditSubjectRetrieveChildren) {
-                        //   return true;
-                        // }
-                        // return false;
-                        return true;
+                        if (current is EditSubjectRetrieveChildren) {
+                          return true;
+                        }
+                        return false;
                       },
                       builder: (context, state) {
                         if (state is EditSubjectRetrieveChildren) {
