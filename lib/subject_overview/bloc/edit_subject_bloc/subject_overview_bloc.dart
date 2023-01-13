@@ -77,10 +77,10 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
               isInSelectMode: false,
             );
           } else if (element is Removed) {
-            emit(EditSubjectLoading());
             widgetsToRemove.add(element);
           }
         }
+        print(childListTiles);
         return EditSubjectRetrieveChildren(
           childrenStream: childListTiles,
           removedWidgets: widgetsToRemove,

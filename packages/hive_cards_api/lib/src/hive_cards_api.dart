@@ -315,12 +315,13 @@ class HiveCardsApi extends CardsApi {
 
       await _hiveBox.put(_makePathStorable(path), cards);
     }
-    for (var path in paths) {
+    for (final path in paths) {
       if (_subscribedStreams.containsKey(path)) {
-        for(final id in parentIdToDeletedIds[path]!){
-        _subscribedStreams[path]!.add([Removed(id: id)]);
-
+        List<Removed> toRemove = [];
+        for (final id in parentIdToDeletedIds[path]!) {
+          toRemove.add(Removed(id: id));
         }
+          _subscribedStreams[path]!.add(toRemove);
       }
     }
   }

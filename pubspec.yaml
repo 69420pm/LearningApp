@@ -29,9 +29,6 @@ dependencies:
   uuid: ^3.0.7
   dynamic_color: ^1.5.4
   google_fonts: ^3.0.1
-  flutter_markdown: ^0.6.13
-  tex_markdown: ^0.0.4
-
   
 
 
