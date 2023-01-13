@@ -31,7 +31,7 @@ dependencies:
   google_fonts: ^3.0.1
   flutter_markdown: ^0.6.13
   tex_markdown: ^0.0.4
-  flutter_slidable: ^2.0.0
+
   
 
 
