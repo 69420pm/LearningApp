@@ -4,6 +4,7 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/view/card_list_tile_view.dart';
+import 'package:learning_app/subject_overview/view/multi_drag_indicator.dart';
 
 class CardListTile extends StatefulWidget {
   CardListTile({
@@ -86,17 +87,20 @@ class _CardListTileState extends State<CardListTile> {
                 );
           },
           feedback: Builder(
-            builder: (context) {
+            builder: (_) {
               final renderBox =
                   globalKey.currentContext?.findRenderObject() as RenderBox?;
 
               final size = renderBox?.size;
-              return CardListTileView(
-                globalKey: globalKey,
-                isSelected: widget.isCardSelected,
-                card: widget.card,
-                height: size?.height,
-                width: size?.width,
+              context.read<SubjectOverviewSelectionBloc>().cardsSelected.length;
+              return CardListTileMultiDragIndicator(
+                cardAmount: context
+                    .read<SubjectOverviewSelectionBloc>()
+                    .cardsSelected
+                    .length,
+                firstCard: widget.card,
+                height: size!.height,
+                width: size.width,
               );
             },
           ),
@@ -108,10 +112,10 @@ class _CardListTileState extends State<CardListTile> {
           child: CardListTileView(
             globalKey: globalKey,
             isSelected: widget.isCardSelected &&
-                !(state is SubjectOverviewSelectionMultiDraggingOn),
+                !(state is SubjectOverviewSelectionMultiDragging),
             card: widget.card,
             isChildWhenDragging:
-                state is SubjectOverviewSelectionMultiDraggingOn &&
+                state is SubjectOverviewSelectionMultiDragging &&
                     widget.isCardSelected,
           ),
         ),

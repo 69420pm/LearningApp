@@ -56,7 +56,9 @@ class FolderListTileBloc
           }
         }
         return FolderListTileRetrieveChildren(
-            childrenStream: childListTiles, removedWidgets: widgetsToRemove,);
+          childrenStream: childListTiles,
+          removedWidgets: widgetsToRemove,
+        );
       },
       onError: (error, stackTrace) =>
           FolderListTileError(errorMessage: 'backend broken'),
@@ -64,7 +66,9 @@ class FolderListTileBloc
   }
 
   Future<void> _addFolder(
-      FolderListTileAddFolder event, Emitter<FolderListTileState> emit,) async {
+    FolderListTileAddFolder event,
+    Emitter<FolderListTileState> emit,
+  ) async {
     emit(FolderListTileLoading());
     // try {
     final newFolder = event.folder.copyWith(parentId: event.newParentId);
@@ -77,7 +81,9 @@ class FolderListTileBloc
   }
 
   Future<void> _addCard(
-      FolderListTileAddCard event, Emitter<FolderListTileState> emit,) async {
+    FolderListTileAddCard event,
+    Emitter<FolderListTileState> emit,
+  ) async {
     emit(FolderListTileLoading());
     // try {
     final newCard = event.card.copyWith(parentId: event.newParentId);

@@ -188,7 +188,7 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                                       if (context
                                               .read<SubjectOverviewSelectionBloc>()
                                               .state
-                                          is SubjectOverviewSelectionMultiDraggingOn) {
+                                          is SubjectOverviewSelectionMultiDragging) {
                                         context
                                             .read<
                                                 SubjectOverviewSelectionBloc>()

@@ -56,7 +56,7 @@ class FolderListTile extends StatelessWidget {
                               ),
                             );
                       } else if (data is Card && data.parentId != folder.id) {
-                        if (state is SubjectOverviewSelectionMultiDraggingOn) {
+                        if (state is SubjectOverviewSelectionMultiDragging) {
                           context
                               .read<SubjectOverviewSelectionBloc>()
                               .add(SubjectOverviewSelectionMoveSelectedCards(
