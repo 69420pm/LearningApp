@@ -36,12 +36,6 @@ class _CardListTileState extends State<CardListTile> {
           widget.isInSelectMode = false;
           setState(() {
             widget.isCardSelected = false;
-            context.read<SubjectOverviewSelectionBloc>().add(
-                  SubjectOverviewSelectionChange(
-                    card: widget.card,
-                    addCard: widget.isCardSelected,
-                  ),
-                );
           });
         }
       },
@@ -76,15 +70,18 @@ class _CardListTileState extends State<CardListTile> {
               .read<SubjectOverviewSelectionBloc>()
               .add(SubjectOverviewDraggingChange(inDragg: false)),
           onDraggableCanceled: (_, __) {
-            context.read<SubjectOverviewSelectionBloc>().add(
-                  SubjectOverviewSelectionToggleSelectMode(inSelectMode: true),
-                );
-            context.read<SubjectOverviewSelectionBloc>().add(
-                  SubjectOverviewSelectionChange(
-                    card: widget.card,
-                    addCard: true,
-                  ),
-                );
+            if (!widget.isCardSelected) {
+              context.read<SubjectOverviewSelectionBloc>().add(
+                    SubjectOverviewSelectionToggleSelectMode(
+                        inSelectMode: true),
+                  );
+              context.read<SubjectOverviewSelectionBloc>().add(
+                    SubjectOverviewSelectionChange(
+                      card: widget.card,
+                      addCard: true,
+                    ),
+                  );
+            }
           },
           feedback: Builder(
             builder: (_) {
@@ -92,7 +89,10 @@ class _CardListTileState extends State<CardListTile> {
                   globalKey.currentContext?.findRenderObject() as RenderBox?;
 
               final size = renderBox?.size;
-              context.read<SubjectOverviewSelectionBloc>().cardsSelected.length;
+              print(context
+                  .read<SubjectOverviewSelectionBloc>()
+                  .cardsSelected
+                  .map((e) => e.front));
               return CardListTileMultiDragIndicator(
                 cardAmount: context
                     .read<SubjectOverviewSelectionBloc>()
