@@ -100,6 +100,7 @@ class FolderListTileView extends StatelessWidget {
                         parentId: folder.id,
                         dateToReview: DateTime.now().toIso8601String(),
                         typeAnswer: false,
+                        tags: const [],
                       ),
                     ),
                   );

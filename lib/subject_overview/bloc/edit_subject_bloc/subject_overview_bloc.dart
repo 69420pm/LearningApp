@@ -120,6 +120,7 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
       askCardsInverted: true,
       typeAnswer: true,
       dateToReview: DateTime.now().toIso8601String(),
+      tags: const [],
     );
     await cardsRepository.saveCard(newCard);
     emit(EditSubjectSuccess());

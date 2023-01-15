@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/search/bloc/search_bloc.dart';
-import 'package:learning_app/search/view/search_text_field.dart';
 import 'package:ui_components/ui_components.dart';
 
 class SearchPage extends StatelessWidget {
@@ -12,13 +11,14 @@ class SearchPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: UISizeConstants.paddingEdge),
+        padding: const EdgeInsets.symmetric(horizontal: UISizeConstants.paddingEdge),
         child: SafeArea(
           child: Column(
             children: [
               UITextFormField(
                 autofocus: true,
                 controller: searchController,
+                initialValue: context.read<SearchBloc>().lastSearch,
                 validation: (p0) {},
                 hintText: 'Search',
                 onFieldSubmitted: (p0) => context
@@ -39,6 +39,10 @@ class SearchPage extends StatelessWidget {
                       height: 100,
                       child: Column(children: state.foundCards),
                     );
+                  }else if(state is SearchInitial){
+                    return Text('use search bar below');
+                  }else if(state is SearchNothingFound){
+                    return Text('nothing found');
                   }
                   return Text("loading");
                 },

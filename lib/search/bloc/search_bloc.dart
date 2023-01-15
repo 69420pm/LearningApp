@@ -11,16 +11,21 @@ part 'search_state.dart';
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
   SearchBloc(this._cardsRepository) : super(SearchInitial()) {
-
     on<SearchRequest>(request);
   }
 
   final CardsRepository _cardsRepository;
+  String lastSearch = '';
 
   FutureOr<void> request(SearchRequest event, Emitter<SearchState> emit) {
     emit(SearchLoading());
+    if(event.searchRequest.isEmpty){
+      emit(SearchInitial());
+      return null;
+    }
     final cards = _cardsRepository.search(event.searchRequest);
     final tiles = <CardListTileView>[];
+    lastSearch = event.searchRequest;
     for (final card in cards) {
       tiles.add(
         CardListTileView(
@@ -30,10 +35,15 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         ),
       );
     }
-    emit(
-      SearchSuccess(
-        foundCards: tiles,
-      ),
-    );
+    if (tiles.isEmpty) {
+      emit(SearchNothingFound());
+    }
+    else {
+      emit(
+        SearchSuccess(
+          foundCards: tiles,
+        ),
+      );
+    }
   }
 }

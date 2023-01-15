@@ -677,7 +677,7 @@ class HiveCardsApi extends CardsApi {
       for (final loadedCardString in loadedCardStrings) {
         if (loadedCardString.substring(46).startsWith('front')) {
           final card = Card.fromJson(loadedCardString);
-          if (card.front.contains(searchRequest) ||
+          if (card.front.toLowerCase().contains(searchRequest.toLowerCase()) ||
               card.back.contains(searchRequest)) {
             foundedCards.add(card);
           }
