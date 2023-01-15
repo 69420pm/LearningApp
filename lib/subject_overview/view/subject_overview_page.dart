@@ -47,21 +47,23 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
         return Scaffold(
           backgroundColor: Theme.of(context).colorScheme.background,
           appBar: AppBar(
+            leading: (state is SubjectOverviewSelectionModeOn)
+                ? IconButton(
+                    onPressed: () {
+                      context.read<SubjectOverviewSelectionBloc>().add(
+                            SubjectOverviewSelectionToggleSelectMode(
+                              inSelectMode: false,
+                            ),
+                          );
+                    },
+                    icon: const Icon(
+                      Icons.cancel,
+                    ),
+                  )
+                : null,
             title: Text(widget.subjectToEdit.name),
             actions: (state is SubjectOverviewSelectionModeOn)
                 ? [
-                    IconButton(
-                      onPressed: () {
-                        context.read<SubjectOverviewSelectionBloc>().add(
-                              SubjectOverviewSelectionToggleSelectMode(
-                                inSelectMode: false,
-                              ),
-                            );
-                      },
-                      icon: const Icon(
-                        Icons.cancel,
-                      ),
-                    ),
                     IconButton(
                       onPressed: () {
                         context.read<SubjectOverviewSelectionBloc>().add(
@@ -144,7 +146,6 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                     //     context,
                     //   ),
                     // ),
-
                     BlocBuilder<EditSubjectBloc, EditSubjectState>(
                       buildWhen: (previous, current) {
                         if (current is EditSubjectRetrieveChildren) {
@@ -184,12 +185,29 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                                     } else if (data is Card &&
                                         data.parentId !=
                                             widget.subjectToEdit.id) {
-                                      context.read<EditSubjectBloc>().add(
-                                            EditSubjectSetCardParent(
-                                              card: data,
-                                              parentId: widget.subjectToEdit.id,
-                                            ),
-                                          );
+                                      if (context
+                                              .read<SubjectOverviewSelectionBloc>()
+                                              .state
+                                          is SubjectOverviewSelectionMultiDragging) {
+                                        context
+                                            .read<
+                                                SubjectOverviewSelectionBloc>()
+                                            .add(
+                                              SubjectOverviewSelectionMoveSelectedCards(
+                                                parentId:
+                                                    widget.subjectToEdit.id,
+                                              ),
+                                            );
+                                      } else {
+                                        print("test");
+                                        context.read<EditSubjectBloc>().add(
+                                              EditSubjectSetCardParent(
+                                                card: data,
+                                                parentId:
+                                                    widget.subjectToEdit.id,
+                                              ),
+                                            );
+                                      }
                                     } else if (data is Card) {
                                       context
                                           .read<SubjectOverviewSelectionBloc>()

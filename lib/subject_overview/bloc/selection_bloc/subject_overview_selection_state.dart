@@ -8,3 +8,6 @@ class SubjectOverviewSelectionInitial extends SubjectOverviewSelectionState {}
 class SubjectOverviewSelectionModeOn extends SubjectOverviewSelectionState {}
 
 class SubjectOverviewSelectionModeOff extends SubjectOverviewSelectionState {}
+
+class SubjectOverviewSelectionMultiDragging
+    extends SubjectOverviewSelectionState {}

@@ -23,3 +23,20 @@ class SubjectOverviewSelectionChange extends SubjectOverviewSelectionEvent {
 
 class SubjectOverviewSelectionDeleteSelectedCards
     extends SubjectOverviewSelectionEvent {}
+
+class SubjectOverviewSelectionMoveSelectedCards
+    extends SubjectOverviewSelectionEvent {
+  String parentId;
+  SubjectOverviewSelectionMoveSelectedCards({
+    required this.parentId,
+  });
+}
+
+class SubjectOverviewDraggingChange extends SubjectOverviewSelectionEvent {
+  bool inDragg;
+  SubjectOverviewDraggingChange({
+    required this.inDragg,
+  });
+}
+
+class SubjectOverviewGetSelectedCards extends SubjectOverviewSelectionEvent {}

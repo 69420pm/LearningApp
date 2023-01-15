@@ -4,6 +4,7 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/view/card_list_tile_view.dart';
+import 'package:learning_app/subject_overview/view/multi_drag_indicator.dart';
 
 class CardListTile extends StatefulWidget {
   CardListTile({
@@ -60,14 +61,20 @@ class _CardListTileState extends State<CardListTile> {
         },
         child: LongPressDraggable(
           data: widget.card,
-          maxSimultaneousDrags: widget.isInSelectMode ? 0 : 1,
+          maxSimultaneousDrags: 1,
           onDragStarted: () {
+            context
+                .read<SubjectOverviewSelectionBloc>()
+                .add(SubjectOverviewDraggingChange(inDragg: true));
             if (!widget.isInSelectMode || widget.isCardSelected == false) {
               setState(() {
                 widget.isCardSelected = true;
               });
             }
           },
+          onDragEnd: (details) => context
+              .read<SubjectOverviewSelectionBloc>()
+              .add(SubjectOverviewDraggingChange(inDragg: false)),
           onDraggableCanceled: (_, __) {
             context.read<SubjectOverviewSelectionBloc>().add(
                   SubjectOverviewSelectionToggleSelectMode(inSelectMode: true),
@@ -80,17 +87,20 @@ class _CardListTileState extends State<CardListTile> {
                 );
           },
           feedback: Builder(
-            builder: (context) {
+            builder: (_) {
               final renderBox =
                   globalKey.currentContext?.findRenderObject() as RenderBox?;
 
               final size = renderBox?.size;
-              return CardListTileView(
-                globalKey: globalKey,
-                isSelected: widget.isCardSelected,
-                card: widget.card,
-                height: size?.height,
-                width: size?.width,
+              context.read<SubjectOverviewSelectionBloc>().cardsSelected.length;
+              return CardListTileMultiDragIndicator(
+                cardAmount: context
+                    .read<SubjectOverviewSelectionBloc>()
+                    .cardsSelected
+                    .length,
+                firstCard: widget.card,
+                height: size!.height,
+                width: size.width,
               );
             },
           ),
@@ -101,8 +111,12 @@ class _CardListTileState extends State<CardListTile> {
           ),
           child: CardListTileView(
             globalKey: globalKey,
-            isSelected: widget.isCardSelected,
+            isSelected: widget.isCardSelected &&
+                !(state is SubjectOverviewSelectionMultiDragging),
             card: widget.card,
+            isChildWhenDragging:
+                state is SubjectOverviewSelectionMultiDragging &&
+                    widget.isCardSelected,
           ),
         ),
       ),

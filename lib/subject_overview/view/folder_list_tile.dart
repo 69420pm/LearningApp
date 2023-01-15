@@ -56,20 +56,32 @@ class FolderListTile extends StatelessWidget {
                               ),
                             );
                       } else if (data is Card && data.parentId != folder.id) {
-                        context.read<FolderListTileBloc>().add(
-                              FolderListTileMoveCard(
-                                card: data,
-                                newParentId: folder.id,
+                        if (state is SubjectOverviewSelectionMultiDragging) {
+                          context
+                              .read<SubjectOverviewSelectionBloc>()
+                              .add(SubjectOverviewSelectionMoveSelectedCards(
+                                parentId: folder.id,
+                              ));
+                        } else {
+                          context.read<FolderListTileBloc>().add(
+                                FolderListTileMoveCard(
+                                  card: data,
+                                  newParentId: folder.id,
+                                ),
+                              );
+                        }
+                      } else if (data is Card) {
+                        context.read<SubjectOverviewSelectionBloc>().add(
+                              SubjectOverviewSelectionToggleSelectMode(
+                                inSelectMode: true,
                               ),
                             );
-                      } else if (data is Card) {
-                        print('drag to select');
                         context.read<SubjectOverviewSelectionBloc>().add(
-                            SubjectOverviewSelectionToggleSelectMode(
-                                inSelectMode: true,),);
-                        context.read<SubjectOverviewSelectionBloc>().add(
-                            SubjectOverviewSelectionChange(
-                                card: data, addCard: true,),);
+                              SubjectOverviewSelectionChange(
+                                card: data,
+                                addCard: true,
+                              ),
+                            );
                       }
                       // print(data);
                       // folder.childFolders.add(data);

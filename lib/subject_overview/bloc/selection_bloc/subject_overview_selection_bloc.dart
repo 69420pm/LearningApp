@@ -14,19 +14,25 @@ class SubjectOverviewSelectionBloc
     on<SubjectOverviewSelectionToggleSelectMode>(_toggleSelectMode);
     on<SubjectOverviewSelectionChange>(_change);
     on<SubjectOverviewSelectionDeleteSelectedCards>(_deleteCards);
+    on<SubjectOverviewSelectionMoveSelectedCards>(_moveSelectedCards);
+    on<SubjectOverviewDraggingChange>(_toggleDragging);
   }
 
-  final List<Card> _cardsSelected = List.empty(growable: true);
+  final List<Card> cardsSelected = List.empty(growable: true);
   final CardsRepository _cardsRepository;
+  bool _isInDragging = false;
+  bool _isInSelectMode = false;
 
   FutureOr<void> _toggleSelectMode(
     SubjectOverviewSelectionToggleSelectMode event,
     Emitter<SubjectOverviewSelectionState> emit,
   ) {
     if (event.inSelectMode) {
+      _isInSelectMode = true;
       emit(SubjectOverviewSelectionModeOn());
     } else {
-      _cardsSelected.clear();
+      _isInSelectMode = false;
+      cardsSelected.clear();
       emit(SubjectOverviewSelectionModeOff());
     }
   }
@@ -36,11 +42,12 @@ class SubjectOverviewSelectionBloc
     Emitter<SubjectOverviewSelectionState> emit,
   ) {
     if (event.addCard) {
-      _cardsSelected.add(event.card);
+      cardsSelected.add(event.card);
     } else {
-      _cardsSelected.remove(event.card);
+      cardsSelected.remove(event.card);
 
-      if (_cardsSelected.isEmpty && state is SubjectOverviewSelectionModeOn) {
+      if (cardsSelected.isEmpty && state is SubjectOverviewSelectionModeOn) {
+        _isInSelectMode = false;
         emit(SubjectOverviewSelectionModeOff());
       }
     }
@@ -50,15 +57,41 @@ class SubjectOverviewSelectionBloc
     SubjectOverviewSelectionDeleteSelectedCards event,
     Emitter<SubjectOverviewSelectionState> emit,
   ) async {
-    print(_cardsSelected.map((e) => e.front).toString());
-    List<String> ids = [];
-    List<String> parentIds = [];
-    for (var i = 0; i < _cardsSelected.length; i++) {
-        ids.add(_cardsSelected[i].id);
-        parentIds.add(_cardsSelected[i].parentId);
+    final ids = <String>[];
+    final parentIds = <String>[];
+    for (var i = 0; i < cardsSelected.length; i++) {
+      ids.add(cardsSelected[i].id);
+      parentIds.add(cardsSelected[i].parentId);
     }
     await _cardsRepository.deleteCards(ids, parentIds);
 
     // emit(SubjectOverviewSelectionModeOff());
+  }
+
+  FutureOr<void> _moveSelectedCards(
+      SubjectOverviewSelectionMoveSelectedCards event,
+      Emitter<SubjectOverviewSelectionState> emit) {
+    //TODO move all cards in _cardsSelected to event.parentId @IHaveHackedYou
+
+    cardsSelected.clear();
+    _isInSelectMode = false;
+    emit(SubjectOverviewSelectionModeOff());
+  }
+
+  FutureOr<void> _toggleDragging(
+    SubjectOverviewDraggingChange event,
+    Emitter<SubjectOverviewSelectionState> emit,
+  ) {
+    if (event.inDragg && _isInDragging == false) {
+      _isInDragging = true;
+      if (_isInSelectMode) {
+        emit(SubjectOverviewSelectionMultiDragging());
+      }
+    } else if (!event.inDragg && _isInDragging == true) {
+      _isInDragging = false;
+      if (_isInSelectMode) {
+        emit(SubjectOverviewSelectionModeOn());
+      }
+    }
   }
 }
