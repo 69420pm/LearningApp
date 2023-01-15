@@ -44,7 +44,7 @@ class CardListTileMultiDragIndicator extends StatelessWidget {
                     id: '',
                     parentId: '',
                     typeAnswer: false,
-                  ),
+                    tags: []),
             isSelected: true,
             height: height,
             width: width,

@@ -17,6 +17,7 @@ class AddCardPage extends StatelessWidget {
     final locationController = TextEditingController();
     final iconController = TextEditingController();
 
+
     final formKey = GlobalKey<FormState>();
     return Scaffold(
       appBar: UIAppBar(title: const Text('Add Card Page')),
@@ -49,6 +50,7 @@ class AddCardPage extends StatelessWidget {
             TextFormField(
               controller: iconController,
             ),
+            
             ElevatedButton(
                 onPressed: () async {
                   if (formKey.currentState!.validate()) {

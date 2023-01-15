@@ -16,12 +16,19 @@ class FolderListTileAddFolder extends FolderListTileEvent {
   FolderListTileAddFolder({required this.folder, required this.newParentId});
 }
 
-class FolderListTileAddCard extends FolderListTileEvent {
+class FolderListTileMoveCard extends FolderListTileEvent {
   Card card;
   String newParentId;
-  FolderListTileAddCard({
+  FolderListTileMoveCard({
     required this.card,
     required this.newParentId,
+  });
+}
+
+class FolderListTileDEBUGAddCard extends FolderListTileEvent {
+  Card card;
+  FolderListTileDEBUGAddCard({
+    required this.card,
   });
 }
 

@@ -64,7 +64,7 @@ class FolderListTile extends StatelessWidget {
                               ));
                         } else {
                           context.read<FolderListTileBloc>().add(
-                                FolderListTileAddCard(
+                                FolderListTileMoveCard(
                                   card: data,
                                   newParentId: folder.id,
                                 ),

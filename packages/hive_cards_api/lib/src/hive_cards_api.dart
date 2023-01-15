@@ -321,7 +321,7 @@ class HiveCardsApi extends CardsApi {
         for (final id in parentIdToDeletedIds[path]!) {
           toRemove.add(Removed(id: id));
         }
-          _subscribedStreams[path]!.add(toRemove);
+        _subscribedStreams[path]!.add(toRemove);
       }
     }
   }
@@ -677,7 +677,7 @@ class HiveCardsApi extends CardsApi {
       for (final loadedCardString in loadedCardStrings) {
         if (loadedCardString.substring(46).startsWith('front')) {
           final card = Card.fromJson(loadedCardString);
-          if (card.front.contains(searchRequest) ||
+          if (card.front.toLowerCase().contains(searchRequest.toLowerCase()) ||
               card.back.contains(searchRequest)) {
             foundedCards.add(card);
           }
@@ -685,5 +685,53 @@ class HiveCardsApi extends CardsApi {
       }
     }
     return foundedCards;
+  }
+
+  @override
+  Future<void> moveCards(List<Card> cards, String newParentId) async {
+    final ids = <String>[];
+    final parentIds = <String>[];
+    final cardsToUpdateStreams = <Card>[];
+      final path = _getPath(newParentId);
+
+    for (var card in cards) {
+      ids.add(card.id);
+      parentIds.add(card.parentId);
+
+      card = card.copyWith(parentId: newParentId);
+
+      if (path == null) {
+        throw ParentNotFoundException();
+      }
+
+      var cards = _hiveBox.get(_makePathStorable(path)) as List<String>?;
+      var found = false;
+      var indexToChange = 0;
+      if (cards != null) {
+        for (final element in cards) {
+          // contains word
+          if (element.substring(7).startsWith(card.id)) {
+            indexToChange = cards.indexOf(element);
+            found = true;
+            break;
+          }
+        }
+      } else {
+        cards = [];
+      }
+      if (!found) {
+        cards.add(_cardsToJson([card])[0]);
+      } else {
+        cards[indexToChange] = _cardsToJson([card])[0];
+      }
+      cardsToUpdateStreams.add(card);
+      await _hiveBox.put(_makePathStorable(path), cards);
+    }
+    print(_subscribedStreams[newParentId]);
+    print(_subscribedStreams);
+    if (_subscribedStreams.containsKey(path)) {
+      _subscribedStreams[path]!.add(cardsToUpdateStreams);
+    }
+    await deleteCards(ids, parentIds);
   }
 }

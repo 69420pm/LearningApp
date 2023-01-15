@@ -12,17 +12,23 @@ class AddCardCubit extends Cubit<AddCardState> {
   bool _editMarkDownMode = false;
 
   Future<void> saveCard(
-      String front, String back, Subject parentSubject, String icon,) async {
+    String front,
+    String back,
+    Subject parentSubject,
+    String icon,
+  ) async {
     emit(AddCardLoading());
     final newCard = Card(
-        id: Uid().uid(),
-        front: front,
-        back: back,
-        dateCreated: DateTime.now().toIso8601String(),
-        parentId: parentSubject.id,
-        askCardsInverted: false,
-        typeAnswer: true,
-        dateToReview: DateTime.now().toIso8601String(),);
+      id: Uid().uid(),
+      front: front,
+      back: back,
+      dateCreated: DateTime.now().toIso8601String(),
+      parentId: parentSubject.id,
+      askCardsInverted: false,
+      typeAnswer: true,
+      dateToReview: DateTime.now().toIso8601String(),
+      tags: const [],
+    );
     try {
       // parentSubject.childCards.add(newCard);
       await _cardsRepository.saveCard(newCard);
@@ -30,14 +36,16 @@ class AddCardCubit extends Cubit<AddCardState> {
     } catch (e) {
       emit(
         AddCardFailure(
-            errorMessage: 'Card saving failed, while communicating with hive',),
+          errorMessage: 'Card saving failed, while communicating with hive',
+        ),
       );
     }
   }
-  void switchMarkdownMode(){
-    if(_editMarkDownMode){
+
+  void switchMarkdownMode() {
+    if (_editMarkDownMode) {
       emit(AddCardRenderMode());
-    }else{
+    } else {
       emit(AddCardEditMode());
     }
     _editMarkDownMode = !_editMarkDownMode;

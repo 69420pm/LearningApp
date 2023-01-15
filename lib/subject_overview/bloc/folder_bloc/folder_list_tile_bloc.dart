@@ -20,11 +20,13 @@ class FolderListTileBloc
     on<FolderListTileAddFolder>(
       _addFolder,
     );
-    on<FolderListTileAddCard>(
-      _addCard,
+    on<FolderListTileMoveCard>(
+      _moveCard,
     );
     on<FolderListTileDeleteFolder>(_deleteFolder);
     on<FolderListTileMoveFolder>(_moveFolder);
+
+    on<FolderListTileDEBUGAddCard>(_debugAddCard);
   }
 
   final CardsRepository _cardsRepository;
@@ -80,16 +82,13 @@ class FolderListTileBloc
     // }
   }
 
-  Future<void> _addCard(
-    FolderListTileAddCard event,
-    Emitter<FolderListTileState> emit,
-  ) async {
+  Future<void> _moveCard(
+      FolderListTileMoveCard event, Emitter<FolderListTileState> emit,) async {
     emit(FolderListTileLoading());
     // try {
     final newCard = event.card.copyWith(parentId: event.newParentId);
     await _cardsRepository.deleteCard(event.card.id, event.card.parentId);
     await _cardsRepository.saveCard(newCard);
-
     emit(FolderListTileSuccess());
     // } catch (e) {
     //   emit(FolderListTileError(errorMessage: 'card adding failed'));
@@ -120,5 +119,9 @@ class FolderListTileBloc
     // } catch (e) {
     //   emit(FolderListTileError(errorMessage: "folder moving failed"));
     // }
+  }
+
+  Future<FutureOr<void>> _debugAddCard(FolderListTileDEBUGAddCard event, Emitter<FolderListTileState> emit) async {
+    await _cardsRepository.saveCard(event.card);
   }
 }
