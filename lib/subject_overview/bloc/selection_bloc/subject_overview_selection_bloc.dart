@@ -20,18 +20,18 @@ class SubjectOverviewSelectionBloc
 
   final List<Card> cardsSelected = List.empty(growable: true);
   final CardsRepository _cardsRepository;
-  bool _isInDragging = false;
-  bool _isInSelectMode = false;
+  bool isInDragging = false;
+  bool isInSelectMode = false;
 
   FutureOr<void> _toggleSelectMode(
     SubjectOverviewSelectionToggleSelectMode event,
     Emitter<SubjectOverviewSelectionState> emit,
   ) {
     if (event.inSelectMode) {
-      _isInSelectMode = true;
+      isInSelectMode = true;
       emit(SubjectOverviewSelectionModeOn());
     } else {
-      _isInSelectMode = false;
+      isInSelectMode = false;
       cardsSelected.clear();
       emit(SubjectOverviewSelectionModeOff());
     }
@@ -41,13 +41,13 @@ class SubjectOverviewSelectionBloc
     SubjectOverviewSelectionChange event,
     Emitter<SubjectOverviewSelectionState> emit,
   ) {
-    if (event.addCard) {
+    if (event.addCard && !cardsSelected.contains(event.card)) {
       cardsSelected.add(event.card);
-    } else {
+    } else if (!event.addCard) {
       cardsSelected.remove(event.card);
 
       if (cardsSelected.isEmpty && state is SubjectOverviewSelectionModeOn) {
-        _isInSelectMode = false;
+        isInSelectMode = false;
         emit(SubjectOverviewSelectionModeOff());
       }
     }
@@ -75,7 +75,7 @@ class SubjectOverviewSelectionBloc
     print("move");
     await _cardsRepository.moveCards(cardsSelected, event.parentId);
     cardsSelected.clear();
-    _isInSelectMode = false;
+    isInSelectMode = false;
     emit(SubjectOverviewSelectionModeOff());
   }
 
@@ -83,14 +83,14 @@ class SubjectOverviewSelectionBloc
     SubjectOverviewDraggingChange event,
     Emitter<SubjectOverviewSelectionState> emit,
   ) {
-    if (event.inDragg && _isInDragging == false) {
-      _isInDragging = true;
-      if (_isInSelectMode) {
+    if (event.inDragg && isInDragging == false) {
+      isInDragging = true;
+      if (isInSelectMode) {
         emit(SubjectOverviewSelectionMultiDragging());
       }
-    } else if (!event.inDragg && _isInDragging == true) {
-      _isInDragging = false;
-      if (_isInSelectMode) {
+    } else if (!event.inDragg && isInDragging == true) {
+      isInDragging = false;
+      if (isInSelectMode) {
         emit(SubjectOverviewSelectionModeOn());
       }
     }

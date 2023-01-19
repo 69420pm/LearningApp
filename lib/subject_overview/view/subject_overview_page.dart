@@ -239,43 +239,48 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                               ),
                               Listener(
                                 onPointerMove: (event) {
-                                  final render = globalKey.currentContext
-                                      ?.findRenderObject() as RenderBox?;
-                                  final top =
-                                      render?.localToGlobal(Offset.zero).dy ??
-                                          0;
-                                  final bottom =
-                                      MediaQuery.of(context).size.height;
+                                  if (context
+                                      .read<SubjectOverviewSelectionBloc>()
+                                      .isInDragging) {
+                                    final render = globalKey.currentContext
+                                        ?.findRenderObject() as RenderBox?;
+                                    final top =
+                                        render?.localToGlobal(Offset.zero).dy ??
+                                            0;
+                                    final bottom =
+                                        MediaQuery.of(context).size.height;
 
-                                  final relPos =
-                                      (event.localPosition.dy / (bottom - top))
-                                          .clamp(0, 1);
+                                    final relPos = (event.localPosition.dy /
+                                            (bottom - top))
+                                        .clamp(0, 1);
 
-                                  if (relPos < .2 && isMovingUp == false) {
-                                    isMovingUp = true;
-                                    isMovingDown = false;
+                                    if (relPos < .2 && isMovingUp == false) {
+                                      isMovingUp = true;
+                                      isMovingDown = false;
 
-                                    scrollController.animateTo(
-                                      0,
-                                      duration: const Duration(seconds: 1),
-                                      curve: Curves.easeIn,
-                                    );
-                                  } else if (relPos > .8 &&
-                                      isMovingDown == false) {
-                                    isMovingDown = true;
-                                    isMovingUp = false;
-                                    scrollController.animateTo(
-                                      scrollController.position.maxScrollExtent,
-                                      duration: const Duration(seconds: 1),
-                                      curve: Curves.easeIn,
-                                    );
-                                  } else if (relPos > .2 && relPos < .8) {
-                                    if (isMovingUp || isMovingDown) {
-                                      scrollController
-                                          .jumpTo(scrollController.offset);
+                                      scrollController.animateTo(
+                                        0,
+                                        duration: const Duration(seconds: 1),
+                                        curve: Curves.easeIn,
+                                      );
+                                    } else if (relPos > .8 &&
+                                        isMovingDown == false) {
+                                      isMovingDown = true;
+                                      isMovingUp = false;
+                                      scrollController.animateTo(
+                                        scrollController
+                                            .position.maxScrollExtent,
+                                        duration: const Duration(seconds: 1),
+                                        curve: Curves.easeIn,
+                                      );
+                                    } else if (relPos > .2 && relPos < .8) {
+                                      if (isMovingUp || isMovingDown) {
+                                        scrollController
+                                            .jumpTo(scrollController.offset);
+                                      }
+                                      isMovingDown = false;
+                                      isMovingUp = false;
                                     }
-                                    isMovingDown = false;
-                                    isMovingUp = false;
                                   }
                                 },
                                 child: CustomScrollView(

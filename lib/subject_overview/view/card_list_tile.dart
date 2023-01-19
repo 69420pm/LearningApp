@@ -89,15 +89,13 @@ class _CardListTileState extends State<CardListTile> {
                   globalKey.currentContext?.findRenderObject() as RenderBox?;
 
               final size = renderBox?.size;
-              print(context
-                  .read<SubjectOverviewSelectionBloc>()
-                  .cardsSelected
-                  .map((e) => e.front));
+
               return CardListTileMultiDragIndicator(
                 cardAmount: context
                     .read<SubjectOverviewSelectionBloc>()
                     .cardsSelected
-                    .length,
+                    .length
+                    .clamp(1, 10),
                 firstCard: widget.card,
                 height: size!.height,
                 width: size.width,
@@ -112,7 +110,7 @@ class _CardListTileState extends State<CardListTile> {
           child: CardListTileView(
             globalKey: globalKey,
             isSelected: widget.isCardSelected &&
-                !(state is SubjectOverviewSelectionMultiDragging),
+                state is! SubjectOverviewSelectionMultiDragging,
             card: widget.card,
             isChildWhenDragging:
                 state is SubjectOverviewSelectionMultiDragging &&
