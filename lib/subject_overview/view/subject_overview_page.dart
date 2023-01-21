@@ -183,8 +183,12 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                                             ),
                                           );
                                     } else if (data is Card &&
-                                        data.parentId !=
-                                            widget.subjectToEdit.id) {
+                                        (data.parentId !=
+                                                widget.subjectToEdit.id ||
+                                            context
+                                                .read<
+                                                    SubjectOverviewSelectionBloc>()
+                                                .isInSelectMode)) {
                                       if (context
                                               .read<SubjectOverviewSelectionBloc>()
                                               .state
