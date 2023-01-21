@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:markdown_editor/src/models/text_tile.dart';
 
 class MarkdownWidget extends StatefulWidget {
   const MarkdownWidget({super.key});
@@ -10,8 +11,8 @@ class MarkdownWidget extends StatefulWidget {
 class _MarkdownWidgetState extends State<MarkdownWidget> {
   @override
   Widget build(BuildContext context) {
-    return RichText(
-      text: TextSpan(children: []),
+    return Column(
+      children: [TextTile()],
     );
   }
 }

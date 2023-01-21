@@ -383,16 +383,18 @@ class HiveCardsApi extends CardsApi {
     final children = <Object>[];
     if (childrenStrings != null) {
       for (final element in childrenStrings) {
+        print(element);
         try {
-          children.add(_cardsFromJson([element])[0]);
+          children.add(Card.fromJson(element));
         } catch (e) {
-          children.add(_foldersFromJson([element])[0]);
+          children.add(Folder.fromJson(element));
         }
       }
     }
 
     newStream.add(children);
     _subscribedStreams[path] = newStream;
+    print(children);
     return newStream;
   }
 
@@ -451,7 +453,7 @@ class HiveCardsApi extends CardsApi {
     if (folders != null) {
       for (var element in folders) {
         if (element.substring(7).startsWith(folder.id)) {
-          element = _foldersToJson([folder])[0];
+          element = folder.toJson();
           found = true;
           break;
         }
@@ -461,7 +463,7 @@ class HiveCardsApi extends CardsApi {
     }
 
     if (!found) {
-      folders.add(_foldersToJson([folder])[0]);
+      folders.add(folder.toJson());
     }
     if (_subscribedStreams.containsKey(path)) {
       _subscribedStreams[path]!.add([folder]);
@@ -495,9 +497,9 @@ class HiveCardsApi extends CardsApi {
       cards = [];
     }
     if (!found) {
-      cards.add(_cardsToJson([card])[0]);
+      cards.add(card.toJson());
     } else {
-      cards[indexToChange] = _cardsToJson([card])[0];
+      cards[indexToChange] = card.toJson();
     }
 
     if (_subscribedStreams.containsKey(path)) {
@@ -678,7 +680,7 @@ class HiveCardsApi extends CardsApi {
         if (loadedCardString.substring(46).startsWith('front')) {
           final card = Card.fromJson(loadedCardString);
           if (card.front.toLowerCase().contains(searchRequest.toLowerCase()) ||
-              card.back.contains(searchRequest)) {
+              card.back.toLowerCase().contains(searchRequest.toLowerCase())) {
             foundedCards.add(card);
           }
         }
@@ -720,9 +722,9 @@ class HiveCardsApi extends CardsApi {
         cards = [];
       }
       if (!found) {
-        cards.add(_cardsToJson([card])[0]);
+        cards.add(card.toJson());
       } else {
-        cards[indexToChange] = _cardsToJson([card])[0];
+        cards[indexToChange] = card.toJson();
       }
       cardsToUpdateStreams.add(card);
       await _hiveBox.put(_makePathStorable(path), cards);
