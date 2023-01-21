@@ -495,9 +495,9 @@ class HiveCardsApi extends CardsApi {
       cards = [];
     }
     if (!found) {
-      cards.add(_cardsToJson([card])[0]);
+      cards.add(card.toJson());
     } else {
-      cards[indexToChange] = _cardsToJson([card])[0];
+      cards[indexToChange] = card.toJson();
     }
 
     if (_subscribedStreams.containsKey(path)) {
@@ -678,7 +678,7 @@ class HiveCardsApi extends CardsApi {
         if (loadedCardString.substring(46).startsWith('front')) {
           final card = Card.fromJson(loadedCardString);
           if (card.front.toLowerCase().contains(searchRequest.toLowerCase()) ||
-              card.back.contains(searchRequest)) {
+              card.back.toLowerCase().contains(searchRequest.toLowerCase())) {
             foundedCards.add(card);
           }
         }

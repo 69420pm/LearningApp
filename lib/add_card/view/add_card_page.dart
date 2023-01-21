@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/edit_subject_bloc/subject_overview_bloc.dart';
+import 'package:markdown_editor/markdown_editor.dart';
 
 import 'package:ui_components/ui_components.dart';
 
@@ -17,41 +18,43 @@ class AddCardPage extends StatelessWidget {
     final locationController = TextEditingController();
     final iconController = TextEditingController();
 
-
     final formKey = GlobalKey<FormState>();
     return Scaffold(
       appBar: UIAppBar(title: const Text('Add Card Page')),
       body: SafeArea(
-          child: Form(
-        key: formKey,
-        child: Column(
-          children: [
-            /// Name
-            TextFormField(
-              controller: frontController,
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Enter something';
-                } else {
-                  return null;
-                }
-              },
-            ),
-            TextFormField(
-              controller: backController,
-            ),
+        child: Form(
+          key: formKey,
+          child: Column(
+            children: [
+              /// Name
+              TextFormField(
+                controller: frontController,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Enter something';
+                  } else {
+                    return null;
+                  }
+                },
+              ),
+              TextFormField(
+                controller: backController,
+              ),
 
-            /// File Location
-            TextFormField(
-              controller: locationController,
-            ),
+              /// File Location
+              TextFormField(
+                controller: locationController,
+              ),
 
-            /// Prefix icon
-            TextFormField(
-              controller: iconController,
-            ),
-            
-            ElevatedButton(
+              /// Prefix icon
+              TextFormField(
+                controller: iconController,
+              ),
+              Expanded(
+                child: MarkdownWidget(),
+              ),
+
+              ElevatedButton(
                 onPressed: () async {
                   if (formKey.currentState!.validate()) {
                     // await context.read<AddCardCubit>().saveCard(
@@ -59,17 +62,22 @@ class AddCardPage extends StatelessWidget {
                     //     backController.text,
                     //     recommendedSubjectParent!,
                     //     iconController.text);
-                    context.read<EditSubjectBloc>().add(EditSubjectAddCard(
-                        front: frontController.text,
-                        back: backController.text,
-                        parentId: parentId,),);
+                    context.read<EditSubjectBloc>().add(
+                          EditSubjectAddCard(
+                            front: frontController.text,
+                            back: backController.text,
+                            parentId: parentId,
+                          ),
+                        );
                   }
                   Navigator.pop(context);
                 },
-                child: const Text('Save'),)
-          ],
+                child: const Text('Save'),
+              )
+            ],
+          ),
         ),
-      ),),
+      ),
     );
   }
 }
