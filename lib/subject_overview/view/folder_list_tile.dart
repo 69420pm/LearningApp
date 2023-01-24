@@ -45,12 +45,15 @@ class FolderListTile extends StatelessWidget {
                     folder: folder,
                   ),
                   maxSimultaneousDrags:
-                      state is SubjectOverviewSelectionModeOn ? 0 : 1,
+                      ((state is SubjectOverviewSelectionModeOn) ||
+                              child != null)
+                          ? 0
+                          : 1,
                   childWhenDragging: Container(),
                   child: DragTarget(
                     onAccept: (data) {
                       // TODO fix newParentId gets changed while transfering to hive_cards_api
-                      if (data is Folder && data != folder) {
+                      if (data is Folder && data.id != folder.id) {
                         context.read<FolderListTileBloc>().add(
                               FolderListTileMoveFolder(
                                 folder: data,
