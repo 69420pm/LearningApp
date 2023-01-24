@@ -4,9 +4,11 @@ import 'package:bloc/bloc.dart';
 import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
+import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 
 import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
+import 'package:learning_app/subject_overview/view/folder_list_tile_view.dart';
 
 part 'folder_list_tile_event.dart';
 part 'folder_list_tile_state.dart';
@@ -83,7 +85,9 @@ class FolderListTileBloc
   }
 
   Future<void> _moveCard(
-      FolderListTileMoveCard event, Emitter<FolderListTileState> emit,) async {
+    FolderListTileMoveCard event,
+    Emitter<FolderListTileState> emit,
+  ) async {
     emit(FolderListTileLoading());
     // try {
     final newCard = event.card.copyWith(parentId: event.newParentId);
@@ -121,7 +125,8 @@ class FolderListTileBloc
     // }
   }
 
-  Future<FutureOr<void>> _debugAddCard(FolderListTileDEBUGAddCard event, Emitter<FolderListTileState> emit) async {
+  Future<FutureOr<void>> _debugAddCard(FolderListTileDEBUGAddCard event,
+      Emitter<FolderListTileState> emit) async {
     await _cardsRepository.saveCard(event.card);
   }
 }

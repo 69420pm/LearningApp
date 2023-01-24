@@ -34,7 +34,7 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
       _closeStream,
     );
     on<EditSubjectSetFolderParent>(_setParent);
-    on<EditSubjectSetCardParent>(_setParentCard);
+    // on<EditSubjectSetCardParent>(_setParentCard);
   }
 
   final CardsRepository cardsRepository;
@@ -80,7 +80,6 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
             widgetsToRemove.add(element);
           }
         }
-        print(childListTiles);
         return EditSubjectRetrieveChildren(
           childrenStream: childListTiles,
           removedWidgets: widgetsToRemove,
@@ -216,12 +215,13 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
     cardsRepository.moveFolder(event.folder, event.parentId);
   }
 
-  FutureOr<void> _setParentCard(
-    EditSubjectSetCardParent event,
-    Emitter<EditSubjectState> emit,
-  ) {
-    cardsRepository
-      ..deleteCard(event.card.id, event.card.parentId)
-      ..saveCard(event.card.copyWith(parentId: event.parentId));
-  }
+  // FutureOr<void> _setParentCard(
+  //   EditSubjectSetCardParent event,
+  //   Emitter<EditSubjectState> emit,
+  // ) {
+
+  //   cardsRepository
+  //     ..deleteCard(event.card.id, event.card.parentId)
+  //     ..saveCard(event.card.copyWith(parentId: event.parentId));
+  // }
 }
