@@ -71,8 +71,9 @@ class SubjectOverviewSelectionBloc
   Future<FutureOr<void>> _moveSelectedCards(
       SubjectOverviewSelectionMoveSelectedCards event,
       Emitter<SubjectOverviewSelectionState> emit) async {
-    //TODO move all cards in _cardsSelected to event.parentId @IHaveHackedYou
-    print("move");
+    print("moin");
+    cardsSelected.removeWhere((element) => element.parentId != event.parentId);
+
     await _cardsRepository.moveCards(cardsSelected, event.parentId);
     cardsSelected.clear();
     isInSelectMode = false;
