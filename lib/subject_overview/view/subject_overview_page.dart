@@ -26,6 +26,12 @@ class SubjectOverviewPage extends StatefulWidget {
 class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
   @override
   Widget build(BuildContext context) {
+    final _rootFolder = Folder(
+      id: widget.subjectToEdit.id,
+      dateCreated: "",
+      name: "root",
+      parentId: widget.subjectToEdit.id,
+    );
     final nameController =
         TextEditingController(text: widget.subjectToEdit.name);
     final iconController =
@@ -37,269 +43,244 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
     var isMovingDown = false;
     var isMovingUp = false;
 
-    context
-        .read<EditSubjectBloc>()
-        .add(EditSubjectGetChildrenById(id: widget.subjectToEdit.id));
     var childListTiles = <String, Widget>{};
 
-    return BlocBuilder<SubjectOverviewSelectionBloc,
-        SubjectOverviewSelectionState>(
-      builder: (context, state) {
-        return Scaffold(
-          backgroundColor: Theme.of(context).colorScheme.background,
-          appBar: AppBar(
-            leading: (state is SubjectOverviewSelectionModeOn)
-                ? IconButton(
-                    onPressed: () {
-                      context.read<SubjectOverviewSelectionBloc>().add(
-                            SubjectOverviewSelectionToggleSelectMode(
-                              inSelectMode: false,
-                            ),
-                          );
-                    },
-                    icon: const Icon(
-                      Icons.cancel,
-                    ),
-                  )
-                : null,
-            title: Text(widget.subjectToEdit.name),
-            actions: (state is SubjectOverviewSelectionModeOn)
-                ? [
-                    IconButton(
-                      onPressed: () {
-                        context.read<SubjectOverviewSelectionBloc>().add(
-                              SubjectOverviewSelectionDeleteSelectedCards(),
-                            );
-                      },
-                      icon: const Icon(
-                        Icons.delete,
-                      ),
-                    ),
-                  ]
-                : [
-                    IconButton(
-                      onPressed: () {
-                        Navigator.of(context).pushNamed(
-                          '/add_card',
-                          arguments: widget.subjectToEdit.id,
-                        );
-                      },
-                      icon: const Icon(
-                        Icons.file_copy,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () => showModalBottomSheet(
-                        backgroundColor: Colors.transparent,
-                        context: context,
-                        builder: (_) => BlocProvider.value(
-                          value: context.read<EditSubjectBloc>(),
-                          child: AddFolderBottomSheet(
-                            parentId: widget.subjectToEdit.id,
-                          ),
-                        ),
-                      ),
-                      icon: const Icon(Icons.create_new_folder_rounded),
-                    ),
-                  ],
-          ),
-          body: SafeArea(
-            child: Form(
-              key: formKey,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: UISizeConstants.paddingEdge,
-                ),
-                child: Column(
-                  children: [
-                    const SizedBox(height: UISizeConstants.defaultSize),
+    return BlocProvider(
+      create: (context) =>
+          FolderListTileBloc(widget.editSubjectBloc.cardsRepository),
+      child: Builder(
+        builder: (context) {
+          context
+              .read<FolderListTileBloc>()
+              .add(FolderListTileGetChildrenById(id: widget.subjectToEdit.id));
+          print("***********************");
+          print(widget.subjectToEdit.id);
+          print("***********************");
 
-                    /// Name
-                    UITextFormField(
-                      label: 'Name',
-                      controller: nameController,
-                      initialValue: widget.subjectToEdit.name,
-                      validation: (value) {
-                        if (value!.isEmpty) {
-                          return 'Enter something';
-                        } else {
-                          return null;
-                        }
-                      },
-                      onLoseFocus: (_) => save(
-                        formKey,
-                        nameController.text,
-                        iconController.text,
-                        context,
-                      ),
-                    ),
-
-                    // /// Prefix icon
-                    // UITextFormField(
-                    //   controller: iconController,
-                    //   initialValue: widget.subjectToEdit.prefixIcon,
-                    //   validation: (_) => null,
-                    //   label: 'Icon String',
-                    //   onLoseFocus: (_) => save(
-                    //     formKey,
-                    //     nameController.text,
-                    //     iconController.text,
-                    //     context,
-                    //   ),
-                    // ),
-                    BlocBuilder<EditSubjectBloc, EditSubjectState>(
-                      buildWhen: (previous, current) {
-                        if (current is EditSubjectRetrieveChildren) {
-                          return true;
-                        }
-                        return false;
-                      },
-                      builder: (context, state) {
-                        if (state is EditSubjectRetrieveChildren) {
-                          childListTiles = {
-                            ...childListTiles,
-                            ...state.childrenStream
-                          };
-                          for (final element in state.removedWidgets) {
-                            if (childListTiles.containsKey(element.id)) {
-                              childListTiles.remove(element.id);
-                            }
-                          }
-                        }
-
-                        return Expanded(
-                          child: FolderListTile(
-                            cardsRepository:
-                                widget.editSubjectBloc.cardsRepository,
-                            folder: Folder(
-                                id: widget.subjectToEdit.id,
-                                dateCreated: "",
-                                name: "root",
-                                parentId: "root"),
-                            child: BlocBuilder<FolderListTileBloc,
-                                FolderListTileState>(
-                              builder: (context, state) {
-                                return BlocBuilder<SubjectOverviewSelectionBloc,
-                                    SubjectOverviewSelectionState>(
-                                  builder: (context, state) {
-                                    return BlocBuilder<EditSubjectBloc,
-                                        EditSubjectState>(
-                                      builder: (context, state) {
-                                        print("moin");
-                                        return Listener(
-                                          onPointerMove: (event) {
-                                            if (context
-                                                .read<
-                                                    SubjectOverviewSelectionBloc>()
-                                                .isInDragging) {
-                                              final render = globalKey
-                                                      .currentContext
-                                                      ?.findRenderObject()
-                                                  as RenderBox?;
-                                              final top = render
-                                                      ?.localToGlobal(
-                                                          Offset.zero)
-                                                      .dy ??
-                                                  0;
-                                              final bottom =
-                                                  MediaQuery.of(context)
-                                                      .size
-                                                      .height;
-
-                                              final relPos =
-                                                  (event.localPosition.dy /
-                                                          (bottom - top))
-                                                      .clamp(0, 1);
-
-                                              if (relPos < .2 &&
-                                                  isMovingUp == false) {
-                                                isMovingUp = true;
-                                                isMovingDown = false;
-
-                                                scrollController.animateTo(
-                                                  0,
-                                                  duration: const Duration(
-                                                      seconds: 1),
-                                                  curve: Curves.easeIn,
-                                                );
-                                              } else if (relPos > .8 &&
-                                                  isMovingDown == false) {
-                                                isMovingDown = true;
-                                                isMovingUp = false;
-                                                scrollController.animateTo(
-                                                  scrollController
-                                                      .position.maxScrollExtent,
-                                                  duration: const Duration(
-                                                      seconds: 1),
-                                                  curve: Curves.easeIn,
-                                                );
-                                              } else if (relPos > .2 &&
-                                                  relPos < .8) {
-                                                if (isMovingUp ||
-                                                    isMovingDown) {
-                                                  scrollController.jumpTo(
-                                                      scrollController.offset);
-                                                }
-                                                isMovingDown = false;
-                                                isMovingUp = false;
-                                              }
-                                            }
-                                          },
-                                          child: CustomScrollView(
-                                            key: globalKey,
-                                            controller: scrollController,
-                                            slivers: [
-                                              SliverList(
-                                                delegate:
-                                                    SliverChildBuilderDelegate(
-                                                  (context, index) =>
-                                                      childListTiles
-                                                          .values
-                                                          .whereType<
-                                                              FolderListTile>()
-                                                          .elementAt(index),
-                                                  childCount: childListTiles
-                                                      .values
-                                                      .whereType<
-                                                          FolderListTile>()
-                                                      .length,
-                                                ),
-                                              ),
-                                              SliverList(
-                                                delegate:
-                                                    SliverChildBuilderDelegate(
-                                                  (context, index) =>
-                                                      childListTiles
-                                                          .values
-                                                          .whereType<
-                                                              CardListTile>()
-                                                          .elementAt(index),
-                                                  childCount: childListTiles
-                                                      .values
-                                                      .whereType<CardListTile>()
-                                                      .length,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  },
+          return BlocBuilder<SubjectOverviewSelectionBloc,
+              SubjectOverviewSelectionState>(
+            builder: (context, state) {
+              return Scaffold(
+                backgroundColor: Theme.of(context).colorScheme.background,
+                appBar: AppBar(
+                  leading: (state is SubjectOverviewSelectionModeOn)
+                      ? IconButton(
+                          onPressed: () {
+                            context.read<SubjectOverviewSelectionBloc>().add(
+                                  SubjectOverviewSelectionToggleSelectMode(
+                                    inSelectMode: false,
+                                  ),
                                 );
-                              },
+                          },
+                          icon: const Icon(
+                            Icons.cancel,
+                          ),
+                        )
+                      : null,
+                  title: Text(widget.subjectToEdit.name),
+                  actions: (state is SubjectOverviewSelectionModeOn)
+                      ? [
+                          IconButton(
+                            onPressed: () {
+                              context.read<SubjectOverviewSelectionBloc>().add(
+                                    SubjectOverviewSelectionDeleteSelectedCards(),
+                                  );
+                            },
+                            icon: const Icon(
+                              Icons.delete,
                             ),
                           ),
-                        );
-                      },
-                    ),
-                  ],
+                        ]
+                      : [
+                          IconButton(
+                            onPressed: () {
+                              Navigator.of(context).pushNamed(
+                                '/add_card',
+                                arguments: widget.subjectToEdit.id,
+                              );
+                            },
+                            icon: const Icon(
+                              Icons.file_copy,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () => showModalBottomSheet(
+                              backgroundColor: Colors.transparent,
+                              context: context,
+                              builder: (_) => BlocProvider.value(
+                                value: context.read<EditSubjectBloc>(),
+                                child: AddFolderBottomSheet(
+                                  parentId: widget.subjectToEdit.id,
+                                ),
+                              ),
+                            ),
+                            icon: const Icon(Icons.create_new_folder_rounded),
+                          ),
+                        ],
                 ),
-              ),
-            ),
-          ),
-        );
-      },
+                body: SafeArea(
+                  child: Form(
+                    key: formKey,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: UISizeConstants.paddingEdge,
+                      ),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: UISizeConstants.defaultSize),
+
+                          /// Name
+                          UITextFormField(
+                            label: 'Name',
+                            controller: nameController,
+                            initialValue: widget.subjectToEdit.name,
+                            validation: (value) {
+                              if (value!.isEmpty) {
+                                return 'Enter something';
+                              } else {
+                                return null;
+                              }
+                            },
+                            onLoseFocus: (_) => save(
+                              formKey,
+                              nameController.text,
+                              iconController.text,
+                              context,
+                            ),
+                          ),
+
+                          // /// Prefix icon
+                          // UITextFormField(
+                          //   controller: iconController,
+                          //   initialValue: widget.subjectToEdit.prefixIcon,
+                          //   validation: (_) => null,
+                          //   label: 'Icon String',
+                          //   onLoseFocus: (_) => save(
+                          //     formKey,
+                          //     nameController.text,
+                          //     iconController.text,
+                          //     context,
+                          //   ),
+                          // ),
+                          BlocBuilder<FolderListTileBloc, FolderListTileState>(
+                            // buildWhen: (previous, current) {
+                            //   if (current is FolderListTileRetrieveChildren) {
+                            //     return true;
+                            //   }
+                            //   return false;
+                            // },
+                            builder: (context, state) {
+                              print("lslslslsllslslslslslsllslslsllslsls");
+                              if (state is FolderListTileRetrieveChildren) {
+                                childListTiles = {
+                                  ...childListTiles,
+                                  ...state.childrenStream
+                                };
+                                for (final element in state.removedWidgets) {
+                                  if (childListTiles.containsKey(element.id)) {
+                                    childListTiles.remove(element.id);
+                                  }
+                                }
+                              }
+
+                              return Expanded(
+                                child: FolderListTile(
+                                  cardsRepository:
+                                      widget.editSubjectBloc.cardsRepository,
+                                  folder: _rootFolder,
+                                  child: Listener(
+                                    onPointerMove: (event) {
+                                      if (context
+                                          .read<SubjectOverviewSelectionBloc>()
+                                          .isInDragging) {
+                                        final render = globalKey.currentContext
+                                            ?.findRenderObject() as RenderBox?;
+                                        final top = render
+                                                ?.localToGlobal(Offset.zero)
+                                                .dy ??
+                                            0;
+                                        final bottom =
+                                            MediaQuery.of(context).size.height;
+
+                                        final relPos = (event.localPosition.dy /
+                                                (bottom - top))
+                                            .clamp(0, 1);
+
+                                        if (relPos < .2 &&
+                                            isMovingUp == false) {
+                                          isMovingUp = true;
+                                          isMovingDown = false;
+
+                                          scrollController.animateTo(
+                                            0,
+                                            duration:
+                                                const Duration(seconds: 1),
+                                            curve: Curves.easeIn,
+                                          );
+                                        } else if (relPos > .8 &&
+                                            isMovingDown == false) {
+                                          isMovingDown = true;
+                                          isMovingUp = false;
+                                          scrollController.animateTo(
+                                            scrollController
+                                                .position.maxScrollExtent,
+                                            duration:
+                                                const Duration(seconds: 1),
+                                            curve: Curves.easeIn,
+                                          );
+                                        } else if (relPos > .2 && relPos < .8) {
+                                          if (isMovingUp || isMovingDown) {
+                                            scrollController.jumpTo(
+                                                scrollController.offset);
+                                          }
+                                          isMovingDown = false;
+                                          isMovingUp = false;
+                                        }
+                                      }
+                                    },
+                                    child: CustomScrollView(
+                                      key: globalKey,
+                                      controller: scrollController,
+                                      slivers: [
+                                        SliverList(
+                                          delegate: SliverChildBuilderDelegate(
+                                            (context, index) => childListTiles
+                                                .values
+                                                .whereType<FolderListTile>()
+                                                .elementAt(index),
+                                            childCount: childListTiles.values
+                                                .whereType<FolderListTile>()
+                                                .length,
+                                          ),
+                                        ),
+                                        SliverList(
+                                          delegate: SliverChildBuilderDelegate(
+                                            (context, index) => childListTiles
+                                                .values
+                                                .whereType<CardListTile>()
+                                                .elementAt(index),
+                                            childCount: childListTiles.values
+                                                .whereType<CardListTile>()
+                                                .length,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 

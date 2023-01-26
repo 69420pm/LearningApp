@@ -41,6 +41,10 @@ class FolderListTileBloc
     await emit.forEach(
       _cardsRepository.getChildrenById(event.id),
       onData: (data) {
+        print("____________________________________");
+        print(event.id);
+        print(data);
+        print("________________________________________");
         final childListTiles = <String, Widget>{};
         final widgetsToRemove = <Removed>[];
         for (final element in data) {
