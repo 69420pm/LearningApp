@@ -69,6 +69,7 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
             childListTiles[element.id] = FolderListTile(
               folder: element,
               cardsRepository: cardsRepository,
+              isRoot: false,
             );
           } else if (element is Card) {
             childListTiles[element.id] = CardListTile(

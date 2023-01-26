@@ -37,11 +37,6 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
     final iconController =
         TextEditingController(text: widget.subjectToEdit.prefixIcon);
     final formKey = GlobalKey<FormState>();
-    final globalKey = GlobalKey();
-    final scrollController = ScrollController();
-
-    var isMovingDown = false;
-    var isMovingUp = false;
 
     var childListTiles = <String, Widget>{};
 
@@ -53,9 +48,6 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
           context
               .read<FolderListTileBloc>()
               .add(FolderListTileGetChildrenById(id: widget.subjectToEdit.id));
-          print("***********************");
-          print(widget.subjectToEdit.id);
-          print("***********************");
 
           return BlocBuilder<SubjectOverviewSelectionBloc,
               SubjectOverviewSelectionState>(
@@ -188,85 +180,7 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                                   cardsRepository:
                                       widget.editSubjectBloc.cardsRepository,
                                   folder: _rootFolder,
-                                  child: Listener(
-                                    onPointerMove: (event) {
-                                      if (context
-                                          .read<SubjectOverviewSelectionBloc>()
-                                          .isInDragging) {
-                                        final render = globalKey.currentContext
-                                            ?.findRenderObject() as RenderBox?;
-                                        final top = render
-                                                ?.localToGlobal(Offset.zero)
-                                                .dy ??
-                                            0;
-                                        final bottom =
-                                            MediaQuery.of(context).size.height;
-
-                                        final relPos = (event.localPosition.dy /
-                                                (bottom - top))
-                                            .clamp(0, 1);
-
-                                        if (relPos < .2 &&
-                                            isMovingUp == false) {
-                                          isMovingUp = true;
-                                          isMovingDown = false;
-
-                                          scrollController.animateTo(
-                                            0,
-                                            duration:
-                                                const Duration(seconds: 1),
-                                            curve: Curves.easeIn,
-                                          );
-                                        } else if (relPos > .8 &&
-                                            isMovingDown == false) {
-                                          isMovingDown = true;
-                                          isMovingUp = false;
-                                          scrollController.animateTo(
-                                            scrollController
-                                                .position.maxScrollExtent,
-                                            duration:
-                                                const Duration(seconds: 1),
-                                            curve: Curves.easeIn,
-                                          );
-                                        } else if (relPos > .2 && relPos < .8) {
-                                          if (isMovingUp || isMovingDown) {
-                                            scrollController.jumpTo(
-                                                scrollController.offset);
-                                          }
-                                          isMovingDown = false;
-                                          isMovingUp = false;
-                                        }
-                                      }
-                                    },
-                                    child: CustomScrollView(
-                                      key: globalKey,
-                                      controller: scrollController,
-                                      slivers: [
-                                        SliverList(
-                                          delegate: SliverChildBuilderDelegate(
-                                            (context, index) => childListTiles
-                                                .values
-                                                .whereType<FolderListTile>()
-                                                .elementAt(index),
-                                            childCount: childListTiles.values
-                                                .whereType<FolderListTile>()
-                                                .length,
-                                          ),
-                                        ),
-                                        SliverList(
-                                          delegate: SliverChildBuilderDelegate(
-                                            (context, index) => childListTiles
-                                                .values
-                                                .whereType<CardListTile>()
-                                                .elementAt(index),
-                                            childCount: childListTiles.values
-                                                .whereType<CardListTile>()
-                                                .length,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                                  isRoot: true,
                                 ),
                               );
                             },
