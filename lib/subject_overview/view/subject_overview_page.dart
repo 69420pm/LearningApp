@@ -40,161 +40,126 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
 
     var childListTiles = <String, Widget>{};
 
-    return BlocProvider(
-      create: (context) =>
-          FolderListTileBloc(widget.editSubjectBloc.cardsRepository),
-      child: Builder(
-        builder: (context) {
-          context
-              .read<FolderListTileBloc>()
-              .add(FolderListTileGetChildrenById(id: widget.subjectToEdit.id));
-
-          return BlocBuilder<SubjectOverviewSelectionBloc,
-              SubjectOverviewSelectionState>(
-            builder: (context, state) {
-              return Scaffold(
-                backgroundColor: Theme.of(context).colorScheme.background,
-                appBar: AppBar(
-                  leading: (state is SubjectOverviewSelectionModeOn)
-                      ? IconButton(
-                          onPressed: () {
-                            context.read<SubjectOverviewSelectionBloc>().add(
-                                  SubjectOverviewSelectionToggleSelectMode(
-                                    inSelectMode: false,
-                                  ),
-                                );
-                          },
-                          icon: const Icon(
-                            Icons.cancel,
-                          ),
-                        )
-                      : null,
-                  title: Text(widget.subjectToEdit.name),
-                  actions: (state is SubjectOverviewSelectionModeOn)
-                      ? [
-                          IconButton(
-                            onPressed: () {
-                              context.read<SubjectOverviewSelectionBloc>().add(
-                                    SubjectOverviewSelectionDeleteSelectedCards(),
-                                  );
-                            },
-                            icon: const Icon(
-                              Icons.delete,
+    return BlocBuilder<SubjectOverviewSelectionBloc,
+        SubjectOverviewSelectionState>(
+      builder: (context, state) {
+        return Scaffold(
+          backgroundColor: Theme.of(context).colorScheme.background,
+          appBar: AppBar(
+            leading: (state is SubjectOverviewSelectionModeOn)
+                ? IconButton(
+                    onPressed: () {
+                      context.read<SubjectOverviewSelectionBloc>().add(
+                            SubjectOverviewSelectionToggleSelectMode(
+                              inSelectMode: false,
                             ),
-                          ),
-                        ]
-                      : [
-                          IconButton(
-                            onPressed: () {
-                              Navigator.of(context).pushNamed(
-                                '/add_card',
-                                arguments: widget.subjectToEdit.id,
-                              );
-                            },
-                            icon: const Icon(
-                              Icons.file_copy,
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () => showModalBottomSheet(
-                              backgroundColor: Colors.transparent,
-                              context: context,
-                              builder: (_) => BlocProvider.value(
-                                value: context.read<EditSubjectBloc>(),
-                                child: AddFolderBottomSheet(
-                                  parentId: widget.subjectToEdit.id,
-                                ),
-                              ),
-                            ),
-                            icon: const Icon(Icons.create_new_folder_rounded),
-                          ),
-                        ],
-                ),
-                body: SafeArea(
-                  child: Form(
-                    key: formKey,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: UISizeConstants.paddingEdge,
-                      ),
-                      child: Column(
-                        children: [
-                          const SizedBox(height: UISizeConstants.defaultSize),
-
-                          /// Name
-                          UITextFormField(
-                            label: 'Name',
-                            controller: nameController,
-                            initialValue: widget.subjectToEdit.name,
-                            validation: (value) {
-                              if (value!.isEmpty) {
-                                return 'Enter something';
-                              } else {
-                                return null;
-                              }
-                            },
-                            onLoseFocus: (_) => save(
-                              formKey,
-                              nameController.text,
-                              iconController.text,
-                              context,
-                            ),
-                          ),
-
-                          // /// Prefix icon
-                          // UITextFormField(
-                          //   controller: iconController,
-                          //   initialValue: widget.subjectToEdit.prefixIcon,
-                          //   validation: (_) => null,
-                          //   label: 'Icon String',
-                          //   onLoseFocus: (_) => save(
-                          //     formKey,
-                          //     nameController.text,
-                          //     iconController.text,
-                          //     context,
-                          //   ),
-                          // ),
-                          BlocBuilder<FolderListTileBloc, FolderListTileState>(
-                            // buildWhen: (previous, current) {
-                            //   if (current is FolderListTileRetrieveChildren) {
-                            //     return true;
-                            //   }
-                            //   return false;
-                            // },
-                            builder: (context, state) {
-                              print("lslslslsllslslslslslsllslslsllslsls");
-                              if (state is FolderListTileRetrieveChildren) {
-                                childListTiles = {
-                                  ...childListTiles,
-                                  ...state.childrenStream
-                                };
-                                for (final element in state.removedWidgets) {
-                                  if (childListTiles.containsKey(element.id)) {
-                                    childListTiles.remove(element.id);
-                                  }
-                                }
-                              }
-
-                              return Expanded(
-                                child: FolderListTile(
-                                  cardsRepository:
-                                      widget.editSubjectBloc.cardsRepository,
-                                  folder: _rootFolder,
-                                  isRoot: true,
-                                ),
-                              );
-                            },
-                          ),
-                        ],
+                          );
+                    },
+                    icon: const Icon(
+                      Icons.cancel,
+                    ),
+                  )
+                : null,
+            title: Text(widget.subjectToEdit.name),
+            actions: (state is SubjectOverviewSelectionModeOn)
+                ? [
+                    IconButton(
+                      onPressed: () {
+                        context.read<SubjectOverviewSelectionBloc>().add(
+                              SubjectOverviewSelectionDeleteSelectedCards(),
+                            );
+                      },
+                      icon: const Icon(
+                        Icons.delete,
                       ),
                     ),
-                  ),
+                  ]
+                : [
+                    IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(
+                          '/add_card',
+                          arguments: widget.subjectToEdit.id,
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.file_copy,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () => showModalBottomSheet(
+                        backgroundColor: Colors.transparent,
+                        context: context,
+                        builder: (_) => BlocProvider.value(
+                          value: context.read<EditSubjectBloc>(),
+                          child: AddFolderBottomSheet(
+                            parentId: widget.subjectToEdit.id,
+                          ),
+                        ),
+                      ),
+                      icon: const Icon(Icons.create_new_folder_rounded),
+                    ),
+                  ],
+          ),
+          body: SafeArea(
+            child: Form(
+              key: formKey,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: UISizeConstants.paddingEdge,
                 ),
-              );
-            },
-          );
-        },
-      ),
+                child: Column(
+                  children: [
+                    const SizedBox(height: UISizeConstants.defaultSize),
+
+                    /// Name
+                    UITextFormField(
+                      label: 'Name',
+                      controller: nameController,
+                      initialValue: widget.subjectToEdit.name,
+                      validation: (value) {
+                        if (value!.isEmpty) {
+                          return 'Enter something';
+                        } else {
+                          return null;
+                        }
+                      },
+                      onLoseFocus: (_) => save(
+                        formKey,
+                        nameController.text,
+                        iconController.text,
+                        context,
+                      ),
+                    ),
+
+                    // /// Prefix icon
+                    // UITextFormField(
+                    //   controller: iconController,
+                    //   initialValue: widget.subjectToEdit.prefixIcon,
+                    //   validation: (_) => null,
+                    //   label: 'Icon String',
+                    //   onLoseFocus: (_) => save(
+                    //     formKey,
+                    //     nameController.text,
+                    //     iconController.text,
+                    //     context,
+                    //   ),
+                    // ),
+
+                    Expanded(
+                      child: FolderListTile(
+                        cardsRepository: widget.editSubjectBloc.cardsRepository,
+                        folder: _rootFolder,
+                        isRoot: true,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
