@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/folder_bloc/folder_list_tile_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/view/folder_draggable_tile.dart';
+import 'package:learning_app/subject_overview/view/folder_list_tile_root_view.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile_view.dart';
 import 'package:ui_components/ui_components.dart';
 
@@ -13,12 +14,12 @@ class FolderListTile extends StatelessWidget {
     super.key,
     required this.folder,
     required this.cardsRepository,
-    this.child,
+    required this.isRoot,
   });
 
   final Folder folder;
   final CardsRepository cardsRepository;
-  final Widget? child;
+  final bool isRoot;
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +46,7 @@ class FolderListTile extends StatelessWidget {
                     folder: folder,
                   ),
                   maxSimultaneousDrags:
-                      ((state is SubjectOverviewSelectionModeOn) ||
-                              child != null)
+                      ((state is SubjectOverviewSelectionModeOn) || isRoot)
                           ? 0
                           : 1,
                   childWhenDragging: Container(),
@@ -117,18 +117,21 @@ class FolderListTile extends StatelessWidget {
                           }
                         }
 
-                        return child ??
-                            BlocBuilder<SubjectOverviewSelectionBloc,
-                                SubjectOverviewSelectionState>(
-                              builder: (context, state) {
-                                return FolderListTileView(
-                                  inSelectionMode:
-                                      state is SubjectOverviewSelectionModeOn,
-                                  folder: folder,
-                                  childListTiles: childListTiles,
-                                );
-                              },
-                            );
+                        return BlocBuilder<SubjectOverviewSelectionBloc,
+                            SubjectOverviewSelectionState>(
+                          builder: (context, state) {
+                            return isRoot
+                                ? FolderListTileRootView(
+                                    childListTiles: childListTiles,
+                                  )
+                                : FolderListTileView(
+                                    inSelectionMode:
+                                        state is SubjectOverviewSelectionModeOn,
+                                    folder: folder,
+                                    childListTiles: childListTiles,
+                                  );
+                          },
+                        );
                       },
                     ),
                   ),
