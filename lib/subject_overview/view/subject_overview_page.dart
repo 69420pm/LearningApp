@@ -6,7 +6,7 @@ import 'package:learning_app/subject_overview/bloc/edit_subject_bloc/subject_ove
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
-import 'package:learning_app/subject_overview/view/shity_context_class_with%20_very_much_shity_arguments.dart';
+import 'package:learning_app/subject_overview/view/folder_drag_target.dart';
 import 'package:ui_components/ui_components.dart';
 
 class SubjectOverviewPage extends StatefulWidget {
