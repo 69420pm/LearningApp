@@ -65,12 +65,12 @@ class EditSubjectSetFolderParent extends EditSubjectEvent {
   });
 }
 
-class EditSubjectSetCardParent extends EditSubjectEvent {
-  String parentId;
-  Card card;
+// class EditSubjectSetCardParent extends EditSubjectEvent {
+//   String parentId;
+//   Card card;
 
-  EditSubjectSetCardParent({
-    required this.parentId,
-    required this.card,
-  });
-}
+//   EditSubjectSetCardParent({
+//     required this.parentId,
+//     required this.card,
+//   });
+// }
