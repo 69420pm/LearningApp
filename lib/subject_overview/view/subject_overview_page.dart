@@ -6,6 +6,7 @@ import 'package:learning_app/subject_overview/bloc/edit_subject_bloc/subject_ove
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
+import 'package:learning_app/subject_overview/view/shity_context_class_with%20_very_much_shity_arguments.dart';
 import 'package:ui_components/ui_components.dart';
 
 class SubjectOverviewPage extends StatefulWidget {
@@ -173,67 +174,9 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                                 create: (context) => EditSubjectBloc(
                                   widget.editSubjectBloc.cardsRepository,
                                 ),
-                                child: DragTarget(
-                                  onAccept: (data) {
-                                    if (data is Folder) {
-                                      context.read<EditSubjectBloc>().add(
-                                            EditSubjectSetFolderParent(
-                                              folder: data,
-                                              parentId: widget.subjectToEdit.id,
-                                            ),
-                                          );
-                                    } else if (data is Card &&
-                                        (data.parentId !=
-                                                widget.subjectToEdit.id ||
-                                            context
-                                                .read<
-                                                    SubjectOverviewSelectionBloc>()
-                                                .isInSelectMode)) {
-                                      if (context
-                                              .read<SubjectOverviewSelectionBloc>()
-                                              .state
-                                          is SubjectOverviewSelectionMultiDragging) {
-                                        context
-                                            .read<
-                                                SubjectOverviewSelectionBloc>()
-                                            .add(
-                                              SubjectOverviewSelectionMoveSelectedCards(
-                                                parentId:
-                                                    widget.subjectToEdit.id,
-                                              ),
-                                            );
-                                      } else {
-                                        context.read<EditSubjectBloc>().add(
-                                              EditSubjectSetCardParent(
-                                                card: data,
-                                                parentId:
-                                                    widget.subjectToEdit.id,
-                                              ),
-                                            );
-                                      }
-                                    } else if (data is Card) {
-                                      context
-                                          .read<SubjectOverviewSelectionBloc>()
-                                          .add(
-                                            SubjectOverviewSelectionToggleSelectMode(
-                                              inSelectMode: true,
-                                            ),
-                                          );
-                                      context
-                                          .read<SubjectOverviewSelectionBloc>()
-                                          .add(
-                                            SubjectOverviewSelectionChange(
-                                              card: data,
-                                              addCard: true,
-                                            ),
-                                          );
-                                    }
-                                    // print(data);
-                                    // folder.childFolders.add(data);
-                                  },
-                                  builder:
-                                      (context, candidateData, rejectedData) {
-                                    return Listener(
+                                child: FolderDragTarget(
+                                    parentID: widget.subjectToEdit.id,
+                                    child: Listener(
                                       onPointerMove: (event) {
                                         if (context
                                             .read<
@@ -319,9 +262,7 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                                           ),
                                         ],
                                       ),
-                                    );
-                                  },
-                                ),
+                                    )),
                               ),
                             ],
                           ),
