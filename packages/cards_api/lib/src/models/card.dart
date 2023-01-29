@@ -4,21 +4,21 @@ import 'dart:convert';
 import 'package:equatable/equatable.dart';
 
 class Card extends Equatable {
-  /// unique never changing id 
+  /// unique never changing id
   final String id;
-  
+
   /// front of card
   final String front;
-  
+
   /// back of card, which user should learn
   final String back;
-  
+
   /// to String formatted creation date
   final String dateCreated;
-  
-  /// id of parent subject/group to order subjects 
-  final String parentSubjectId;
-  
+
+  /// id of parent subject/group to order subjects
+  final String parentId;
+
   /// possibility to get asked when showing the back and hiding the front
   /// (helpful for vocab)
   final bool askCardsInverted;
@@ -30,6 +30,8 @@ class Card extends Equatable {
   /// overall score of recall for this card, the higher the better
   final int recallScore;
 
+  final List<String> tags;
+
   /// date when the card should get reviewed
   final String dateToReview;
   const Card({
@@ -37,35 +39,35 @@ class Card extends Equatable {
     required this.front,
     required this.back,
     required this.dateCreated,
-    required this.parentSubjectId,
+    required this.parentId,
     required this.askCardsInverted,
     required this.typeAnswer,
-    required this.recallScore,
+    this.recallScore = 0,
+    required this.tags,
     required this.dateToReview,
   });
-  
-  
 
   Card copyWith({
     String? front,
     String? back,
     String? dateCreated,
-    String? parentSubjectId,
+    String? parentId,
     bool? askCardsInverted,
     bool? typeAnswer,
     int? recallScore,
+    List<String>? tags,
     String? dateToReview,
   }) {
     return Card(
-      // id is fixed
       id: id,
       front: front ?? this.front,
       back: back ?? this.back,
       dateCreated: dateCreated ?? this.dateCreated,
-      parentSubjectId: parentSubjectId ?? this.parentSubjectId,
+      parentId: parentId ?? this.parentId,
       askCardsInverted: askCardsInverted ?? this.askCardsInverted,
       typeAnswer: typeAnswer ?? this.typeAnswer,
       recallScore: recallScore ?? this.recallScore,
+      tags: tags ?? this.tags,
       dateToReview: dateToReview ?? this.dateToReview,
     );
   }
@@ -76,10 +78,11 @@ class Card extends Equatable {
       'front': front,
       'back': back,
       'dateCreated': dateCreated,
-      'parentSubjectId': parentSubjectId,
+      'parentId': parentId,
       'askCardsInverted': askCardsInverted,
       'typeAnswer': typeAnswer,
       'recallScore': recallScore,
+      'tags': tags,
       'dateToReview': dateToReview,
     };
   }
@@ -90,10 +93,11 @@ class Card extends Equatable {
       front: map['front'] as String,
       back: map['back'] as String,
       dateCreated: map['dateCreated'] as String,
-      parentSubjectId: map['parentSubjectId'] as String,
+      parentId: map['parentId'] as String,
       askCardsInverted: map['askCardsInverted'] as bool,
       typeAnswer: map['typeAnswer'] as bool,
       recallScore: map['recallScore'] as int,
+      tags: /*List<String>.from(map['tags'] as List<String>)*/map.entries.map((e) => e.toString()).toList(),
       dateToReview: map['dateToReview'] as String,
     );
   }
@@ -112,10 +116,11 @@ class Card extends Equatable {
       front,
       back,
       dateCreated,
-      parentSubjectId,
+      parentId,
       askCardsInverted,
       typeAnswer,
       recallScore,
+      tags,
       dateToReview,
     ];
   }

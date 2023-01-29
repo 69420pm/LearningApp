@@ -24,6 +24,13 @@ dependencies:
     path: packages/hive_cards_api
   cards_repository:
     path: packages/cards_repository
+  ui_components:
+    path: packages/ui_components
+  markdown_editor:
+    path: packages/markdown_editor
+  uuid: ^3.0.7
+  dynamic_color: ^1.5.4
+  google_fonts: ^3.0.1
   
 
 

@@ -11,6 +11,3 @@ class HomeCalendar extends HomeState {}
 
 /// General settings page
 class HomeSettings extends HomeState {}
-
-/// Card review page where Navbar should be hidden
-class HomeCardReview extends HomeState {}

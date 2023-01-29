@@ -1,7 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-import 'package:cards_api/src/models/card.dart';
 import 'package:equatable/equatable.dart';
 
 class Subject extends Equatable {
@@ -14,45 +13,38 @@ class Subject extends Equatable {
   /// to String formatted creation date
   final String dateCreated;
 
-  /// id of parent subject to order cards
-  final String parentSubjectId;
-
   /// prefix icon
   final String prefixIcon;
 
-  /// list of String dates as class tests
+  final List<String> daysToGetNotified;
   final List<String> classTests;
 
-  /// days user should get notified for this subject
-  final List<String> daysToGetNotified;
+
 
   const Subject({
     required this.id,
     required this.name,
     required this.dateCreated,
-    required this.parentSubjectId,
     required this.prefixIcon,
-    required this.classTests,
     required this.daysToGetNotified,
+    required this.classTests,
   });
 
   Subject copyWith({
+    String? id,
     String? name,
     String? dateCreated,
-    String? parentSubjectId,
     String? prefixIcon,
-    List<String>? classTests,
     List<String>? daysToGetNotified,
+    List<String>? classTests,
   }) {
     return Subject(
-      // id can't be changed
-      id: id,
+      id: id ?? this.id,
       name: name ?? this.name,
       dateCreated: dateCreated ?? this.dateCreated,
-      parentSubjectId: parentSubjectId ?? this.parentSubjectId,
       prefixIcon: prefixIcon ?? this.prefixIcon,
-      classTests: classTests ?? this.classTests,
       daysToGetNotified: daysToGetNotified ?? this.daysToGetNotified,
+      classTests: classTests ?? this.classTests,
     );
   }
 
@@ -61,10 +53,9 @@ class Subject extends Equatable {
       'id': id,
       'name': name,
       'dateCreated': dateCreated,
-      'parentSubjectId': parentSubjectId,
       'prefixIcon': prefixIcon,
-      'classTests': classTests,
       'daysToGetNotified': daysToGetNotified,
+      'classTests': classTests,
     };
   }
 
@@ -73,11 +64,10 @@ class Subject extends Equatable {
       id: map['id'] as String,
       name: map['name'] as String,
       dateCreated: map['dateCreated'] as String,
-      parentSubjectId: map['parentSubjectId'] as String,
       prefixIcon: map['prefixIcon'] as String,
-      classTests: List<String>.from((map['classTests'] as List<String>)),
       daysToGetNotified:
-          List<String>.from((map['daysToGetNotified'] as List<String>)),
+          List<String>.from(map['daysToGetNotified'] as List<dynamic>),
+      classTests: List<String>.from(map['classTests'] as List<dynamic>),
     );
   }
 
@@ -95,10 +85,9 @@ class Subject extends Equatable {
       id,
       name,
       dateCreated,
-      parentSubjectId,
       prefixIcon,
-      classTests,
       daysToGetNotified,
+      classTests,
     ];
   }
 }

@@ -5,9 +5,7 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-import 'package:cards_api/src/models/card.dart';
-import 'package:cards_api/src/models/group.dart';
-import 'package:cards_api/src/models/subject.dart';
+import 'package:cards_api/cards_api.dart';
 
 /// {@template cards_api}
 /// The interface and models for an API providing access to cards.
@@ -16,50 +14,74 @@ abstract class CardsApi {
   /// {@macro cards_api}
   const CardsApi();
 
-  /// provide a [Stream] of all cards
-  Stream<List<Group>> getCards();
-
-  /// provide a [Stream] of all groups
-  Stream<List<Group>> getGroups();
-
   /// provide a [Stream] of all subjects
-  Stream<List<Group>> getSubjects();
+  Stream<List<Subject>> getSubjects();
 
+  /// return all cards which should get learned
+  List<Card> learnAllCards();
+
+  /// search for cards or folders
+  List<Card> search(String searchRequest);
 
   /// Saves a [card]
   /// If a [card] with same id already exists, it will be replaced
   Future<void> saveCard(Card card);
 
-  /// Saves a [group]
-  /// If a [group] with same id already exists, it will be replaced
-  Future<void> saveGroup(Group group);
-
   /// Saves a [subject]
   /// If a [subject] with same id already exists, it will be replaced
   Future<void> saveSubject(Subject subject);
 
+  /// Saves a [folder]
+  /// If a [folder] with same id already exists, it will be replaced
+  Future<void> saveFolder(Folder folder);
 
   /// Deletes card with given id
-  /// If no card with given id exists, a [CardNotFoundException] error is 
+  /// If no card with given id exists, a [CardNotFoundException] error is
   /// thrown
-  Future<void> deleteCard(String id);
+  Future<void> deleteCard(String id, String parentId);
 
-  /// Deletes group and every children with given id
-  /// If no card with given id exists, a [GroupNotFoundException] error is 
+/// Deletes cards with given id
+  /// If no cards with given id exists, a [CardNotFoundException] error is
   /// thrown
-  Future<void> deleteGroup(String id);
+  Future<void> deleteCards(List<String> id, List<String> parentId);
 
   /// Deletes subject and every children with given id
-  /// If no card with given id exists, a [SubjectNotFoundException] error is 
+  /// If no card with given id exists, a [SubjectNotFoundException] error is
   /// thrown
   Future<void> deleteSubject(String id);
+
+  /// Deletes folder and every children with given id
+  /// If no card with given id exists, a [FolderNotFoundException] error is
+  /// thrown
+  Future<void> deleteFolder(String id, String parentId);
+
+  /// Move folder and every children to [newParentId]
+  Future<void> moveFolder(Folder folder, String newParentId);
+
+  /// Move multiple cards to [newParentId]
+  Future<void> moveCards(List<Card> cards, String newParentId);
+
+  /// return all children in stream to a given parentId
+  Stream<List<Object>> getChildrenById(String id);
+
+  /// close stream for given parentId to avoid stream leaks
+  void closeStreamById(String id, {bool deleteChildren = false});
 }
 
 /// Error when a [Card] with given id is not found
 class CardNotFoundException implements Exception {}
 
-/// Error when a [Group] with given id is not found
-class GroupNotFoundException implements Exception {}
-
 /// Error when a [Subject] with given id is not found
 class SubjectNotFoundException implements Exception {}
+
+/// Error when a [Folder] with given id is not found
+class FolderNotFoundException implements Exception {}
+
+/// Error when a parent ([Folder] or [Card]) doesn't exist
+class ParentNotFoundException implements Exception {}
+
+/// Error when a stream for a given parentId wasn't found
+class StreamNotFoundException implements Exception {}
+
+/// when given input doesn't work
+class WrongInput implements Exception{}

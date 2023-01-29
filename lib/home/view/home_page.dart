@@ -1,95 +1,93 @@
-import "package:flutter/material.dart";
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/app/view/error.dart';
+import 'package:learning_app/calendar/view/calendar_page.dart';
 import 'package:learning_app/home/cubit/home_cubit.dart';
 import 'package:learning_app/overview/view/overview_page.dart';
+import 'package:learning_app/settings/view/settings_page.dart';
+import 'package:ui_components/ui_components.dart';
 
-/// First page after Material App, responsible for Scaffold
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
-  /// Inject HomeCubit(), which handles navigation navigation bar
-  /// and main Scaffold
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => HomeCubit(),
-      child: HomeView(),
-    );
-  }
-}
-
-class HomeView extends StatelessWidget {
-  HomeView({super.key});
+  HomePage({super.key});
 
   /// index of current navbar status
-  int navbarIndex = 0;
-
-  final screens = [
-    /// TODO remove place holder
-    OverviewPage(),
-    Center(
-      child: Text("1234"),
-    ),
-    Center(
-      child: Text("1235"),
-    )
+  final PageController _pageController = PageController();
+  int pageIndex = 0;
+  final pages = <Widget>[
+    const OverviewPage(),
+    const CalendarPage(),
+    const SettingsPage(),
   ];
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
         if (state is HomeOverview) {
-          return const OverviewPage();
+          pageIndex = 0;
         } else if (state is HomeCalendar) {
-          return const Scaffold(
-            bottomNavigationBar: _BottomNavBar(
-              navbarIndex: 1,
-            ),
-          );
+          pageIndex = 1;
         } else if (state is HomeSettings) {
-          return const Scaffold(
-            bottomNavigationBar: _BottomNavBar(
-              navbarIndex: 2,
-            ),
-          );
-        } else if (state is HomeCardReview) {
-          return Scaffold();
-          // navbarIndex = 1;
+          pageIndex = 2;
+        } else {
+          return const ErrorPage(errorMessage: 'Bottom navigation bar error');
         }
-        return const ErrorPage(errorMessage: 'Bottom navigation bar error');
+
+        return Scaffold(
+          body: PageView.builder(
+            controller: _pageController,
+            itemCount: 3,
+            itemBuilder: (context, index) => pages[index],
+            onPageChanged: (pageIndex) =>
+                context.read<HomeCubit>().setTab(pageIndex),
+          ),
+          bottomNavigationBar: _BottomNavBar(
+            navbarIndex: pageIndex,
+            pageController: _pageController,
+          ),
+        );
       },
     );
-    ;
   }
 }
 
 class _BottomNavBar extends StatelessWidget {
-  const _BottomNavBar({super.key, required this.navbarIndex});
+  const _BottomNavBar({
+    required this.navbarIndex,
+    required this.pageController,
+  });
 
   final int navbarIndex;
+  final PageController pageController;
 
   @override
   Widget build(BuildContext context) {
     return NavigationBar(
       /// when a navbar tile gets pressed
-      onDestinationSelected: (value) {
-        context.read<HomeCubit>().setTab(value);
-      },
+      onDestinationSelected: pageController.jumpToPage,
+      height: UISizeConstants.defaultSize * 7,
       selectedIndex: navbarIndex,
-      destinations: [
+      labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+      destinations: const [
         /// Overview tile
-        const NavigationDestination(
-            icon: const Icon(Icons.email_outlined), label: "Fuck you"),
+        NavigationDestination(
+          icon: Icon(Icons.home_outlined),
+          selectedIcon: Icon(Icons.home),
+          label: 'Overview',
+        ),
 
         /// Calendar tile
-        const NavigationDestination(
-            icon: const Icon(Icons.email_outlined), label: "Fuck you"),
+        NavigationDestination(
+          icon: Icon(Icons.calendar_month_outlined),
+          selectedIcon: Icon(Icons.calendar_month),
+          label: 'Calender',
+        ),
 
         /// Settings tile
-        const NavigationDestination(
-            icon: const Icon(Icons.email_outlined), label: "Fuck you"),
+        NavigationDestination(
+          icon: Icon(Icons.settings_outlined),
+          selectedIcon: Icon(Icons.settings),
+          label: 'Settings',
+        ),
       ],
     );
   }
