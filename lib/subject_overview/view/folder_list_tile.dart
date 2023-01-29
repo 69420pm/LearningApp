@@ -6,6 +6,7 @@ import 'package:learning_app/subject_overview/bloc/folder_bloc/folder_list_tile_
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/view/folder_draggable_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile_view.dart';
+import 'package:learning_app/subject_overview/view/folder_drag_target.dart';
 import 'package:ui_components/ui_components.dart';
 
 class FolderListTile extends StatelessWidget {
@@ -30,6 +31,7 @@ class FolderListTile extends StatelessWidget {
           context
               .read<FolderListTileBloc>()
               .add(FolderListTileGetChildrenById(id: folder.id));
+          //test
           return Padding(
             padding: const EdgeInsets.only(
               bottom: UISizeConstants.defaultSize,
@@ -45,49 +47,9 @@ class FolderListTile extends StatelessWidget {
                   maxSimultaneousDrags:
                       state is SubjectOverviewSelectionModeOn ? 0 : 1,
                   childWhenDragging: Container(),
-                  child: DragTarget(
-                    onAccept: (data) {
-                      // TODO fix newParentId gets changed while transfering to hive_cards_api
-                      if (data is Folder && data != folder) {
-                        context.read<FolderListTileBloc>().add(
-                              FolderListTileMoveFolder(
-                                folder: data,
-                                newParentId: folder.id,
-                              ),
-                            );
-                      } else if (data is Card && data.parentId != folder.id) {
-                        if (state is SubjectOverviewSelectionMultiDragging) {
-                          context
-                              .read<SubjectOverviewSelectionBloc>()
-                              .add(SubjectOverviewSelectionMoveSelectedCards(
-                                parentId: folder.id,
-                              ));
-                        } else {
-                          context.read<FolderListTileBloc>().add(
-                                FolderListTileMoveCard(
-                                  card: data,
-                                  newParentId: folder.id,
-                                ),
-                              );
-                        }
-                      } else if (data is Card) {
-                        context.read<SubjectOverviewSelectionBloc>().add(
-                              SubjectOverviewSelectionToggleSelectMode(
-                                inSelectMode: true,
-                              ),
-                            );
-                        context.read<SubjectOverviewSelectionBloc>().add(
-                              SubjectOverviewSelectionChange(
-                                card: data,
-                                addCard: true,
-                              ),
-                            );
-                      }
-                      // print(data);
-                      // folder.childFolders.add(data);
-                    },
-                    builder: (context, candidateData, rejectedData) =>
-                        BlocBuilder<FolderListTileBloc, FolderListTileState>(
+                  child: FolderDragTarget(
+                    parentID: folder.id,
+                    child: BlocBuilder<FolderListTileBloc, FolderListTileState>(
                       buildWhen: (previous, current) {
                         if (current is FolderListTileRetrieveChildren) {
                           return true;
