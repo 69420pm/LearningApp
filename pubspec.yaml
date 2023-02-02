@@ -17,7 +17,7 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   intl: ^0.17.0
-  path_provider: ^2.0.11
+  path_provider: ^2.0.12
   cards_api:
     path: packages/cards_api
   hive_cards_api:
@@ -30,7 +30,7 @@ dependencies:
     path: packages/markdown_editor
   uuid: ^3.0.7
   dynamic_color: ^1.5.4
-  google_fonts: ^3.0.1
+  google_fonts: ^4.0.1
   
 
 
