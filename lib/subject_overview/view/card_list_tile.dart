@@ -55,7 +55,11 @@ class _CardListTileState extends State<CardListTile> {
         },
         child: LongPressDraggable(
           data: widget.card,
-          maxSimultaneousDrags: 1,
+          maxSimultaneousDrags:
+              context.read<SubjectOverviewSelectionBloc>().isInSelectMode &&
+                      !widget.isCardSelected
+                  ? 0
+                  : 1,
           onDragStarted: () {
             context
                 .read<SubjectOverviewSelectionBloc>()
