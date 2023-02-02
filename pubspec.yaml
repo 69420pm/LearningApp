@@ -30,7 +30,7 @@ dependencies:
     path: packages/markdown_editor
   uuid: ^3.0.7
   dynamic_color: ^1.5.4
-  google_fonts: ^3.0.1
+  google_fonts: ^4.0.1
   
 
 
