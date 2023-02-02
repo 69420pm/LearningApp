@@ -10,14 +10,16 @@ import 'package:learning_app/subject_overview/view/folder_drag_target.dart';
 import 'package:ui_components/ui_components.dart';
 
 class FolderListTile extends StatelessWidget {
-  const FolderListTile({
+  FolderListTile({
     super.key,
     required this.folder,
     required this.cardsRepository,
+    this.isHighlight = false,
   });
 
   final Folder folder;
   final CardsRepository cardsRepository;
+  bool isHighlight;
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +79,7 @@ class FolderListTile extends StatelessWidget {
                                   state is SubjectOverviewSelectionModeOn,
                               folder: folder,
                               childListTiles: childListTiles,
+                              isHighlight: isHighlight,
                             );
                           },
                         );
