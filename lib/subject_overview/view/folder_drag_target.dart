@@ -23,36 +23,44 @@ class FolderDragTarget extends StatelessWidget {
                   parentId: parentID,
                 ),
               );
-        } else if (data is Card &&
-            (data.parentId != parentID ||
-                context.read<SubjectOverviewSelectionBloc>().isInSelectMode)) {
-          if (context.read<SubjectOverviewSelectionBloc>().state
-              is SubjectOverviewSelectionMultiDragging) {
+        } else if (data is Card) {
+          if (data.parentId != parentID) {
+            if (context.read<SubjectOverviewSelectionBloc>().state
+                is SubjectOverviewSelectionMultiDragging) {
+              context.read<SubjectOverviewSelectionBloc>().add(
+                    SubjectOverviewSelectionMoveSelectedCards(
+                      parentId: parentID,
+                    ),
+                  );
+            } else {
+              context.read<EditSubjectBloc>().add(
+                    EditSubjectSetCardParent(
+                      card: data,
+                      parentId: parentID,
+                    ),
+                  );
+            }
+          } else if (context
+              .read<SubjectOverviewSelectionBloc>()
+              .isInSelectMode) {
             context.read<SubjectOverviewSelectionBloc>().add(
                   SubjectOverviewSelectionMoveSelectedCards(
                     parentId: parentID,
                   ),
                 );
           } else {
-            context.read<EditSubjectBloc>().add(
-                  EditSubjectSetCardParent(
+            context.read<SubjectOverviewSelectionBloc>().add(
+                  SubjectOverviewSelectionToggleSelectMode(
+                    inSelectMode: true,
+                  ),
+                );
+            context.read<SubjectOverviewSelectionBloc>().add(
+                  SubjectOverviewSelectionChange(
                     card: data,
-                    parentId: parentID,
+                    addCard: true,
                   ),
                 );
           }
-        } else if (data is Card) {
-          context.read<SubjectOverviewSelectionBloc>().add(
-                SubjectOverviewSelectionToggleSelectMode(
-                  inSelectMode: true,
-                ),
-              );
-          context.read<SubjectOverviewSelectionBloc>().add(
-                SubjectOverviewSelectionChange(
-                  card: data,
-                  addCard: true,
-                ),
-              );
         }
         // print(data);
         // folder.childFolders.add(data);
