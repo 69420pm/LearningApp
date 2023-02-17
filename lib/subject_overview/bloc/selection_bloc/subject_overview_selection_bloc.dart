@@ -65,7 +65,9 @@ class SubjectOverviewSelectionBloc
     }
     await _cardsRepository.deleteCards(ids, parentIds);
 
-    // emit(SubjectOverviewSelectionModeOff());
+    isInSelectMode = false;
+    cardsSelected.clear();
+    emit(SubjectOverviewSelectionModeOff());
   }
 
   Future<FutureOr<void>> _moveSelectedCards(
