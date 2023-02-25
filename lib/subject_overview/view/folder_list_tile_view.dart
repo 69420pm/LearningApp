@@ -14,134 +14,161 @@ class FolderListTileView extends StatelessWidget {
     required this.folder,
     required this.childListTiles,
     required this.inSelectionMode,
-    this.isRoot = false,
+    this.isHighlight = false,
   });
   final bool inSelectionMode;
   final Folder folder;
-  final bool isRoot;
   final Map<String, Widget> childListTiles;
+  final bool isHighlight;
+
   @override
   Widget build(BuildContext context) {
-    return ExpansionTile(
-      controlAffinity: ListTileControlAffinity.leading,
-      collapsedTextColor: Theme.of(context).colorScheme.onSecondaryContainer,
-      textColor: Theme.of(context).colorScheme.onSecondaryContainer,
-      maintainState: true,
-      title: Row(
-        children: [
-          const Icon(Icons.folder),
-          const SizedBox(
-            width: UISizeConstants.defaultSize * 1,
-          ),
-          Expanded(
-            child: Text(
-              folder.name,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
-      ),
-      trailing: PopupMenuButton<int>(
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(UISizeConstants.cornerRadius),
-          ),
-        ),
-        itemBuilder: (context) => [
-          PopupMenuItem(
-            value: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Theme(
+      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(25),
+        child: Material(
+          child: ExpansionTile(
+            shape: RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.circular(UISizeConstants.cornerRadius)),
+            // backgroundColor: isHighlight
+            //     ? Theme.of(context).colorScheme.onBackground.withOpacity(0.05)
+            //     : Theme.of(context).colorScheme.onBackground.withOpacity(0.01),
+            // collapsedBackgroundColor: isHighlight
+            //     ? Theme.of(context).colorScheme.onBackground.withOpacity(0.05)
+            //     : Theme.of(context).colorScheme.onBackground.withOpacity(0.01),
+            controlAffinity: ListTileControlAffinity.leading,
+            collapsedTextColor:
+                Theme.of(context).colorScheme.onSecondaryContainer,
+            textColor: Theme.of(context).colorScheme.onSecondaryContainer,
+            maintainState: false,
+            title: Row(
               children: [
-                const Icon(Icons.delete),
-                Text(
-                  'delete',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
+                const Icon(Icons.folder),
+                const SizedBox(
+                  width: UISizeConstants.defaultSize * 1,
                 ),
-              ],
-            ),
-          ),
-          PopupMenuItem(
-            value: 1,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Icon(Icons.delete),
-                Text(
-                  'spawn 20 cards',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
-                ),
-              ],
-            ),
-          )
-        ],
-        onSelected: (value) async {
-          if (value == 0) {
-            context.read<FolderListTileBloc>().add(
-                  FolderListTileDeleteFolder(
-                    id: folder.id,
-                    parentId: folder.parentId,
+                Expanded(
+                  child: Text(
+                    folder.name,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                );
-          } else if (value == 1) {
-            for (var i = 0; i <= 20; i++) {
-              context.read<FolderListTileBloc>().add(
-                    FolderListTileDEBUGAddCard(
-                      card: Card(
-                        back: 'test$i',
-                        front: 'test$i',
-                        askCardsInverted: false,
-                        id: const Uuid().v4(),
-                        dateCreated: '',
-                        parentId: folder.id,
-                        dateToReview: DateTime.now().toIso8601String(),
-                        typeAnswer: false,
-                        tags: const [],
+                ),
+              ],
+            ),
+            trailing: PopupMenuButton<int>(
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(UISizeConstants.cornerRadius),
+                ),
+              ),
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  value: 0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Icon(Icons.delete),
+                      Text(
+                        'delete',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
                       ),
-                    ),
-                  );
-              await Future.delayed(const Duration(milliseconds: 5));
-            }
-          }
-        },
-      ),
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(
-            left: UISizeConstants.defaultSize * 2,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+                    ],
+                  ),
+                ),
+                PopupMenuItem(
+                  value: 1,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Icon(Icons.delete),
+                      Text(
+                        'spawn 20 cards',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+              onSelected: (value) async {
+                if (value == 0) {
+                  context.read<FolderListTileBloc>().add(
+                        FolderListTileDeleteFolder(
+                          id: folder.id,
+                          parentId: folder.parentId,
+                        ),
+                      );
+                } else if (value == 1) {
+                  for (var i = 0; i <= 20; i++) {
+                    context.read<FolderListTileBloc>().add(
+                          FolderListTileDEBUGAddCard(
+                            card: Card(
+                              back: 'test$i',
+                              front: 'test$i',
+                              askCardsInverted: false,
+                              id: const Uuid().v4(),
+                              dateCreated: '',
+                              parentId: folder.id,
+                              dateToReview: DateTime.now().toIso8601String(),
+                              typeAnswer: false,
+                              tags: const [],
+                            ),
+                          ),
+                        );
+                    await Future.delayed(const Duration(milliseconds: 5));
+                  }
+                }
+              },
+            ),
             children: [
-              if (childListTiles.values.whereType<FolderListTile>().isNotEmpty)
-                ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount:
-                      childListTiles.values.whereType<FolderListTile>().length,
-                  itemBuilder: (context, index) => childListTiles.values
-                      .whereType<FolderListTile>()
-                      .elementAt(index),
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: UISizeConstants.defaultSize * 4,
                 ),
-              if (childListTiles.values.whereType<CardListTile>().isNotEmpty)
-                ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount:
-                      childListTiles.values.whereType<CardListTile>().length,
-                  itemBuilder: (context, index) => childListTiles.values
-                      .whereType<CardListTile>()
-                      .elementAt(index)
-                    ..isInSelectMode = inSelectionMode,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (childListTiles.values
+                        .whereType<FolderListTile>()
+                        .isNotEmpty)
+                      ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: childListTiles.values
+                            .whereType<FolderListTile>()
+                            .length,
+                        itemBuilder: (context, index) => childListTiles.values
+                            .whereType<FolderListTile>()
+                            .elementAt(index)
+                          ..isHighlight = index.isOdd,
+                      ),
+                    if (childListTiles.values
+                        .whereType<CardListTile>()
+                        .isNotEmpty)
+                      ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: childListTiles.values
+                            .whereType<CardListTile>()
+                            .length,
+                        itemBuilder: (context, index) => childListTiles.values
+                            .whereType<CardListTile>()
+                            .elementAt(index)
+                          ..isHighlight = index.isOdd
+                          ..isInSelectMode = inSelectionMode,
+                      ),
+                  ],
                 ),
+              ),
             ],
           ),
         ),
-      ],
+      ),
     );
   }
 }

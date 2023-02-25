@@ -11,6 +11,7 @@ class CardListTileView extends StatelessWidget {
     this.width,
     required this.isSelected,
     this.globalKey,
+    this.isHighlight = false,
   });
 
   final GlobalKey? globalKey;
@@ -19,6 +20,7 @@ class CardListTileView extends StatelessWidget {
   final bool isSelected;
   final double? height;
   final double? width;
+  final bool isHighlight;
 
   @override
   Widget build(BuildContext context) {
@@ -31,8 +33,8 @@ class CardListTileView extends StatelessWidget {
         decoration: BoxDecoration(
           color: isChildWhenDragging
               ? Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3)
-              : isSelected
-                  ? Theme.of(context).colorScheme.primaryContainer
+              : isHighlight
+                  ? Theme.of(context).colorScheme.onBackground.withOpacity(0.05)
                   : Theme.of(context).colorScheme.background,
           borderRadius: const BorderRadius.all(
             Radius.circular(UISizeConstants.cornerRadius),
