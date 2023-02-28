@@ -12,10 +12,12 @@ class CardListTile extends StatefulWidget {
     required this.card,
     required this.isCardSelected,
     required this.isInSelectMode,
+    this.isHighlight = false,
   });
   final Card card;
   bool isCardSelected;
   bool isInSelectMode;
+  bool isHighlight;
 
   @override
   State<CardListTile> createState() => _CardListTileState();
@@ -119,6 +121,7 @@ class _CardListTileState extends State<CardListTile> {
             isChildWhenDragging:
                 state is SubjectOverviewSelectionMultiDragging &&
                     widget.isCardSelected,
+            isHighlight: widget.isHighlight,
           ),
         ),
       ),

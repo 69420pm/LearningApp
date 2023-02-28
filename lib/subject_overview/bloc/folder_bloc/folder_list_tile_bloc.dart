@@ -57,10 +57,14 @@ class FolderListTileBloc
             widgetsToRemove.add(element);
           }
         }
-        return FolderListTileRetrieveChildren(
-          childrenStream: childListTiles,
-          removedWidgets: widgetsToRemove,
-        );
+
+        if (childListTiles.isNotEmpty || widgetsToRemove.isNotEmpty) {
+          return FolderListTileRetrieveChildren(
+            childrenStream: childListTiles,
+            removedWidgets: widgetsToRemove,
+          );
+        }
+        return FolderListTileSuccess();
       },
       onError: (error, stackTrace) =>
           FolderListTileError(errorMessage: 'backend broken'),
@@ -81,9 +85,12 @@ class FolderListTileBloc
     //   emit(FolderListTileError(errorMessage: 'folder adding failed'));
     // }
   }
+
 //df
   Future<void> _moveCard(
-      FolderListTileMoveCard event, Emitter<FolderListTileState> emit,) async {
+    FolderListTileMoveCard event,
+    Emitter<FolderListTileState> emit,
+  ) async {
     emit(FolderListTileLoading());
     // try {
     final newCard = event.card.copyWith(parentId: event.newParentId);
@@ -121,7 +128,8 @@ class FolderListTileBloc
     // }
   }
 
-  Future<FutureOr<void>> _debugAddCard(FolderListTileDEBUGAddCard event, Emitter<FolderListTileState> emit) async {
+  Future<FutureOr<void>> _debugAddCard(FolderListTileDEBUGAddCard event,
+      Emitter<FolderListTileState> emit) async {
     await _cardsRepository.saveCard(event.card);
   }
 }

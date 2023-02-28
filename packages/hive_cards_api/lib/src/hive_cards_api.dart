@@ -200,6 +200,7 @@ class HiveCardsApi extends CardsApi {
     }
     try {
       _storeIds = _hiveBox.get('/store_ids') as Map<dynamic, dynamic>;
+      print(_storeIds);
     } catch (e) {
       print('no storeIds saved');
     }
@@ -383,7 +384,6 @@ class HiveCardsApi extends CardsApi {
     final children = <Object>[];
     if (childrenStrings != null) {
       for (final element in childrenStrings) {
-        print(element);
         try {
           children.add(Card.fromJson(element));
         } catch (e) {
@@ -394,7 +394,6 @@ class HiveCardsApi extends CardsApi {
 
     newStream.add(children);
     _subscribedStreams[path] = newStream;
-    print(children);
     return newStream;
   }
 
@@ -511,10 +510,11 @@ class HiveCardsApi extends CardsApi {
   @override
   Future<void> moveFolder(Folder folder, String newParentId) async {
     final path = _getPath(folder.parentId);
+    final newParentPath = _getPath(newParentId);
+
     if (path == null) {
       throw ParentNotFoundException();
     }
-    final newParentPath = _getPath(newParentId);
     if (newParentPath != null && newParentPath.contains(folder.id)) {
       return;
     }
@@ -533,7 +533,8 @@ class HiveCardsApi extends CardsApi {
     if (found == false) {
       throw ParentNotFoundException();
     }
-    await _hiveBox.put(folder.parentId, folders);
+    await _hiveBox.put(_makePathStorable(path), folders);
+    
     if (_subscribedStreams.containsKey(path)) {
       _subscribedStreams[path]!.add([Removed(id: folder.id)]);
     }
@@ -689,24 +690,39 @@ class HiveCardsApi extends CardsApi {
     return foundedCards;
   }
 
+//! FLAGGGGGGGGGGGGED COMPLETE BULLSHIT
   @override
   Future<void> moveCards(List<Card> cards, String newParentId) async {
+    print("move cards");
     final ids = <String>[];
     final parentIds = <String>[];
     final cardsToUpdateStreams = <Card>[];
-      final path = _getPath(newParentId);
+    final path = _getPath(newParentId);
+
+    // for(var card in cards){
+    //   ids.add(card.id);
+    //   parentIds.add(card.parentId);
+
+    //   card = card.copyWith(parentId: newParentId);
+    //   cardsToUpdateStreams.add(card);
+
+    // }
+    // await _hiveBox.put(_makePathStorable(path!), cards);
+    // await deleteCards(ids, parentIds);
+
+
 
     for (var card in cards) {
       ids.add(card.id);
       parentIds.add(card.parentId);
 
       card = card.copyWith(parentId: newParentId);
-
+  
       if (path == null) {
         throw ParentNotFoundException();
       }
 
-      var cards = _hiveBox.get(_makePathStorable(path)) as List<String>?;
+      var cards = await _hiveBox.get(_makePathStorable(path)) as List<String>?;
       var found = false;
       var indexToChange = 0;
       if (cards != null) {
@@ -729,11 +745,9 @@ class HiveCardsApi extends CardsApi {
       cardsToUpdateStreams.add(card);
       await _hiveBox.put(_makePathStorable(path), cards);
     }
-    print(_subscribedStreams[newParentId]);
-    print(_subscribedStreams);
+    await deleteCards(ids, parentIds);
     if (_subscribedStreams.containsKey(path)) {
       _subscribedStreams[path]!.add(cardsToUpdateStreams);
     }
-    await deleteCards(ids, parentIds);
   }
 }

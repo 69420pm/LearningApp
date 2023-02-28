@@ -80,11 +80,13 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
             widgetsToRemove.add(element);
           }
         }
-        print(childListTiles);
-        return EditSubjectRetrieveChildren(
-          childrenStream: childListTiles,
-          removedWidgets: widgetsToRemove,
-        );
+        if (childListTiles.isNotEmpty || widgetsToRemove.isNotEmpty) {
+          return EditSubjectRetrieveChildren(
+            childrenStream: childListTiles,
+            removedWidgets: widgetsToRemove,
+          );
+        }
+        return EditSubjectSuccess();
       },
       onError: (error, stackTrace) =>
           EditSubjectFailure(errorMessage: 'backend broken'),

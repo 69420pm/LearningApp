@@ -18,8 +18,6 @@ class SubjectOverviewPage extends StatefulWidget {
 
   final Subject subjectToEdit;
   final EditSubjectBloc editSubjectBloc;
-
-  @override
   State<SubjectOverviewPage> createState() => _SubjectOverviewPageState();
 }
 
@@ -242,7 +240,8 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                                               (context, index) => childListTiles
                                                   .values
                                                   .whereType<FolderListTile>()
-                                                  .elementAt(index),
+                                                  .elementAt(index)
+                                                ..isHighlight = index.isOdd,
                                               childCount: childListTiles.values
                                                   .whereType<FolderListTile>()
                                                   .length,
@@ -254,7 +253,8 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                                               (context, index) => childListTiles
                                                   .values
                                                   .whereType<CardListTile>()
-                                                  .elementAt(index),
+                                                  .elementAt(index)
+                                                ..isHighlight = index.isOdd,
                                               childCount: childListTiles.values
                                                   .whereType<CardListTile>()
                                                   .length,
