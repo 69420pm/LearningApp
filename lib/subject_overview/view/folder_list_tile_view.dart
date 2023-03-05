@@ -23,6 +23,7 @@ class FolderListTileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(folder.name + "    rebuild");
     return Theme(
       data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
       child: InkWell(

@@ -7,6 +7,7 @@ import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overvi
 import 'package:learning_app/subject_overview/view/folder_draggable_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile_view.dart';
 import 'package:learning_app/subject_overview/view/folder_drag_target.dart';
+import 'package:learning_app/subject_overview/view/inactive_folder_list_tile.dart';
 import 'package:ui_components/ui_components.dart';
 
 class FolderListTile extends StatelessWidget {
@@ -48,7 +49,7 @@ class FolderListTile extends StatelessWidget {
                   ),
                   maxSimultaneousDrags:
                       state is SubjectOverviewSelectionModeOn ? 0 : 1,
-                  childWhenDragging: Container(),
+                  childWhenDragging: InactiveFolderListTile(name: folder.name),
                   child: FolderDragTarget(
                     parentID: folder.id,
                     child: BlocBuilder<FolderListTileBloc, FolderListTileState>(
@@ -74,7 +75,6 @@ class FolderListTile extends StatelessWidget {
                           print(state.removedWidgets);
                           print(childListTiles);
                           print("///");
-
                         }
 
                         return BlocBuilder<SubjectOverviewSelectionBloc,
