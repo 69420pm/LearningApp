@@ -49,16 +49,16 @@ class FolderListTile extends StatelessWidget {
                   ),
                   maxSimultaneousDrags:
                       state is SubjectOverviewSelectionModeOn ? 0 : 1,
-                  childWhenDragging: InactiveFolderListTile(name: folder.name),
+                  childWhenDragging: PlaceholderWhileDragging(),
                   child: FolderDragTarget(
                     parentID: folder.id,
                     child: BlocBuilder<FolderListTileBloc, FolderListTileState>(
-                      buildWhen: (previous, current) {
-                        if (current is FolderListTileRetrieveChildren) {
-                          return true;
-                        }
-                        return false;
-                      },
+                      // buildWhen: (previous, current) {
+                      //   if (current is FolderListTileRetrieveChildren) {
+                      //     return true;
+                      //   }
+                      //   return false;
+                      // },
                       builder: (context, state) {
                         if (state is FolderListTileRetrieveChildren) {
                           childListTiles = {
