@@ -32,6 +32,24 @@ class AddCardPage extends StatelessWidget {
               children: [
                 const SizedBox(height: UISizeConstants.defaultSize * 1),
                 UITextFormField(
+                  onFieldSubmitted: (value) async {
+                    if (formKey.currentState!.validate()) {
+                      // await context.read<AddCardCubit>().saveCard(
+                      //     frontController.text,
+                      //     backController.text,
+                      //     recommendedSubjectParent!,
+                      //     iconController.text);
+                      context.read<EditSubjectBloc>().add(
+                            EditSubjectAddCard(
+                              front: frontController.text,
+                              back: backController.text,
+                              parentId: parentId,
+                            ),
+                          );
+                    }
+                    Navigator.pop(context);
+                  },
+                  autofocus: true,
                   label: "Title",
                   controller: frontController,
                   validation: (value) {
