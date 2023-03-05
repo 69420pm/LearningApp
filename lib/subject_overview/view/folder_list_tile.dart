@@ -10,7 +10,7 @@ import 'package:learning_app/subject_overview/view/folder_drag_target.dart';
 import 'package:learning_app/subject_overview/view/inactive_folder_list_tile.dart';
 import 'package:ui_components/ui_components.dart';
 
-class FolderListTile extends StatelessWidget {
+class FolderListTile extends StatefulWidget {
   FolderListTile({
     super.key,
     required this.folder,
@@ -23,17 +23,25 @@ class FolderListTile extends StatelessWidget {
   bool isHighlight;
 
   @override
+  State<FolderListTile> createState() => _FolderListTileState();
+}
+
+class _FolderListTileState extends State<FolderListTile> {
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => FolderListTileBloc(
-        cardsRepository,
-      ),
+      create: (context) {
+        print("rebuild" + widget.folder.name);
+        return FolderListTileBloc(
+          widget.cardsRepository,
+        );
+      },
       child: Builder(
         builder: (context) {
           var childListTiles = <String, Widget>{};
           context
               .read<FolderListTileBloc>()
-              .add(FolderListTileGetChildrenById(id: folder.id));
+              .add(FolderListTileGetChildrenById(id: widget.folder.id));
           //test
           return Padding(
             padding: const EdgeInsets.only(
@@ -43,22 +51,23 @@ class FolderListTile extends StatelessWidget {
                 SubjectOverviewSelectionState>(
               builder: (context, state) {
                 return LongPressDraggable<Folder>(
-                  data: folder,
+                  data: widget.folder,
                   feedback: FolderDraggableTile(
-                    folder: folder,
+                    folder: widget.folder,
                   ),
                   maxSimultaneousDrags:
                       state is SubjectOverviewSelectionModeOn ? 0 : 1,
-                  childWhenDragging: PlaceholderWhileDragging(),
+                  childWhenDragging: const PlaceholderWhileDragging(),
                   child: FolderDragTarget(
-                    parentID: folder.id,
+                    parentID: widget.folder.id,
                     child: BlocBuilder<FolderListTileBloc, FolderListTileState>(
-                      // buildWhen: (previous, current) {
-                      //   if (current is FolderListTileRetrieveChildren) {
-                      //     return true;
-                      //   }
-                      //   return false;
-                      // },
+                      buildWhen: (previous, current) {
+                        if (current is FolderListTileRetrieveChildren) {
+                          setState(() {});
+                          return true;
+                        }
+                        return false;
+                      },
                       builder: (context, state) {
                         if (state is FolderListTileRetrieveChildren) {
                           childListTiles = {
@@ -70,11 +79,6 @@ class FolderListTile extends StatelessWidget {
                               childListTiles.remove(element.id);
                             }
                           }
-                          print("///");
-                          print(state.childrenStream);
-                          print(state.removedWidgets);
-                          print(childListTiles);
-                          print("///");
                         }
 
                         return BlocBuilder<SubjectOverviewSelectionBloc,
@@ -83,9 +87,9 @@ class FolderListTile extends StatelessWidget {
                             return FolderListTileView(
                               inSelectionMode:
                                   state is SubjectOverviewSelectionModeOn,
-                              folder: folder,
+                              folder: widget.folder,
                               childListTiles: childListTiles,
-                              isHighlight: isHighlight,
+                              isHighlight: widget.isHighlight,
                             );
                           },
                         );
