@@ -24,6 +24,7 @@ class FolderListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("rebuild" + folder.name);
     return BlocProvider(
       create: (context) => FolderListTileBloc(
         cardsRepository,
@@ -49,18 +50,19 @@ class FolderListTile extends StatelessWidget {
                   ),
                   maxSimultaneousDrags:
                       state is SubjectOverviewSelectionModeOn ? 0 : 1,
-                  childWhenDragging: InactiveFolderListTile(name: folder.name),
+                  childWhenDragging: PlaceholderWhileDragging(),
                   child: FolderDragTarget(
                     parentID: folder.id,
                     child: BlocBuilder<FolderListTileBloc, FolderListTileState>(
                       buildWhen: (previous, current) {
-                        // if (current is FolderListTileRetrieveChildren) {
+                        if (previous is FolderListTileRetrieveChildren && current is FolderListTileRetrieveChildren) {
                           return true;
-                        // }
-                        // return false;
+                        }
+                        return false;
                       },
                       builder: (context, state) {
                         if (state is FolderListTileRetrieveChildren) {
+                          print("update bloc");
                           childListTiles = {
                             ...childListTiles,
                             ...state.childrenStream

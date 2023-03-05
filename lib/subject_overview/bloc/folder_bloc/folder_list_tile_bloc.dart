@@ -64,6 +64,7 @@ class FolderListTileBloc
             removedWidgets: widgetsToRemove,
           );
         }
+        
         return FolderListTileSuccess();
       },
       onError: (error, stackTrace) =>
