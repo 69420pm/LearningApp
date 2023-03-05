@@ -4,13 +4,14 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/folder_bloc/folder_list_tile_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
+import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_draggable_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile_view.dart';
 import 'package:learning_app/subject_overview/view/folder_drag_target.dart';
 import 'package:learning_app/subject_overview/view/inactive_folder_list_tile.dart';
 import 'package:ui_components/ui_components.dart';
 
-class FolderListTile extends StatelessWidget {
+class FolderListTile extends StatefulWidget {
   FolderListTile({
     super.key,
     required this.folder,
@@ -23,18 +24,25 @@ class FolderListTile extends StatelessWidget {
   bool isHighlight;
 
   @override
+  State<FolderListTile> createState() => _FolderListTileState();
+}
+
+class _FolderListTileState extends State<FolderListTile> {
+  @override
   Widget build(BuildContext context) {
-    print("rebuild" + folder.name);
+    // print("rebuild" + folder.name);
     return BlocProvider(
-      create: (context) => FolderListTileBloc(
-        cardsRepository,
-      ),
+      create: (context) {
+        return FolderListTileBloc(
+          widget.cardsRepository,
+        );
+      },
       child: Builder(
         builder: (context) {
           var childListTiles = <String, Widget>{};
           context
               .read<FolderListTileBloc>()
-              .add(FolderListTileGetChildrenById(id: folder.id));
+              .add(FolderListTileGetChildrenById(id: widget.folder.id));
           //test
           return Padding(
             padding: const EdgeInsets.only(
@@ -44,25 +52,24 @@ class FolderListTile extends StatelessWidget {
                 SubjectOverviewSelectionState>(
               builder: (context, state) {
                 return LongPressDraggable<Folder>(
-                  data: folder,
+                  data: widget.folder,
                   feedback: FolderDraggableTile(
-                    folder: folder,
+                    folder: widget.folder,
                   ),
                   maxSimultaneousDrags:
                       state is SubjectOverviewSelectionModeOn ? 0 : 1,
-                  childWhenDragging: PlaceholderWhileDragging(),
+                  childWhenDragging: const PlaceholderWhileDragging(),
                   child: FolderDragTarget(
-                    parentID: folder.id,
+                    parentID: widget.folder.id,
                     child: BlocBuilder<FolderListTileBloc, FolderListTileState>(
                       buildWhen: (previous, current) {
-                        if (previous is FolderListTileRetrieveChildren && current is FolderListTileRetrieveChildren) {
+                        if (current is FolderListTileRetrieveChildren) {
                           return true;
                         }
                         return false;
                       },
                       builder: (context, state) {
                         if (state is FolderListTileRetrieveChildren) {
-                          print("update bloc");
                           childListTiles = {
                             ...childListTiles,
                             ...state.childrenStream
@@ -72,11 +79,21 @@ class FolderListTile extends StatelessWidget {
                               childListTiles.remove(element.id);
                             }
                           }
-                          // print("///");
-                          // print(state.childrenStream);
-                          // print(state.removedWidgets);
-                          // print(childListTiles);
-                          // print("///");
+                          // var newChildListTiles = <String, Widget>{};
+                          // childListTiles.forEach((key, value) {
+                          //   try {
+                          //     if ((value as FolderListTile).folder.parentId ==
+                          //         widget.folder.id) {
+                          //       newChildListTiles[value.folder.id] = value;
+                          //     }
+                          //   } catch (e) {
+                          //     if ((value as CardListTile).card.parentId ==
+                          //         widget.folder.id) {
+                          //       newChildListTiles[value.card.id] = value;
+                          //     }
+                          //   }
+                          // });
+                          // childListTiles = newChildListTiles;
                         }
 
                         return BlocBuilder<SubjectOverviewSelectionBloc,
@@ -85,9 +102,9 @@ class FolderListTile extends StatelessWidget {
                             return FolderListTileView(
                               inSelectionMode:
                                   state is SubjectOverviewSelectionModeOn,
-                              folder: folder,
+                              folder: widget.folder,
                               childListTiles: childListTiles,
-                              isHighlight: isHighlight,
+                              isHighlight: widget.isHighlight,
                             );
                           },
                         );
@@ -101,5 +118,11 @@ class FolderListTile extends StatelessWidget {
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    widget.cardsRepository.closeStreamById(widget.folder.id);
+    super.dispose();
   }
 }

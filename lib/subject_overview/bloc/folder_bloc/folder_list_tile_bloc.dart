@@ -26,6 +26,8 @@ class FolderListTileBloc
     on<FolderListTileDeleteFolder>(_deleteFolder);
     on<FolderListTileMoveFolder>(_moveFolder);
 
+    // on<FolderListTileCloseStreamById>(_closeStream);
+
     on<FolderListTileDEBUGAddCard>(_debugAddCard);
   }
 
@@ -133,4 +135,10 @@ class FolderListTileBloc
       Emitter<FolderListTileState> emit) async {
     await _cardsRepository.saveCard(event.card);
   }
+
+  
+
+  // FutureOr<void> _closeStream(FolderListTileCloseStreamById event, Emitter<FolderListTileState> emit) {
+  //   _cardsRepository.closeStreamById(event.id);
+  // }
 }

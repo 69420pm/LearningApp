@@ -49,3 +49,10 @@ class FolderListTileMoveFolder extends FolderListTileEvent {
     required this.newParentId,
   });
 }
+
+// class FolderListTileCloseStreamById extends FolderListTileEvent {
+//   String id;
+//   FolderListTileCloseStreamById({
+//     required this.id,
+//   });
+// }

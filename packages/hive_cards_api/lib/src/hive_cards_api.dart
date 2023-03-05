@@ -394,12 +394,15 @@ class HiveCardsApi extends CardsApi {
 
     newStream.add(children);
     _subscribedStreams[path] = newStream;
+    print(_subscribedStreams);
     return newStream;
   }
 
   @override
   void closeStreamById(String id, {bool deleteChildren = false}) {
     final path = _getPath(id);
+    print("clostreambyid");
+    print(_subscribedStreams);
     if (deleteChildren) {
       final childPaths = _getChildrenPaths(id);
       if (childPaths != null) {
@@ -415,6 +418,7 @@ class HiveCardsApi extends CardsApi {
       _subscribedStreams[path]!.close();
       _subscribedStreams.remove(path);
     }
+    print(_subscribedStreams);
   }
 
   @override
