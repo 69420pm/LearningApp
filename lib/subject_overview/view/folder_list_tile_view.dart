@@ -43,7 +43,7 @@ class FolderListTileView extends StatelessWidget {
             collapsedTextColor:
                 Theme.of(context).colorScheme.onSecondaryContainer,
             textColor: Theme.of(context).colorScheme.onSecondaryContainer,
-            maintainState: false,
+            maintainState: true,
             title: Row(
               children: [
                 const Icon(Icons.folder),

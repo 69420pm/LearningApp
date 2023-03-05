@@ -54,10 +54,10 @@ class FolderListTile extends StatelessWidget {
                     parentID: folder.id,
                     child: BlocBuilder<FolderListTileBloc, FolderListTileState>(
                       buildWhen: (previous, current) {
-                        if (current is FolderListTileRetrieveChildren) {
+                        // if (current is FolderListTileRetrieveChildren) {
                           return true;
-                        }
-                        return false;
+                        // }
+                        // return false;
                       },
                       builder: (context, state) {
                         if (state is FolderListTileRetrieveChildren) {
@@ -70,11 +70,11 @@ class FolderListTile extends StatelessWidget {
                               childListTiles.remove(element.id);
                             }
                           }
-                          print("///");
-                          print(state.childrenStream);
-                          print(state.removedWidgets);
-                          print(childListTiles);
-                          print("///");
+                          // print("///");
+                          // print(state.childrenStream);
+                          // print(state.removedWidgets);
+                          // print(childListTiles);
+                          // print("///");
                         }
 
                         return BlocBuilder<SubjectOverviewSelectionBloc,

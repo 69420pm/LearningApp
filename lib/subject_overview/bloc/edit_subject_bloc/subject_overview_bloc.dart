@@ -211,19 +211,21 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
   //   }
   // }
 
-  FutureOr<void> _setParent(
+  Future<FutureOr<void>> _setParent(
     EditSubjectSetFolderParent event,
     Emitter<EditSubjectState> emit,
-  ) {
-    cardsRepository.moveFolder(event.folder, event.parentId);
+  ) async {
+    await cardsRepository.moveFolder(event.folder, event.parentId);
+    emit(EditSubjectSuccess());
   }
 
-  FutureOr<void> _setParentCard(
+  Future<FutureOr<void>> _setParentCard(
     EditSubjectSetCardParent event,
     Emitter<EditSubjectState> emit,
-  ) {
-    cardsRepository
-      ..deleteCard(event.card.id, event.card.parentId)
-      ..saveCard(event.card.copyWith(parentId: event.parentId));
+  ) async {
+    await cardsRepository.deleteCard(event.card.id, event.card.parentId);
+    await cardsRepository
+        .saveCard(event.card.copyWith(parentId: event.parentId));
+    emit(EditSubjectSuccess());
   }
 }
