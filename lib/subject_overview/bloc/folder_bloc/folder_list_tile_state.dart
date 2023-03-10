@@ -12,7 +12,10 @@ class FolderListTileInitial extends FolderListTileState {
 class FolderListTileRetrieveChildren extends FolderListTileState {
   final Map<String, Widget> childrenStream;
   final List<Removed> removedWidgets;
-  FolderListTileRetrieveChildren({
+  final String senderId;
+  FolderListTileRetrieveChildren(
+    {
+    required this.senderId,
     required this.childrenStream,
     required this.removedWidgets,
   });

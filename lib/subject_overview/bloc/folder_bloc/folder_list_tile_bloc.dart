@@ -46,6 +46,7 @@ class FolderListTileBloc
     await emit.forEach(
       _cardsRepository.getChildrenById(event.id),
       onData: (data) {
+        print("update folder llisttile bloc");
         print(data);
         final childListTiles = <String, Widget>{};
         final widgetsToRemove = <Removed>[];
@@ -67,10 +68,11 @@ class FolderListTileBloc
           }
         }
         // if (childListTiles.isNotEmpty || widgetsToRemove.isNotEmpty) {
-          return FolderListTileRetrieveChildren(
-            childrenStream: childListTiles,
-            removedWidgets: widgetsToRemove,
-          );
+        return FolderListTileRetrieveChildren(
+          senderId: event.id,
+          childrenStream: childListTiles,
+          removedWidgets: widgetsToRemove,
+        );
         // }
 
         // return FolderListTileSuccess();

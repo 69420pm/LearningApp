@@ -144,7 +144,6 @@ class FolderListTileView extends StatelessWidget {
                             .whereType<FolderListTileParent>()
                             .length,
                         itemBuilder: (context, index) {
-
                           return childListTiles.values
                             .whereType<FolderListTileParent>()
                             .elementAt(index);

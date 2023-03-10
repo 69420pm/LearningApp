@@ -26,7 +26,7 @@ class FolderListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     // print("rebuild" + folder.name);
     var childListTiles = <String, Widget>{};
-    print("rebuild folder" + folder.name);
+    print("rebuild" + folder.name);
     return Padding(
       padding: const EdgeInsets.only(
         bottom: UISizeConstants.defaultSize,
@@ -53,6 +53,8 @@ class FolderListTile extends StatelessWidget {
                 },
                 builder: (context, state) {
                   if (state is FolderListTileRetrieveChildren) {
+                    print("blocbuilder");
+                    print(state.childrenStream);
                     childListTiles = {
                       ...childListTiles,
                       ...state.childrenStream
@@ -62,7 +64,6 @@ class FolderListTile extends StatelessWidget {
                         childListTiles.remove(element.id);
                       }
                     }
-                    print(state.childrenStream);
 
                     // var newChildListTiles = <String, Widget>{};
                     // childListTiles.forEach((key, value) {
