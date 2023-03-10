@@ -10,8 +10,8 @@ import 'package:learning_app/subject_overview/view/folder_drag_target.dart';
 import 'package:learning_app/subject_overview/view/inactive_folder_list_tile.dart';
 import 'package:ui_components/ui_components.dart';
 
-class FolderListTile extends StatelessWidget {
-  FolderListTile({
+class FolderListTileParent extends StatelessWidget {
+  FolderListTileParent({
     super.key,
     required this.folder,
     required this.cardsRepository,
@@ -22,11 +22,11 @@ class FolderListTile extends StatelessWidget {
   final CardsRepository cardsRepository;
   bool isHighlight;
 
+    var childListTiles = <String, Widget>{};
   @override
   Widget build(BuildContext context) {
+    context.read<FolderListTileBloc>().add(FolderListTileGetChildrenById(id: folder.id));
     // print("rebuild" + folder.name);
-    var childListTiles = <String, Widget>{};
-    print("rebuild" + folder.name);
     return Padding(
       padding: const EdgeInsets.only(
         bottom: UISizeConstants.defaultSize,
@@ -46,15 +46,14 @@ class FolderListTile extends StatelessWidget {
               parentID: folder.id,
               child: BlocBuilder<FolderListTileBloc, FolderListTileState>(
                 buildWhen: (previous, current) {
-                  if (current is FolderListTileRetrieveChildren) {
+                  if (current is FolderListTileRetrieveChildren &&
+                      current.senderId == folder.id) {
                     return true;
                   }
                   return false;
                 },
                 builder: (context, state) {
-                  if (state is FolderListTileRetrieveChildren) {
-                    print("blocbuilder");
-                    print(state.childrenStream);
+                  if (state is FolderListTileRetrieveChildren && state.senderId == folder.id) {
                     childListTiles = {
                       ...childListTiles,
                       ...state.childrenStream

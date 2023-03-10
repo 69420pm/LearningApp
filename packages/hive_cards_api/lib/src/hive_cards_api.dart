@@ -707,7 +707,7 @@ class HiveCardsApi extends CardsApi {
     // }
     // await _hiveBox.put(_makePathStorable(path!), cards);
     // await deleteCards(ids, parentIds);
-
+    print(cards);
     for (var card in cards) {
       ids.add(card.id);
       parentIds.add(card.parentId);

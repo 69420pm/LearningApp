@@ -32,6 +32,7 @@ class FolderListTileBloc
 
     on<FolderListTileDEBUGAddCard>(_debugAddCard);
   }
+  // List<String> _subscribedStreamIds = [];
 
   final CardsRepository _cardsRepository;
   String? streamId;
@@ -39,15 +40,12 @@ class FolderListTileBloc
     FolderListTileGetChildrenById event,
     Emitter<FolderListTileState> emit,
   ) async {
-    emit(FolderListTileLoading());
-    streamId = event.id;
+    // emit(FolderListTileLoading());
     // await _cardsRepository.closeStreamById(streamId!);
 
     await emit.forEach(
       _cardsRepository.getChildrenById(event.id),
       onData: (data) {
-        print("update folder llisttile bloc");
-        print(data);
         final childListTiles = <String, Widget>{};
         final widgetsToRemove = <Removed>[];
         for (final element in data) {
@@ -158,7 +156,7 @@ class FolderListTileBloc
   Widget folderWidget(Folder element) {
     return BlocProvider(
       create: (context) => FolderListTileBloc(_cardsRepository),
-      child: FolderListTile(
+      child: FolderListTileParent(
         folder: element,
         cardsRepository: _cardsRepository,
       ),
