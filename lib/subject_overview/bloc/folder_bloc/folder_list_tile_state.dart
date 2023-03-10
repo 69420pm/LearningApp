@@ -2,26 +2,41 @@
 part of 'folder_list_tile_bloc.dart';
 
 @immutable
-abstract class FolderListTileState {}
+abstract class FolderListTileState extends Equatable {}
 
-class FolderListTileInitial extends FolderListTileState {}
+class FolderListTileInitial extends FolderListTileState {
+  @override
+  List<Object?> get props => [];
+}
 
 class FolderListTileRetrieveChildren extends FolderListTileState {
-  Map<String, Widget> childrenStream;
-  List<Removed> removedWidgets;
+  final Map<String, Widget> childrenStream;
+  final List<Removed> removedWidgets;
   FolderListTileRetrieveChildren({
     required this.childrenStream,
     required this.removedWidgets,
   });
+
+  @override
+  List<Object?> get props => [childrenStream, removedWidgets];
 }
 
-class FolderListTileLoading extends FolderListTileState {}
+class FolderListTileLoading extends FolderListTileState {
+  @override
+  List<Object?> get props => [];
+}
 
 class FolderListTileError extends FolderListTileState {
-  String errorMessage;
+  final String errorMessage;
   FolderListTileError({
     required this.errorMessage,
   });
+
+  @override
+  List<Object?> get props => [errorMessage];
 }
 
-class FolderListTileSuccess extends FolderListTileState{}
+class FolderListTileSuccess extends FolderListTileState {
+  @override
+  List<Object?> get props => [];
+}

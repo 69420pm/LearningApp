@@ -394,31 +394,27 @@ class HiveCardsApi extends CardsApi {
 
     newStream.add(children);
     _subscribedStreams[path] = newStream;
-    print(_subscribedStreams);
     return newStream;
   }
 
   @override
-  void closeStreamById(String id, {bool deleteChildren = false}) {
+  Future<void> closeStreamById(String id, {bool deleteChildren = false}) async {
     final path = _getPath(id);
-    print("clostreambyid");
-    print(_subscribedStreams);
     if (deleteChildren) {
       final childPaths = _getChildrenPaths(id);
       if (childPaths != null) {
         for (final element in childPaths) {
           if (_subscribedStreams[element] != null) {
-            _subscribedStreams[element]!.close();
+            await _subscribedStreams[element]!.close();
             _subscribedStreams.remove(element);
           }
         }
       }
     }
     if (_subscribedStreams[path] != null) {
-      _subscribedStreams[path]!.close();
+      await _subscribedStreams[path]!.close();
       _subscribedStreams.remove(path);
     }
-    print(_subscribedStreams);
   }
 
   @override
@@ -538,7 +534,7 @@ class HiveCardsApi extends CardsApi {
       throw ParentNotFoundException();
     }
     await _hiveBox.put(_makePathStorable(path), folders);
-    
+
     if (_subscribedStreams.containsKey(path)) {
       _subscribedStreams[path]!.add([Removed(id: folder.id)]);
     }
@@ -694,10 +690,8 @@ class HiveCardsApi extends CardsApi {
     return foundedCards;
   }
 
-//! FLAGGGGGGGGGGGGED COMPLETE BULLSHIT
   @override
   Future<void> moveCards(List<Card> cards, String newParentId) async {
-    print("move cards");
     final ids = <String>[];
     final parentIds = <String>[];
     final cardsToUpdateStreams = <Card>[];
@@ -714,14 +708,12 @@ class HiveCardsApi extends CardsApi {
     // await _hiveBox.put(_makePathStorable(path!), cards);
     // await deleteCards(ids, parentIds);
 
-
-
     for (var card in cards) {
       ids.add(card.id);
       parentIds.add(card.parentId);
 
       card = card.copyWith(parentId: newParentId);
-  
+
       if (path == null) {
         throw ParentNotFoundException();
       }
@@ -750,8 +742,62 @@ class HiveCardsApi extends CardsApi {
       await _hiveBox.put(_makePathStorable(path), cards);
     }
     await deleteCards(ids, parentIds);
+
+    if (ids.length != parentIds.length) throw WrongInput();
+    final parentIdToDeletedIds = <String, List<String>>{};
+    final paths = <String>[];
+    for (var i = 0; i < ids.length; i++) {
+      final path = _getPath(parentIds[i]);
+      if (path == null) {
+        throw ParentNotFoundException();
+      }
+      if (!paths.contains(path)) {
+        paths.add(path);
+      }
+      if (parentIdToDeletedIds[path] == null) {
+        parentIdToDeletedIds[path] = [ids[i]];
+      } else {
+        parentIdToDeletedIds[path]!.add(ids[i]);
+      }
+      final cards = _hiveBox.get(_makePathStorable(path)) as List<String>?;
+      var found = false;
+      if (cards != null) {
+        for (final element in cards) {
+          if (element.substring(7).startsWith(ids[i])) {
+            cards.remove(element);
+            found = true;
+            break;
+          }
+        }
+      }
+      if (found == false) {
+        throw ParentNotFoundException();
+      }
+
+      await _hiveBox.put(_makePathStorable(path), cards);
+    }
+        Map<String, List<Removed>> toRemove = {};
+    for (final path in paths) {
+      if (_subscribedStreams.containsKey(path)) {
+        // List<Removed> toRemove = [];
+        for (final id in parentIdToDeletedIds[path]!) {
+          if (toRemove[path] == null) {
+            toRemove[path] = [Removed(id: id)];
+          } else {
+            toRemove[path]!.add(Removed(id: id));
+          }
+        }
+        // _subscribedStreams[path]!.add(toRemove);
+      }
+    }
+
     if (_subscribedStreams.containsKey(path)) {
-      _subscribedStreams[path]!.add(cardsToUpdateStreams);
+      if(toRemove != null){
+
+      _subscribedStreams[path]!.add([...[cardsToUpdateStreams], ...toRemove[path]!]);
+      }else{
+        _subscribedStreams[path]!.add(cardsToUpdateStreams);
+      }
     }
   }
 }

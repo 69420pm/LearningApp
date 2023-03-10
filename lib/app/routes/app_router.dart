@@ -88,19 +88,20 @@ class AppRouter {
               // BlocProvider.value(
               //   value: _editSubjectBloc,
               // ),
-              BlocProvider(
-                create: (context) => esb,
-              ),
+              // BlocProvider.value(
+              //   value: _editSubjectBloc
+              // ),
               BlocProvider(
                 create: (context) => sosb,
               ),
-              BlocProvider.value(
-                value: _addFolderCubit,
-              )
+              // BlocProvider.value(
+              //   value: _addFolderCubit,
+              // )
             ],
             child: SubjectOverviewPage(
               subjectToEdit: routeSettings.arguments! as Subject,
               editSubjectBloc: esb,
+              cardsRepository: _cardsRepository,
             ),
           ),
         );

@@ -4,10 +4,12 @@ import 'package:bloc/bloc.dart';
 import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
-
+import 'package:learning_app/subject_overview/view/folder_list_tile_parent.dart';
+import 'package:equatable/equatable.dart';
 part 'folder_list_tile_event.dart';
 part 'folder_list_tile_state.dart';
 
@@ -32,21 +34,26 @@ class FolderListTileBloc
   }
 
   final CardsRepository _cardsRepository;
-
+  String? streamId;
   Future<void> _getChildren(
     FolderListTileGetChildrenById event,
     Emitter<FolderListTileState> emit,
   ) async {
     emit(FolderListTileLoading());
+    streamId = event.id;
+    // await _cardsRepository.closeStreamById(streamId!);
+
     await emit.forEach(
       _cardsRepository.getChildrenById(event.id),
       onData: (data) {
+        print(data);
         final childListTiles = <String, Widget>{};
         final widgetsToRemove = <Removed>[];
         for (final element in data) {
           if (element is Folder) {
-            childListTiles[element.id] = FolderListTile(
+            childListTiles[element.id] = FolderListTileParent(
               folder: element,
+              isHighlight: false,
               cardsRepository: _cardsRepository,
             );
           } else if (element is Card) {
@@ -59,15 +66,14 @@ class FolderListTileBloc
             widgetsToRemove.add(element);
           }
         }
-
-        if (childListTiles.isNotEmpty || widgetsToRemove.isNotEmpty) {
+        // if (childListTiles.isNotEmpty || widgetsToRemove.isNotEmpty) {
           return FolderListTileRetrieveChildren(
             childrenStream: childListTiles,
             removedWidgets: widgetsToRemove,
           );
-        }
-        
-        return FolderListTileSuccess();
+        // }
+
+        // return FolderListTileSuccess();
       },
       onError: (error, stackTrace) =>
           FolderListTileError(errorMessage: 'backend broken'),
@@ -136,9 +142,24 @@ class FolderListTileBloc
     await _cardsRepository.saveCard(event.card);
   }
 
-  
-
   // FutureOr<void> _closeStream(FolderListTileCloseStreamById event, Emitter<FolderListTileState> emit) {
   //   _cardsRepository.closeStreamById(event.id);
   // }
+  @override
+  Future<void> close() async {
+    if (streamId != null) {
+      // await _cardsRepository.closeStreamById(streamId!);
+    }
+    return super.close();
+  }
+
+  Widget folderWidget(Folder element) {
+    return BlocProvider(
+      create: (context) => FolderListTileBloc(_cardsRepository),
+      child: FolderListTile(
+        folder: element,
+        cardsRepository: _cardsRepository,
+      ),
+    );
+  }
 }
