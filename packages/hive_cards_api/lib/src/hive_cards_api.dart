@@ -692,79 +692,57 @@ class HiveCardsApi extends CardsApi {
 
   @override
   Future<void> moveCards(List<Card> cards, String newParentId) async {
-    final ids = <String>[];
-    final parentIds = <String>[];
-    final cardsToUpdateStreams = <Card>[];
-    final path = _getPath(newParentId);
+    final newPath = _getPath(newParentId);
 
-    // for(var card in cards){
-    //   ids.add(card.id);
-    //   parentIds.add(card.parentId);
-
-    //   card = card.copyWith(parentId: newParentId);
-    //   cardsToUpdateStreams.add(card);
-
-    // }
-    // await _hiveBox.put(_makePathStorable(path!), cards);
-    // await deleteCards(ids, parentIds);
-    print(cards);
-    for (var card in cards) {
-      ids.add(card.id);
-      parentIds.add(card.parentId);
-
-      card = card.copyWith(parentId: newParentId);
-
-      if (path == null) {
+    if (newPath == null) {
+      throw ParentNotFoundException();
+    }
+    final updateEvents = <String, List<Object>>{};
+    for (final card in cards) {
+      final newCard = card.copyWith(parentId: newParentId);
+      final currentPath = _getPath(card.parentId);
+      if (currentPath == null) {
         throw ParentNotFoundException();
       }
 
-      var cards = await _hiveBox.get(_makePathStorable(path)) as List<String>?;
+      var loadedNewCards =
+          await _hiveBox.get(_makePathStorable(newPath)) as List<String>?;
       var found = false;
       var indexToChange = 0;
-      if (cards != null) {
-        for (final element in cards) {
+      if (loadedNewCards != null) {
+        for (final element in loadedNewCards) {
           // contains word
-          if (element.substring(7).startsWith(card.id)) {
-            indexToChange = cards.indexOf(element);
+          if (element.substring(7).startsWith(newCard.id)) {
+            indexToChange = loadedNewCards.indexOf(element);
             found = true;
             break;
           }
         }
       } else {
-        cards = [];
+        loadedNewCards = [];
       }
       if (!found) {
-        cards.add(card.toJson());
+        loadedNewCards.add(newCard.toJson());
       } else {
-        cards[indexToChange] = card.toJson();
+        loadedNewCards[indexToChange] = newCard.toJson();
       }
-      cardsToUpdateStreams.add(card);
-      await _hiveBox.put(_makePathStorable(path), cards);
-    }
-    await deleteCards(ids, parentIds);
 
-    if (ids.length != parentIds.length) throw WrongInput();
-    final parentIdToDeletedIds = <String, List<String>>{};
-    final paths = <String>[];
-    for (var i = 0; i < ids.length; i++) {
-      final path = _getPath(parentIds[i]);
-      if (path == null) {
-        throw ParentNotFoundException();
-      }
-      if (!paths.contains(path)) {
-        paths.add(path);
-      }
-      if (parentIdToDeletedIds[path] == null) {
-        parentIdToDeletedIds[path] = [ids[i]];
+      if (updateEvents[newPath] == null) {
+        updateEvents[newPath] = [newCard];
       } else {
-        parentIdToDeletedIds[path]!.add(ids[i]);
+        updateEvents[newPath]!.add(newCard);
       }
-      final cards = _hiveBox.get(_makePathStorable(path)) as List<String>?;
-      var found = false;
-      if (cards != null) {
-        for (final element in cards) {
-          if (element.substring(7).startsWith(ids[i])) {
-            cards.remove(element);
+
+      await _hiveBox.put(_makePathStorable(newPath), loadedNewCards);
+
+      // delete cards
+      final loadedOldCards =
+          await _hiveBox.get(_makePathStorable(currentPath)) as List<String>?;
+      found = false;
+      if (loadedOldCards != null) {
+        for (final element in loadedOldCards) {
+          if (element.substring(7).startsWith(card.id)) {
+            loadedOldCards.remove(element);
             found = true;
             break;
           }
@@ -773,31 +751,78 @@ class HiveCardsApi extends CardsApi {
       if (found == false) {
         throw ParentNotFoundException();
       }
-
-      await _hiveBox.put(_makePathStorable(path), cards);
-    }
-        Map<String, List<Removed>> toRemove = {};
-    for (final path in paths) {
-      if (_subscribedStreams.containsKey(path)) {
-        // List<Removed> toRemove = [];
-        for (final id in parentIdToDeletedIds[path]!) {
-          if (toRemove[path] == null) {
-            toRemove[path] = [Removed(id: id)];
-          } else {
-            toRemove[path]!.add(Removed(id: id));
-          }
-        }
-        // _subscribedStreams[path]!.add(toRemove);
+      if (updateEvents[currentPath] == null) {
+        updateEvents[currentPath] = [Removed(id: card.id)];
+      } else {
+        updateEvents[currentPath]!.add(Removed(id: card.id));
       }
+      // cardsToUpdateStreams.add(card);
+      await _hiveBox.put(_makePathStorable(currentPath), loadedOldCards);
     }
-
-    if (_subscribedStreams.containsKey(path)) {
-      if(toRemove != null){
-
-      _subscribedStreams[path]!.add([...[cardsToUpdateStreams], ...toRemove[path]!]);
-      }else{
-        _subscribedStreams[path]!.add(cardsToUpdateStreams);
+    updateEvents.forEach((key, value) {
+      if (_subscribedStreams.containsKey(key)) {
+        _subscribedStreams[key]!.add(value);
       }
-    }
+    });
+    // await deleteCards(ids, parentIds);
+
+    //   Map<String, List<Removed>> toRemove = {};
+    //   if (ids.length != parentIds.length) throw WrongInput();
+    //   final parentIdToDeletedIds = <String, List<String>>{};
+    //   final paths = <String>[];
+    //   for (var i = 0; i < ids.length; i++) {
+    //     final path = _getPath(parentIds[i]);
+    //     if (path == null) {
+    //       throw ParentNotFoundException();
+    //     }
+    //     if (!paths.contains(path)) {
+    //       paths.add(path);
+    //     }
+    //     if (parentIdToDeletedIds[path] == null) {
+    //       parentIdToDeletedIds[path] = [ids[i]];
+    //     } else {
+    //       parentIdToDeletedIds[path]!.add(ids[i]);
+    //     }
+    //     final cards = _hiveBox.get(_makePathStorable(path)) as List<String>?;
+    //     var found = false;
+    //     if (cards != null) {
+    //       for (final element in cards) {
+    //         if (element.substring(7).startsWith(ids[i])) {
+    //           cards.remove(element);
+    //           found = true;
+    //           break;
+    //         }
+    //       }
+    //     }
+    //     if (found == false) {
+    //       throw ParentNotFoundException();
+    //     }
+
+    //     await _hiveBox.put(_makePathStorable(path), cards);
+    //   }
+    //   for (final path in paths) {
+    //     if (_subscribedStreams.containsKey(path)) {
+    //       // List<Removed> toRemove = [];
+    //       for (final id in parentIdToDeletedIds[path]!) {
+    //         if (toRemove[path] == null) {
+    //           toRemove[path] = [Removed(id: id)];
+    //         } else {
+    //           toRemove[path]!.add(Removed(id: id));
+    //         }
+    //       }
+    //       // _subscribedStreams[path]!.add(toRemove);
+    //     }
+    //   }
+
+    //   if (_subscribedStreams.containsKey(newPath)) {
+    //     if (toRemove[newPath] != null) {
+    //       _subscribedStreams[newPath]!.add([
+    //         ...[cardsToUpdateStreams],
+    //         ...toRemove[newPath]!
+    //       ]);
+    //     } else {
+    //       _subscribedStreams[newPath]!.add(cardsToUpdateStreams);
+    //     }
+    //   }
   }
 }
