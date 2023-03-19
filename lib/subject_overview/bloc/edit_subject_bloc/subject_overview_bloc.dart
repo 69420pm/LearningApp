@@ -9,7 +9,6 @@ import 'package:learning_app/app/helper/uid.dart';
 import 'package:learning_app/subject_overview/bloc/folder_bloc/folder_list_tile_bloc.dart';
 import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
-import 'package:learning_app/subject_overview/view/folder_list_tile_parent.dart';
 import 'package:equatable/equatable.dart';
 import 'package:collection/collection.dart';
 

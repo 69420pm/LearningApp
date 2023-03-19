@@ -5,7 +5,6 @@ import 'package:learning_app/subject_overview/bloc/folder_bloc/folder_list_tile_
 
 import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
-import 'package:learning_app/subject_overview/view/folder_list_tile_parent.dart';
 import 'package:ui_components/ui_components.dart';
 import 'package:uuid/uuid.dart';
 

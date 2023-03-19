@@ -17,6 +17,7 @@ import 'package:learning_app/subject_overview/bloc/edit_subject_bloc/subject_ove
 import 'package:learning_app/subject_overview/bloc/folder_bloc/folder_list_tile_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/view/subject_overview_page.dart';
+import 'package:markdown_editor/markdown_editor.dart';
 
 /// Handles complete app routing and is injected in MaterialApp()
 class AppRouter {
@@ -25,9 +26,6 @@ class AppRouter {
   final CardsRepository _cardsRepository;
 
   final HomeCubit _homeCubit = HomeCubit();
-  late final AddSubjectCubit _addSubjectCubit =
-      AddSubjectCubit(_cardsRepository);
-  late final AddFolderCubit _addFolderCubit = AddFolderCubit(_cardsRepository);
   late final EditSubjectBloc _editSubjectBloc =
       EditSubjectBloc(_cardsRepository);
   late final AddCardCubit _addCardCubit = AddCardCubit(_cardsRepository);
@@ -37,6 +35,7 @@ class AppRouter {
   late final SearchBloc _searchBloc = SearchBloc(_cardsRepository);
   late final FolderListTileBloc _folderListTileBloc =
       FolderListTileBloc(_cardsRepository);
+  final TextEditorBloc _textEditorBloc = TextEditorBloc();
 
   Route<dynamic> onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
@@ -67,6 +66,7 @@ class AppRouter {
               ),
               BlocProvider.value(value: _addCardCubit),
               BlocProvider.value(value: _editSubjectBloc),
+              BlocProvider.value(value: _textEditorBloc)
             ],
             child: AddCardPage(parentId: routeSettings.arguments as String),
           ),

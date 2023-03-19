@@ -93,24 +93,8 @@ class CustomTextEditingController extends TextEditingController {
     );
   }
 
-  late final Pattern pattern;
   String pureText = '';
-  final Map<String, TextStyle> map = {
-    r'@.\w+': const TextStyle(color: Colors.blue),
-    r'#.\w+': const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
-    r'\*\*(.*?)\*\*': const TextStyle(fontWeight: FontWeight.bold),
-    r'__(.*?)__': const TextStyle(fontStyle: FontStyle.italic),
-    '~~(.*?)~~': const TextStyle(decoration: TextDecoration.lineThrough),
-    r'```(.*?)```': const TextStyle(
-      fontFamily: 'mono',
-      fontFeatures: [FontFeature.tabularFigures()],
-    ),
-    r'`(#{1}\s)(.*)`': const TextStyle(color: Colors.red)
-  };
 
-  RichTextFieldController() {
-    pattern = RegExp(map.keys.map((key) => key).join('|'), multiLine: true);
-  }
 
   @override
   TextSpan buildTextSpan({
@@ -119,45 +103,7 @@ class CustomTextEditingController extends TextEditingController {
     required bool withComposing,
   }) {
     final children = <InlineSpan>[];
-    text.splitMapJoin(
-      pattern,
-      onMatch: (Match match) {
-        String? formattedText;
-        String? textPattern;
-        final patterns = map.keys.toList();
-        if (RegExp(patterns[0]).hasMatch(match[0]!)) {
-          formattedText = match[0];
-          textPattern = patterns[0];
-        } else if (RegExp(patterns[1]).hasMatch(match[0]!)) {
-          formattedText = match[0];
-          textPattern = patterns[1];
-        } else if (RegExp(patterns[2]).hasMatch(match[0]!)) {
-          // formattedText = match[0]!.replaceAll('**', '');
-          // selection = TextSelection(baseOffset: 1, extentOffset: 1);
-          textPattern = patterns[2];
-        } else if (RegExp(patterns[3]).hasMatch(match[0]!)) {
-          // formattedText = match[0]!.replaceAll('__', '');
-          textPattern = patterns[3];
-        } else if (RegExp(patterns[4]).hasMatch(match[0]!)) {
-          // formattedText = match[0]!.replaceAll('~~', '');
-          textPattern = patterns[4];
-        } else if (RegExp(patterns[5]).hasMatch(match[0]!)) {
-          // formattedText = match[0]!.replaceAll('```', '');
-          textPattern = patterns[5];
-        }
-        children.add(
-          TextSpan(
-            text: formattedText,
-            style: style!.merge(map[textPattern!]),
-          ),
-        );
-        return '';
-      },
-      onNonMatch: (String text) {
-        children.add(TextSpan(text: text, style: style));
-        return '';
-      },
-    );
+   
 
     return TextSpan(style: style, children: children);
   }

@@ -1,9 +1,11 @@
 import 'dart:ui';
 
+import 'package:markdown_editor/src/bloc/text_editor_bloc.dart';
 import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:markdown_editor/src/models/rich_text_field_controller.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TextTile extends StatefulWidget {
   const TextTile({super.key});
@@ -13,34 +15,35 @@ class TextTile extends StatefulWidget {
 }
 
 class _TextTileState extends State<TextTile> {
+  final textFieldController = TextFieldController();
+  TextSelection previousSelection = const TextSelection(
+    baseOffset: 0,
+    extentOffset: 0,
+  );
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: TextFieldController(),
-      maxLines: null,
-      keyboardType: TextInputType.multiline,
-//       onChanged: (value) {
-//         var new_text = value;
-//         var italicRegexMatch = RegExp(r'(?<!\*)\*(?![*\s])(?:[^*]*[^*\s])?\*')
-//             .allMatches(new_text);
-//         // var boldRegexMatch = RegExp(r'(\**)+(\S+)(\**)+').firstMatch(new_text);
-//         // print(italicRegexMatch);
-//         for (var match in italicRegexMatch) {
-//           new_text = new_text.replaceAll(RegExp(r'(?<!\*)\*(?![*\s])(?:[^*]*[^*\s])?\*'), '');
-//         }
-//         var markdown = new_text;
-//  markdown = markdown.replaceAll(RegExp('_(.+?)_'), '');
-//   markdown = markdown.replaceAll(RegExp(r'\*(.+?)\*'), '');
-//   print(markdown);
-//         // if (boldRegexMatch != null) {
-//         //   // print(italicRegexMatch.star
-//         //   // print(italicRegexMatch.end);
-//         //   new_text = new_text.substring(0, boldRegexMatch.start - 2) +
-//         //       new_text.substring(
-//         //           boldRegexMatch.start + 1, boldRegexMatch.end - 2) +
-//         //       new_text.substring(boldRegexMatch.end);
-//         // }
-//       },
+    return BlocBuilder<TextEditorBloc, TextEditorState>(
+      buildWhen: (previous, current) {
+        if (current is! TextEditorKeyboardRowChanged) {
+          return false;
+        }
+        if ((textFieldController.selection.end -
+                textFieldController.selection.start) >
+            0) {
+          return true;
+        }
+        previousSelection = textFieldController.selection;
+        return false;
+      },
+      builder: (context, state) {
+        // textFieldController.buildTextSpan(
+        //     context: context, withComposing: false);
+        return TextField(
+          controller: textFieldController,
+          maxLines: null,
+          keyboardType: TextInputType.multiline,
+        );
+      },
     );
   }
 }

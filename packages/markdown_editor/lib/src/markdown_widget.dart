@@ -3,7 +3,7 @@ import 'package:markdown_editor/src/models/text_tile.dart';
 
 class MarkdownWidget extends StatefulWidget {
   const MarkdownWidget({super.key});
-
+  
   @override
   State<MarkdownWidget> createState() => _MarkdownWidgetState();
 }
