@@ -14,3 +14,4 @@ class TextEditorKeyboardRowChange extends TextEditorEvent {
     required this.isUnderlined,
   });
 }
+
