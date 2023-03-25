@@ -34,7 +34,6 @@ class _KeyboardToggleState extends State<KeyboardToggle> {
           backgroundColor: _isPressed
               ? Theme.of(context).colorScheme.background
               : Theme.of(context).colorScheme.shadow,
-          
         ),
         child: Center(child: widget.icon),
       ),

@@ -36,6 +36,7 @@ class AppRouter {
   late final FolderListTileBloc _folderListTileBloc =
       FolderListTileBloc(_cardsRepository);
   final TextEditorBloc _textEditorBloc = TextEditorBloc();
+  final KeyboardRowCubit _keyboardRowCubit = KeyboardRowCubit();
 
   Route<dynamic> onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
@@ -66,7 +67,8 @@ class AppRouter {
               ),
               BlocProvider.value(value: _addCardCubit),
               BlocProvider.value(value: _editSubjectBloc),
-              BlocProvider.value(value: _textEditorBloc)
+              BlocProvider.value(value: _textEditorBloc),
+              BlocProvider.value(value: _keyboardRowCubit)
             ],
             child: AddCardPage(parentId: routeSettings.arguments as String),
           ),
