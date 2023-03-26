@@ -10,7 +10,10 @@ part 'text_editor_state.dart';
 class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
   /// constructor
   TextEditorBloc(
-      {this.isBold = false, this.isItalic = false, this.isUnderlined = false})
+      {this.isBold = false,
+      this.isItalic = false,
+      this.isUnderlined = false,
+      this.textColor = TextColor.white})
       : super(TextEditorInitial()) {
     on<TextEditorEvent>((event, emit) {});
     on<TextEditorKeyboardRowChange>(_keyboardRowChange);
@@ -25,13 +28,19 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
   /// whether text should get written underlined or not
   bool isUnderlined;
 
+  /// color of text as enum
+  TextColor textColor;
+
   FutureOr<void> _keyboardRowChange(
     TextEditorKeyboardRowChange event,
     Emitter<TextEditorState> emit,
   ) {
-    isBold = event.isBold;
-    isItalic = event.isItalic;
-    isUnderlined = event.isUnderlined;
+    isBold = event.isBold != null ? event.isBold! : isBold;
+    isItalic = event.isItalic != null ? event.isItalic! : isItalic;
+    isUnderlined =
+        event.isUnderlined != null ? event.isUnderlined! : isUnderlined;
+    textColor = event.textColor != null ? event.textColor! : textColor;
     emit(TextEditorKeyboardRowChanged());
   }
+  
 }

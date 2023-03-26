@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/bloc/text_editor_bloc.dart';
 
 class TextFieldController extends TextEditingController {
@@ -8,6 +9,11 @@ class TextFieldController extends TextEditingController {
   String _previousText = '';
   TextSelection _previousSelection =
       TextSelection(baseOffset: 0, extentOffset: 0);
+
+  bool _previousBold = false;
+  bool _previousItalic = false;
+  bool _previousUnderlined = false;
+  Color _previousTextColor = Colors.white;
   @override
   TextSpan buildTextSpan({
     required BuildContext context,
@@ -19,20 +25,51 @@ class TextFieldController extends TextEditingController {
     final isBold = context.read<TextEditorBloc>().isBold;
     final isItalic = context.read<TextEditorBloc>().isItalic;
     final isUnderlined = context.read<TextEditorBloc>().isUnderlined;
+    final textColor = KeyboardRow.returnColorFromTextColor(
+      context.read<TextEditorBloc>().textColor,
+    );
 
     final textDelta = text.length - _previousText.length;
     final newCharTiles = <int, CharTile>{};
     if (text == _previousText &&
         (selection.end - selection.start) > 0 &&
         selection == _previousSelection) {
+      bool? boldToChange;
+      bool? italicToChange;
+      bool? underlinedToChange;
+      Color? textColorToChange;
+      if (isBold != _previousBold) {
+        boldToChange = isBold;
+      }
+      if (isItalic != _previousItalic) {
+        italicToChange = isItalic;
+      }
+      if (isUnderlined != _previousUnderlined) {
+        underlinedToChange = isUnderlined;
+      }
+      if (textColor != _previousTextColor) {
+        textColorToChange = textColor;
+      }
       for (var i = selection.start; i < selection.end; i++) {
         charTiles[i] = CharTile(
           char: text[i],
           style: TextStyle(
-            color: Colors.white,
-            fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-            fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
-            decoration: isUnderlined ? TextDecoration.underline : null,
+            color: textColorToChange ?? charTiles[i]!.style.color,
+            fontWeight: boldToChange != null
+                ? boldToChange
+                    ? FontWeight.bold
+                    : FontWeight.normal
+                : charTiles[i]!.style.fontWeight,
+            fontStyle: italicToChange != null
+                ? italicToChange
+                    ? FontStyle.italic
+                    : FontStyle.normal
+                : charTiles[i]!.style.fontStyle,
+            decoration: underlinedToChange != null
+                ? underlinedToChange
+                    ? TextDecoration.underline
+                    : null
+                : charTiles[i]!.style.decoration,
           ),
         );
       }
@@ -45,7 +82,7 @@ class TextFieldController extends TextEditingController {
             newCharTiles[i] = CharTile(
               char: text[i],
               style: TextStyle(
-                color: Colors.white,
+                color: textColor,
                 fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
                 fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
                 decoration: isUnderlined ? TextDecoration.underline : null,
@@ -64,6 +101,10 @@ class TextFieldController extends TextEditingController {
     });
     _previousText = text;
     _previousSelection = selection;
+    _previousBold = isBold;
+    _previousItalic = isItalic;
+    _previousUnderlined = isUnderlined;
+    _previousTextColor = textColor;
 
     return TextSpan(style: style, children: children);
   }

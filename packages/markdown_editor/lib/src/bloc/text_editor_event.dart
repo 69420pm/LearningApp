@@ -5,13 +5,15 @@ part of 'text_editor_bloc.dart';
 abstract class TextEditorEvent {}
 
 class TextEditorKeyboardRowChange extends TextEditorEvent {
-  bool isBold;
-  bool isItalic;
-  bool isUnderlined;
+  bool? isBold;
+  bool? isItalic;
+  bool? isUnderlined;
+  TextColor? textColor;
   TextEditorKeyboardRowChange({
-    required this.isBold,
-    required this.isItalic,
-    required this.isUnderlined,
+    this.isBold,
+    this.isItalic,
+    this.isUnderlined,
+    this.textColor
   });
 }
 

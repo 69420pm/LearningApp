@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/cubit/keyboard_row_cubit.dart';
 
 class KeyboardExpandable extends StatelessWidget {
@@ -19,7 +20,6 @@ class KeyboardExpandable extends StatelessWidget {
       child: ElevatedButton(
         onPressed: () {
           if (onPressed != null) {
-            context.read<KeyboardRowCubit>().expandExtraFormat();
             onPressed!.call();
           }
         },

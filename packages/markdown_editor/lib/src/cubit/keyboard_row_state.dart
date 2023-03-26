@@ -5,7 +5,6 @@ abstract class KeyboardRowState {}
 
 class KeyboardRowTextColors extends KeyboardRowState {}
 
-
 class KeyboardRowExtraFormat extends KeyboardRowState {}
 
 class KeyboardRowNewTextTile extends KeyboardRowState {}
