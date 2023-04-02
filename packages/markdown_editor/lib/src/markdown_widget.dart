@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:markdown_editor/src/models/text_tile.dart';
 
-class MarkdownWidget extends StatefulWidget {
+class MarkdownWidget extends StatelessWidget {
   const MarkdownWidget({super.key});
   
-  @override
-  State<MarkdownWidget> createState() => _MarkdownWidgetState();
-}
-
-class _MarkdownWidgetState extends State<MarkdownWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(

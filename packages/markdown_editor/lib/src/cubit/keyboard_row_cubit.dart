@@ -30,6 +30,7 @@ class KeyboardRowCubit extends Cubit<KeyboardRowState> {
   }
 
   void expandFavorites() {
+    print("expand");
     emit(KeyboardRowFavorites());
   }
 }

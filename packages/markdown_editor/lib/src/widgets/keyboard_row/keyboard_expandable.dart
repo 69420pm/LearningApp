@@ -9,14 +9,16 @@ class KeyboardExpandable extends StatelessWidget {
     required this.icon,
     this.onPressed,
     this.width = 50,
+    this.height = 40
   });
   Function? onPressed;
   Icon icon;
-  double width;
+  double width, height;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: width,
+      height: height,
       child: ElevatedButton(
         onPressed: () {
           if (onPressed != null) {

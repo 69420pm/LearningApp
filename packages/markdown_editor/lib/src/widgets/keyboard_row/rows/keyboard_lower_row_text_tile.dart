@@ -72,6 +72,9 @@ class KeyboardLowerRowTextTile extends StatelessWidget {
         ),
         KeyboardExpandable(
           icon: const Icon(Icons.add),
+          onPressed: (){
+            context.read<KeyboardRowCubit>().expandAddNewTextTile();
+          },
           width: 70,
         ),
       ],

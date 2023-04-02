@@ -13,6 +13,7 @@ class TextFieldController extends TextEditingController {
   bool _previousBold = false;
   bool _previousItalic = false;
   bool _previousUnderlined = false;
+  bool _previousCode = false;
   Color _previousTextColor = Colors.white;
   @override
   TextSpan buildTextSpan({
@@ -25,6 +26,7 @@ class TextFieldController extends TextEditingController {
     final isBold = context.read<TextEditorBloc>().isBold;
     final isItalic = context.read<TextEditorBloc>().isItalic;
     final isUnderlined = context.read<TextEditorBloc>().isUnderlined;
+    final isCode = context.read<TextEditorBloc>().isCode;
     final textColor = KeyboardRow.returnColorFromTextColor(
       context.read<TextEditorBloc>().textColor,
     );
@@ -37,6 +39,7 @@ class TextFieldController extends TextEditingController {
       bool? boldToChange;
       bool? italicToChange;
       bool? underlinedToChange;
+      bool? codeToChange;
       Color? textColorToChange;
       if (isBold != _previousBold) {
         boldToChange = isBold;
@@ -50,27 +53,36 @@ class TextFieldController extends TextEditingController {
       if (textColor != _previousTextColor) {
         textColorToChange = textColor;
       }
+      if (codeToChange != codeToChange) {
+        codeToChange = isCode;
+      }
       for (var i = selection.start; i < selection.end; i++) {
         charTiles[i] = CharTile(
           char: text[i],
-          style: TextStyle(
-            color: textColorToChange ?? charTiles[i]!.style.color,
-            fontWeight: boldToChange != null
-                ? boldToChange
-                    ? FontWeight.bold
-                    : FontWeight.normal
-                : charTiles[i]!.style.fontWeight,
-            fontStyle: italicToChange != null
-                ? italicToChange
-                    ? FontStyle.italic
-                    : FontStyle.normal
-                : charTiles[i]!.style.fontStyle,
-            decoration: underlinedToChange != null
-                ? underlinedToChange
-                    ? TextDecoration.underline
-                    : null
-                : charTiles[i]!.style.decoration,
-          ),
+          style: !isCode
+              ? TextStyle(
+                  color: textColorToChange ?? charTiles[i]!.style.color,
+                  fontWeight: boldToChange != null
+                      ? boldToChange
+                          ? FontWeight.bold
+                          : FontWeight.normal
+                      : charTiles[i]!.style.fontWeight,
+                  fontStyle: italicToChange != null
+                      ? italicToChange
+                          ? FontStyle.italic
+                          : FontStyle.normal
+                      : charTiles[i]!.style.fontStyle,
+                  decoration: underlinedToChange != null
+                      ? underlinedToChange
+                          ? TextDecoration.underline
+                          : null
+                      : charTiles[i]!.style.decoration,
+                  background: Paint()..color = Colors.transparent,
+                )
+              : TextStyle(
+                color: Colors.white,
+                  background: Paint()..color = Colors.black,
+                ),
         );
       }
     } else {
@@ -81,12 +93,19 @@ class TextFieldController extends TextEditingController {
           } else {
             newCharTiles[i] = CharTile(
               char: text[i],
-              style: TextStyle(
-                color: textColor,
-                fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-                fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
-                decoration: isUnderlined ? TextDecoration.underline : null,
-              ),
+              style: !isCode
+                  ? TextStyle(
+                      color: textColor,
+                      fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+                      fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
+                      decoration:
+                          isUnderlined ? TextDecoration.underline : null,
+                      background: Paint()..color = Colors.transparent,
+                    )
+                  : TextStyle(
+                    color: Colors.white,
+                      background: Paint()..color = Colors.black,
+                    ),
             );
           }
         } else {
@@ -104,6 +123,7 @@ class TextFieldController extends TextEditingController {
     _previousBold = isBold;
     _previousItalic = isItalic;
     _previousUnderlined = isUnderlined;
+    _previousCode = isCode;
     _previousTextColor = textColor;
 
     return TextSpan(style: style, children: children);

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:markdown_editor/src/bloc/text_editor_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:markdown_editor/src/bloc/text_editor_bloc.dart';
 import 'package:markdown_editor/src/cubit/keyboard_row_cubit.dart';
-import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_expandable.dart';
-import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_selectable.dart';
-import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_toggle.dart';
+import 'package:markdown_editor/src/widgets/keyboard_row/rows/keyboard_both_rows_add_tile.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/rows/keyboard_lower_row_text_tile.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/rows/keyboard_upper_row_extra_format.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/rows/keyboard_upper_row_text_colors.dart';
@@ -34,9 +32,13 @@ class KeyboardRow extends StatelessWidget {
         } else if (state is KeyboardRowExtraFormat) {
           return Column(
             children: [
-              const KeyboardUpperRowExtraFormat(),
+              KeyboardUpperRowExtraFormat(),
               KeyboardLowerRowTextTile()
             ],
+          );
+        } else if (state is KeyboardRowNewTextTile) {
+          return Column(
+            children: [const KeyboardBothRowsAddTile()],
           );
         }
         return Column(

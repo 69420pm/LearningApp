@@ -13,6 +13,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
       {this.isBold = false,
       this.isItalic = false,
       this.isUnderlined = false,
+      this.isCode = false,
       this.textColor = TextColor.white})
       : super(TextEditorInitial()) {
     on<TextEditorEvent>((event, emit) {});
@@ -28,6 +29,9 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
   /// whether text should get written underlined or not
   bool isUnderlined;
 
+  /// whether text should get formatted as code
+  bool isCode;
+
   /// color of text as enum
   TextColor textColor;
 
@@ -39,8 +43,8 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     isItalic = event.isItalic != null ? event.isItalic! : isItalic;
     isUnderlined =
         event.isUnderlined != null ? event.isUnderlined! : isUnderlined;
+    isCode = event.isCode != null ?event.isCode!:isCode;
     textColor = event.textColor != null ? event.textColor! : textColor;
     emit(TextEditorKeyboardRowChanged());
   }
-  
 }

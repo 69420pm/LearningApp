@@ -3,10 +3,16 @@ import 'package:markdown_editor/src/bloc/text_editor_bloc.dart';
 import 'package:ui_components/ui_components.dart';
 
 class KeyboardToggle extends StatefulWidget {
-  KeyboardToggle({super.key, required this.icon, this.onPressed});
+  KeyboardToggle(
+      {super.key,
+      required this.icon,
+      this.onPressed,
+      this.width = 50,
+      this.height = 40});
   Icon icon;
   Function? onPressed;
-
+  double width;
+  double height;
   @override
   State<KeyboardToggle> createState() => _KeyboardToggleState();
 }
@@ -16,7 +22,8 @@ class _KeyboardToggleState extends State<KeyboardToggle> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 50,
+      width: widget.width,
+      height: widget.height,
       child: ElevatedButton(
         onPressed: () {
           setState(() {
