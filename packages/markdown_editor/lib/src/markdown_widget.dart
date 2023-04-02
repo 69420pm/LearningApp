@@ -1,13 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:markdown_editor/src/bloc/text_editor_bloc.dart';
+import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/models/text_tile.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MarkdownWidget extends StatelessWidget {
   const MarkdownWidget({super.key});
-  
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [TextTile()],
+    return BlocBuilder<TextEditorBloc, TextEditorState>(
+      buildWhen: (previousState, currentState) =>
+          currentState is TextEditorEditorTilesChanged,
+      builder: (context, state) {
+          final editorTiles = context.read<TextEditorBloc>().editorTiles;
+          return SizedBox(
+            height: 300,
+            child: ListView.builder(
+              itemCount: editorTiles.length,
+              itemBuilder: (context, index) {
+                return editorTiles[index] as Widget;
+              },
+            ),
+          );
+      },
     );
   }
 }

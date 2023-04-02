@@ -128,6 +128,8 @@ class TextFieldController extends TextEditingController {
 
     return TextSpan(style: style, children: children);
   }
+
+  
 }
 
 class CharTile {

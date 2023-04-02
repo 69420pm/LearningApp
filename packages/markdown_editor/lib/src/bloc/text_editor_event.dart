@@ -15,11 +15,15 @@ class TextEditorKeyboardRowChange extends TextEditorEvent {
     this.isItalic,
     this.isUnderlined,
     this.isCode,
-    this.textColor
+    this.textColor,
   });
 }
 
-
-
-
-
+class TextEditorAddEditorTile extends TextEditorEvent {
+  EditorTile newEditorTile;
+  EditorTile? senderEditorTile;
+  TextEditorAddEditorTile({
+    required this.newEditorTile,
+    this.senderEditorTile,
+  });
+}
