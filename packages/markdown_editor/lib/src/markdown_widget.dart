@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:markdown_editor/src/bloc/text_editor_bloc.dart';
 import 'package:markdown_editor/src/models/editor_tile.dart';
-import 'package:markdown_editor/src/models/text_tile.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MarkdownWidget extends StatelessWidget {

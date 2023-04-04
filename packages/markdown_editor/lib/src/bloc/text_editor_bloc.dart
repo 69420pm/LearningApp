@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:markdown_editor/src/models/editor_tile.dart';
-import 'package:markdown_editor/src/models/text_tile.dart';
+import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
 import 'package:meta/meta.dart';
 
 part 'text_editor_event.dart';
@@ -55,27 +55,30 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
 
   FutureOr<void> _addTile(
       TextEditorAddEditorTile event, Emitter<TextEditorState> emit) {
-    if (event.senderEditorTile != null) {
-      for (var i = 0; i < editorTiles.length; i++) {
-        if (editorTiles[i] == event.senderEditorTile) {
-          final sublist = editorTiles.sublist(i + 1);
-          if (editorTiles.length - 1 < (i + 1)) {
-            editorTiles.add(event.newEditorTile);
-          } else {
-            editorTiles[i + 1] = event.newEditorTile;
-          }
-          for (var j = 0; j < sublist.length; j++) {
-            if (editorTiles.length - 1 > (i + j + 2)) {
-              editorTiles[i + j + 2] = sublist[j];
-            } else {
-              editorTiles.add(sublist[j]);
-            }
-          }
-          break;
+    for (var i = 0; i < editorTiles.length; i++) {
+      if ((event.senderEditorTile != null &&
+              editorTiles[i] == event.senderEditorTile) ||
+          (editorTiles[i].focusNode != null &&
+              editorTiles[i].focusNode!.hasFocus) ||
+          i == editorTiles.length - 1) {
+        final sublist = editorTiles.sublist(i + 1);
+        if (editorTiles.length - 1 < (i + 1)) {
+          editorTiles.add(event.newEditorTile);
+        } else {
+          editorTiles[i + 1] = event.newEditorTile;
         }
+        editorTiles.removeRange(i + 2, editorTiles.length);
+        event.newEditorTile.focusNode!.requestFocus();
+        for (var j = 0; j < sublist.length; j++) {
+          if (editorTiles.length - 1 > (i + j + 2)) {
+            editorTiles[i + j + 2] = sublist[j];
+          } else {
+            editorTiles.add(sublist[j]);
+          }
+        }
+        editorTiles = editorTiles.whereType<EditorTile>().toList();
+        break;
       }
-    } else {
-      editorTiles.add(event.newEditorTile);
     }
 
     emit(TextEditorEditorTilesChanged(tiles: editorTiles));

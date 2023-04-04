@@ -5,16 +5,23 @@ import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/bloc/text_editor_bloc.dart';
 
 class TextFieldController extends TextEditingController {
-  Map<int, CharTile> charTiles = {};
+  TextFieldController({
+    required this.standardStyle,
+  });
+
+  TextStyle standardStyle;
+
+  Map<int, CharTile> _charTiles = {};
   String _previousText = '';
   TextSelection _previousSelection =
-      TextSelection(baseOffset: 0, extentOffset: 0);
+      const TextSelection(baseOffset: 0, extentOffset: 0);
 
   bool _previousBold = false;
   bool _previousItalic = false;
   bool _previousUnderlined = false;
   bool _previousCode = false;
   Color _previousTextColor = Colors.white;
+
   @override
   TextSpan buildTextSpan({
     required BuildContext context,
@@ -57,30 +64,30 @@ class TextFieldController extends TextEditingController {
         codeToChange = isCode;
       }
       for (var i = selection.start; i < selection.end; i++) {
-        charTiles[i] = CharTile(
+        _charTiles[i] = CharTile(
           char: text[i],
           style: !isCode
-              ? TextStyle(
-                  color: textColorToChange ?? charTiles[i]!.style.color,
+              ? standardStyle.copyWith(
+                  color: textColorToChange ?? _charTiles[i]!.style.color,
                   fontWeight: boldToChange != null
                       ? boldToChange
                           ? FontWeight.bold
-                          : FontWeight.normal
-                      : charTiles[i]!.style.fontWeight,
+                          : standardStyle.fontWeight
+                      : _charTiles[i]!.style.fontWeight,
                   fontStyle: italicToChange != null
                       ? italicToChange
                           ? FontStyle.italic
-                          : FontStyle.normal
-                      : charTiles[i]!.style.fontStyle,
+                          : standardStyle.fontStyle
+                      : _charTiles[i]!.style.fontStyle,
                   decoration: underlinedToChange != null
                       ? underlinedToChange
                           ? TextDecoration.underline
-                          : null
-                      : charTiles[i]!.style.decoration,
-                  background: Paint()..color = Colors.transparent,
+                          : standardStyle.decoration
+                      : _charTiles[i]!.style.decoration,
+                  background: standardStyle.background,
                 )
-              : TextStyle(
-                color: Colors.white,
+              : standardStyle.copyWith(
+                  color: Colors.white,
                   background: Paint()..color = Colors.black,
                 ),
         );
@@ -88,34 +95,37 @@ class TextFieldController extends TextEditingController {
     } else {
       for (var i = 0; i < text.length; i++) {
         if (i < selection.end) {
-          if (text[i] == charTiles[i]?.char) {
-            newCharTiles[i] = charTiles[i]!;
+          if (text[i] == _charTiles[i]?.char) {
+            newCharTiles[i] = _charTiles[i]!;
           } else {
             newCharTiles[i] = CharTile(
               char: text[i],
               style: !isCode
-                  ? TextStyle(
+                  ? standardStyle.copyWith(
                       color: textColor,
-                      fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-                      fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
-                      decoration:
-                          isUnderlined ? TextDecoration.underline : null,
-                      background: Paint()..color = Colors.transparent,
+                      fontWeight:
+                          isBold ? FontWeight.bold : standardStyle.fontWeight,
+                      fontStyle:
+                          isItalic ? FontStyle.italic : standardStyle.fontStyle,
+                      decoration: isUnderlined
+                          ? TextDecoration.underline
+                          : standardStyle.decoration,
+                      background: standardStyle.background,
                     )
-                  : TextStyle(
-                    color: Colors.white,
+                  : standardStyle.copyWith(
+                      color: Colors.white,
                       background: Paint()..color = Colors.black,
                     ),
             );
           }
         } else {
-          newCharTiles[i] = charTiles[i - textDelta]!;
+          newCharTiles[i] = _charTiles[i - textDelta]!;
         }
       }
-      charTiles = newCharTiles;
+      _charTiles = newCharTiles;
     }
 
-    charTiles.forEach((key, value) {
+    _charTiles.forEach((key, value) {
       children.add(TextSpan(text: value.char, style: value.style));
     });
     _previousText = text;
@@ -128,8 +138,6 @@ class TextFieldController extends TextEditingController {
 
     return TextSpan(style: style, children: children);
   }
-
-  
 }
 
 class CharTile {
