@@ -13,15 +13,15 @@ class MarkdownWidget extends StatelessWidget {
           currentState is TextEditorEditorTilesChanged,
       builder: (context, state) {
           final editorTiles = context.read<TextEditorBloc>().editorTiles;
-          return SizedBox(
-            height: 300,
+          return Expanded(
             child: ListView.builder(
-              itemCount: editorTiles.length,
-              itemBuilder: (context, index) {
-                return editorTiles[index] as Widget;
-              },
-            ),
+                itemCount: editorTiles.length,
+                itemBuilder: (context, index) {
+                  return editorTiles[index] as Widget;
+                },
+              ),
           );
+          
       },
     );
   }

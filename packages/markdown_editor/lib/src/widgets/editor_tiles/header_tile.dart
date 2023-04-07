@@ -11,11 +11,10 @@ import 'package:markdown_editor/src/models/text_field_controller.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
 
 class HeaderTile extends StatelessWidget implements EditorTile {
-  HeaderTile({super.key, required this.headerStrength});
+  HeaderTile({super.key, required this.textStyle, required this.hintText});
 
-  /// whether it is a header1, header2, or header3 
-  /// every other value except of 1, or 3 gets defaulted to 1
-  int headerStrength;
+  final TextStyle textStyle;
+  final String hintText;
 
   late TextFieldController _textFieldController;
   @override
@@ -23,23 +22,6 @@ class HeaderTile extends StatelessWidget implements EditorTile {
 
   @override
   Widget build(BuildContext context) {
-    switch (headerStrength) {
-      case 1:
-        _textFieldController =
-            TextFieldController(standardStyle: TextFieldConstants.header1);
-        break;
-      case 2:
-        _textFieldController =
-            TextFieldController(standardStyle: TextFieldConstants.header2);
-        break;
-      case 3:
-        _textFieldController =
-            TextFieldController(standardStyle: TextFieldConstants.header3);
-        break;
-      default:
-        _textFieldController =
-            TextFieldController(standardStyle: TextFieldConstants.header1);
-    }
     return BlocBuilder<TextEditorBloc, TextEditorState>(
       buildWhen: (previous, current) {
         if (current is! TextEditorKeyboardRowChanged) {
@@ -58,25 +40,11 @@ class HeaderTile extends StatelessWidget implements EditorTile {
             const SizedBox(
               height: 10,
             ),
-            TextField(
+            TextTile(
+              textStyle: textStyle,
+              hintText: hintText,
               focusNode: focusNode,
-              style: _textFieldController.standardStyle,
-              controller: _textFieldController,
-              textInputAction: TextInputAction.done,
-              onSubmitted: (value) {
-                context.read<TextEditorBloc>().add(
-                      TextEditorAddEditorTile(
-                        newEditorTile: TextTile(),
-                        senderEditorTile: this,
-                      ),
-                    );
-              },
-              maxLines: null,
-              keyboardType: TextInputType.multiline,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: 'Header $headerStrength',
-              ),
+              parentEditorTile: this,
             ),
             const SizedBox(
               height: 10,

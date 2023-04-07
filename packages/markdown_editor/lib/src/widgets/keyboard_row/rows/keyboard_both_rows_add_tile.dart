@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:markdown_editor/markdown_editor.dart';
+import 'package:markdown_editor/src/models/text_field_constants.dart';
+import 'package:markdown_editor/src/widgets/editor_tiles/callout_tile.dart';
+import 'package:markdown_editor/src/widgets/editor_tiles/divider_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/header_tile.dart';
+import 'package:markdown_editor/src/widgets/editor_tiles/list_editor_tile.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_expandable.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_selectable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,7 +34,8 @@ class KeyboardBothRowsAddTile extends StatelessWidget {
                     onPressed: () => context.read<TextEditorBloc>().add(
                           TextEditorAddEditorTile(
                             newEditorTile: HeaderTile(
-                              headerStrength: 1,
+                              textStyle: TextFieldConstants.header1,
+                              hintText: 'Header 1',
                             ),
                           ),
                         ),
@@ -40,7 +45,8 @@ class KeyboardBothRowsAddTile extends StatelessWidget {
                     onPressed: () => context.read<TextEditorBloc>().add(
                           TextEditorAddEditorTile(
                             newEditorTile: HeaderTile(
-                              headerStrength: 2,
+                              textStyle: TextFieldConstants.header2,
+                              hintText: 'Header 2',
                             ),
                           ),
                         ),
@@ -50,14 +56,22 @@ class KeyboardBothRowsAddTile extends StatelessWidget {
                     onPressed: () => context.read<TextEditorBloc>().add(
                           TextEditorAddEditorTile(
                             newEditorTile: HeaderTile(
-                              headerStrength: 3,
+                              textStyle: TextFieldConstants.header3,
+                              hintText: 'Header 3',
                             ),
                           ),
                         ),
                   ),
-                  _KeyboardAddNewTileTile(icon: const Icon(Icons.crop_16_9)),
+                  _KeyboardAddNewTileTile(
+                    icon: const Icon(Icons.crop_16_9),
+                    onPressed: () => context.read<TextEditorBloc>().add(
+                        TextEditorAddEditorTile(newEditorTile: CalloutTile())),
+                  ),
                   _KeyboardAddNewTileTile(
                     icon: const Icon(Icons.format_list_bulleted),
+                    onPressed: () => context.read<TextEditorBloc>().add(
+                        TextEditorAddEditorTile(
+                            newEditorTile: ListEditorTile())),
                   ),
                   _KeyboardAddNewTileTile(
                     icon: const Icon(Icons.format_list_numbered),
@@ -76,6 +90,9 @@ class KeyboardBothRowsAddTile extends StatelessWidget {
                   _KeyboardAddNewTileTile(icon: const Icon(Icons.format_quote)),
                   _KeyboardAddNewTileTile(
                     icon: const Icon(Icons.horizontal_rule),
+                    onPressed: () => context.read<TextEditorBloc>().add(
+                          TextEditorAddEditorTile(newEditorTile: DividerTile()),
+                        ),
                   ),
                   _KeyboardAddNewTileTile(icon: const Icon(Icons.format_quote)),
                 ],

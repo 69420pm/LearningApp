@@ -27,3 +27,10 @@ class TextEditorAddEditorTile extends TextEditorEvent {
     this.senderEditorTile,
   });
 }
+
+class TextEditorRemoveEditorTile extends TextEditorEvent {
+  EditorTile tileToRemove;
+  TextEditorRemoveEditorTile({
+    required this.tileToRemove,
+  });
+}
