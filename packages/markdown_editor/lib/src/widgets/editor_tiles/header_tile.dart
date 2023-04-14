@@ -11,17 +11,25 @@ import 'package:markdown_editor/src/models/text_field_controller.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
 
 class HeaderTile extends StatelessWidget implements EditorTile {
-  HeaderTile({super.key, required this.textStyle, required this.hintText});
+  HeaderTile({super.key, required this.textStyle, required this.hintText}) {
+    _textTile = TextTile(
+      textStyle: textStyle,
+      hintText: hintText,
+      focusNode: focusNode,
+      parentEditorTile: this,
+    );
+  }
 
   final TextStyle textStyle;
   final String hintText;
-
+  late final TextTile _textTile;
   late TextFieldController _textFieldController;
   @override
   FocusNode? focusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
+    textFieldController = _textTile.textFieldController;
     return BlocBuilder<TextEditorBloc, TextEditorState>(
       buildWhen: (previous, current) {
         if (current is! TextEditorKeyboardRowChanged) {
@@ -40,12 +48,7 @@ class HeaderTile extends StatelessWidget implements EditorTile {
             const SizedBox(
               height: 10,
             ),
-            TextTile(
-              textStyle: textStyle,
-              hintText: hintText,
-              focusNode: focusNode,
-              parentEditorTile: this,
-            ),
+            _textTile,
             const SizedBox(
               height: 10,
             ),
@@ -54,4 +57,7 @@ class HeaderTile extends StatelessWidget implements EditorTile {
       },
     );
   }
+
+  @override
+  TextFieldController? textFieldController;
 }

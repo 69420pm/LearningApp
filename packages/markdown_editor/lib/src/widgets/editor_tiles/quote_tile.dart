@@ -4,11 +4,11 @@ import 'package:markdown_editor/src/models/text_field_constants.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
 
-class CalloutTile extends StatelessWidget implements EditorTile {
-  CalloutTile({super.key}) {
+class QuoteTile extends StatelessWidget implements EditorTile {
+  QuoteTile({super.key}) {
     _textTile = TextTile(
       focusNode: focusNode,
-      textStyle: TextFieldConstants.normal,
+      textStyle: TextFieldConstants.quote,
       parentEditorTile: this,
     );
   }
@@ -24,15 +24,12 @@ class CalloutTile extends StatelessWidget implements EditorTile {
   @override
   Widget build(BuildContext context) {
     textFieldController = _textTile.textFieldController;
-    return DecoratedBox(
-      decoration: const BoxDecoration(
-        color: Colors.green,
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.only(left: 8, right: 8),
-        child: _textTile,
-      ),
+    return Row(
+      children: [
+        Container(width: 5, height: 25, color: Color.fromARGB(255, 255, 255, 255),),
+        SizedBox(width: 15,),
+        Expanded(child: _textTile),
+      ],
     );
   }
 }

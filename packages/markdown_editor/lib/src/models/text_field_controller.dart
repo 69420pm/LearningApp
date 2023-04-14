@@ -11,7 +11,9 @@ class TextFieldController extends TextEditingController {
 
   TextStyle standardStyle;
 
-  Map<int, CharTile> _charTiles = {};
+  /// every character of the textfield has a single entry,
+  /// storing it's formatting settings
+  Map<int, CharTile> charTiles = {};
   String _previousText = '';
   TextSelection _previousSelection =
       const TextSelection(baseOffset: 0, extentOffset: 0);
@@ -27,8 +29,20 @@ class TextFieldController extends TextEditingController {
     required BuildContext context,
     TextStyle? style,
     required bool withComposing,
+    bool onlyUpdateCharTiles = false,
   }) {
     final children = <InlineSpan>[];
+
+    if (onlyUpdateCharTiles) {
+      text = '';
+      charTiles.forEach((key, value) {
+        children.add(TextSpan(text: value.char, style: value.style));
+        text += value.char;
+      });
+      _previousText = text;
+
+      return TextSpan(style: style, children: children);
+    }
 
     final isBold = context.read<TextEditorBloc>().isBold;
     final isItalic = context.read<TextEditorBloc>().isItalic;
@@ -64,26 +78,26 @@ class TextFieldController extends TextEditingController {
         codeToChange = isCode;
       }
       for (var i = selection.start; i < selection.end; i++) {
-        _charTiles[i] = CharTile(
+        charTiles[i] = CharTile(
           char: text[i],
           style: !isCode
               ? standardStyle.copyWith(
-                  color: textColorToChange ?? _charTiles[i]!.style.color,
+                  color: textColorToChange ?? charTiles[i]!.style.color,
                   fontWeight: boldToChange != null
                       ? boldToChange
                           ? FontWeight.bold
                           : standardStyle.fontWeight
-                      : _charTiles[i]!.style.fontWeight,
+                      : charTiles[i]!.style.fontWeight,
                   fontStyle: italicToChange != null
                       ? italicToChange
                           ? FontStyle.italic
                           : standardStyle.fontStyle
-                      : _charTiles[i]!.style.fontStyle,
+                      : charTiles[i]!.style.fontStyle,
                   decoration: underlinedToChange != null
                       ? underlinedToChange
                           ? TextDecoration.underline
                           : standardStyle.decoration
-                      : _charTiles[i]!.style.decoration,
+                      : charTiles[i]!.style.decoration,
                   background: standardStyle.background,
                 )
               : standardStyle.copyWith(
@@ -95,8 +109,8 @@ class TextFieldController extends TextEditingController {
     } else {
       for (var i = 0; i < text.length; i++) {
         if (i < selection.end) {
-          if (text[i] == _charTiles[i]?.char) {
-            newCharTiles[i] = _charTiles[i]!;
+          if (text[i] == charTiles[i]?.char) {
+            newCharTiles[i] = charTiles[i]!;
           } else {
             newCharTiles[i] = CharTile(
               char: text[i],
@@ -119,13 +133,13 @@ class TextFieldController extends TextEditingController {
             );
           }
         } else {
-          newCharTiles[i] = _charTiles[i - textDelta]!;
+          newCharTiles[i] = charTiles[i - textDelta]!;
         }
       }
-      _charTiles = newCharTiles;
+      charTiles = newCharTiles;
     }
 
-    _charTiles.forEach((key, value) {
+    charTiles.forEach((key, value) {
       children.add(TextSpan(text: value.char, style: value.style));
     });
     _previousText = text;
@@ -137,6 +151,20 @@ class TextFieldController extends TextEditingController {
     _previousTextColor = textColor;
 
     return TextSpan(style: style, children: children);
+  }
+
+  void addText(List<CharTile> newCharTiles, BuildContext context,
+      {bool clearCharTiles = false}) {
+    if (clearCharTiles) charTiles.clear();
+    final charTilesStartLength = charTiles.length;
+    for (var i = 0; i < newCharTiles.length; i++) {
+      charTiles[i + charTilesStartLength] = newCharTiles[i];
+    }
+    buildTextSpan(
+      context: context,
+      withComposing: true,
+      onlyUpdateCharTiles: true,
+    );
   }
 }
 

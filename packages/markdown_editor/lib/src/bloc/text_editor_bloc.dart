@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/models/text_field_constants.dart';
+import 'package:markdown_editor/src/models/text_field_controller.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
 import 'package:meta/meta.dart';
 
@@ -22,6 +24,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     on<TextEditorKeyboardRowChange>(_keyboardRowChange);
     on<TextEditorAddEditorTile>(_addTile);
     on<TextEditorRemoveEditorTile>(_removeTile);
+    on<TextEditorReplaceEditorTile>(_replaceTile);
   }
 
   /// list of all editorTiles (textWidgets, Images, etc.) of text editor
@@ -46,6 +49,8 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
   /// color of text as enum
   TextColor textColor;
 
+  EditorTile? focusedTile;
+
   FutureOr<void> _keyboardRowChange(
     TextEditorKeyboardRowChange event,
     Emitter<TextEditorState> emit,
@@ -63,41 +68,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     TextEditorAddEditorTile event,
     Emitter<TextEditorState> emit,
   ) {
-    for (var i = 0; i < editorTiles.length; i++) {
-      if ((event.senderEditorTile != null &&
-              editorTiles[i] == event.senderEditorTile) ||
-          (editorTiles[i].focusNode != null &&
-              editorTiles[i].focusNode!.hasFocus) ||
-          i == editorTiles.length - 1) {
-        if (editorTiles[i].focusNode != null &&
-            editorTiles[i].focusNode!.hasFocus &&
-            editorTiles[i] is TextTile &&
-            (editorTiles[i] as TextTile).textFieldController.text.isEmpty) {
-          editorTiles[i] = event.newEditorTile;
-          editorTiles[i].focusNode?.requestFocus();
-          break;
-        }
-
-        final sublist = editorTiles.sublist(i + 1);
-        if (editorTiles.length - 1 < (i + 1)) {
-          editorTiles.add(event.newEditorTile);
-        } else {
-          editorTiles[i + 1] = event.newEditorTile;
-        }
-        editorTiles.removeRange(i + 2, editorTiles.length);
-        event.newEditorTile.focusNode?.requestFocus();
-        for (var j = 0; j < sublist.length; j++) {
-          if (editorTiles.length - 1 > (i + j + 2)) {
-            editorTiles[i + j + 2] = sublist[j];
-          } else {
-            editorTiles.add(sublist[j]);
-          }
-        }
-        editorTiles = editorTiles.whereType<EditorTile>().toList();
-        break;
-      }
-    }
-
+    _addEditorTile(event.newEditorTile, event.context);
     emit(TextEditorEditorTilesChanged(tiles: editorTiles));
   }
 
@@ -105,21 +76,164 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     TextEditorRemoveEditorTile event,
     Emitter<TextEditorState> emit,
   ) {
+    _removeEditorTile(event.tileToRemove, event.context, handOverText: true);
+    emit(TextEditorEditorTilesChanged(tiles: editorTiles));
+  }
+
+  FutureOr<void> _replaceTile(
+    TextEditorReplaceEditorTile event,
+    Emitter<TextEditorState> emit,
+  ) {
+    // _removeEditorTile(
+    //   event.tileToRemove,
+    //   event.context,
+    //   changeFocus: false,
+    // );
+    // _addEditorTile(event.newEditorTile, event.context);
     for (var i = 0; i < editorTiles.length; i++) {
       if (editorTiles[i] == event.tileToRemove) {
+        editorTiles[i] = event.newEditorTile;
+        if (editorTiles[i].focusNode != null) {
+          editorTiles[i].focusNode?.requestFocus();
+        }
+      }
+    }
+    // event.newEditorTile.focusNode?.requestFocus();
+    emit(TextEditorEditorTilesChanged(tiles: editorTiles));
+  }
+
+  // TODO completely broken
+  void _addEditorTile(EditorTile toAdd, BuildContext context) {
+    for (var i = 0; i < editorTiles.length; i++) {
+      // get focused/current editorTile,
+      // or the last one when no tile is focused
+      if (editorTiles[i] == focusedTile ||(editorTiles[i].focusNode != null &&
+              editorTiles[i].focusNode!.hasFocus) ||
+          i == editorTiles.length - 1) {
+        // if focused textfield is an empty TextTile
+        if (editorTiles[i].focusNode != null &&
+            editorTiles[i].focusNode!.hasFocus &&
+            editorTiles[i] is TextTile &&
+            (editorTiles[i] as TextTile).textFieldController!.text.isEmpty) {
+          // replace empty TextTile
+          editorTiles[i] = toAdd;
+          editorTiles[i].focusNode?.requestFocus();
+          return;
+        }
+
+        // all editorTiles behind focused tile
+        final sublist = editorTiles.sublist(i + 1);
+        editorTiles.removeRange(i + 1, editorTiles.length);
+        _shiftTextAddEditorTile(toAdd, editorTiles[i], context);
+        for (var j = 0; j < sublist.length; j++) {
+          editorTiles.add(sublist[j]);
+        }
+
+        /*if (editorTiles.length - 1 < (i + 1)) {
+          _shiftTextAddEditorTile(toAdd, editorTiles[i], context);
+        } else {
+          editorTiles[i + 1] = toAdd;
+          // _shiftTextAddEditorTile(toAdd, ed, context)
+        }
+
+        editorTiles.removeRange(i + 1, editorTiles.length);
+        // toAdd.focusNode?.requestFocus();
+        for (var j = 0; j < sublist.length; j++) {
+          if (editorTiles.length - 1 > (i + j + 2)) {
+            editorTiles[i + j + 2] = sublist[j];
+          } else {
+            _shiftTextAddEditorTile(sublist[j], editorTiles[i], context);
+            // editorTiles.add(sublist[j]);
+          }
+        }*/
+        editorTiles = editorTiles.whereType<EditorTile>().toList();
+        break;
+      }
+    }
+  }
+
+  void _shiftTextAddEditorTile(
+    EditorTile newTile,
+    EditorTile current,
+    BuildContext context, {
+    int? indexOfEditorTilesToAddNewTile,
+  }) {
+    if (newTile.textFieldController != null &&
+        current.textFieldController != null) {
+      final selectionEnd = current.textFieldController?.selection.end;
+      final oldFieldTiles = <CharTile>[];
+      final newFieldTiles = <CharTile>[];
+      current.textFieldController?.charTiles.forEach((key, value) {
+        if (key >= selectionEnd!) {
+          newFieldTiles.add(value);
+        } else {
+          oldFieldTiles.add(value);
+        }
+      });
+      current.textFieldController!
+          .addText(oldFieldTiles, context, clearCharTiles: true);
+      newTile.focusNode?.requestFocus();
+      newTile.textFieldController!.addText(newFieldTiles, context);
+    }
+    if (indexOfEditorTilesToAddNewTile == null) {
+      editorTiles.add(newTile);
+    } else {
+      editorTiles[indexOfEditorTilesToAddNewTile] = newTile;
+    }
+    newTile.focusNode?.requestFocus();
+  }
+
+  void _removeEditorTile(
+    EditorTile toRemove,
+    BuildContext context, {
+    bool changeFocus = true,
+    bool handOverText = false,
+  }) {
+    var highestFocusNodeTile = -1;
+    for (var i = 0; i < editorTiles.length; i++) {
+      if (editorTiles[i] == toRemove) {
         editorTiles.remove(editorTiles[i]);
-        if (i > 0) {
-          editorTiles[i - 1].focusNode!.requestFocus();
+        for (var j = i - 1; j >= 0; j--) {
+          if (editorTiles[j].focusNode != null) {
+            if (handOverText == false) {
+              editorTiles[j].focusNode?.requestFocus();
+              break;
+            }
+            highestFocusNodeTile = i;
+            if (editorTiles[j].textFieldController != null &&
+                toRemove.textFieldController != null) {
+              final newCharTiles = <CharTile>[];
+              toRemove.textFieldController!.charTiles.forEach((key, value) {
+                newCharTiles.add(value);
+              });
+
+              editorTiles[j]
+                  .textFieldController!
+                  .addText(newCharTiles, context);
+
+              if (changeFocus) {
+                editorTiles[j].focusNode?.requestFocus();
+              }
+              break;
+            }
+            if (j == 0 && highestFocusNodeTile != -1) {
+              if (changeFocus) {
+                editorTiles[highestFocusNodeTile].focusNode?.requestFocus();
+              }
+              break;
+            }
+          }
         }
         break;
       }
     }
     if (editorTiles.isEmpty) {
-      editorTiles.add(TextTile(
-        textStyle: TextFieldConstants.normal,
-      ));
+      editorTiles.add(
+        TextTile(
+          textStyle: TextFieldConstants.normal,
+        ),
+      );
       editorTiles[0].focusNode?.requestFocus();
     }
-    emit(TextEditorEditorTilesChanged(tiles: editorTiles));
   }
 }
