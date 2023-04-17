@@ -14,11 +14,9 @@ class FolderListTileView extends StatelessWidget {
     required this.folder,
     required this.childListTiles,
     required this.inSelectionMode,
-    required this.isCardHovering,
   });
   final bool inSelectionMode;
   final Folder folder;
-  final bool isCardHovering;
   final Map<String, Widget> childListTiles;
 
   @override

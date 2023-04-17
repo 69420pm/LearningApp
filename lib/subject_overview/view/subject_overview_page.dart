@@ -73,38 +73,18 @@ class _SubjectOverviewViewState extends State<SubjectOverviewView> {
         return Scaffold(
           backgroundColor: Theme.of(context).colorScheme.background,
           appBar: AppBar(
-            leadingWidth: 80,
-            centerTitle: true,
             leading: (blocBuilderState is SubjectOverviewSelectionModeOn)
-                ? Row(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          context.read<SubjectOverviewSelectionBloc>().add(
-                                SubjectOverviewSelectionToggleSelectMode(
-                                  inSelectMode: false,
-                                ),
-                              );
-                        },
-                        icon: const Icon(
-                          Icons.cancel,
-                        ),
-                      ),
-                      const SizedBox(width: UISizeConstants.defaultSize),
-                      Text(
-                        context
-                            .read<SubjectOverviewSelectionBloc>()
-                            .cardsSelected
-                            .length
-                            .toString(),
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium
-                            ?.copyWith(
-                                color:
-                                    Theme.of(context).colorScheme.onBackground),
-                      )
-                    ],
+                ? IconButton(
+                    onPressed: () {
+                      context.read<SubjectOverviewSelectionBloc>().add(
+                            SubjectOverviewSelectionToggleSelectMode(
+                              inSelectMode: false,
+                            ),
+                          );
+                    },
+                    icon: const Icon(
+                      Icons.cancel,
+                    ),
                   )
                 : null,
             title: Text(widget.subjectToEdit.name),

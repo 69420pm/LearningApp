@@ -43,10 +43,9 @@ class SubjectOverviewSelectionBloc
   ) {
     if (event.addCard && !cardsSelected.contains(event.card)) {
       cardsSelected.add(event.card);
-      emit(SubjectOverviewSelectionModeOn());
     } else if (!event.addCard) {
       cardsSelected.remove(event.card);
-      emit(SubjectOverviewSelectionModeOn());
+
       if (cardsSelected.isEmpty && state is SubjectOverviewSelectionModeOn) {
         isInSelectMode = false;
         emit(SubjectOverviewSelectionModeOff());
