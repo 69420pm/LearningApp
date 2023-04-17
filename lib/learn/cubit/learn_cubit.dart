@@ -27,6 +27,9 @@ class LearnCubit extends Cubit<LearnState> {
     else if (feedbackLastCard == LearnFeedback.medium) {
       cardsToLearn.removeAt(0);
       nextRecallScore -= 1;
+      if(nextRecallScore == 0){
+        nextRecallScore = 0;
+      }
       nextTimeToReview = nextTimeToReview
           .add(Duration(seconds: _getDuration((nextRecallScore / 4).round())));
       if (nextRecallScore < 2) {

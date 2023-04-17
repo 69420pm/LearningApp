@@ -27,7 +27,7 @@ class QuoteTile extends StatelessWidget implements EditorTile {
     return Row(
       children: [
         Container(width: 5, height: 25, color: Color.fromARGB(255, 255, 255, 255),),
-        SizedBox(width: 15,),
+        const SizedBox(width: 15,),
         Expanded(child: _textTile),
       ],
     );

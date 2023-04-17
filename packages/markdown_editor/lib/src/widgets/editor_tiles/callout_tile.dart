@@ -31,7 +31,25 @@ class CalloutTile extends StatelessWidget implements EditorTile {
       ),
       child: Padding(
         padding: const EdgeInsets.only(left: 8, right: 8),
-        child: _textTile,
+        child: Row(
+          children: [
+            const SizedBox(
+              width: 20,
+              child: TextField(
+                style: TextFieldConstants.calloutStart,
+                maxLength: 1,
+                decoration: InputDecoration(
+                  isDense: true,
+                  counterStyle: TextStyle(
+                    height: double.minPositive,
+                  ),
+                  counterText: '',
+                ),
+              ),
+            ),
+            Expanded(child: _textTile),
+          ],
+        ),
       ),
     );
   }
