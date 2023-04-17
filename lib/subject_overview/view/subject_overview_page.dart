@@ -1,16 +1,45 @@
-import 'package:cards_api/cards_api.dart';
+import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_folder/view/add_folder_bottom_sheet.dart';
 import 'package:learning_app/subject_overview/bloc/edit_subject_bloc/subject_overview_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/view/card_list_tile.dart';
-import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_drag_target.dart';
+import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
 import 'package:ui_components/ui_components.dart';
 
-class SubjectOverviewPage extends StatefulWidget {
+class SubjectOverviewPage extends StatelessWidget {
   const SubjectOverviewPage({
+    super.key,
+    required this.subjectToEdit,
+    required this.editSubjectBloc,
+    required this.cardsRepository,
+  });
+  final Subject subjectToEdit;
+  final EditSubjectBloc editSubjectBloc;
+  final CardsRepository cardsRepository;
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => EditSubjectBloc(cardsRepository),
+      child: Builder(
+        builder: (context) {
+          context
+              .read<EditSubjectBloc>()
+              .add(EditSubjectGetChildrenById(id: subjectToEdit.id));
+          return SubjectOverviewView(
+            subjectToEdit: subjectToEdit,
+            editSubjectBloc: editSubjectBloc,
+          );
+        },
+      ),
+    );
+  }
+}
+
+class SubjectOverviewView extends StatefulWidget {
+  const SubjectOverviewView({
     super.key,
     required this.subjectToEdit,
     required this.editSubjectBloc,
@@ -18,10 +47,11 @@ class SubjectOverviewPage extends StatefulWidget {
 
   final Subject subjectToEdit;
   final EditSubjectBloc editSubjectBloc;
-  State<SubjectOverviewPage> createState() => _SubjectOverviewPageState();
+  @override
+  State<SubjectOverviewView> createState() => _SubjectOverviewViewState();
 }
 
-class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
+class _SubjectOverviewViewState extends State<SubjectOverviewView> {
   @override
   Widget build(BuildContext context) {
     final nameController =
@@ -35,18 +65,15 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
     var isMovingDown = false;
     var isMovingUp = false;
 
-    context
-        .read<EditSubjectBloc>()
-        .add(EditSubjectGetChildrenById(id: widget.subjectToEdit.id));
     var childListTiles = <String, Widget>{};
 
     return BlocBuilder<SubjectOverviewSelectionBloc,
         SubjectOverviewSelectionState>(
-      builder: (context, state) {
+      builder: (context, blocBuilderState) {
         return Scaffold(
           backgroundColor: Theme.of(context).colorScheme.background,
           appBar: AppBar(
-            leading: (state is SubjectOverviewSelectionModeOn)
+            leading: (blocBuilderState is SubjectOverviewSelectionModeOn)
                 ? IconButton(
                     onPressed: () {
                       context.read<SubjectOverviewSelectionBloc>().add(
@@ -61,7 +88,7 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                   )
                 : null,
             title: Text(widget.subjectToEdit.name),
-            actions: (state is SubjectOverviewSelectionModeOn)
+            actions: (blocBuilderState is SubjectOverviewSelectionModeOn)
                 ? [
                     IconButton(
                       onPressed: () {
@@ -152,117 +179,104 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
                         }
                         return false;
                       },
-                      builder: (context, state) {
-                        if (state is EditSubjectRetrieveChildren) {
+                      builder: (context, editSubjectState) {
+                        if (editSubjectState is EditSubjectRetrieveChildren) {
                           childListTiles = {
                             ...childListTiles,
-                            ...state.childrenStream
+                            ...editSubjectState.childrenStream
                           };
-                          for (final element in state.removedWidgets) {
+
+                          for (final element
+                              in editSubjectState.removedWidgets) {
                             if (childListTiles.containsKey(element.id)) {
                               childListTiles.remove(element.id);
                             }
                           }
                         }
-
                         return Expanded(
                           child: Stack(
                             children: [
-                              BlocProvider(
-                                create: (context) => EditSubjectBloc(
-                                  widget.editSubjectBloc.cardsRepository,
-                                ),
-                                child: FolderDragTarget(
-                                    parentID: widget.subjectToEdit.id,
-                                    child: Listener(
-                                      onPointerMove: (event) {
-                                        if (context
-                                            .read<
-                                                SubjectOverviewSelectionBloc>()
-                                            .isInDragging) {
-                                          final render = globalKey
-                                                  .currentContext
-                                                  ?.findRenderObject()
-                                              as RenderBox?;
-                                          final top = render
-                                                  ?.localToGlobal(Offset.zero)
-                                                  .dy ??
-                                              0;
-                                          final bottom = MediaQuery.of(context)
-                                              .size
-                                              .height;
+                              FolderDragTarget(
+                                parentID: widget.subjectToEdit.id,
+                                child: Listener(
+                                  onPointerMove: (event) {
+                                    if (context
+                                        .read<SubjectOverviewSelectionBloc>()
+                                        .isInDragging) {
+                                      final render = globalKey.currentContext
+                                          ?.findRenderObject() as RenderBox?;
+                                      final top = render
+                                              ?.localToGlobal(Offset.zero)
+                                              .dy ??
+                                          0;
+                                      final bottom =
+                                          MediaQuery.of(context).size.height;
 
-                                          final relPos =
-                                              (event.localPosition.dy /
-                                                      (bottom - top))
-                                                  .clamp(0, 1);
+                                      final relPos = (event.localPosition.dy /
+                                              (bottom - top))
+                                          .clamp(0, 1);
 
-                                          if (relPos < .2 &&
-                                              isMovingUp == false) {
-                                            isMovingUp = true;
-                                            isMovingDown = false;
+                                      if (relPos < .2 && isMovingUp == false) {
+                                        isMovingUp = true;
+                                        isMovingDown = false;
 
-                                            scrollController.animateTo(
-                                              0,
-                                              duration:
-                                                  const Duration(seconds: 1),
-                                              curve: Curves.easeIn,
-                                            );
-                                          } else if (relPos > .8 &&
-                                              isMovingDown == false) {
-                                            isMovingDown = true;
-                                            isMovingUp = false;
-                                            scrollController.animateTo(
-                                              scrollController
-                                                  .position.maxScrollExtent,
-                                              duration:
-                                                  const Duration(seconds: 1),
-                                              curve: Curves.easeIn,
-                                            );
-                                          } else if (relPos > .2 &&
-                                              relPos < .8) {
-                                            if (isMovingUp || isMovingDown) {
-                                              scrollController.jumpTo(
-                                                  scrollController.offset);
-                                            }
-                                            isMovingDown = false;
-                                            isMovingUp = false;
-                                          }
+                                        scrollController.animateTo(
+                                          0,
+                                          duration: const Duration(seconds: 1),
+                                          curve: Curves.easeIn,
+                                        );
+                                      } else if (relPos > .8 &&
+                                          isMovingDown == false) {
+                                        isMovingDown = true;
+                                        isMovingUp = false;
+                                        scrollController.animateTo(
+                                          scrollController
+                                              .position.maxScrollExtent,
+                                          duration: const Duration(seconds: 1),
+                                          curve: Curves.easeIn,
+                                        );
+                                      } else if (relPos > .2 && relPos < .8) {
+                                        if (isMovingUp || isMovingDown) {
+                                          scrollController.jumpTo(
+                                            scrollController.offset,
+                                          );
                                         }
-                                      },
-                                      child: CustomScrollView(
-                                        key: globalKey,
-                                        controller: scrollController,
-                                        slivers: [
-                                          SliverList(
-                                            delegate:
-                                                SliverChildBuilderDelegate(
-                                              (context, index) => childListTiles
-                                                  .values
-                                                  .whereType<FolderListTile>()
-                                                  .elementAt(index)
-                                                ..isHighlight = index.isOdd,
-                                              childCount: childListTiles.values
-                                                  .whereType<FolderListTile>()
-                                                  .length,
-                                            ),
-                                          ),
-                                          SliverList(
-                                            delegate:
-                                                SliverChildBuilderDelegate(
-                                              (context, index) => childListTiles
-                                                  .values
-                                                  .whereType<CardListTile>()
-                                                  .elementAt(index)
-                                                ..isHighlight = index.isOdd,
-                                              childCount: childListTiles.values
-                                                  .whereType<CardListTile>()
-                                                  .length,
-                                            ),
-                                          ),
-                                        ],
+                                        isMovingDown = false;
+                                        isMovingUp = false;
+                                      }
+                                    }
+                                  },
+                                  child: CustomScrollView(
+                                    key: globalKey,
+                                    controller: scrollController,
+                                    slivers: [
+                                      SliverList(
+                                        delegate: SliverChildBuilderDelegate(
+                                          (context, index) => childListTiles
+                                              .values
+                                              .whereType<FolderListTileParent>()
+                                              .elementAt(index),
+                                          // ..isHighlight = index.isOdd,
+                                          childCount: childListTiles.values
+                                              .whereType<FolderListTileParent>()
+                                              .length,
+                                        ),
                                       ),
-                                    )),
+                                      SliverList(
+                                        delegate: SliverChildBuilderDelegate(
+                                          (context, index) => childListTiles
+                                              .values
+                                              .whereType<CardListTile>()
+                                              .elementAt(index)
+                                            ..isHighlight = index.isOdd,
+                                          childCount: childListTiles.values
+                                              .whereType<CardListTile>()
+                                              .length,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ],
                           ),
@@ -314,8 +328,8 @@ class _SubjectOverviewPageState extends State<SubjectOverviewPage> {
 
   @override
   void dispose() {
-    widget.editSubjectBloc
-        .add(EditSubjectCloseStreamById(id: widget.subjectToEdit.id));
+    // widget.editSubjectBloc
+    //     .add(EditSubjectCloseStreamById(id: widget.subjectToEdit.id));
     super.dispose();
   }
 }

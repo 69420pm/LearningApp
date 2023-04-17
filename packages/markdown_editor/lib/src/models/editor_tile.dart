@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:markdown_editor/src/models/text_field_controller.dart';
 
-class EditorTile extends StatelessWidget {
-  const EditorTile({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
+abstract class EditorTile {
+  EditorTile({required this.focusNode, this.textFieldController = null});
+  FocusNode? focusNode;
+  TextFieldController? textFieldController;
 }

@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
 import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart' hide Card;
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
 
@@ -26,16 +26,21 @@ class FolderListTileBloc
     on<FolderListTileDeleteFolder>(_deleteFolder);
     on<FolderListTileMoveFolder>(_moveFolder);
 
+    // on<FolderListTileCloseStreamById>(_closeStream);
+
     on<FolderListTileDEBUGAddCard>(_debugAddCard);
   }
+  // List<String> _subscribedStreamIds = [];
 
   final CardsRepository _cardsRepository;
-
+  String? streamId;
   Future<void> _getChildren(
     FolderListTileGetChildrenById event,
     Emitter<FolderListTileState> emit,
   ) async {
-    emit(FolderListTileLoading());
+    // emit(FolderListTileLoading());
+    // await _cardsRepository.closeStreamById(streamId!);
+
     await emit.forEach(
       _cardsRepository.getChildrenById(event.id),
       onData: (data) {
@@ -43,8 +48,9 @@ class FolderListTileBloc
         final widgetsToRemove = <Removed>[];
         for (final element in data) {
           if (element is Folder) {
-            childListTiles[element.id] = FolderListTile(
+            childListTiles[element.id] = FolderListTileParent(
               folder: element,
+              isHighlight: false,
               cardsRepository: _cardsRepository,
             );
           } else if (element is Card) {
@@ -57,10 +63,15 @@ class FolderListTileBloc
             widgetsToRemove.add(element);
           }
         }
+        // if (childListTiles.isNotEmpty || widgetsToRemove.isNotEmpty) {
         return FolderListTileRetrieveChildren(
+          senderId: event.id,
           childrenStream: childListTiles,
           removedWidgets: widgetsToRemove,
         );
+        // }
+
+        // return FolderListTileSuccess();
       },
       onError: (error, stackTrace) =>
           FolderListTileError(errorMessage: 'backend broken'),
@@ -81,9 +92,12 @@ class FolderListTileBloc
     //   emit(FolderListTileError(errorMessage: 'folder adding failed'));
     // }
   }
+
 //df
   Future<void> _moveCard(
-      FolderListTileMoveCard event, Emitter<FolderListTileState> emit,) async {
+    FolderListTileMoveCard event,
+    Emitter<FolderListTileState> emit,
+  ) async {
     emit(FolderListTileLoading());
     // try {
     final newCard = event.card.copyWith(parentId: event.newParentId);
@@ -121,7 +135,29 @@ class FolderListTileBloc
     // }
   }
 
-  Future<FutureOr<void>> _debugAddCard(FolderListTileDEBUGAddCard event, Emitter<FolderListTileState> emit) async {
+  Future<FutureOr<void>> _debugAddCard(FolderListTileDEBUGAddCard event,
+      Emitter<FolderListTileState> emit) async {
     await _cardsRepository.saveCard(event.card);
+  }
+
+  // FutureOr<void> _closeStream(FolderListTileCloseStreamById event, Emitter<FolderListTileState> emit) {
+  //   _cardsRepository.closeStreamById(event.id);
+  // }
+  @override
+  Future<void> close() async {
+    if (streamId != null) {
+      // await _cardsRepository.closeStreamById(streamId!);
+    }
+    return super.close();
+  }
+
+  Widget folderWidget(Folder element) {
+    return BlocProvider(
+      create: (context) => FolderListTileBloc(_cardsRepository),
+      child: FolderListTileParent(
+        folder: element,
+        cardsRepository: _cardsRepository,
+      ),
+    );
   }
 }

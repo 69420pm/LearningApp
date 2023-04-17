@@ -42,7 +42,7 @@ class FolderListTileView extends StatelessWidget {
             collapsedTextColor:
                 Theme.of(context).colorScheme.onSecondaryContainer,
             textColor: Theme.of(context).colorScheme.onSecondaryContainer,
-            maintainState: false,
+            maintainState: true,
             title: Row(
               children: [
                 const Icon(Icons.folder),
@@ -134,18 +134,20 @@ class FolderListTileView extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     if (childListTiles.values
-                        .whereType<FolderListTile>()
+                        .whereType<FolderListTileParent>()
                         .isNotEmpty)
                       ListView.builder(
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         itemCount: childListTiles.values
-                            .whereType<FolderListTile>()
+                            .whereType<FolderListTileParent>()
                             .length,
-                        itemBuilder: (context, index) => childListTiles.values
-                            .whereType<FolderListTile>()
-                            .elementAt(index)
-                          ..isHighlight = index.isOdd,
+                        itemBuilder: (context, index) {
+                          return childListTiles.values
+                            .whereType<FolderListTileParent>()
+                            .elementAt(index);
+                          // ..isHighlight = index.isOdd;
+                        },
                       ),
                     if (childListTiles.values
                         .whereType<CardListTile>()
@@ -156,11 +158,14 @@ class FolderListTileView extends StatelessWidget {
                         itemCount: childListTiles.values
                             .whereType<CardListTile>()
                             .length,
-                        itemBuilder: (context, index) => childListTiles.values
+                        itemBuilder: (context, index) {
+          
+                          return childListTiles.values
                             .whereType<CardListTile>()
                             .elementAt(index)
                           ..isHighlight = index.isOdd
-                          ..isInSelectMode = inSelectionMode,
+                          ..isInSelectMode = inSelectionMode;
+                        },
                       ),
                   ],
                 ),

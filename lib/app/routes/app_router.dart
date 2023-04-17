@@ -14,8 +14,10 @@ import 'package:learning_app/overview/bloc/overview_bloc.dart';
 import 'package:learning_app/search/bloc/search_bloc.dart';
 import 'package:learning_app/search/view/search_page.dart';
 import 'package:learning_app/subject_overview/bloc/edit_subject_bloc/subject_overview_bloc.dart';
+import 'package:learning_app/subject_overview/bloc/folder_bloc/folder_list_tile_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/view/subject_overview_page.dart';
+import 'package:markdown_editor/markdown_editor.dart';
 
 /// Handles complete app routing and is injected in MaterialApp()
 class AppRouter {
@@ -24,9 +26,6 @@ class AppRouter {
   final CardsRepository _cardsRepository;
 
   final HomeCubit _homeCubit = HomeCubit();
-  late final AddSubjectCubit _addSubjectCubit =
-      AddSubjectCubit(_cardsRepository);
-  late final AddFolderCubit _addFolderCubit = AddFolderCubit(_cardsRepository);
   late final EditSubjectBloc _editSubjectBloc =
       EditSubjectBloc(_cardsRepository);
   late final AddCardCubit _addCardCubit = AddCardCubit(_cardsRepository);
@@ -34,6 +33,10 @@ class AppRouter {
     ..add(OverviewSubjectSubscriptionRequested());
   late final LearnCubit _learnCubit = LearnCubit(_cardsRepository);
   late final SearchBloc _searchBloc = SearchBloc(_cardsRepository);
+  late final FolderListTileBloc _folderListTileBloc =
+      FolderListTileBloc(_cardsRepository);
+  final TextEditorBloc _textEditorBloc = TextEditorBloc();
+  final KeyboardRowCubit _keyboardRowCubit = KeyboardRowCubit();
 
   Route<dynamic> onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
@@ -64,6 +67,8 @@ class AppRouter {
               ),
               BlocProvider.value(value: _addCardCubit),
               BlocProvider.value(value: _editSubjectBloc),
+              BlocProvider.value(value: _textEditorBloc),
+              BlocProvider.value(value: _keyboardRowCubit)
             ],
             child: AddCardPage(parentId: routeSettings.arguments as String),
           ),
@@ -85,22 +90,26 @@ class AppRouter {
               BlocProvider.value(
                 value: _homeCubit,
               ),
+              BlocProvider.value(
+                value: _folderListTileBloc,
+              ),
               // BlocProvider.value(
               //   value: _editSubjectBloc,
               // ),
-              BlocProvider(
-                create: (context) => esb,
-              ),
+              // BlocProvider.value(
+              //   value: _editSubjectBloc
+              // ),
               BlocProvider(
                 create: (context) => sosb,
               ),
-              BlocProvider.value(
-                value: _addFolderCubit,
-              )
+              // BlocProvider.value(
+              //   value: _addFolderCubit,
+              // )
             ],
             child: SubjectOverviewPage(
               subjectToEdit: routeSettings.arguments! as Subject,
               editSubjectBloc: esb,
+              cardsRepository: _cardsRepository,
             ),
           ),
         );

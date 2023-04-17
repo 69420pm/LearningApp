@@ -97,7 +97,7 @@ class Card extends Equatable {
       askCardsInverted: map['askCardsInverted'] as bool,
       typeAnswer: map['typeAnswer'] as bool,
       recallScore: map['recallScore'] as int,
-      tags: /*List<String>.from(map['tags'] as List<String>)*/map.entries.map((e) => e.toString()).toList(),
+      tags: [],/*List<String>.from(map['tags'] as List<String>)*///map.entries.map((e) => e.toString()).toList(),
       dateToReview: map['dateToReview'] as String,
     );
   }

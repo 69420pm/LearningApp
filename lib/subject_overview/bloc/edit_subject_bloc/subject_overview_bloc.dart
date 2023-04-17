@@ -4,9 +4,14 @@ import 'package:bloc/bloc.dart';
 import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/app/helper/uid.dart';
+import 'package:learning_app/subject_overview/bloc/folder_bloc/folder_list_tile_bloc.dart';
 import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
+import 'package:equatable/equatable.dart';
+import 'package:collection/collection.dart';
+
 
 part 'subject_overview_event.dart';
 part 'subject_overview_state.dart';
@@ -59,16 +64,20 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
     Emitter<EditSubjectState> emit,
   ) async {
     emit(EditSubjectLoading());
+    // await cardsRepository.closeStreamById(event.id);
+
     await emit.forEach(
       cardsRepository.getChildrenById(event.id),
       onData: (data) {
+
         final childListTiles = <String, Widget>{};
         final widgetsToRemove = <Removed>[];
         for (final element in data) {
           if (element is Folder) {
-            childListTiles[element.id] = FolderListTile(
+            childListTiles[element.id] = FolderListTileParent(
               folder: element,
               cardsRepository: cardsRepository,
+              isHighlight: false,
             );
           } else if (element is Card) {
             childListTiles[element.id] = CardListTile(
@@ -80,11 +89,14 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
             widgetsToRemove.add(element);
           }
         }
-        print(childListTiles);
-        return EditSubjectRetrieveChildren(
-          childrenStream: childListTiles,
-          removedWidgets: widgetsToRemove,
-        );
+
+        // if (childListTiles.isNotEmpty || widgetsToRemove.isNotEmpty) {
+          return EditSubjectRetrieveChildren(
+            childrenStream: childListTiles,
+            removedWidgets: widgetsToRemove,
+          );
+        // }
+        // return EditSubjectSuccess();
       },
       onError: (error, stackTrace) =>
           EditSubjectFailure(errorMessage: 'backend broken'),
@@ -209,19 +221,21 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
   //   }
   // }
 
-  FutureOr<void> _setParent(
+  Future<FutureOr<void>> _setParent(
     EditSubjectSetFolderParent event,
     Emitter<EditSubjectState> emit,
-  ) {
-    cardsRepository.moveFolder(event.folder, event.parentId);
+  ) async {
+    await cardsRepository.moveFolder(event.folder, event.parentId);
+    emit(EditSubjectSuccess());
   }
 
-  FutureOr<void> _setParentCard(
+  Future<FutureOr<void>> _setParentCard(
     EditSubjectSetCardParent event,
     Emitter<EditSubjectState> emit,
-  ) {
-    cardsRepository
-      ..deleteCard(event.card.id, event.card.parentId)
-      ..saveCard(event.card.copyWith(parentId: event.parentId));
+  ) async {
+    await cardsRepository.deleteCard(event.card.id, event.card.parentId);
+    await cardsRepository
+        .saveCard(event.card.copyWith(parentId: event.parentId));
+    emit(EditSubjectSuccess());
   }
 }

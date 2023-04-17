@@ -29,7 +29,7 @@ class CardListTileMultiDragIndicator extends StatelessWidget {
         (index) => Transform.rotate(
           angle: index == cardAmount - 1
               ? 0
-              : 1 / 10 * pi * Random().nextDouble() - 1 / 20 * pi,
+              : 1 / 30 * pi * Random().nextDouble() - 1 / 50 * pi,
           alignment: Alignment(
               Random().nextDouble() * 2 - 1, Random().nextDouble() * 2 - 1),
           child: CardListTileView(

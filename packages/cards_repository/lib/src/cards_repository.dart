@@ -29,7 +29,7 @@ class CardsRepository {
       _cardsApi.getChildrenById(id);
 
   /// Close stream for a given parentId to avoid stream leaks
-  void closeStreamById(String id, {bool deleteChildren = false}) =>
+  Future<void> closeStreamById(String id, {bool deleteChildren = false}) =>
       _cardsApi.closeStreamById(id, deleteChildren: deleteChildren);
 
   /// Saves a [card]

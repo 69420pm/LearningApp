@@ -65,7 +65,7 @@ abstract class CardsApi {
   Stream<List<Object>> getChildrenById(String id);
 
   /// close stream for given parentId to avoid stream leaks
-  void closeStreamById(String id, {bool deleteChildren = false});
+  Future<void> closeStreamById(String id, {bool deleteChildren = false});
 }
 
 /// Error when a [Card] with given id is not found
