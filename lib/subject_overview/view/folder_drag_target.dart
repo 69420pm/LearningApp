@@ -17,7 +17,7 @@ class FolderDragTarget extends StatelessWidget {
     return DragTarget(
       onAccept: (data) {
         if (data is Folder) {
-          if(data.parentId == parentID) return;
+          if (data.parentId == parentID) return;
           context.read<EditSubjectBloc>().add(
                 EditSubjectSetFolderParent(
                   folder: data,
