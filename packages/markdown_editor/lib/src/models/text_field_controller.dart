@@ -23,6 +23,26 @@ class TextFieldController extends TextEditingController {
   bool _previousUnderlined = false;
   bool _previousCode = false;
   Color _previousTextColor = Colors.white;
+  //  @override
+  // set text(String newText) {
+  //   value = value.copyWith(
+  //     text: newText,
+  //     composing: TextRange.empty,
+  //   );
+  //   // notifyListeners();
+  // }
+
+  // @override
+  // set value(TextEditingValue newValue) {
+  //   final String newText = String.fromCharCodes(newValue.text.codeUnits);
+  //   if (text != newText) {
+  //     super.value = newValue.copyWith(
+  //       text: newText,
+  //       composing: TextRange.empty,
+  //     );
+  //     // notifyListeners();
+  //   }
+  // }
 
   @override
   TextSpan buildTextSpan({
@@ -31,6 +51,7 @@ class TextFieldController extends TextEditingController {
     required bool withComposing,
     bool onlyUpdateCharTiles = false,
   }) {
+    super.buildTextSpan(context: context, withComposing: withComposing);
     final children = <InlineSpan>[];
 
     if (onlyUpdateCharTiles) {
@@ -107,6 +128,7 @@ class TextFieldController extends TextEditingController {
         );
       }
     } else {
+
       for (var i = 0; i < text.length; i++) {
         if (i < selection.end) {
           if (text[i] == charTiles[i]?.char) {

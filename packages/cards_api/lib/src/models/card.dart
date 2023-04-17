@@ -28,6 +28,7 @@ class Card extends Equatable {
   final bool typeAnswer;
 
   /// overall score of recall for this card, the higher the better
+  /// ranges from 0 (really new) to 6 (really secure with this card)
   final int recallScore;
 
   final List<String> tags;
@@ -97,14 +98,16 @@ class Card extends Equatable {
       askCardsInverted: map['askCardsInverted'] as bool,
       typeAnswer: map['typeAnswer'] as bool,
       recallScore: map['recallScore'] as int,
-      tags: [],/*List<String>.from(map['tags'] as List<String>)*///map.entries.map((e) => e.toString()).toList(),
+      tags: const [],
+      /*List<String>.from(map['tags'] as List<String>)*/ //map.entries.map((e) => e.toString()).toList(),
       dateToReview: map['dateToReview'] as String,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory Card.fromJson(String source) => Card.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory Card.fromJson(String source) =>
+      Card.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   bool get stringify => true;

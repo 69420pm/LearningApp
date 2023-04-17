@@ -57,4 +57,5 @@ class TextEditorReplaceEditorTile extends TextEditorEvent {
     required this.context,
     this.handOverText = false,
   });
+  
 }
