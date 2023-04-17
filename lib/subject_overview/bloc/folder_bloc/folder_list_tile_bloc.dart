@@ -50,7 +50,6 @@ class FolderListTileBloc
           if (element is Folder) {
             childListTiles[element.id] = FolderListTileParent(
               folder: element,
-              isHighlight: false,
               cardsRepository: _cardsRepository,
             );
           } else if (element is Card) {

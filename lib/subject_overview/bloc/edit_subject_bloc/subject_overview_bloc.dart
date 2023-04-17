@@ -12,7 +12,6 @@ import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
 import 'package:equatable/equatable.dart';
 import 'package:collection/collection.dart';
 
-
 part 'subject_overview_event.dart';
 part 'subject_overview_state.dart';
 
@@ -69,7 +68,6 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
     await emit.forEach(
       cardsRepository.getChildrenById(event.id),
       onData: (data) {
-
         final childListTiles = <String, Widget>{};
         final widgetsToRemove = <Removed>[];
         for (final element in data) {
@@ -77,7 +75,6 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
             childListTiles[element.id] = FolderListTileParent(
               folder: element,
               cardsRepository: cardsRepository,
-              isHighlight: false,
             );
           } else if (element is Card) {
             childListTiles[element.id] = CardListTile(
@@ -91,10 +88,10 @@ class EditSubjectBloc extends Bloc<EditSubjectEvent, EditSubjectState> {
         }
 
         // if (childListTiles.isNotEmpty || widgetsToRemove.isNotEmpty) {
-          return EditSubjectRetrieveChildren(
-            childrenStream: childListTiles,
-            removedWidgets: widgetsToRemove,
-          );
+        return EditSubjectRetrieveChildren(
+          childrenStream: childListTiles,
+          removedWidgets: widgetsToRemove,
+        );
         // }
         // return EditSubjectSuccess();
       },

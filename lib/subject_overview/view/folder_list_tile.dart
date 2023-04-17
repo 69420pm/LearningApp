@@ -15,17 +15,17 @@ class FolderListTileParent extends StatelessWidget {
     super.key,
     required this.folder,
     required this.cardsRepository,
-    this.isHighlight = false,
   });
 
   final Folder folder;
   final CardsRepository cardsRepository;
-  bool isHighlight;
 
-    var childListTiles = <String, Widget>{};
+  var childListTiles = <String, Widget>{};
   @override
   Widget build(BuildContext context) {
-    context.read<FolderListTileBloc>().add(FolderListTileGetChildrenById(id: folder.id));
+    context
+        .read<FolderListTileBloc>()
+        .add(FolderListTileGetChildrenById(id: folder.id));
     // print("rebuild" + folder.name);
     return Padding(
       padding: const EdgeInsets.only(
@@ -53,7 +53,8 @@ class FolderListTileParent extends StatelessWidget {
                   return false;
                 },
                 builder: (context, state) {
-                  if (state is FolderListTileRetrieveChildren && state.senderId == folder.id) {
+                  if (state is FolderListTileRetrieveChildren &&
+                      state.senderId == folder.id) {
                     childListTiles = {
                       ...childListTiles,
                       ...state.childrenStream
@@ -90,7 +91,6 @@ class FolderListTileParent extends StatelessWidget {
                             state is SubjectOverviewSelectionModeOn,
                         folder: folder,
                         childListTiles: childListTiles,
-                        isHighlight: isHighlight,
                       );
                     },
                   );

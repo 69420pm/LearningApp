@@ -14,12 +14,10 @@ class FolderListTileView extends StatelessWidget {
     required this.folder,
     required this.childListTiles,
     required this.inSelectionMode,
-    this.isHighlight = false,
   });
   final bool inSelectionMode;
   final Folder folder;
   final Map<String, Widget> childListTiles;
-  final bool isHighlight;
 
   @override
   Widget build(BuildContext context) {
@@ -30,32 +28,16 @@ class FolderListTileView extends StatelessWidget {
         child: Material(
           child: ExpansionTile(
             shape: RoundedRectangleBorder(
-                borderRadius:
-                    BorderRadius.circular(UISizeConstants.cornerRadius)),
-            // backgroundColor: isHighlight
-            //     ? Theme.of(context).colorScheme.onBackground.withOpacity(0.05)
-            //     : Theme.of(context).colorScheme.onBackground.withOpacity(0.01),
-            // collapsedBackgroundColor: isHighlight
-            //     ? Theme.of(context).colorScheme.onBackground.withOpacity(0.05)
-            //     : Theme.of(context).colorScheme.onBackground.withOpacity(0.01),
+              borderRadius: BorderRadius.circular(UISizeConstants.cornerRadius),
+            ),
             controlAffinity: ListTileControlAffinity.leading,
             collapsedTextColor:
                 Theme.of(context).colorScheme.onSecondaryContainer,
             textColor: Theme.of(context).colorScheme.onSecondaryContainer,
             maintainState: true,
-            title: Row(
-              children: [
-                const Icon(Icons.folder),
-                const SizedBox(
-                  width: UISizeConstants.defaultSize * 1,
-                ),
-                Expanded(
-                  child: Text(
-                    folder.name,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
+            title: Text(
+              folder.name,
+              overflow: TextOverflow.ellipsis,
             ),
             trailing: PopupMenuButton<int>(
               shape: const RoundedRectangleBorder(
@@ -144,8 +126,8 @@ class FolderListTileView extends StatelessWidget {
                             .length,
                         itemBuilder: (context, index) {
                           return childListTiles.values
-                            .whereType<FolderListTileParent>()
-                            .elementAt(index);
+                              .whereType<FolderListTileParent>()
+                              .elementAt(index);
                           // ..isHighlight = index.isOdd;
                         },
                       ),
@@ -159,12 +141,10 @@ class FolderListTileView extends StatelessWidget {
                             .whereType<CardListTile>()
                             .length,
                         itemBuilder: (context, index) {
-          
                           return childListTiles.values
-                            .whereType<CardListTile>()
-                            .elementAt(index)
-                          ..isHighlight = index.isOdd
-                          ..isInSelectMode = inSelectionMode;
+                              .whereType<CardListTile>()
+                              .elementAt(index)
+                            ..isInSelectMode = inSelectionMode;
                         },
                       ),
                   ],

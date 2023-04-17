@@ -267,8 +267,7 @@ class _SubjectOverviewViewState extends State<SubjectOverviewView> {
                                           (context, index) => childListTiles
                                               .values
                                               .whereType<CardListTile>()
-                                              .elementAt(index)
-                                            ..isHighlight = index.isOdd,
+                                              .elementAt(index),
                                           childCount: childListTiles.values
                                               .whereType<CardListTile>()
                                               .length,
