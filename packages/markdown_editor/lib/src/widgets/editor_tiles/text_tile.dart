@@ -128,6 +128,14 @@ class _TextTileState extends State<TextTile> {
                     );
               }
             },
+            onChanged: (String value) {
+              String newString = String.fromCharCodes(
+                  value.runes.where((rune) => rune <= 0x10FFFF));
+              widget.textFieldController!.value = TextEditingValue(
+                text: newString,
+                selection: TextSelection.collapsed(offset: newString.length),
+              );
+            },
             maxLines: null,
             keyboardType: TextInputType.multiline,
             style: widget.textStyle,

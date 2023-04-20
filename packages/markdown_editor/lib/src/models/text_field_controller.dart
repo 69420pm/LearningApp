@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/bloc/text_editor_bloc.dart';
 
+// https://medium.com/dartlang/dart-string-manipulation-done-right-5abd0668ba3e
+
 class TextFieldController extends TextEditingController {
   TextFieldController({
     required this.standardStyle,
@@ -52,8 +54,14 @@ class TextFieldController extends TextEditingController {
     bool onlyUpdateCharTiles = false,
   }) {
     super.buildTextSpan(context: context, withComposing: withComposing);
+    // text = String.fromCharCodes(text.codeUnits);
+    // Runes runes = text.runes;
+    // text = String.fromCharCodes(runes);
+    // Runes runes16 = text.runes;
+    // text = utf8.encode(text);
+    text.codeUnits.add(55699);
+    text = String.fromCharCodes(text.codeUnits);
     final children = <InlineSpan>[];
-
     if (onlyUpdateCharTiles) {
       text = '';
       charTiles.forEach((key, value) {
@@ -128,7 +136,6 @@ class TextFieldController extends TextEditingController {
         );
       }
     } else {
-
       for (var i = 0; i < text.length; i++) {
         if (i < selection.end) {
           if (text[i] == charTiles[i]?.char) {
