@@ -59,8 +59,6 @@ class TextFieldController extends TextEditingController {
     // text = String.fromCharCodes(runes);
     // Runes runes16 = text.runes;
     // text = utf8.encode(text);
-    text.codeUnits.add(55699);
-    text = String.fromCharCodes(text.codeUnits);
     final children = <InlineSpan>[];
     if (onlyUpdateCharTiles) {
       text = '';
@@ -81,7 +79,7 @@ class TextFieldController extends TextEditingController {
       context.read<TextEditorBloc>().textColor,
     );
 
-    final textDelta = text.length - _previousText.length;
+    final textDelta = text.characters.length - _previousText.characters.length;
     final newCharTiles = <int, CharTile>{};
     if (text == _previousText &&
         (selection.end - selection.start) > 0 &&
@@ -108,7 +106,7 @@ class TextFieldController extends TextEditingController {
       }
       for (var i = selection.start; i < selection.end; i++) {
         charTiles[i] = CharTile(
-          char: text[i],
+          char: text.characters.elementAt(i),
           style: !isCode
               ? standardStyle.copyWith(
                   color: textColorToChange ?? charTiles[i]!.style.color,
@@ -136,13 +134,13 @@ class TextFieldController extends TextEditingController {
         );
       }
     } else {
-      for (var i = 0; i < text.length; i++) {
+      for (var i = 0; i < text.characters.length; i++) {
         if (i < selection.end) {
-          if (text[i] == charTiles[i]?.char) {
+          if (text.characters.elementAt(i) == charTiles[i]?.char) {
             newCharTiles[i] = charTiles[i]!;
           } else {
             newCharTiles[i] = CharTile(
-              char: text[i],
+              char: text.characters.elementAt(i),
               style: !isCode
                   ? standardStyle.copyWith(
                       color: textColor,
