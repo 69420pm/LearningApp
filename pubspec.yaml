@@ -31,6 +31,7 @@ dependencies:
   uuid: ^3.0.7
   dynamic_color: ^1.5.4
   google_fonts: ^4.0.3
+  characters: ^1.2.1
   
 
 

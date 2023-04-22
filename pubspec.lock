@@ -72,7 +72,7 @@ packages:
     source: path
     version: "0.1.0+1"
   characters:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: characters
       sha256: e6a326c8af69605aec75ed6c187d06b349707a27fbff8222ca9cc2cff167975c

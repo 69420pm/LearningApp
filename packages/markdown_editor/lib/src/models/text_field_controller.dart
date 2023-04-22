@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/bloc/text_editor_bloc.dart';
 
+// https://medium.com/dartlang/dart-string-manipulation-done-right-5abd0668ba3e
+
 class TextFieldController extends TextEditingController {
   TextFieldController({
     required this.standardStyle,
@@ -52,8 +54,12 @@ class TextFieldController extends TextEditingController {
     bool onlyUpdateCharTiles = false,
   }) {
     super.buildTextSpan(context: context, withComposing: withComposing);
+    // text = String.fromCharCodes(text.codeUnits);
+    // Runes runes = text.runes;
+    // text = String.fromCharCodes(runes);
+    // Runes runes16 = text.runes;
+    // text = utf8.encode(text);
     final children = <InlineSpan>[];
-
     if (onlyUpdateCharTiles) {
       text = '';
       charTiles.forEach((key, value) {
@@ -73,7 +79,7 @@ class TextFieldController extends TextEditingController {
       context.read<TextEditorBloc>().textColor,
     );
 
-    final textDelta = text.length - _previousText.length;
+    final textDelta = text.characters.length - _previousText.characters.length;
     final newCharTiles = <int, CharTile>{};
     if (text == _previousText &&
         (selection.end - selection.start) > 0 &&
@@ -100,7 +106,7 @@ class TextFieldController extends TextEditingController {
       }
       for (var i = selection.start; i < selection.end; i++) {
         charTiles[i] = CharTile(
-          char: text[i],
+          char: text.characters.elementAt(i),
           style: !isCode
               ? standardStyle.copyWith(
                   color: textColorToChange ?? charTiles[i]!.style.color,
@@ -128,14 +134,13 @@ class TextFieldController extends TextEditingController {
         );
       }
     } else {
-
-      for (var i = 0; i < text.length; i++) {
+      for (var i = 0; i < text.characters.length; i++) {
         if (i < selection.end) {
-          if (text[i] == charTiles[i]?.char) {
+          if (text.characters.elementAt(i) == charTiles[i]?.char) {
             newCharTiles[i] = charTiles[i]!;
           } else {
             newCharTiles[i] = CharTile(
-              char: text[i],
+              char: text.characters.elementAt(i),
               style: !isCode
                   ? standardStyle.copyWith(
                       color: textColor,
