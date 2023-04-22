@@ -14,7 +14,10 @@ class FolderListTileView extends StatelessWidget {
     required this.folder,
     required this.childListTiles,
     required this.inSelectionMode,
+    required this.isHoverd,
   });
+
+  final bool isHoverd;
   final bool inSelectionMode;
   final Folder folder;
   final Map<String, Widget> childListTiles;
@@ -33,6 +36,12 @@ class FolderListTileView extends StatelessWidget {
             controlAffinity: ListTileControlAffinity.leading,
             collapsedTextColor:
                 Theme.of(context).colorScheme.onSecondaryContainer,
+            backgroundColor: isHoverd
+                ? Theme.of(context).colorScheme.primary.withOpacity(0.5)
+                : Theme.of(context).colorScheme.background,
+            collapsedBackgroundColor: isHoverd
+                ? Theme.of(context).colorScheme.primary.withOpacity(0.5)
+                : Theme.of(context).colorScheme.background,
             textColor: Theme.of(context).colorScheme.onSecondaryContainer,
             maintainState: true,
             title: Text(

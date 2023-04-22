@@ -20,6 +20,8 @@ class FolderListTileParent extends StatelessWidget {
   final Folder folder;
   final CardsRepository cardsRepository;
 
+  bool isHoverd = false;
+
   var childListTiles = <String, Widget>{};
   @override
   Widget build(BuildContext context) {
@@ -43,6 +45,24 @@ class FolderListTileParent extends StatelessWidget {
                 state is SubjectOverviewSelectionModeOn ? 0 : 1,
             childWhenDragging: const PlaceholderWhileDragging(),
             child: DragTarget(
+              onMove: (details) {
+                if (isHoverd == false) {
+                  isHoverd = true;
+                  context
+                      .read<FolderListTileBloc>()
+                      .add(FolderListTileUpdate());
+                }
+                print("true");
+              },
+              onLeave: (data) {
+                if (isHoverd == true) {
+                  isHoverd = false;
+                  context
+                      .read<FolderListTileBloc>()
+                      .add(FolderListTileUpdate());
+                }
+                print("false");
+              },
               onAccept: (data) {
                 if (data is Folder) {
                   if (data.parentId == folder.id) return;
@@ -101,6 +121,10 @@ class FolderListTileParent extends StatelessWidget {
                         current.senderId == folder.id) {
                       return true;
                     }
+
+                    if (current is FolderListTileUpdateOnHover) {
+                      return true;
+                    }
                     return false;
                   },
                   builder: (context, state) {
@@ -138,6 +162,7 @@ class FolderListTileParent extends StatelessWidget {
                       // buildWhen: (previous, current) => false,
                       builder: (context, state) {
                         return FolderListTileView(
+                          isHoverd: isHoverd,
                           inSelectionMode:
                               state is SubjectOverviewSelectionModeOn,
                           folder: folder,

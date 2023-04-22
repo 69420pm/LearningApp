@@ -29,6 +29,7 @@ class FolderListTileBloc
     // on<FolderListTileCloseStreamById>(_closeStream);
 
     on<FolderListTileDEBUGAddCard>(_debugAddCard);
+    on<FolderListTileUpdate>(_folderUpdate);
   }
   // List<String> _subscribedStreamIds = [];
 
@@ -157,5 +158,10 @@ class FolderListTileBloc
         cardsRepository: _cardsRepository,
       ),
     );
+  }
+
+  FutureOr<void> _folderUpdate(
+      FolderListTileUpdate event, Emitter<FolderListTileState> emit) {
+    emit(FolderListTileUpdateOnHover());
   }
 }

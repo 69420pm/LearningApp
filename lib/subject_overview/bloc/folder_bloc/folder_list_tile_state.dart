@@ -13,8 +13,7 @@ class FolderListTileRetrieveChildren extends FolderListTileState {
   final Map<String, Widget> childrenStream;
   final List<Removed> removedWidgets;
   final String senderId;
-  FolderListTileRetrieveChildren(
-    {
+  FolderListTileRetrieveChildren({
     required this.senderId,
     required this.childrenStream,
     required this.removedWidgets,
@@ -40,6 +39,11 @@ class FolderListTileError extends FolderListTileState {
 }
 
 class FolderListTileSuccess extends FolderListTileState {
+  @override
+  List<Object?> get props => [];
+}
+
+class FolderListTileUpdateOnHover extends FolderListTileState {
   @override
   List<Object?> get props => [];
 }
