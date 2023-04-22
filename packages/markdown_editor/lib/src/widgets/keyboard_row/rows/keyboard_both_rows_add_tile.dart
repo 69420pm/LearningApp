@@ -76,7 +76,7 @@ class KeyboardBothRowsAddTile extends StatelessWidget {
                             newEditorTile: ListEditorTile(), context: context)),
                   ),
                   _KeyboardAddNewTileTile(
-                    icon: const Icon(Icons.question_mark),
+                    icon: const Icon(Icons.format_list_numbered),
                   ),
                 ],
               ),
@@ -104,7 +104,7 @@ class KeyboardBothRowsAddTile extends StatelessWidget {
                         ),
                   ),
                   _KeyboardAddNewTileTile(
-                    icon: const Icon(Icons.format_quote),
+                    icon: const Icon(Icons.table_chart),
                   ),
                 ],
               ),
