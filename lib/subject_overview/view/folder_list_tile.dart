@@ -50,18 +50,18 @@ class FolderListTileParent extends StatelessWidget {
                   isHoverd = true;
                   context
                       .read<FolderListTileBloc>()
-                      .add(FolderListTileUpdate());
+                      .add(FolderListTileUpdate(id: folder.id));
+                  print("set true " + folder.name);
                 }
-                print("true");
               },
               onLeave: (data) {
                 if (isHoverd == true) {
                   isHoverd = false;
                   context
                       .read<FolderListTileBloc>()
-                      .add(FolderListTileUpdate());
+                      .add(FolderListTileUpdate(id: folder.id));
+                  print("set false " + folder.name);
                 }
-                print("false");
               },
               onAccept: (data) {
                 if (data is Folder) {
@@ -123,7 +123,7 @@ class FolderListTileParent extends StatelessWidget {
                     }
 
                     if (current is FolderListTileUpdateOnHover) {
-                      return true;
+                      if (current.id == folder.id) return true;
                     }
                     return false;
                   },

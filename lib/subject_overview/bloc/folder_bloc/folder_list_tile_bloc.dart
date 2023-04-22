@@ -162,6 +162,6 @@ class FolderListTileBloc
 
   FutureOr<void> _folderUpdate(
       FolderListTileUpdate event, Emitter<FolderListTileState> emit) {
-    emit(FolderListTileUpdateOnHover());
+    emit(FolderListTileUpdateOnHover(event.id));
   }
 }

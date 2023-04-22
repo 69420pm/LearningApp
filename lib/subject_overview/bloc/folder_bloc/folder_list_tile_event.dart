@@ -57,4 +57,7 @@ class FolderListTileMoveFolder extends FolderListTileEvent {
 //   });
 // }
 
-class FolderListTileUpdate extends FolderListTileEvent {}
+class FolderListTileUpdate extends FolderListTileEvent {
+  String id;
+  FolderListTileUpdate({required this.id});
+}
