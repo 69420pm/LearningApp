@@ -2,11 +2,11 @@ import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/subject_overview/bloc/edit_subject_bloc/subject_overview_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/folder_bloc/folder_list_tile_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/view/folder_draggable_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile_view.dart';
-import 'package:learning_app/subject_overview/view/folder_drag_target.dart';
 import 'package:learning_app/subject_overview/view/inactive_folder_list_tile.dart';
 import 'package:ui_components/ui_components.dart';
 
@@ -42,60 +42,112 @@ class FolderListTileParent extends StatelessWidget {
             maxSimultaneousDrags:
                 state is SubjectOverviewSelectionModeOn ? 0 : 1,
             childWhenDragging: const PlaceholderWhileDragging(),
-            child: FolderDragTarget(
-              parentID: folder.id,
-              child: BlocBuilder<FolderListTileBloc, FolderListTileState>(
-                buildWhen: (previous, current) {
-                  if (current is FolderListTileRetrieveChildren &&
-                      current.senderId == folder.id) {
-                    return true;
+            child: DragTarget(
+              onAccept: (data) {
+                if (data is Folder) {
+                  if (data.parentId == folder.id) return;
+                  context.read<EditSubjectBloc>().add(
+                        EditSubjectSetFolderParent(
+                          folder: data,
+                          parentId: folder.id,
+                        ),
+                      );
+                } else if (data is Card) {
+                  if (data.parentId != folder.id) {
+                    if (context.read<SubjectOverviewSelectionBloc>().state
+                        is SubjectOverviewSelectionMultiDragging) {
+                      context.read<SubjectOverviewSelectionBloc>().add(
+                            SubjectOverviewSelectionMoveSelectedCards(
+                              parentId: folder.id,
+                            ),
+                          );
+                    } else {
+                      context.read<EditSubjectBloc>().add(
+                            EditSubjectSetCardParent(
+                              card: data,
+                              parentId: folder.id,
+                            ),
+                          );
+                    }
+                  } else if (context
+                      .read<SubjectOverviewSelectionBloc>()
+                      .isInSelectMode) {
+                    context.read<SubjectOverviewSelectionBloc>().add(
+                          SubjectOverviewSelectionMoveSelectedCards(
+                            parentId: folder.id,
+                          ),
+                        );
+                  } else {
+                    context.read<SubjectOverviewSelectionBloc>().add(
+                          SubjectOverviewSelectionToggleSelectMode(
+                            inSelectMode: true,
+                          ),
+                        );
+                    context.read<SubjectOverviewSelectionBloc>().add(
+                          SubjectOverviewSelectionChange(
+                            card: data,
+                            addCard: true,
+                          ),
+                        );
                   }
-                  return false;
-                },
-                builder: (context, state) {
-                  if (state is FolderListTileRetrieveChildren &&
-                      state.senderId == folder.id) {
-                    childListTiles = {
-                      ...childListTiles,
-                      ...state.childrenStream
-                    };
-                    for (final element in state.removedWidgets) {
-                      if (childListTiles.containsKey(element.id)) {
-                        childListTiles.remove(element.id);
+                }
+                // print(data);
+                // folder.childFolders.add(data);
+              },
+              builder: (context, candidateData, rejectedData) {
+                return BlocBuilder<FolderListTileBloc, FolderListTileState>(
+                  buildWhen: (previous, current) {
+                    if (current is FolderListTileRetrieveChildren &&
+                        current.senderId == folder.id) {
+                      return true;
+                    }
+                    return false;
+                  },
+                  builder: (context, state) {
+                    if (state is FolderListTileRetrieveChildren &&
+                        state.senderId == folder.id) {
+                      childListTiles = {
+                        ...childListTiles,
+                        ...state.childrenStream
+                      };
+                      for (final element in state.removedWidgets) {
+                        if (childListTiles.containsKey(element.id)) {
+                          childListTiles.remove(element.id);
+                        }
                       }
+
+                      // var newChildListTiles = <String, Widget>{};
+                      // childListTiles.forEach((key, value) {
+                      //   try {
+                      //     if ((value as FolderListTile).folder.parentId ==
+                      //         widget.folder.id) {
+                      //       newChildListTiles[value.folder.id] = value;
+                      //     }
+                      //   } catch (e) {
+                      //     if ((value as CardListTile).card.parentId ==
+                      //         widget.folder.id) {
+                      //       newChildListTiles[value.card.id] = value;
+                      //     }
+                      //   }
+                      // });
+                      // childListTiles = newChildListTiles;
                     }
 
-                    // var newChildListTiles = <String, Widget>{};
-                    // childListTiles.forEach((key, value) {
-                    //   try {
-                    //     if ((value as FolderListTile).folder.parentId ==
-                    //         widget.folder.id) {
-                    //       newChildListTiles[value.folder.id] = value;
-                    //     }
-                    //   } catch (e) {
-                    //     if ((value as CardListTile).card.parentId ==
-                    //         widget.folder.id) {
-                    //       newChildListTiles[value.card.id] = value;
-                    //     }
-                    //   }
-                    // });
-                    // childListTiles = newChildListTiles;
-                  }
-
-                  return BlocBuilder<SubjectOverviewSelectionBloc,
-                      SubjectOverviewSelectionState>(
-                    // buildWhen: (previous, current) => false,
-                    builder: (context, state) {
-                      return FolderListTileView(
-                        inSelectionMode:
-                            state is SubjectOverviewSelectionModeOn,
-                        folder: folder,
-                        childListTiles: childListTiles,
-                      );
-                    },
-                  );
-                },
-              ),
+                    return BlocBuilder<SubjectOverviewSelectionBloc,
+                        SubjectOverviewSelectionState>(
+                      // buildWhen: (previous, current) => false,
+                      builder: (context, state) {
+                        return FolderListTileView(
+                          inSelectionMode:
+                              state is SubjectOverviewSelectionModeOn,
+                          folder: folder,
+                          childListTiles: childListTiles,
+                        );
+                      },
+                    );
+                  },
+                );
+              },
             ),
           );
         },
