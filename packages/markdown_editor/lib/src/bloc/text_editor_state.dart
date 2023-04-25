@@ -25,5 +25,19 @@ enum TextColor {
   blue,
   purple,
   pink,
-  red
+  red,
+}
+
+enum TextBackgroundColor {
+  noBG,
+  white60BG,
+  white38BG,
+  brownBG,
+  orangeBG,
+  yellowBG,
+  greenBG,
+  blueBG,
+  purpleBG,
+  pinkBG,
+  redBG
 }

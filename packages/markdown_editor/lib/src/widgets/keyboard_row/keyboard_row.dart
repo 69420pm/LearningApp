@@ -77,4 +77,31 @@ class KeyboardRow extends StatelessWidget {
         return Colors.red;
     }
   }
+
+  static Color returnColorFromBackgroundColor(TextBackgroundColor color) {
+    switch (color) {
+      case TextBackgroundColor.noBG:
+        return Colors.transparent;
+      case TextBackgroundColor.white60BG:
+        return Colors.white60;
+      case TextBackgroundColor.white38BG:
+        return Colors.white38;
+      case TextBackgroundColor.brownBG:
+        return Colors.brown;
+      case TextBackgroundColor.orangeBG:
+        return Colors.orange;
+      case TextBackgroundColor.yellowBG:
+        return Colors.yellow;
+      case TextBackgroundColor.greenBG:
+        return Colors.green;
+      case TextBackgroundColor.blueBG:
+        return Colors.blue;
+      case TextBackgroundColor.purpleBG:
+      return Colors.purple;
+      case TextBackgroundColor.pinkBG:
+        return Colors.pink;
+      case TextBackgroundColor.redBG:
+        return Colors.red;
+    }
+  }
 }

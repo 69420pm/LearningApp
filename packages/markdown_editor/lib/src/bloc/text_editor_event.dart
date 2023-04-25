@@ -9,12 +9,14 @@ class TextEditorKeyboardRowChange extends TextEditorEvent {
   bool? isUnderlined;
   bool? isCode;
   TextColor? textColor;
+  TextBackgroundColor? textBackgroundColor;
   TextEditorKeyboardRowChange({
     this.isBold,
     this.isItalic,
     this.isUnderlined,
     this.isCode,
     this.textColor,
+    this.textBackgroundColor
   });
 }
 

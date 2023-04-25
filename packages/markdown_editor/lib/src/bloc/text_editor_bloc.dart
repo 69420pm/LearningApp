@@ -14,13 +14,14 @@ part 'text_editor_state.dart';
 /// bloc for handling all text editor relevant state management
 class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
   /// constructor
-  TextEditorBloc({
-    this.isBold = false,
-    this.isItalic = false,
-    this.isUnderlined = false,
-    this.isCode = false,
-    this.textColor = TextColor.white,
-  }) : super(TextEditorInitial()) {
+  TextEditorBloc(
+      {this.isBold = false,
+      this.isItalic = false,
+      this.isUnderlined = false,
+      this.isCode = false,
+      this.textColor = TextColor.white,
+      this.textBackgroundColor = TextBackgroundColor.noBG})
+      : super(TextEditorInitial()) {
     on<TextEditorKeyboardRowChange>(_keyboardRowChange);
     on<TextEditorAddEditorTile>(_addTile);
     on<TextEditorRemoveEditorTile>(_removeTile);
@@ -49,6 +50,9 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
   /// color of text as enum
   TextColor textColor;
 
+  /// background color of text as enum
+  TextBackgroundColor textBackgroundColor;
+
   EditorTile? focusedTile;
 
   FutureOr<void> _keyboardRowChange(
@@ -61,6 +65,9 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
         event.isUnderlined != null ? event.isUnderlined! : isUnderlined;
     isCode = event.isCode != null ? event.isCode! : isCode;
     textColor = event.textColor != null ? event.textColor! : textColor;
+    textBackgroundColor = event.textBackgroundColor != null
+        ? event.textBackgroundColor!
+        : textBackgroundColor;
     emit(TextEditorKeyboardRowChanged());
   }
 
@@ -102,12 +109,12 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     emit(TextEditorEditorTilesChanged(tiles: editorTiles));
   }
 
-  // TODO completely broken
   void _addEditorTile(EditorTile toAdd, BuildContext context) {
     for (var i = 0; i < editorTiles.length; i++) {
       // get focused/current editorTile,
       // or the last one when no tile is focused
-      if (editorTiles[i] == focusedTile ||(editorTiles[i].focusNode != null &&
+      if (editorTiles[i] == focusedTile ||
+          (editorTiles[i].focusNode != null &&
               editorTiles[i].focusNode!.hasFocus) ||
           i == editorTiles.length - 1) {
         // if focused textfield is an empty TextTile
