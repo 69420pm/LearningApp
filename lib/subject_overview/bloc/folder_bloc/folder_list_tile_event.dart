@@ -61,3 +61,7 @@ class FolderListTileUpdate extends FolderListTileEvent {
   String id;
   FolderListTileUpdate({required this.id});
 }
+
+class FolderListTileClearHovers extends FolderListTileEvent {
+  FolderListTileClearHovers();
+}

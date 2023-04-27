@@ -41,11 +41,16 @@ class AppView extends StatelessWidget {
     return DynamicColorBuilder(
       builder: (lightDynamic, darkDynamic) => MaterialApp(
         debugShowCheckedModeBanner: false,
+
         title: 'Learning App',
         theme: _themeData(
-            isLightMode: true, colorScheme: lightDynamic ?? lightColorScheme,),
+          isLightMode: true,
+          colorScheme: lightDynamic ?? lightColorScheme,
+        ),
         darkTheme: _themeData(
-            isLightMode: false, colorScheme: darkDynamic ?? darkColorScheme,),
+          isLightMode: false,
+          colorScheme: darkDynamic ?? darkColorScheme,
+        ),
         themeMode: ThemeMode.dark, //TODO change later
         localizationsDelegates: const [
           AppLocalizations.delegate,

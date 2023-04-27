@@ -11,7 +11,7 @@ class FolderDraggableTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceVariant,
+        color: Theme.of(context).colorScheme.secondaryContainer,
         borderRadius: const BorderRadius.all(
           Radius.circular(UISizeConstants.cornerRadius),
         ),
@@ -25,7 +25,10 @@ class FolderDraggableTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.folder),
+            Icon(
+              Icons.folder,
+              color: Theme.of(context).colorScheme.onSecondaryContainer,
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: UISizeConstants.defaultSize * 2,
