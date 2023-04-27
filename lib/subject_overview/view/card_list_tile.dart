@@ -2,6 +2,7 @@
 import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/subject_overview/bloc/folder_bloc/folder_list_tile_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/view/card_list_tile_view.dart';
 import 'package:learning_app/subject_overview/view/inactive_folder_list_tile.dart';
@@ -71,9 +72,13 @@ class _CardListTileState extends State<CardListTile> {
               });
             }
           },
-          onDragEnd: (details) => context
-              .read<SubjectOverviewSelectionBloc>()
-              .add(SubjectOverviewDraggingChange(inDragg: false)),
+          onDragEnd: (details) {
+            context
+                .read<SubjectOverviewSelectionBloc>()
+                .add(SubjectOverviewDraggingChange(inDragg: false));
+
+            context.read<FolderListTileBloc>().add(FolderListTileClearHovers());
+          },
           onDraggableCanceled: (_, __) {
             if (!widget.isCardSelected) {
               context.read<SubjectOverviewSelectionBloc>().add(

@@ -41,6 +41,12 @@ class FolderListTileParent extends StatelessWidget {
             feedback: FolderDraggableTile(
               folder: folder,
             ),
+            onDragEnd: (details) {
+              isHoverd = false;
+              context
+                  .read<FolderListTileBloc>()
+                  .add(FolderListTileClearHovers());
+            },
             maxSimultaneousDrags:
                 state is SubjectOverviewSelectionModeOn ? 0 : 1,
             childWhenDragging: const PlaceholderWhileDragging(),
@@ -51,7 +57,6 @@ class FolderListTileParent extends StatelessWidget {
                   context
                       .read<FolderListTileBloc>()
                       .add(FolderListTileUpdate(id: folder.id));
-                  print("set true " + folder.name);
                 }
               },
               onLeave: (data) {
@@ -60,7 +65,6 @@ class FolderListTileParent extends StatelessWidget {
                   context
                       .read<FolderListTileBloc>()
                       .add(FolderListTileUpdate(id: folder.id));
-                  print("set false " + folder.name);
                 }
               },
               onAccept: (data) {
@@ -111,19 +115,21 @@ class FolderListTileParent extends StatelessWidget {
                         );
                   }
                 }
-                // print(data);
-                // folder.childFolders.add(data);
               },
               builder: (context, candidateData, rejectedData) {
                 return BlocBuilder<FolderListTileBloc, FolderListTileState>(
                   buildWhen: (previous, current) {
                     if (current is FolderListTileRetrieveChildren &&
                         current.senderId == folder.id) {
+                      isHoverd = false;
                       return true;
-                    }
-
-                    if (current is FolderListTileUpdateOnHover) {
+                    } else if (current is FolderListTileUpdateOnHover) {
                       if (current.id == folder.id) return true;
+                    } else if (current is FolderListTileToClearHover) {
+                      if (isHoverd == true) {
+                        isHoverd = false;
+                        return true;
+                      }
                     }
                     return false;
                   },
@@ -139,27 +145,10 @@ class FolderListTileParent extends StatelessWidget {
                           childListTiles.remove(element.id);
                         }
                       }
-
-                      // var newChildListTiles = <String, Widget>{};
-                      // childListTiles.forEach((key, value) {
-                      //   try {
-                      //     if ((value as FolderListTile).folder.parentId ==
-                      //         widget.folder.id) {
-                      //       newChildListTiles[value.folder.id] = value;
-                      //     }
-                      //   } catch (e) {
-                      //     if ((value as CardListTile).card.parentId ==
-                      //         widget.folder.id) {
-                      //       newChildListTiles[value.card.id] = value;
-                      //     }
-                      //   }
-                      // });
-                      // childListTiles = newChildListTiles;
                     }
 
                     return BlocBuilder<SubjectOverviewSelectionBloc,
                         SubjectOverviewSelectionState>(
-                      // buildWhen: (previous, current) => false,
                       builder: (context, state) {
                         return FolderListTileView(
                           isHoverd: isHoverd,

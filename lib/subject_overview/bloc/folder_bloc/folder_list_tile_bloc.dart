@@ -29,6 +29,7 @@ class FolderListTileBloc
     // on<FolderListTileCloseStreamById>(_closeStream);
 
     on<FolderListTileDEBUGAddCard>(_debugAddCard);
+    on<FolderListTileClearHovers>(_clearHovers);
     on<FolderListTileUpdate>(_folderUpdate);
   }
   // List<String> _subscribedStreamIds = [];
@@ -134,8 +135,10 @@ class FolderListTileBloc
     // }
   }
 
-  Future<FutureOr<void>> _debugAddCard(FolderListTileDEBUGAddCard event,
-      Emitter<FolderListTileState> emit) async {
+  Future<FutureOr<void>> _debugAddCard(
+    FolderListTileDEBUGAddCard event,
+    Emitter<FolderListTileState> emit,
+  ) async {
     await _cardsRepository.saveCard(event.card);
   }
 
@@ -161,7 +164,16 @@ class FolderListTileBloc
   }
 
   FutureOr<void> _folderUpdate(
-      FolderListTileUpdate event, Emitter<FolderListTileState> emit) {
+    FolderListTileUpdate event,
+    Emitter<FolderListTileState> emit,
+  ) {
     emit(FolderListTileUpdateOnHover(event.id));
+  }
+
+  FutureOr<void> _clearHovers(
+    FolderListTileClearHovers event,
+    Emitter<FolderListTileState> emit,
+  ) {
+    emit(FolderListTileToClearHover());
   }
 }
