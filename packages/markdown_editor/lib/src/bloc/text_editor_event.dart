@@ -9,12 +9,14 @@ class TextEditorKeyboardRowChange extends TextEditorEvent {
   bool? isUnderlined;
   bool? isCode;
   TextColor? textColor;
+  TextBackgroundColor? textBackgroundColor;
   TextEditorKeyboardRowChange({
     this.isBold,
     this.isItalic,
     this.isUnderlined,
     this.isCode,
     this.textColor,
+    this.textBackgroundColor
   });
 }
 
@@ -23,7 +25,7 @@ class TextEditorAddEditorTile extends TextEditorEvent {
   BuildContext context;
   TextEditorAddEditorTile({
     required this.newEditorTile,
-    required this.context
+    required this.context,
   });
 }
 
@@ -46,7 +48,6 @@ class TextEditorReplaceEditorTile extends TextEditorEvent {
   EditorTile newEditorTile;
   BuildContext context;
 
-
   /// if tile gets deleted and text is still in textfield
   /// text gets passed to closest textfield above the deleted one
   bool handOverText;
@@ -57,5 +58,4 @@ class TextEditorReplaceEditorTile extends TextEditorEvent {
     required this.context,
     this.handOverText = false,
   });
-  
 }

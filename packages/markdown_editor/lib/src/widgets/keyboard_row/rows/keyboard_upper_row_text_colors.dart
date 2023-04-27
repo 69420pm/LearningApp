@@ -9,77 +9,198 @@ class KeyboardUpperRowTextColors extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Container(
-        height: 20,
+      child: SizedBox(
+        height: 40,
         // width: 100,
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          children: <Widget>[
-            _KeyboardColorSelectable(
-              color: Colors.white,
-              onPressed: () => context.read<TextEditorBloc>().add(
-                    TextEditorKeyboardRowChange(textColor: TextColor.white),
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: <Widget>[
+                  _KeyboardColorSelectable(
+                    color: Colors.white,
+                    onPressed: () => context.read<TextEditorBloc>().add(
+                          TextEditorKeyboardRowChange(
+                            textColor: TextColor.white,
+                          ),
+                        ),
                   ),
+                  _KeyboardColorSelectable(
+                    color: Colors.white60,
+                    onPressed: () => context.read<TextEditorBloc>().add(
+                          TextEditorKeyboardRowChange(
+                            textColor: TextColor.white60,
+                          ),
+                        ),
+                  ),
+                  _KeyboardColorSelectable(
+                    color: Colors.white38,
+                    onPressed: () => context.read<TextEditorBloc>().add(
+                          TextEditorKeyboardRowChange(
+                            textColor: TextColor.white38,
+                          ),
+                        ),
+                  ),
+                  _KeyboardColorSelectable(
+                    color: Colors.brown,
+                    onPressed: () => context.read<TextEditorBloc>().add(
+                          TextEditorKeyboardRowChange(
+                            textColor: TextColor.brown,
+                          ),
+                        ),
+                  ),
+                  _KeyboardColorSelectable(
+                    color: Colors.orange,
+                    onPressed: () => context.read<TextEditorBloc>().add(
+                          TextEditorKeyboardRowChange(
+                            textColor: TextColor.orange,
+                          ),
+                        ),
+                  ),
+                  _KeyboardColorSelectable(
+                    color: Colors.yellow,
+                    onPressed: () => context.read<TextEditorBloc>().add(
+                          TextEditorKeyboardRowChange(
+                            textColor: TextColor.yellow,
+                          ),
+                        ),
+                  ),
+                  _KeyboardColorSelectable(
+                    color: Colors.green,
+                    onPressed: () => context.read<TextEditorBloc>().add(
+                          TextEditorKeyboardRowChange(
+                            textColor: TextColor.green,
+                          ),
+                        ),
+                  ),
+                  _KeyboardColorSelectable(
+                    color: Colors.blue,
+                    onPressed: () => context.read<TextEditorBloc>().add(
+                          TextEditorKeyboardRowChange(
+                            textColor: TextColor.blue,
+                          ),
+                        ),
+                  ),
+                  _KeyboardColorSelectable(
+                    color: Colors.purple,
+                    onPressed: () => context.read<TextEditorBloc>().add(
+                          TextEditorKeyboardRowChange(
+                            textColor: TextColor.purple,
+                          ),
+                        ),
+                  ),
+                  _KeyboardColorSelectable(
+                    color: Colors.pink,
+                    onPressed: () => context.read<TextEditorBloc>().add(
+                          TextEditorKeyboardRowChange(
+                            textColor: TextColor.pink,
+                          ),
+                        ),
+                  ),
+                  _KeyboardColorSelectable(
+                    color: Colors.red,
+                    onPressed: () => context.read<TextEditorBloc>().add(
+                          TextEditorKeyboardRowChange(textColor: TextColor.red),
+                        ),
+                  ),
+                ],
+              ),
             ),
-            _KeyboardColorSelectable(
-              color: Colors.white60,
-              onPressed: () => context.read<TextEditorBloc>().add(
-                    TextEditorKeyboardRowChange(textColor: TextColor.white60),
+            Expanded(
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: <Widget>[
+                  _KeyboardBackgroundColorSelectable(
+                    color: Colors.white,
+                    onPressed: () => context.read<TextEditorBloc>().add(
+                          TextEditorKeyboardRowChange(
+                            textBackgroundColor: TextBackgroundColor.noBG,
+                          ),
+                        ),
                   ),
-            ),
-            _KeyboardColorSelectable(
-              color: Colors.white38,
-              onPressed: () => context.read<TextEditorBloc>().add(
-                    TextEditorKeyboardRowChange(textColor: TextColor.white38),
+                  _KeyboardBackgroundColorSelectable(
+                    color: Colors.white60,
+                    onPressed: () => context.read<TextEditorBloc>().add(
+                          TextEditorKeyboardRowChange(
+                            textBackgroundColor: TextBackgroundColor.white60BG,
+                          ),
+                        ),
                   ),
-            ),
-            _KeyboardColorSelectable(
-              color: Colors.brown,
-              onPressed: () => context.read<TextEditorBloc>().add(
-                    TextEditorKeyboardRowChange(textColor: TextColor.brown),
+                  _KeyboardBackgroundColorSelectable(
+                    color: Colors.white38,
+                    onPressed: () => context.read<TextEditorBloc>().add(
+                          TextEditorKeyboardRowChange(
+                            textBackgroundColor: TextBackgroundColor.white38BG,
+                          ),
+                        ),
                   ),
-            ),
-            _KeyboardColorSelectable(
-              color: Colors.orange,
-              onPressed: () => context.read<TextEditorBloc>().add(
-                    TextEditorKeyboardRowChange(textColor: TextColor.orange),
+                  _KeyboardBackgroundColorSelectable(
+                    color: Colors.brown,
+                    onPressed: () => context.read<TextEditorBloc>().add(
+                          TextEditorKeyboardRowChange(
+                            textBackgroundColor: TextBackgroundColor.brownBG,
+                          ),
+                        ),
                   ),
-            ),
-            _KeyboardColorSelectable(
-              color: Colors.yellow,
-              onPressed: () => context.read<TextEditorBloc>().add(
-                    TextEditorKeyboardRowChange(textColor: TextColor.yellow),
+                  _KeyboardBackgroundColorSelectable(
+                    color: Colors.orange,
+                    onPressed: () => context.read<TextEditorBloc>().add(
+                          TextEditorKeyboardRowChange(
+                            textBackgroundColor: TextBackgroundColor.orangeBG,
+                          ),
+                        ),
                   ),
-            ),
-            _KeyboardColorSelectable(
-              color: Colors.green,
-              onPressed: () => context.read<TextEditorBloc>().add(
-                    TextEditorKeyboardRowChange(textColor: TextColor.green),
+                  _KeyboardBackgroundColorSelectable(
+                    color: Colors.yellow,
+                    onPressed: () => context.read<TextEditorBloc>().add(
+                          TextEditorKeyboardRowChange(
+                            textBackgroundColor: TextBackgroundColor.yellowBG,
+                          ),
+                        ),
                   ),
-            ),
-            _KeyboardColorSelectable(
-              color: Colors.blue,
-              onPressed: () => context.read<TextEditorBloc>().add(
-                    TextEditorKeyboardRowChange(textColor: TextColor.blue),
+                  _KeyboardBackgroundColorSelectable(
+                    color: Colors.green,
+                    onPressed: () => context.read<TextEditorBloc>().add(
+                          TextEditorKeyboardRowChange(
+                            textBackgroundColor: TextBackgroundColor.greenBG,
+                          ),
+                        ),
                   ),
-            ),
-            _KeyboardColorSelectable(
-              color: Colors.purple,
-              onPressed: () => context.read<TextEditorBloc>().add(
-                    TextEditorKeyboardRowChange(textColor: TextColor.purple),
+                  _KeyboardBackgroundColorSelectable(
+                    color: Colors.blue,
+                    onPressed: () => context.read<TextEditorBloc>().add(
+                          TextEditorKeyboardRowChange(
+                            textBackgroundColor: TextBackgroundColor.blueBG,
+                          ),
+                        ),
                   ),
-            ),
-            _KeyboardColorSelectable(
-              color: Colors.pink,
-              onPressed: () => context.read<TextEditorBloc>().add(
-                    TextEditorKeyboardRowChange(textColor: TextColor.pink),
+                  _KeyboardBackgroundColorSelectable(
+                    color: Colors.purple,
+                    onPressed: () => context.read<TextEditorBloc>().add(
+                          TextEditorKeyboardRowChange(
+                            textBackgroundColor: TextBackgroundColor.purpleBG,
+                          ),
+                        ),
                   ),
-            ),
-            _KeyboardColorSelectable(
-              color: Colors.red,
-              onPressed: () => context.read<TextEditorBloc>().add(
-                    TextEditorKeyboardRowChange(textColor: TextColor.red),
+                  _KeyboardBackgroundColorSelectable(
+                    color: Colors.pink,
+                    onPressed: () => context.read<TextEditorBloc>().add(
+                          TextEditorKeyboardRowChange(
+                            textBackgroundColor: TextBackgroundColor.pinkBG,
+                          ),
+                        ),
                   ),
+                  _KeyboardBackgroundColorSelectable(
+                    color: Colors.red,
+                    onPressed: () => context.read<TextEditorBloc>().add(
+                          TextEditorKeyboardRowChange(
+                            textBackgroundColor: TextBackgroundColor.redBG,
+                          ),
+                        ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -97,6 +218,27 @@ class _KeyboardColorSelectable extends StatelessWidget {
     return KeyboardSelectable(
       icon: Icon(
         Icons.format_color_text,
+        color: color,
+      ),
+      width: 40,
+      onPressed: onPressed,
+    );
+  }
+}
+
+class _KeyboardBackgroundColorSelectable extends StatelessWidget {
+  _KeyboardBackgroundColorSelectable({
+    super.key,
+    required this.color,
+    this.onPressed,
+  });
+  Color color;
+  Function? onPressed;
+  @override
+  Widget build(BuildContext context) {
+    return KeyboardSelectable(
+      icon: Icon(
+        Icons.format_color_fill,
         color: color,
       ),
       width: 40,

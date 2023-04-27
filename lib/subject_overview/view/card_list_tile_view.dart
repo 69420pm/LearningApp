@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cards_api/cards_api.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:ui_components/ui_components.dart';
@@ -11,7 +13,6 @@ class CardListTileView extends StatelessWidget {
     this.width,
     required this.isSelected,
     this.globalKey,
-    this.isHighlight = false,
   });
 
   final GlobalKey? globalKey;
@@ -20,7 +21,6 @@ class CardListTileView extends StatelessWidget {
   final bool isSelected;
   final double? height;
   final double? width;
-  final bool isHighlight;
 
   @override
   Widget build(BuildContext context) {
@@ -33,9 +33,7 @@ class CardListTileView extends StatelessWidget {
         decoration: BoxDecoration(
           color: isChildWhenDragging
               ? Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3)
-              : isHighlight
-                  ? Theme.of(context).colorScheme.onBackground.withOpacity(0.05)
-                  : Theme.of(context).colorScheme.background,
+              : Theme.of(context).colorScheme.background,
           borderRadius: const BorderRadius.all(
             Radius.circular(UISizeConstants.cornerRadius),
           ),
@@ -53,14 +51,29 @@ class CardListTileView extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: UISizeConstants.defaultSize * 2,
                         vertical: UISizeConstants.defaultSize),
-                    child: Text(
-                      card.front,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onSecondaryContainer,
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.circle,
+                          color: Color.lerp(
+                            Colors.red,
+                            Colors.green,
+                            //Todo make real score to lerp between cards or make it with steps (red, orange, green)
+                            Random().nextDouble(),
                           ),
+                        ),
+                        const SizedBox(width: UISizeConstants.defaultSize * 2),
+                        Text(
+                          card.front,
+                          overflow: TextOverflow.ellipsis,
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSecondaryContainer,
+                                  ),
+                        ),
+                      ],
                     ),
                   ),
                 ]

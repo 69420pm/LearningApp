@@ -29,6 +29,7 @@ class FolderListTileBloc
     // on<FolderListTileCloseStreamById>(_closeStream);
 
     on<FolderListTileDEBUGAddCard>(_debugAddCard);
+    on<FolderListTileUpdate>(_folderUpdate);
   }
   // List<String> _subscribedStreamIds = [];
 
@@ -50,7 +51,6 @@ class FolderListTileBloc
           if (element is Folder) {
             childListTiles[element.id] = FolderListTileParent(
               folder: element,
-              isHighlight: false,
               cardsRepository: _cardsRepository,
             );
           } else if (element is Card) {
@@ -158,5 +158,10 @@ class FolderListTileBloc
         cardsRepository: _cardsRepository,
       ),
     );
+  }
+
+  FutureOr<void> _folderUpdate(
+      FolderListTileUpdate event, Emitter<FolderListTileState> emit) {
+    emit(FolderListTileUpdateOnHover(event.id));
   }
 }

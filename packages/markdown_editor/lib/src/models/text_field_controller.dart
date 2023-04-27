@@ -25,26 +25,7 @@ class TextFieldController extends TextEditingController {
   bool _previousUnderlined = false;
   bool _previousCode = false;
   Color _previousTextColor = Colors.white;
-  //  @override
-  // set text(String newText) {
-  //   value = value.copyWith(
-  //     text: newText,
-  //     composing: TextRange.empty,
-  //   );
-  //   // notifyListeners();
-  // }
-
-  // @override
-  // set value(TextEditingValue newValue) {
-  //   final String newText = String.fromCharCodes(newValue.text.codeUnits);
-  //   if (text != newText) {
-  //     super.value = newValue.copyWith(
-  //       text: newText,
-  //       composing: TextRange.empty,
-  //     );
-  //     // notifyListeners();
-  //   }
-  // }
+  Color _previousTextBackgroundColor = Colors.transparent;
 
   @override
   TextSpan buildTextSpan({
@@ -67,7 +48,7 @@ class TextFieldController extends TextEditingController {
         text += value.char;
       });
       _previousText = text;
-
+      selection = _previousSelection;
       return TextSpan(style: style, children: children);
     }
 
@@ -77,6 +58,9 @@ class TextFieldController extends TextEditingController {
     final isCode = context.read<TextEditorBloc>().isCode;
     final textColor = KeyboardRow.returnColorFromTextColor(
       context.read<TextEditorBloc>().textColor,
+    );
+    final textBackgroundColor = KeyboardRow.returnColorFromBackgroundColor(
+      context.read<TextEditorBloc>().textBackgroundColor,
     );
 
     final textDelta = text.characters.length - _previousText.characters.length;
@@ -89,6 +73,7 @@ class TextFieldController extends TextEditingController {
       bool? underlinedToChange;
       bool? codeToChange;
       Color? textColorToChange;
+      Color? textBackgroundColorToChange;
       if (isBold != _previousBold) {
         boldToChange = isBold;
       }
@@ -101,8 +86,11 @@ class TextFieldController extends TextEditingController {
       if (textColor != _previousTextColor) {
         textColorToChange = textColor;
       }
-      if (codeToChange != codeToChange) {
+      if (codeToChange != _previousCode) {
         codeToChange = isCode;
+      }
+      if (textBackgroundColor != _previousTextBackgroundColor) {
+        textBackgroundColorToChange = textBackgroundColor;
       }
       for (var i = selection.start; i < selection.end; i++) {
         charTiles[i] = CharTile(
@@ -110,6 +98,8 @@ class TextFieldController extends TextEditingController {
           style: !isCode
               ? standardStyle.copyWith(
                   color: textColorToChange ?? charTiles[i]!.style.color,
+                  backgroundColor: textBackgroundColorToChange ??
+                      charTiles[i]!.style.backgroundColor,
                   fontWeight: boldToChange != null
                       ? boldToChange
                           ? FontWeight.bold
@@ -128,6 +118,7 @@ class TextFieldController extends TextEditingController {
                   background: standardStyle.background,
                 )
               : standardStyle.copyWith(
+                  // TODO colors not theme specific
                   color: Colors.white,
                   background: Paint()..color = Colors.black,
                 ),
@@ -144,6 +135,7 @@ class TextFieldController extends TextEditingController {
               style: !isCode
                   ? standardStyle.copyWith(
                       color: textColor,
+                      backgroundColor: textBackgroundColor,
                       fontWeight:
                           isBold ? FontWeight.bold : standardStyle.fontWeight,
                       fontStyle:
@@ -176,12 +168,16 @@ class TextFieldController extends TextEditingController {
     _previousUnderlined = isUnderlined;
     _previousCode = isCode;
     _previousTextColor = textColor;
-
+    _previousTextBackgroundColor = textBackgroundColor;
+ 
     return TextSpan(style: style, children: children);
   }
 
-  void addText(List<CharTile> newCharTiles, BuildContext context,
-      {bool clearCharTiles = false}) {
+  void addText(
+    List<CharTile> newCharTiles,
+    BuildContext context, {
+    bool clearCharTiles = false,
+  }) {
     if (clearCharTiles) charTiles.clear();
     final charTilesStartLength = charTiles.length;
     for (var i = 0; i < newCharTiles.length; i++) {
