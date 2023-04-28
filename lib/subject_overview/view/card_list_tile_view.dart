@@ -5,7 +5,7 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:ui_components/ui_components.dart';
 
 class CardListTileView extends StatelessWidget {
-  const CardListTileView({
+  CardListTileView({
     super.key,
     required this.card,
     this.isChildWhenDragging = false,
@@ -21,6 +21,16 @@ class CardListTileView extends StatelessWidget {
   final bool isSelected;
   final double? height;
   final double? width;
+
+  final List<Color> colors = [
+    Colors.red,
+    Colors.deepOrange,
+    Colors.orange,
+    Colors.lime,
+    Colors.lightGreen,
+    Colors.green,
+    Colors.green,
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -55,12 +65,7 @@ class CardListTileView extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.circle,
-                          color: Color.lerp(
-                            Colors.red,
-                            Colors.green,
-                            //Todo make real score to lerp between cards or make it with steps (red, orange, green)
-                            Random().nextDouble(),
-                          ),
+                          color: colors[card.recallScore],
                         ),
                         const SizedBox(width: UISizeConstants.defaultSize * 2),
                         Text(

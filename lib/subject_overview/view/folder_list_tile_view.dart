@@ -30,7 +30,9 @@ class _FolderListTileViewState extends State<FolderListTileView> {
   @override
   Widget build(BuildContext context) {
     return UIExpansionTile(
-      backgroundColor: Colors.transparent,
+      backgroundColor: widget.isHoverd
+          ? Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.2)
+          : Colors.transparent,
       border: Border.all(
         color: widget.isHoverd
             ? Theme.of(context).colorScheme.primary
