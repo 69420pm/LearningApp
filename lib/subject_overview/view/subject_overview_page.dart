@@ -4,6 +4,7 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_folder/view/add_folder_bottom_sheet.dart';
 import 'package:learning_app/subject_overview/bloc/edit_subject_bloc/subject_overview_bloc.dart';
+import 'package:learning_app/subject_overview/bloc/folder_bloc/folder_list_tile_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
@@ -269,9 +270,12 @@ class _SubjectOverviewViewState extends State<SubjectOverviewView> {
                                   return Listener(
                                     onPointerMove: (event) {
                                       if (context
-                                          .read<SubjectOverviewSelectionBloc>()
-                                          .isInDragging) {
-                                        print("dragg");
+                                              .read<
+                                                  SubjectOverviewSelectionBloc>()
+                                              .isInDragging ||
+                                          context
+                                              .read<FolderListTileBloc>()
+                                              .isDragging) {
                                         final render = globalKey.currentContext
                                             ?.findRenderObject() as RenderBox?;
                                         final top = render
@@ -285,7 +289,7 @@ class _SubjectOverviewViewState extends State<SubjectOverviewView> {
                                                 (bottom - top))
                                             .clamp(0, 1);
 
-                                        final double space = 0.3;
+                                        const space = 0.3;
 
                                         if (relPos < space &&
                                             isMovingUp == false) {
