@@ -32,41 +32,44 @@ class _UIExpansionTileState extends State<UIExpansionTile> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: update,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(
-              Radius.circular(UISizeConstants.cornerRadius)),
-          color: widget.backgroundColor,
-          border: widget.border,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                SizedBox(width: widget.iconSpacing),
-                Icon(_isOpened ? Icons.expand_less : Icons.expand_more),
-                SizedBox(width: widget.titleSpacing),
-                widget.title,
-                const Spacer(),
-                widget.trailing,
-              ],
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(
+            Radius.circular(UISizeConstants.cornerRadius)),
+        color: widget.backgroundColor,
+        border: widget.border,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          GestureDetector(
+            onTap: update,
+            child: DecoratedBox(
+              decoration: BoxDecoration(color: Colors.transparent),
+              child: Row(
+                children: [
+                  SizedBox(width: widget.iconSpacing),
+                  Icon(_isOpened ? Icons.expand_less : Icons.expand_more),
+                  SizedBox(width: widget.titleSpacing),
+                  widget.title,
+                  const Spacer(),
+                  widget.trailing,
+                ],
+              ),
             ),
-            if (_isOpened)
-              Padding(
-                padding:
-                    const EdgeInsets.only(right: UISizeConstants.defaultSize),
-                child: ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) => widget.children[index],
-                  itemCount: widget.children.length,
-                ),
-              )
-          ],
-        ),
+          ),
+          if (_isOpened)
+            Padding(
+              padding:
+                  const EdgeInsets.only(right: UISizeConstants.defaultSize),
+              child: ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemBuilder: (context, index) => widget.children[index],
+                itemCount: widget.children.length,
+              ),
+            )
+        ],
       ),
     );
   }

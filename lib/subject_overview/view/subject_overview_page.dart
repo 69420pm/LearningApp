@@ -9,8 +9,6 @@ import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
 import 'package:ui_components/ui_components.dart';
 
-import '../bloc/folder_bloc/folder_list_tile_bloc.dart';
-
 class SubjectOverviewPage extends StatelessWidget {
   const SubjectOverviewPage({
     super.key,
@@ -174,6 +172,7 @@ class _SubjectOverviewViewState extends State<SubjectOverviewView> {
                     //     context,
                     //   ),
                     // ),
+
                     BlocBuilder<EditSubjectBloc, EditSubjectState>(
                       buildWhen: (previous, current) {
                         if (current is EditSubjectRetrieveChildren) {
@@ -272,6 +271,7 @@ class _SubjectOverviewViewState extends State<SubjectOverviewView> {
                                       if (context
                                           .read<SubjectOverviewSelectionBloc>()
                                           .isInDragging) {
+                                        print("dragg");
                                         final render = globalKey.currentContext
                                             ?.findRenderObject() as RenderBox?;
                                         final top = render
@@ -285,7 +285,9 @@ class _SubjectOverviewViewState extends State<SubjectOverviewView> {
                                                 (bottom - top))
                                             .clamp(0, 1);
 
-                                        if (relPos < .2 &&
+                                        final double space = 0.3;
+
+                                        if (relPos < space &&
                                             isMovingUp == false) {
                                           isMovingUp = true;
                                           isMovingDown = false;
@@ -296,7 +298,7 @@ class _SubjectOverviewViewState extends State<SubjectOverviewView> {
                                                 const Duration(seconds: 1),
                                             curve: Curves.easeIn,
                                           );
-                                        } else if (relPos > .8 &&
+                                        } else if (relPos > 1 - space &&
                                             isMovingDown == false) {
                                           isMovingDown = true;
                                           isMovingUp = false;
@@ -307,7 +309,8 @@ class _SubjectOverviewViewState extends State<SubjectOverviewView> {
                                                 const Duration(seconds: 1),
                                             curve: Curves.easeIn,
                                           );
-                                        } else if (relPos > .2 && relPos < .8) {
+                                        } else if (relPos > space &&
+                                            relPos < 1 - space) {
                                           if (isMovingUp || isMovingDown) {
                                             scrollController.jumpTo(
                                               scrollController.offset,
@@ -402,8 +405,8 @@ class _SubjectOverviewViewState extends State<SubjectOverviewView> {
 
   @override
   void dispose() {
-    // widget.editSubjectBloc
-    //     .add(EditSubjectCloseStreamById(id: widget.subjectToEdit.id));
+    widget.editSubjectBloc
+        .add(EditSubjectCloseStreamById(id: widget.subjectToEdit.id));
     super.dispose();
   }
 }
