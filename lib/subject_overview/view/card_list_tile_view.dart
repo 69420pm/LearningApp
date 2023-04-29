@@ -65,7 +65,7 @@ class CardListTileView extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.circle,
-                          color: colors[card.recallScore],
+                          color: colors[card.recallScore.clamp(0, 6)],
                         ),
                         const SizedBox(width: UISizeConstants.defaultSize * 2),
                         Text(

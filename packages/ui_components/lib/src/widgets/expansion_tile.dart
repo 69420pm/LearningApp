@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:material/material.dart';
 import 'package:ui_components/ui_components.dart';
 
@@ -27,15 +28,42 @@ class UIExpansionTile extends StatefulWidget {
   State<UIExpansionTile> createState() => _UIExpansionTileState();
 }
 
-class _UIExpansionTileState extends State<UIExpansionTile> {
+class _UIExpansionTileState extends State<UIExpansionTile>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _animation;
+
   bool _isOpened = false;
+
+  final _key = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
+    _animation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
+      key: _key,
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(
-            Radius.circular(UISizeConstants.cornerRadius)),
+          Radius.circular(UISizeConstants.cornerRadius),
+        ),
         color: widget.backgroundColor,
         border: widget.border,
       ),
@@ -45,7 +73,7 @@ class _UIExpansionTileState extends State<UIExpansionTile> {
           GestureDetector(
             onTap: update,
             child: DecoratedBox(
-              decoration: BoxDecoration(color: Colors.transparent),
+              decoration: const BoxDecoration(color: Colors.transparent),
               child: Row(
                 children: [
                   SizedBox(width: widget.iconSpacing),
@@ -58,17 +86,20 @@ class _UIExpansionTileState extends State<UIExpansionTile> {
               ),
             ),
           ),
-          if (_isOpened)
-            Padding(
-              padding:
-                  const EdgeInsets.only(right: UISizeConstants.defaultSize),
+          SizeTransition(
+            sizeFactor: _animation,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                right: UISizeConstants.defaultSize,
+              ),
               child: ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemBuilder: (context, index) => widget.children[index],
                 itemCount: widget.children.length,
               ),
-            )
+            ),
+          ),
         ],
       ),
     );
@@ -78,5 +109,10 @@ class _UIExpansionTileState extends State<UIExpansionTile> {
     setState(() {
       _isOpened = !_isOpened;
     });
+    if (_isOpened) {
+      _animationController.forward();
+    } else {
+      _animationController.reverse();
+    }
   }
 }
