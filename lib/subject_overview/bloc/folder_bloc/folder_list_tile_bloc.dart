@@ -35,6 +35,8 @@ class FolderListTileBloc
   // List<String> _subscribedStreamIds = [];
 
   final CardsRepository _cardsRepository;
+  bool isDragging = false;
+
   String? streamId;
   Future<void> _getChildren(
     FolderListTileGetChildrenById event,
@@ -167,6 +169,7 @@ class FolderListTileBloc
     FolderListTileUpdate event,
     Emitter<FolderListTileState> emit,
   ) {
+    isDragging = true;
     emit(FolderListTileUpdateOnHover(event.id));
   }
 
@@ -174,6 +177,7 @@ class FolderListTileBloc
     FolderListTileClearHovers event,
     Emitter<FolderListTileState> emit,
   ) {
+    isDragging = false;
     emit(FolderListTileToClearHover());
   }
 }
