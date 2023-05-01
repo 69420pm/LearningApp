@@ -64,7 +64,7 @@ class _BottomNavBar extends StatelessWidget {
     return NavigationBar(
       /// when a navbar tile gets pressed
       onDestinationSelected: pageController.jumpToPage,
-      height: UISizeConstants.defaultSize * 7,
+      height: UIConstants.defaultSize * 7,
       selectedIndex: navbarIndex,
       labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
       destinations: const [

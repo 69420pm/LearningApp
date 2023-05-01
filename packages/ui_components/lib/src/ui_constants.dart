@@ -1,4 +1,4 @@
-class UISizeConstants {
+class UIConstants {
   static const double defaultSize = 8;
 
   static const double paddingEdge = 16;
@@ -12,4 +12,6 @@ class UISizeConstants {
   static const double fontSizeTitle = 20;
 
   static const double borderWidth = 2;
+
+  static const useDynamicColors = false;
 }

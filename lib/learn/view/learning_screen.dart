@@ -18,7 +18,7 @@ class LearningScreen extends StatelessWidget {
       ),
       body: Padding(
         padding:
-            const EdgeInsets.symmetric(horizontal: UISizeConstants.paddingEdge),
+            const EdgeInsets.symmetric(horizontal: UIConstants.paddingEdge),
         child: BlocBuilder<LearnCubit, LearnState>(
           builder: (context, state) {
             final card = context.read<LearnCubit>().getNextCard();
@@ -27,7 +27,7 @@ class LearningScreen extends StatelessWidget {
             }
             return Column(
               children: [
-                const SizedBox(height: UISizeConstants.defaultSize * 2),
+                const SizedBox(height: UIConstants.defaultSize * 2),
                 LearningCard(card: card),
                 Column(
                   children: [
@@ -35,7 +35,7 @@ class LearningScreen extends StatelessWidget {
                       opacity: state is BackState ? 1 : 0,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                          vertical: UISizeConstants.defaultSize * 3,
+                          vertical: UIConstants.defaultSize * 3,
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

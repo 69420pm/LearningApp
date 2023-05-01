@@ -62,7 +62,7 @@ class _UIExpansionTileState extends State<UIExpansionTile>
       key: _key,
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(
-          Radius.circular(UISizeConstants.cornerRadius),
+          Radius.circular(UIConstants.cornerRadius),
         ),
         color: widget.backgroundColor,
         border: widget.border,
@@ -90,7 +90,7 @@ class _UIExpansionTileState extends State<UIExpansionTile>
             sizeFactor: _animation,
             child: Padding(
               padding: const EdgeInsets.only(
-                right: UISizeConstants.defaultSize,
+                right: UIConstants.defaultSize,
               ),
               child: ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),

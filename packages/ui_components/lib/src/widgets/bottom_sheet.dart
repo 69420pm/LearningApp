@@ -18,8 +18,8 @@ class UIBottomSheet extends StatelessWidget {
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surfaceVariant,
           borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(UISizeConstants.cornerRadius),
-            topRight: Radius.circular(UISizeConstants.cornerRadius),
+            topLeft: Radius.circular(UIConstants.cornerRadius),
+            topRight: Radius.circular(UIConstants.cornerRadius),
           ),
         ),
         child: Column(
@@ -28,7 +28,7 @@ class UIBottomSheet extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(
-                vertical: UISizeConstants.defaultSize,
+                vertical: UIConstants.defaultSize,
               ),
               child: Container(
                 height: 4,

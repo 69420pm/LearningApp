@@ -135,11 +135,11 @@ class _SubjectOverviewViewState extends State<SubjectOverviewView> {
               key: formKey,
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: UISizeConstants.paddingEdge,
+                  horizontal: UIConstants.paddingEdge,
                 ),
                 child: Column(
                   children: [
-                    const SizedBox(height: UISizeConstants.defaultSize),
+                    const SizedBox(height: UIConstants.defaultSize),
 
                     /// Name
                     UITextFormField(

@@ -12,47 +12,27 @@ class LearnAllButton extends StatelessWidget {
         Navigator.pushNamed(context, '/learn');
       },
       child: Container(
-        height: UISizeConstants.defaultSize * 10,
         width: double.infinity,
         decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primaryContainer,
-            borderRadius: const BorderRadius.all(
-                Radius.circular(UISizeConstants.cornerRadius),),),
+          color: Theme.of(context).colorScheme.tertiaryContainer,
+          borderRadius: const BorderRadius.all(
+            Radius.circular(UIConstants.cornerRadius),
+          ),
+        ),
         child: Padding(
-          padding: const EdgeInsets.all(UISizeConstants.defaultSize),
-          child: Row(
+          padding: const EdgeInsets.all(UIConstants.defaultSize),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.question_mark),
-              const SizedBox(width: UISizeConstants.defaultSize),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Learn all ',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onPrimaryContainer,
-                        fontWeight: FontWeight.bold,),
-                  ),
-                  // SizedBox(height: UiSizeConstants.defaultSize),
-                  Text(
-                    '40 Cards remaining',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color:
-                              Theme.of(context).colorScheme.onPrimaryContainer,
-                        ),
-                  ),
-                ],
+              UIGradientText(text: 'Learn all '),
+              // SizedBox(height: UiSizeConstants.defaultSize),
+              Text(
+                '40 remaining',
+                style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onTertiaryContainer,
+                    ),
               ),
-              const SizedBox(width: UISizeConstants.defaultSize * 3),
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.secondaryContainer,
-                      borderRadius: const BorderRadius.all(
-                          Radius.circular(UISizeConstants.cornerRadius),),),
-                ),
-              )
             ],
           ),
         ),
