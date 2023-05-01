@@ -29,7 +29,7 @@ class AddSubjectBottomSheet extends StatelessWidget {
           padding: const EdgeInsets.all(8),
           child: Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: UISizeConstants.defaultSize,
+              horizontal: UIConstants.defaultSize,
             ),
             child: UITextFormField(
               autofocus: true,
@@ -37,9 +37,10 @@ class AddSubjectBottomSheet extends StatelessWidget {
               onFieldSubmitted: (_) async {
                 if (formKey.currentState!.validate()) {
                   await context.read<AddSubjectCubit>().saveSubject(
-                      nameController.text,
-                      locationController.text,
-                      iconController.text,);
+                        nameController.text,
+                        locationController.text,
+                        iconController.text,
+                      );
                 }
                 Navigator.pop(context);
               },

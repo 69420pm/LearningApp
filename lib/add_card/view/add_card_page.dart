@@ -26,14 +26,14 @@ class AddCardPage extends StatelessWidget {
       appBar: UIAppBar(title: const Text('Add Card Page')),
       body: Stack(children: [
         Padding(
-          padding: const EdgeInsets.symmetric(
-              horizontal: UISizeConstants.paddingEdge),
+          padding:
+              const EdgeInsets.symmetric(horizontal: UIConstants.paddingEdge),
           child: SafeArea(
             child: Form(
               key: formKey,
               child: Column(
                 children: [
-                  const SizedBox(height: UISizeConstants.defaultSize * 1),
+                  const SizedBox(height: UIConstants.defaultSize * 1),
                   UITextFormField(
                     onFieldSubmitted: (value) async {
                       if (formKey.currentState!.validate()) {

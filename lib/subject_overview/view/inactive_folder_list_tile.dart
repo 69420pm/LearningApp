@@ -9,13 +9,13 @@ class PlaceholderWhileDragging extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: UISizeConstants.defaultSize),
+      padding: const EdgeInsets.only(bottom: UIConstants.defaultSize),
       child: Container(
         width: double.infinity,
-        height: UISizeConstants.defaultSize * 5,
+        height: UIConstants.defaultSize * 5,
         decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(
-              Radius.circular(UISizeConstants.cornerRadius)),
+          borderRadius:
+              const BorderRadius.all(Radius.circular(UIConstants.cornerRadius)),
           color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
         ),
       ),

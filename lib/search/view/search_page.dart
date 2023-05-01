@@ -11,7 +11,8 @@ class SearchPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: UISizeConstants.paddingEdge),
+        padding:
+            const EdgeInsets.symmetric(horizontal: UIConstants.paddingEdge),
         child: SafeArea(
           child: Column(
             children: [
@@ -39,9 +40,9 @@ class SearchPage extends StatelessWidget {
                       height: 100,
                       child: Column(children: state.foundCards),
                     );
-                  }else if(state is SearchInitial){
+                  } else if (state is SearchInitial) {
                     return Text('use search bar below');
-                  }else if(state is SearchNothingFound){
+                  } else if (state is SearchNothingFound) {
                     return Text('nothing found');
                   }
                   return Text("loading");

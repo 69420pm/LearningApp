@@ -117,6 +117,7 @@ class _SubjectOverviewViewState extends State<SubjectOverviewView> {
                     IconButton(
                       onPressed: () => showModalBottomSheet(
                         backgroundColor: Colors.transparent,
+                        barrierColor: Colors.transparent,
                         context: context,
                         builder: (_) => BlocProvider.value(
                           value: context.read<EditSubjectBloc>(),
@@ -134,11 +135,11 @@ class _SubjectOverviewViewState extends State<SubjectOverviewView> {
               key: formKey,
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: UISizeConstants.paddingEdge,
+                  horizontal: UIConstants.paddingEdge,
                 ),
                 child: Column(
                   children: [
-                    const SizedBox(height: UISizeConstants.defaultSize),
+                    const SizedBox(height: UIConstants.defaultSize),
 
                     /// Name
                     UITextFormField(

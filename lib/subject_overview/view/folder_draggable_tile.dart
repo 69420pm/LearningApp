@@ -13,13 +13,13 @@ class FolderDraggableTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.secondaryContainer,
         borderRadius: const BorderRadius.all(
-          Radius.circular(UISizeConstants.cornerRadius),
+          Radius.circular(UIConstants.cornerRadius),
         ),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: UISizeConstants.defaultSize * 2,
-          vertical: UISizeConstants.defaultSize,
+          horizontal: UIConstants.defaultSize * 2,
+          vertical: UIConstants.defaultSize,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -31,11 +31,11 @@ class FolderDraggableTile extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(
-                horizontal: UISizeConstants.defaultSize * 2,
-                vertical: UISizeConstants.defaultSize,
+                horizontal: UIConstants.defaultSize * 2,
+                vertical: UIConstants.defaultSize,
               ),
               child: SizedBox(
-                width: UISizeConstants.defaultSize * 10,
+                width: UIConstants.defaultSize * 10,
                 child: Text(
                   folder.name,
                   overflow: TextOverflow.ellipsis,

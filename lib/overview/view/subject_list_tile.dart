@@ -12,22 +12,22 @@ class SubjectListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: UISizeConstants.defaultSize),
+      padding: const EdgeInsets.only(top: UIConstants.defaultSize),
       child: GestureDetector(
         onTap: () => Navigator.of(context)
             .pushNamed('/subject_overview', arguments: subject),
         child: Container(
-          height: UISizeConstants.defaultSize * 6,
+          height: UIConstants.defaultSize * 6,
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surfaceVariant,
             borderRadius: const BorderRadius.all(
-              Radius.circular(UISizeConstants.cornerRadius),
+              Radius.circular(UIConstants.cornerRadius),
             ),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: UISizeConstants.defaultSize * 2,
-              vertical: UISizeConstants.defaultSize,
+              horizontal: UIConstants.defaultSize * 2,
+              vertical: UIConstants.defaultSize,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

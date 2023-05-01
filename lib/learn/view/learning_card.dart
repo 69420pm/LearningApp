@@ -10,68 +10,74 @@ class LearningCard extends StatelessWidget {
   final Card card;
   @override
   Widget build(BuildContext context) {
-    return Expanded(child: BlocBuilder<LearnCubit, LearnState>(
-      builder: (context, state) {
-        return GestureDetector(
+    return Expanded(
+      child: BlocBuilder<LearnCubit, LearnState>(
+        builder: (context, state) {
+          return GestureDetector(
             onTap: () {
               if (state is FrontState) {
                 context.read<LearnCubit>().turnOverCard();
               }
             },
             child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surfaceVariant,
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(UISizeConstants.cornerRadius),
-                  ),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceVariant,
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(UIConstants.cornerRadius),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: UISizeConstants.paddingEdge / 2,
-                  ),
-                  child: Column(
-                      children: [
-                        const SizedBox(height: UISizeConstants.defaultSize * 3),
-                        Text(card.front,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline2
-                                ?.copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurfaceVariant,
-                                    fontWeight: FontWeight.bold,),),
-                        const SizedBox(height: UISizeConstants.defaultSize * 3),
-                        if (state is BackState)
-                          Expanded(
-                            child: Scrollbar(
-                              radius: const Radius.circular(10),
-                              thickness: UISizeConstants.defaultSize / 2,
-                              interactive: false,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: UISizeConstants.paddingEdge / 2,
-                                ),
-                                child: SingleChildScrollView(
-                                  child: Text(
-                                    '${card.back}Das Jahr 69 nach unserer Zeitrechnung (DCCCXXII nach dem römischen Kalender ab urbe condita) geht als das erste Vierkaiserjahr in die Geschichte des Römischen Reichs ein. In kurzen Abständen folgen einander Galba, Otho und schließlich Vitellius auf den Kaiserthron. Erst relativ spät im Jahr greift ein weiterer Thronaspirant in den Bürgerkrieg ein: Vespasian, der von den Legionen der östlichen Provinzen Judäa und Ägypten auf den Schild gehoben wird, besiegt Vitellius und seine Rheinlegion in der Zweiten Schlacht von Bedriacum entscheidend und besteigt somit als erster Kaiser aus der Dynastie der Flavier den Thron. Das Jahr 69 nach unserer Zeitrechnung (DCCCXXII nach dem römischen Kalender ab urbe condita) geht als das erste Vierkaiserjahr in die Geschichte des Römischen Reichs ein. In kurzen Abständen folgen einander Galba, Otho und schließlich Vitellius auf den Kaiserthron. Erst relativ spät im Jahr greift ein weiterer Thronaspirant in den Bürgerkrieg ein: Vespasian, der von den Legionen der östlichen Provinzen Judäa und Ägypten auf den Schild gehoben wird, besiegt Vitellius und seine Rheinlegion in der Zweiten Schlacht von Bedriacum entscheidend und besteigt somit als erster Kaiser aus der Dynastie der Flavier den Thron. Das Jahr 69 nach unserer Zeitrechnung (DCCCXXII nach dem römischen Kalender ab urbe condita) geht als das erste Vierkaiserjahr in die Geschichte des Römischen Reichs ein. In kurzen Abständen folgen einander Galba, Otho und schließlich Vitellius auf den Kaiserthron. Erst relativ spät im Jahr greift ein weiterer Thronaspirant in den Bürgerkrieg ein: Vespasian, der von den Legionen der östlichen Provinzen Judäa und Ägypten auf den Schild gehoben wird, besiegt Vitellius und seine Rheinlegion in der Zweiten Schlacht von Bedriacum entscheidend und besteigt somit als erster Kaiser aus der Dynastie der Flavier den ThronDas Jahr 69 nach unserer Zeitrechnung (DCCCXXII nach dem römischen Kalender ab urbe condita) geht als das erste Vierkaiserjahr in die Geschichte des Römischen Reichs ein. In kurzen Abständen folgen einander Galba, Otho und schließlich Vitellius auf den Kaiserthron. Erst relativ spät im Jahr greift ein weiterer Thronaspirant in den Bürgerkrieg ein: Vespasian, der von den Legionen der östlichen Provinzen Judäa und Ägypten auf den Schild gehoben wird, besiegt Vitellius und seine Rheinlegion in der Zweiten Schlacht von Bedriacum entscheidend und besteigt somit als erster Kaiser aus der Dynastie der Flavier den Thron',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSurfaceVariant,),),
-                                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: UIConstants.paddingEdge / 2,
+                ),
+                child: Column(
+                  children: [
+                    const SizedBox(height: UIConstants.defaultSize * 3),
+                    Text(
+                      card.front,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.headline2?.copyWith(
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                    const SizedBox(height: UIConstants.defaultSize * 3),
+                    if (state is BackState)
+                      Expanded(
+                        child: Scrollbar(
+                          radius: const Radius.circular(10),
+                          thickness: UIConstants.defaultSize / 2,
+                          interactive: false,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: UIConstants.paddingEdge / 2,
+                            ),
+                            child: SingleChildScrollView(
+                              child: Text(
+                                '${card.back}Das Jahr 69 nach unserer Zeitrechnung (DCCCXXII nach dem römischen Kalender ab urbe condita) geht als das erste Vierkaiserjahr in die Geschichte des Römischen Reichs ein. In kurzen Abständen folgen einander Galba, Otho und schließlich Vitellius auf den Kaiserthron. Erst relativ spät im Jahr greift ein weiterer Thronaspirant in den Bürgerkrieg ein: Vespasian, der von den Legionen der östlichen Provinzen Judäa und Ägypten auf den Schild gehoben wird, besiegt Vitellius und seine Rheinlegion in der Zweiten Schlacht von Bedriacum entscheidend und besteigt somit als erster Kaiser aus der Dynastie der Flavier den Thron. Das Jahr 69 nach unserer Zeitrechnung (DCCCXXII nach dem römischen Kalender ab urbe condita) geht als das erste Vierkaiserjahr in die Geschichte des Römischen Reichs ein. In kurzen Abständen folgen einander Galba, Otho und schließlich Vitellius auf den Kaiserthron. Erst relativ spät im Jahr greift ein weiterer Thronaspirant in den Bürgerkrieg ein: Vespasian, der von den Legionen der östlichen Provinzen Judäa und Ägypten auf den Schild gehoben wird, besiegt Vitellius und seine Rheinlegion in der Zweiten Schlacht von Bedriacum entscheidend und besteigt somit als erster Kaiser aus der Dynastie der Flavier den Thron. Das Jahr 69 nach unserer Zeitrechnung (DCCCXXII nach dem römischen Kalender ab urbe condita) geht als das erste Vierkaiserjahr in die Geschichte des Römischen Reichs ein. In kurzen Abständen folgen einander Galba, Otho und schließlich Vitellius auf den Kaiserthron. Erst relativ spät im Jahr greift ein weiterer Thronaspirant in den Bürgerkrieg ein: Vespasian, der von den Legionen der östlichen Provinzen Judäa und Ägypten auf den Schild gehoben wird, besiegt Vitellius und seine Rheinlegion in der Zweiten Schlacht von Bedriacum entscheidend und besteigt somit als erster Kaiser aus der Dynastie der Flavier den ThronDas Jahr 69 nach unserer Zeitrechnung (DCCCXXII nach dem römischen Kalender ab urbe condita) geht als das erste Vierkaiserjahr in die Geschichte des Römischen Reichs ein. In kurzen Abständen folgen einander Galba, Otho und schließlich Vitellius auf den Kaiserthron. Erst relativ spät im Jahr greift ein weiterer Thronaspirant in den Bürgerkrieg ein: Vespasian, der von den Legionen der östlichen Provinzen Judäa und Ägypten auf den Schild gehoben wird, besiegt Vitellius und seine Rheinlegion in der Zweiten Schlacht von Bedriacum entscheidend und besteigt somit als erster Kaiser aus der Dynastie der Flavier den Thron',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant,
+                                    ),
                               ),
                             ),
                           ),
-                        const SizedBox(height: UISizeConstants.defaultSize * 3),
-                      ],),
-                ),),);
-      },
-    ),);
+                        ),
+                      ),
+                    const SizedBox(height: UIConstants.defaultSize * 3),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 }

@@ -45,17 +45,22 @@ class AppView extends StatelessWidget {
         title: 'Learning App',
         theme: _themeData(
           isLightMode: true,
-          colorScheme: lightDynamic ?? lightColorScheme,
+          colorScheme: UIConstants.useDynamicColors
+              ? (lightDynamic ?? lightColorScheme)
+              : lightColorScheme,
         ),
         darkTheme: _themeData(
           isLightMode: false,
-          colorScheme: darkDynamic ?? darkColorScheme,
+          colorScheme: UIConstants.useDynamicColors
+              ? darkDynamic ?? darkColorScheme
+              : darkColorScheme,
         ),
         themeMode: ThemeMode.dark, //TODO change later
         localizationsDelegates: const [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
         ],
+
         supportedLocales: AppLocalizations.supportedLocales,
         onGenerateRoute: appRouter.onGenerateRoute,
       ),
@@ -81,6 +86,9 @@ class AppView extends StatelessWidget {
     return ThemeData(
       brightness: isLightMode ? Brightness.light : Brightness.dark,
       colorScheme: colorScheme,
+      scaffoldBackgroundColor: colorScheme.background,
+      bottomSheetTheme: const BottomSheetThemeData(
+          backgroundColor: Colors.transparent, elevation: 0),
       useMaterial3: true,
       textTheme: GoogleFonts.openSansTextTheme(),
     );

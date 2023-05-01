@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ui_components/src/ui_size_constants.dart';
+import 'package:ui_components/src/ui_constants.dart';
 
 class UITextFormField extends StatefulWidget {
   final String? label, hintText;
@@ -76,7 +76,7 @@ class _UITextFormFieldState extends State<UITextFormField> {
           //     ),
           //   ),
           Padding(
-            padding: const EdgeInsets.only(bottom: UISizeConstants.defaultSize),
+            padding: const EdgeInsets.only(bottom: UIConstants.defaultSize),
             child: TextFormField(
               textInputAction: widget.textInputAction,
               autofocus: widget.autofocus ?? false,
@@ -101,36 +101,31 @@ class _UITextFormFieldState extends State<UITextFormField> {
                 prefixIcon: widget.prefixIcon,
                 hintText: widget.hintText,
                 focusedBorder: OutlineInputBorder(
-                  borderRadius:
-                      BorderRadius.circular(UISizeConstants.cornerRadius),
+                  borderRadius: BorderRadius.circular(UIConstants.cornerRadius),
                   borderSide: BorderSide(
                     color: Theme.of(context).colorScheme.outline,
                     width: 2,
                   ),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderRadius:
-                      BorderRadius.circular(UISizeConstants.cornerRadius),
+                  borderRadius: BorderRadius.circular(UIConstants.cornerRadius),
                   borderSide:
                       const BorderSide(color: Colors.transparent, width: 2),
                 ),
                 errorBorder: OutlineInputBorder(
-                  borderRadius:
-                      BorderRadius.circular(UISizeConstants.cornerRadius),
+                  borderRadius: BorderRadius.circular(UIConstants.cornerRadius),
                   borderSide:
                       BorderSide(color: Theme.of(context).colorScheme.error),
                 ),
                 focusedErrorBorder: OutlineInputBorder(
-                  borderRadius:
-                      BorderRadius.circular(UISizeConstants.cornerRadius),
+                  borderRadius: BorderRadius.circular(UIConstants.cornerRadius),
                   borderSide: BorderSide(
                     color: Theme.of(context).colorScheme.error,
                     width: 2,
                   ),
                 ),
                 border: OutlineInputBorder(
-                  borderRadius:
-                      BorderRadius.circular(UISizeConstants.cornerRadius),
+                  borderRadius: BorderRadius.circular(UIConstants.cornerRadius),
                   borderSide: const BorderSide(width: 2),
                 ),
 
