@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:markdown_editor/src/bloc/text_editor_bloc.dart';
 import 'package:markdown_editor/src/models/editor_tile.dart';
@@ -7,19 +8,27 @@ import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ListEditorTile extends StatelessWidget implements EditorTile {
-  ListEditorTile({super.key, this.focusNode}) {
-    focusNode ??= FocusNode();
-    _textTile = TextTile(
-      textStyle: TextFieldConstants.normal,
-      isDense: true,
-      contentPadding: const EdgeInsets.all(4),
-      focusNode: focusNode,
-      parentEditorTile: this,
-    );
+  /// initialize ListEditorTile
+  ListEditorTile(
+      {super.key, this.orderNumber = 0, this.textTile, this.focusNode}) {
+    _textTile = textTile ??
+        TextTile(
+          textStyle: TextFieldConstants.normal,
+          isDense: true,
+          contentPadding: const EdgeInsets.all(4),
+          focusNode: focusNode ?? FocusNode(),
+          parentEditorTile: this,
+        );
+    focusNode = _textTile.focusNode;
   }
   late final TextTile _textTile;
+  int orderNumber;
+  TextTile? textTile;
   @override
   FocusNode? focusNode;
+
+  @override
+  TextFieldController? textFieldController;
 
   @override
   Widget build(BuildContext context) {
@@ -27,14 +36,21 @@ class ListEditorTile extends StatelessWidget implements EditorTile {
       textStyle: TextFieldConstants.normal,
     );
 
-    textFieldController = _textTile.textFieldController;
+    // textFieldController = _textTile.textFieldController;
     _textTile
       ..onSubmit = () {
         context.read<TextEditorBloc>().add(
-              TextEditorAddEditorTile(
-                newEditorTile: ListEditorTile(),
-                context: context,
-              ),
+              orderNumber == 0
+                  ? TextEditorAddEditorTile(
+                      newEditorTile: ListEditorTile(),
+                      context: context,
+                    )
+                  : TextEditorAddEditorTile(
+                      newEditorTile: ListEditorTile(
+                        orderNumber: orderNumber + 1,
+                      ),
+                      context: context,
+                    ),
             );
       }
       ..onBackspaceDoubleClick = () {
@@ -58,7 +74,13 @@ class ListEditorTile extends StatelessWidget implements EditorTile {
       };
     return Row(
       children: [
-        const Icon(Icons.circle, size: 10),
+        if (orderNumber == 0)
+          const Icon(Icons.circle, size: 10)
+        else
+          Text(
+            orderNumber.toString(),
+            style: TextFieldConstants.orderedListIndex,
+          ),
         const SizedBox(
           width: 10,
         ),
@@ -67,6 +89,18 @@ class ListEditorTile extends StatelessWidget implements EditorTile {
     );
   }
 
+  ListEditorTile copyWith(
+      {int? orderNumber, TextTile? textTilee, FocusNode? focusNode}) {
+    return ListEditorTile(
+      orderNumber: orderNumber ?? this.orderNumber,
+      textTile: textTilee ?? _textTile,
+      focusNode: focusNode ?? this.focusNode,
+    );
+  }
+
   @override
-  TextFieldController? textFieldController;
+  List<Object?> get props => [orderNumber, focusNode];
+
+  @override
+  bool? get stringify => true;
 }

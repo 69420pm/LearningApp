@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/models/text_field_constants.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
+import 'package:markdown_editor/src/widgets/editor_tiles/list_editor_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
 import 'package:meta/meta.dart';
 
@@ -76,7 +78,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     Emitter<TextEditorState> emit,
   ) {
     _addEditorTile(event.newEditorTile, event.context);
-    emit(TextEditorEditorTilesChanged(tiles: editorTiles));
+    emit(TextEditorEditorTilesChanged(tiles: List.of(editorTiles)));
   }
 
   FutureOr<void> _removeTile(
@@ -84,29 +86,40 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     Emitter<TextEditorState> emit,
   ) {
     _removeEditorTile(event.tileToRemove, event.context, handOverText: true);
-    emit(TextEditorEditorTilesChanged(tiles: editorTiles));
+    emit(TextEditorEditorTilesChanged(tiles: List.of(editorTiles)));
   }
 
   FutureOr<void> _replaceTile(
     TextEditorReplaceEditorTile event,
     Emitter<TextEditorState> emit,
   ) {
-    // _removeEditorTile(
-    //   event.tileToRemove,
-    //   event.context,
-    //   changeFocus: false,
-    // );
-    // _addEditorTile(event.newEditorTile, event.context);
     for (var i = 0; i < editorTiles.length; i++) {
       if (editorTiles[i] == event.tileToRemove) {
         editorTiles[i] = event.newEditorTile;
-        if (editorTiles[i].focusNode != null) {
+        focusedTile = editorTiles[i];
+        if (editorTiles[i].focusNode != null && event.requestFocus) {
           editorTiles[i].focusNode?.requestFocus();
         }
+        break;
       }
     }
-    // event.newEditorTile.focusNode?.requestFocus();
-    emit(TextEditorEditorTilesChanged(tiles: editorTiles));
+    updateOrderedListTile();
+
+    var list1 = <EditorTile>[
+      TextTile(
+        textStyle: TextFieldConstants.calloutStart,
+      ),
+      TextTile(
+        textStyle: TextFieldConstants.calloutStart,
+      )
+    ];
+    var list2 = list1;
+    list2[0].textFieldController!.text = "fd";
+    // List<EditorTile> list2 = [TextTile(textStyle: TextFieldConstants.calloutStart,), TextTile(textStyle: TextFieldConstants.calloutStart,)];
+    print(list1 == list2);
+    print(list1[0].textFieldController!.text ==
+        list2[0].textFieldController!.text);
+    emit(TextEditorEditorTilesChanged(tiles: List.of(editorTiles)));
   }
 
   void _addEditorTile(EditorTile toAdd, BuildContext context) {
@@ -124,6 +137,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
             (editorTiles[i] as TextTile).textFieldController!.text.isEmpty) {
           // replace empty TextTile
           editorTiles[i] = toAdd;
+          focusedTile = editorTiles[i];
           editorTiles[i].focusNode?.requestFocus();
           return;
         }
@@ -157,6 +171,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
         break;
       }
     }
+    updateOrderedListTile();
   }
 
   void _shiftTextAddEditorTile(
@@ -204,6 +219,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
           if (editorTiles[j].focusNode != null) {
             if (handOverText == false) {
               editorTiles[j].focusNode?.requestFocus();
+              focusedTile = editorTiles[i];
               break;
             }
             highestFocusNodeTile = i;
@@ -241,6 +257,61 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
         ),
       );
       editorTiles[0].focusNode?.requestFocus();
+    }
+    updateOrderedListTile();
+  }
+
+  void updateOrderedListTile() {
+    for (var i = 0; i < editorTiles.length; i++) {
+      if (editorTiles[i] is ListEditorTile &&
+          (editorTiles[i] as ListEditorTile).orderNumber != 0) {
+        if (i != 0 &&
+            editorTiles[i - 1] is ListEditorTile &&
+            (editorTiles[i - 1] as ListEditorTile).orderNumber != 0) {
+          final eTi = editorTiles[i] as ListEditorTile;
+          final eTi1 = editorTiles[i - 1] as ListEditorTile;
+          var focusTile = false;
+
+          if (editorTiles[i - 1] == focusedTile) {
+            focusTile = true;
+          }
+          // if ((editorTiles[i] as ListEditorTile).orderNumber ==
+          //     eTi1.orderNumber + 1) {
+          //   break;
+          // }
+          if (editorTiles[i].focusNode!.hasFocus) {
+            editorTiles[i] = eTi.copyWith(orderNumber: eTi1.orderNumber + 1);
+            editorTiles[i].focusNode?.requestFocus();
+          } else {
+            editorTiles[i] = eTi.copyWith(orderNumber: eTi1.orderNumber + 1);
+          }
+          if (focusTile) {
+            editorTiles[i].focusNode?.requestFocus();
+          }
+        } else {
+          var focusTile = false;
+          if (editorTiles[i] == focusedTile) {
+            focusTile = true;
+          }
+          // if ((editorTiles[i] as ListEditorTile).orderNumber == 1) {
+          //   break;
+          // }
+          editorTiles[i] =
+              (editorTiles[i] as ListEditorTile).copyWith(orderNumber: 1);
+
+          if (editorTiles[i].focusNode!.hasFocus) {
+            editorTiles[i] =
+                (editorTiles[i] as ListEditorTile).copyWith(orderNumber: 1);
+            editorTiles[i].focusNode?.requestFocus();
+          } else {
+            editorTiles[i] =
+                (editorTiles[i] as ListEditorTile).copyWith(orderNumber: 1);
+          }
+          if (focusTile) {
+            editorTiles[i].focusNode?.requestFocus();
+          }
+        }
+      }
     }
   }
 }

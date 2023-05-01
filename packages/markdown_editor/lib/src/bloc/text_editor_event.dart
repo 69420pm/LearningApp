@@ -47,15 +47,20 @@ class TextEditorReplaceEditorTile extends TextEditorEvent {
   EditorTile tileToRemove;
   EditorTile newEditorTile;
   BuildContext context;
+  
 
   /// if tile gets deleted and text is still in textfield
   /// text gets passed to closest textfield above the deleted one
   bool handOverText;
+
+  /// whether the replaced tile get focused 
+  bool requestFocus;
 
   TextEditorReplaceEditorTile({
     required this.tileToRemove,
     required this.newEditorTile,
     required this.context,
     this.handOverText = false,
+    this.requestFocus = true
   });
 }

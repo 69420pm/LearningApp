@@ -60,4 +60,10 @@ class HeaderTile extends StatelessWidget implements EditorTile {
 
   @override
   TextFieldController? textFieldController;
+
+    @override
+  List<Object?> get props => [_textTile, focusNode];
+  
+  @override
+  bool? get stringify => false;
 }

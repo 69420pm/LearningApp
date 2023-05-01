@@ -22,7 +22,12 @@ class TextFieldConstants {
   static const TextStyle quote =
       TextStyle(fontSize: 15, fontStyle: FontStyle.italic);
 
+  // TODO colors terror
+  /// text for index of orderedListTile
+  static const TextStyle orderedListIndex = TextStyle(
+      fontSize: 15, fontWeight: FontWeight.normal, color: Colors.white);
+
   /// text style for the front textfield of the callout_tile
   /// which should get used for smileys
-  static const TextStyle calloutStart = TextStyle(fontSize: 16);
+  static const TextStyle calloutStart = TextStyle(fontSize:20);
 }

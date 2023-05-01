@@ -16,4 +16,5 @@ dev_dependencies:
     path: ../ui_components
 
 dependencies:
+  equatable: ^2.0.5
   material: ^1.0.0+2

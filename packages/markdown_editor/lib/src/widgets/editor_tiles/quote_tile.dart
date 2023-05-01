@@ -26,10 +26,22 @@ class QuoteTile extends StatelessWidget implements EditorTile {
     textFieldController = _textTile.textFieldController;
     return Row(
       children: [
-        Container(width: 5, height: 25, color: Color.fromARGB(255, 255, 255, 255),),
-        const SizedBox(width: 15,),
+        Container(
+          width: 5,
+          height: 25,
+          color: Color.fromARGB(255, 255, 255, 255),
+        ),
+        const SizedBox(
+          width: 15,
+        ),
         Expanded(child: _textTile),
       ],
     );
   }
+
+  @override
+  List<Object?> get props => [_textTile, focusNode];
+
+  @override
+  bool? get stringify => false;
 }

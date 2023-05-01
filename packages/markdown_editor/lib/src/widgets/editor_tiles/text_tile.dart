@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -59,6 +60,17 @@ class TextTile extends StatefulWidget implements EditorTile {
 
   @override
   State<TextTile> createState() => _TextTileState();
+
+  @override
+  List<Object?> get props => [
+        textStyle,
+        parentEditorTile,
+        textFieldController!.text,
+        textFieldController!.selection
+      ];
+
+  @override
+  bool? get stringify => false;
 }
 
 class _TextTileState extends State<TextTile> {
