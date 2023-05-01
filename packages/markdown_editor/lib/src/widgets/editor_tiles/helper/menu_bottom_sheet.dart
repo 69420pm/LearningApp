@@ -9,7 +9,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ui_components/src/widgets/color_picker.dart';
 
 class MenuBottomSheet extends StatelessWidget {
-  MenuBottomSheet({super.key, required this.parentEditorTile});
+  MenuBottomSheet({super.key, required this.parentEditorTile}) {
+  }
 
   EditorTile parentEditorTile;
 
@@ -23,13 +24,16 @@ class MenuBottomSheet extends StatelessWidget {
         children: [
           UIColorPicker(
             onColorChanged: (value) {
+              final newTile = (parentEditorTile as CalloutTile).copyWith(
+                  tileColor: value,
+                  textTile: (parentEditorTile as CalloutTile).textTile);
               context.read<TextEditorBloc>().add(TextEditorReplaceEditorTile(
                     tileToRemove: parentEditorTile,
-                    newEditorTile: (parentEditorTile as CalloutTile)
-                        .copyWith(tileColor: value),
+                    newEditorTile: newTile,
                     context: context,
                     requestFocus: false,
                   ));
+              parentEditorTile = newTile;
             },
           ),
           UIButton(

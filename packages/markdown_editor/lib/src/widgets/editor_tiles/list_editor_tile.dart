@@ -90,11 +90,10 @@ class ListEditorTile extends StatelessWidget implements EditorTile {
   }
 
   ListEditorTile copyWith(
-      {int? orderNumber, TextTile? textTilee, FocusNode? focusNode}) {
+      {int? orderNumber, TextTile? textTile}) {
     return ListEditorTile(
       orderNumber: orderNumber ?? this.orderNumber,
-      textTile: textTilee ?? _textTile,
-      focusNode: focusNode ?? this.focusNode,
+      textTile: textTile ?? _textTile,
     );
   }
 

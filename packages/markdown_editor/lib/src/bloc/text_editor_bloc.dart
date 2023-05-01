@@ -281,12 +281,12 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
           // }
           if (editorTiles[i].focusNode!.hasFocus) {
             editorTiles[i] = eTi.copyWith(orderNumber: eTi1.orderNumber + 1);
-            editorTiles[i].focusNode?.requestFocus();
+            // editorTiles[i].focusNode?.requestFocus();
           } else {
             editorTiles[i] = eTi.copyWith(orderNumber: eTi1.orderNumber + 1);
           }
           if (focusTile) {
-            editorTiles[i].focusNode?.requestFocus();
+            // editorTiles[i].focusNode?.requestFocus();
           }
         } else {
           var focusTile = false;
@@ -302,13 +302,13 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
           if (editorTiles[i].focusNode!.hasFocus) {
             editorTiles[i] =
                 (editorTiles[i] as ListEditorTile).copyWith(orderNumber: 1);
-            editorTiles[i].focusNode?.requestFocus();
+            // editorTiles[i].focusNode?.requestFocus();
           } else {
             editorTiles[i] =
                 (editorTiles[i] as ListEditorTile).copyWith(orderNumber: 1);
           }
           if (focusTile) {
-            editorTiles[i].focusNode?.requestFocus();
+            // editorTiles[i].focusNode?.requestFocus();
           }
         }
       }

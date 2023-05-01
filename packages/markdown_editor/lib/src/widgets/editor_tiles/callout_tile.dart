@@ -9,19 +9,22 @@ import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CalloutTile extends StatelessWidget implements EditorTile {
-  CalloutTile({super.key, this.tileColor = Colors.white12}) {
-    _textTile = TextTile(
+  CalloutTile({super.key, this.tileColor = Colors.white12, this.textTile}) {
+    _textTile = textTile ?? TextTile(
       focusNode: focusNode,
       textStyle: TextFieldConstants.normal,
       parentEditorTile: this,
     );
+    focusNode = _textTile.focusNode;
   }
 
   Color tileColor;
+  TextTile? textTile;
+
   late final TextTile _textTile;
 
   @override
-  FocusNode? focusNode = FocusNode();
+  FocusNode? focusNode;
 
   @override
   TextFieldController? textFieldController;
@@ -77,9 +80,10 @@ class CalloutTile extends StatelessWidget implements EditorTile {
     );
   }
 
-  CalloutTile copyWith({Color? tileColor}) {
+  CalloutTile copyWith({Color? tileColor, TextTile? textTile}) {
     return CalloutTile(
       tileColor: tileColor ?? this.tileColor,
+      textTile: textTile ?? _textTile,
     );
   }
 
