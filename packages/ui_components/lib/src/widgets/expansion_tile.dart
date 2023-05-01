@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:material/material.dart';
@@ -77,7 +79,14 @@ class _UIExpansionTileState extends State<UIExpansionTile>
               child: Row(
                 children: [
                   SizedBox(width: widget.iconSpacing),
-                  Icon(_isOpened ? Icons.expand_less : Icons.expand_more),
+                  AnimatedBuilder(
+                    animation: _animation,
+                    builder: (context, _) {
+                      return Transform.rotate(
+                          angle: pi * _animation.value,
+                          child: Icon(Icons.expand_more));
+                    },
+                  ),
                   SizedBox(width: widget.titleSpacing),
                   widget.title,
                   const Spacer(),
