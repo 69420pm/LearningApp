@@ -56,6 +56,7 @@ class AppView extends StatelessWidget {
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
         ],
+
         supportedLocales: AppLocalizations.supportedLocales,
         onGenerateRoute: appRouter.onGenerateRoute,
       ),
@@ -81,6 +82,8 @@ class AppView extends StatelessWidget {
     return ThemeData(
       brightness: isLightMode ? Brightness.light : Brightness.dark,
       colorScheme: colorScheme,
+      bottomSheetTheme: const BottomSheetThemeData(
+          backgroundColor: Colors.transparent, elevation: 0),
       useMaterial3: true,
       textTheme: GoogleFonts.openSansTextTheme(),
     );

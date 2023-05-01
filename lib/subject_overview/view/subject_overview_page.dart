@@ -117,6 +117,7 @@ class _SubjectOverviewViewState extends State<SubjectOverviewView> {
                     IconButton(
                       onPressed: () => showModalBottomSheet(
                         backgroundColor: Colors.transparent,
+                        barrierColor: Colors.transparent,
                         context: context,
                         builder: (_) => BlocProvider.value(
                           value: context.read<EditSubjectBloc>(),
