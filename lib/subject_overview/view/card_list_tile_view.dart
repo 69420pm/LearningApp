@@ -5,7 +5,7 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:ui_components/ui_components.dart';
 
 class CardListTileView extends StatelessWidget {
-  const CardListTileView({
+  CardListTileView({
     super.key,
     required this.card,
     this.isChildWhenDragging = false,
@@ -22,12 +22,22 @@ class CardListTileView extends StatelessWidget {
   final double? height;
   final double? width;
 
+  final List<Color> colors = [
+    Colors.red,
+    Colors.deepOrange,
+    Colors.orange,
+    Colors.lime,
+    Colors.lightGreen,
+    Colors.green,
+    Colors.green,
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: UISizeConstants.defaultSize),
+      padding: const EdgeInsets.only(bottom: UIConstants.defaultSize),
       child: Container(
-        height: UISizeConstants.defaultSize * 5,
+        height: UIConstants.defaultSize * 5,
         width: width,
         key: globalKey,
         decoration: BoxDecoration(
@@ -35,13 +45,13 @@ class CardListTileView extends StatelessWidget {
               ? Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3)
               : Theme.of(context).colorScheme.background,
           borderRadius: const BorderRadius.all(
-            Radius.circular(UISizeConstants.cornerRadius),
+            Radius.circular(UIConstants.cornerRadius),
           ),
           border: Border.all(
             color: isSelected
                 ? Theme.of(context).colorScheme.primary
                 : Colors.transparent,
-            width: UISizeConstants.borderWidth,
+            width: UIConstants.borderWidth,
           ),
         ),
         child: Row(
@@ -49,20 +59,15 @@ class CardListTileView extends StatelessWidget {
               ? [
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: UISizeConstants.defaultSize * 2,
-                        vertical: UISizeConstants.defaultSize),
+                        horizontal: UIConstants.defaultSize * 2,
+                        vertical: UIConstants.defaultSize),
                     child: Row(
                       children: [
                         Icon(
                           Icons.circle,
-                          color: Color.lerp(
-                            Colors.red,
-                            Colors.green,
-                            //Todo make real score to lerp between cards or make it with steps (red, orange, green)
-                            Random().nextDouble(),
-                          ),
+                          color: colors[card.recallScore.clamp(0, 6)],
                         ),
-                        const SizedBox(width: UISizeConstants.defaultSize * 2),
+                        const SizedBox(width: UIConstants.defaultSize * 2),
                         Text(
                           card.front,
                           overflow: TextOverflow.ellipsis,

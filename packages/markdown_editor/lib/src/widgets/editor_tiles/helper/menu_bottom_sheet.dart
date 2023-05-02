@@ -4,7 +4,7 @@ import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/callout_tile.dart';
 import 'package:ui_components/src/widgets/bottom_sheet.dart';
 import 'package:ui_components/src/widgets/button.dart';
-import 'package:ui_components/src/ui_size_constants.dart';
+import 'package:ui_components/src/ui_constants.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ui_components/src/widgets/color_picker.dart';
 
@@ -19,7 +19,7 @@ class MenuBottomSheet extends StatelessWidget {
     return UIBottomSheet(
         child: Padding(
       padding:
-          const EdgeInsets.symmetric(horizontal: UISizeConstants.defaultSize),
+          const EdgeInsets.symmetric(horizontal: UIConstants.defaultSize),
       child: Column(
         children: [
           UIColorPicker(

@@ -10,6 +10,6 @@ abstract class EditorTile extends Equatable {
   FocusNode? focusNode;
   TextFieldController? textFieldController;
 
-  // @override
-  // List<Object?> get props=>[focusNode, textFieldController];
+  @override
+  List<Object?> get props=>[focusNode, textFieldController];
 }

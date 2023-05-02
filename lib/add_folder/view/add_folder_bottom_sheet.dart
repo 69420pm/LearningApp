@@ -5,11 +5,12 @@ import 'package:learning_app/subject_overview/bloc/edit_subject_bloc/subject_ove
 import 'package:ui_components/ui_components.dart';
 
 class AddFolderBottomSheet extends StatelessWidget {
-  const AddFolderBottomSheet(
-      {super.key,
-      required this.parentId,
-      this.parentSubject,
-      this.parentFolder,});
+  const AddFolderBottomSheet({
+    super.key,
+    required this.parentId,
+    this.parentSubject,
+    this.parentFolder,
+  });
 
   final String parentId;
   final Subject? parentSubject;
@@ -29,14 +30,19 @@ class AddFolderBottomSheet extends StatelessWidget {
         key: formKey,
         child: Padding(
           padding: const EdgeInsets.symmetric(
-              horizontal: UISizeConstants.defaultSize,),
+            horizontal: UIConstants.defaultSize,
+          ),
           child: UITextFormField(
             controller: nameController,
             autofocus: true,
             label: 'Add Folder',
             onFieldSubmitted: (_) {
-              context.read<EditSubjectBloc>().add(EditSubjectAddFolder(
-                  name: nameController.text.trim(), parentId: parentId,),);
+              context.read<EditSubjectBloc>().add(
+                    EditSubjectAddFolder(
+                      name: nameController.text.trim(),
+                      parentId: parentId,
+                    ),
+                  );
               Navigator.pop(context);
             },
             validation: (value) {

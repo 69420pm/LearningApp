@@ -30,12 +30,14 @@ class _FolderListTileViewState extends State<FolderListTileView> {
   @override
   Widget build(BuildContext context) {
     return UIExpansionTile(
-      backgroundColor: Colors.transparent,
+      backgroundColor: widget.isHoverd
+          ? Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.2)
+          : Colors.transparent,
       border: Border.all(
         color: widget.isHoverd
             ? Theme.of(context).colorScheme.primary
             : Colors.transparent,
-        width: UISizeConstants.borderWidth,
+        width: UIConstants.borderWidth,
       ),
       title: Text(
         widget.folder.name,
@@ -44,12 +46,12 @@ class _FolderListTileViewState extends State<FolderListTileView> {
               color: Theme.of(context).colorScheme.onBackground,
             ),
       ),
-      iconSpacing: UISizeConstants.defaultSize,
-      titleSpacing: UISizeConstants.defaultSize,
+      iconSpacing: UIConstants.defaultSize,
+      titleSpacing: UIConstants.defaultSize,
       trailing: PopupMenuButton<int>(
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
-            Radius.circular(UISizeConstants.cornerRadius),
+            Radius.circular(UIConstants.cornerRadius),
           ),
         ),
         itemBuilder: (context) => [
@@ -117,7 +119,7 @@ class _FolderListTileViewState extends State<FolderListTileView> {
       children: [
         Padding(
           padding: const EdgeInsets.only(
-            left: UISizeConstants.defaultSize * 4,
+            left: UIConstants.defaultSize * 4,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,

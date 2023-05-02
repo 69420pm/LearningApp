@@ -9,22 +9,23 @@ import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CalloutTile extends StatelessWidget implements EditorTile {
-  CalloutTile({super.key, this.tileColor = Colors.white12, this.textTile}) {
-    _textTile = textTile ?? TextTile(
-      focusNode: focusNode,
-      textStyle: TextFieldConstants.normal,
-      parentEditorTile: this,
-    );
-    focusNode = _textTile.focusNode;
+  CalloutTile(
+      {super.key, this.tileColor = Colors.white12, TextTile? textTile}) {
+    this.textTile = textTile ??
+        TextTile(
+          focusNode: focusNode,
+          textStyle: TextFieldConstants.normal,
+          parentEditorTile: this,
+        );
+    textFieldController = this.textTile.textFieldController;
   }
 
   Color tileColor;
-  TextTile? textTile;
 
-  late final TextTile _textTile;
+  late final TextTile textTile;
 
   @override
-  FocusNode? focusNode;
+  FocusNode? focusNode = FocusNode();
 
   @override
   TextFieldController? textFieldController;
@@ -33,7 +34,6 @@ class CalloutTile extends StatelessWidget implements EditorTile {
 
   @override
   Widget build(BuildContext context) {
-    textFieldController = _textTile.textFieldController;
     return DecoratedBox(
       decoration: BoxDecoration(
         color: tileColor,
@@ -61,7 +61,7 @@ class CalloutTile extends StatelessWidget implements EditorTile {
             const SizedBox(
               width: 12,
             ),
-            Expanded(child: _textTile),
+            Expanded(child: textTile),
             ThreeDotMenu(
               onPressed: () => showModalBottomSheet(
                 backgroundColor: Colors.transparent,
@@ -83,13 +83,21 @@ class CalloutTile extends StatelessWidget implements EditorTile {
   CalloutTile copyWith({Color? tileColor, TextTile? textTile}) {
     return CalloutTile(
       tileColor: tileColor ?? this.tileColor,
-      textTile: textTile ?? _textTile,
+      textTile: textTile ?? this.textTile,
     );
   }
 
   @override
-  List<Object?> get props => [_textTile, focusNode];
+  List<Object?> get props => [textTile, focusNode];
 
   @override
   bool? get stringify => false;
+
+      @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CalloutTile &&
+          runtimeType == other.runtimeType &&
+          textTile == other.textTile &&
+          focusNode == other.focusNode;
 }

@@ -64,9 +64,8 @@ class TextTile extends StatefulWidget implements EditorTile {
   @override
   List<Object?> get props => [
         textStyle,
-        parentEditorTile,
-        textFieldController!.text,
-        textFieldController!.selection
+        // parentEditorTile,
+        textFieldController
       ];
 
   @override
@@ -163,8 +162,8 @@ class _TextTileState extends State<TextTile> {
 
   @override
   void dispose() {
-    super.dispose();
     widget.focusNode!.removeListener(_changeFocus);
+    super.dispose();
     // widget.focusNode!.dispose();
   }
 }

@@ -30,7 +30,7 @@ class OverviewPage extends StatelessWidget {
             ),
             heroTag: 'subject',
             onPressed: () => showModalBottomSheet(
-              backgroundColor: Colors.transparent,
+              elevation: 0,
               context: context,
               builder: (_) => BlocProvider.value(
                 value: context.read<AddSubjectCubit>(),
@@ -40,7 +40,7 @@ class OverviewPage extends StatelessWidget {
             backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
           ),
           const SizedBox(
-            height: UISizeConstants.defaultSize,
+            height: UIConstants.defaultSize,
           ),
 
           ///* Add card FAB deprecated
@@ -56,15 +56,14 @@ class OverviewPage extends StatelessWidget {
       ),
       body: Padding(
         padding:
-            const EdgeInsets.symmetric(horizontal: UISizeConstants.paddingEdge),
+            const EdgeInsets.symmetric(horizontal: UIConstants.paddingEdge),
         child: SafeArea(
           child: Column(
             children: [
-              const SizedBox(height: UISizeConstants.defaultSize * 1),
+              const SizedBox(height: UIConstants.defaultSize * 1),
               SearchBar(
-                  onTap: () =>
-                      Navigator.of(context).pushNamed('/search')),
-              const SizedBox(height: UISizeConstants.defaultSize * 2),
+                  onTap: () => Navigator.of(context).pushNamed('/search')),
+              const SizedBox(height: UIConstants.defaultSize * 2),
               const LearnAllButton(),
               BlocBuilder<OverviewBloc, OverviewState>(
                 buildWhen: (previous, current) => previous != current,

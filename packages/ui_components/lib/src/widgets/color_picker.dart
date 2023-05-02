@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:ui_components/src/ui_size_constants.dart';
+import 'package:ui_components/src/ui_constants.dart';
+import 'package:ui_components/src/ui_constants.dart';
 
 class UIColorPicker extends StatelessWidget {
   UIColorPicker({super.key, required this.onColorChanged});
@@ -16,7 +17,7 @@ class UIColorPicker extends StatelessWidget {
           enableAlpha: false,
           labelTypes: const [],
           pickerAreaBorderRadius: BorderRadius.all(
-              const Radius.circular(UISizeConstants.cornerRadius)),
+              const Radius.circular(UIConstants.cornerRadius)),
         ),
         Row(
           children: [

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ui_components/src/ui_size_constants.dart';
+import 'package:ui_components/src/ui_constants.dart';
 
 class UIButton extends StatelessWidget {
   const UIButton({
@@ -10,7 +10,7 @@ class UIButton extends StatelessWidget {
     this.height,
     this.width,
     this.lable,
-    this.child,
+    this.child
   });
 
   final Color? color, textColor;
@@ -21,32 +21,28 @@ class UIButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: (){},
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          height: height ?? UISizeConstants.defaultSize * 4,
-          width: width,
-          decoration: BoxDecoration(
-            color: color ?? Theme.of(context).colorScheme.primaryContainer,
-            borderRadius: const BorderRadius.all(
-              Radius.circular(UISizeConstants.cornerRadius),
-            ),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: height ?? UIConstants.defaultSize * 4,
+        width: width,
+        decoration: BoxDecoration(
+          color: color ?? Theme.of(context).colorScheme.primaryContainer,
+          borderRadius: const BorderRadius.all(
+            Radius.circular(UIConstants.cornerRadius),
           ),
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: UISizeConstants.defaultSize * 2,
-                vertical: UISizeConstants.defaultSize,
-              ),
-              child: child ??
-                  Text(
-                    lable ?? '',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: textColor ??
-                              Theme.of(context).colorScheme.onPrimaryContainer,
-                        ),
+        ),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: UIConstants.defaultSize * 2,
+              vertical: UIConstants.defaultSize,
+            ),
+            child: child ?? Text(
+              lable ?? '',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: textColor ??
+                        Theme.of(context).colorScheme.onPrimaryContainer,
                   ),
             ),
           ),

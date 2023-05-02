@@ -7,7 +7,7 @@ class UIAppBar extends AppBar {
   @override
   Widget build(BuildContext context) {
     return PreferredSize(
-      preferredSize: const Size.fromHeight(UISizeConstants.defaultSize * 4),
+      preferredSize: const Size.fromHeight(UIConstants.defaultSize * 4),
       child: this,
     );
   }

@@ -55,6 +55,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
   /// background color of text as enum
   TextBackgroundColor textBackgroundColor;
 
+  /// the currently focused editorTile, gets updated with events in TextTile
   EditorTile? focusedTile;
 
   FutureOr<void> _keyboardRowChange(
@@ -96,7 +97,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     for (var i = 0; i < editorTiles.length; i++) {
       if (editorTiles[i] == event.tileToRemove) {
         editorTiles[i] = event.newEditorTile;
-        focusedTile = editorTiles[i];
+        // focusedTile = editorTiles[i];
         if (editorTiles[i].focusNode != null && event.requestFocus) {
           editorTiles[i].focusNode?.requestFocus();
         }
@@ -104,21 +105,6 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
       }
     }
     updateOrderedListTile();
-
-    var list1 = <EditorTile>[
-      TextTile(
-        textStyle: TextFieldConstants.calloutStart,
-      ),
-      TextTile(
-        textStyle: TextFieldConstants.calloutStart,
-      )
-    ];
-    var list2 = list1;
-    list2[0].textFieldController!.text = "fd";
-    // List<EditorTile> list2 = [TextTile(textStyle: TextFieldConstants.calloutStart,), TextTile(textStyle: TextFieldConstants.calloutStart,)];
-    print(list1 == list2);
-    print(list1[0].textFieldController!.text ==
-        list2[0].textFieldController!.text);
     emit(TextEditorEditorTilesChanged(tiles: List.of(editorTiles)));
   }
 
@@ -137,7 +123,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
             (editorTiles[i] as TextTile).textFieldController!.text.isEmpty) {
           // replace empty TextTile
           editorTiles[i] = toAdd;
-          focusedTile = editorTiles[i];
+          // focusedTile = editorTiles[i];
           editorTiles[i].focusNode?.requestFocus();
           return;
         }
@@ -270,45 +256,14 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
             (editorTiles[i - 1] as ListEditorTile).orderNumber != 0) {
           final eTi = editorTiles[i] as ListEditorTile;
           final eTi1 = editorTiles[i - 1] as ListEditorTile;
-          var focusTile = false;
 
-          if (editorTiles[i - 1] == focusedTile) {
-            focusTile = true;
-          }
-          // if ((editorTiles[i] as ListEditorTile).orderNumber ==
-          //     eTi1.orderNumber + 1) {
-          //   break;
-          // }
-          if (editorTiles[i].focusNode!.hasFocus) {
+          if (eTi.orderNumber != eTi1.orderNumber + 1) {
             editorTiles[i] = eTi.copyWith(orderNumber: eTi1.orderNumber + 1);
-            // editorTiles[i].focusNode?.requestFocus();
-          } else {
-            editorTiles[i] = eTi.copyWith(orderNumber: eTi1.orderNumber + 1);
-          }
-          if (focusTile) {
-            // editorTiles[i].focusNode?.requestFocus();
           }
         } else {
-          var focusTile = false;
-          if (editorTiles[i] == focusedTile) {
-            focusTile = true;
-          }
-          // if ((editorTiles[i] as ListEditorTile).orderNumber == 1) {
-          //   break;
-          // }
-          editorTiles[i] =
-              (editorTiles[i] as ListEditorTile).copyWith(orderNumber: 1);
-
-          if (editorTiles[i].focusNode!.hasFocus) {
+          if ((editorTiles[i] as ListEditorTile).orderNumber != 1) {
             editorTiles[i] =
                 (editorTiles[i] as ListEditorTile).copyWith(orderNumber: 1);
-            // editorTiles[i].focusNode?.requestFocus();
-          } else {
-            editorTiles[i] =
-                (editorTiles[i] as ListEditorTile).copyWith(orderNumber: 1);
-          }
-          if (focusTile) {
-            // editorTiles[i].focusNode?.requestFocus();
           }
         }
       }

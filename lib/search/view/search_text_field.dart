@@ -8,15 +8,12 @@ class SearchTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: UISizeConstants.defaultSize * 6,
-      width: double.infinity,
-      decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceVariant,
-          borderRadius: BorderRadius.all(
-              Radius.circular(UISizeConstants.cornerRadius))),
-      child: TextFormField(
-        
-      )
-    );
+        height: UIConstants.defaultSize * 6,
+        width: double.infinity,
+        decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surfaceVariant,
+            borderRadius:
+                BorderRadius.all(Radius.circular(UIConstants.cornerRadius))),
+        child: TextFormField());
   }
 }
