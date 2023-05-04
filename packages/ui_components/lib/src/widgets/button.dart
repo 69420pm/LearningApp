@@ -10,12 +10,14 @@ class UIButton extends StatelessWidget {
     this.height,
     this.width,
     this.lable,
+    this.child
   });
 
   final Color? color, textColor;
   final void Function()? onTap;
   final double? height, width;
   final String? lable;
+  final Widget? child;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +38,7 @@ class UIButton extends StatelessWidget {
               horizontal: UIConstants.defaultSize * 2,
               vertical: UIConstants.defaultSize,
             ),
-            child: Text(
+            child: child ?? Text(
               lable ?? '',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: textColor ??

@@ -32,6 +32,7 @@ class SearchPage extends StatelessWidget {
                   },
                 ),
               ),
+            
               BlocBuilder<SearchBloc, SearchState>(
                 builder: (context, state) {
                   if (state is SearchSuccess) {

@@ -77,6 +77,10 @@ class KeyboardBothRowsAddTile extends StatelessWidget {
                   ),
                   _KeyboardAddNewTileTile(
                     icon: const Icon(Icons.format_list_numbered),
+                    onPressed: () => context.read<TextEditorBloc>().add(
+                        TextEditorAddEditorTile(
+                            newEditorTile: ListEditorTile(orderNumber: 1),
+                            context: context)),
                   ),
                 ],
               ),

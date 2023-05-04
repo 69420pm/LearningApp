@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -59,6 +60,16 @@ class TextTile extends StatefulWidget implements EditorTile {
 
   @override
   State<TextTile> createState() => _TextTileState();
+
+  @override
+  List<Object?> get props => [
+        textStyle,
+        // parentEditorTile,
+        textFieldController
+      ];
+
+  @override
+  bool? get stringify => false;
 }
 
 class _TextTileState extends State<TextTile> {
@@ -151,8 +162,8 @@ class _TextTileState extends State<TextTile> {
 
   @override
   void dispose() {
-    super.dispose();
     widget.focusNode!.removeListener(_changeFocus);
+    super.dispose();
     // widget.focusNode!.dispose();
   }
 }

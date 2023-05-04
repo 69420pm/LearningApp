@@ -10,6 +10,9 @@ dev_dependencies:
   mocktail: ^0.3.0
   test: ^1.19.2
   very_good_analysis: ^3.1.0
+  flutter_colorpicker: ^1.0.3
+
 dependencies:
   flutter_animate: ^4.1.1+1
   material: ^1.0.0+2
+
