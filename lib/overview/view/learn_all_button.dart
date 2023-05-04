@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:learning_app/overview/view/progress_bar.dart';
 import 'package:ui_components/ui_components.dart';
 
 class LearnAllButton extends StatelessWidget {
@@ -20,19 +21,26 @@ class LearnAllButton extends StatelessWidget {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(UIConstants.defaultSize),
+          padding: const EdgeInsets.only(
+              left: 2 * UIConstants.defaultSize,
+              right: 2 * UIConstants.defaultSize,
+              bottom: 2 * UIConstants.defaultSize),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              UIGradientText(text: 'Learn all '),
-              // SizedBox(height: UiSizeConstants.defaultSize),
               Text(
-                '40 remaining',
-                style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onTertiaryContainer,
-                    ),
+                "Learn All",
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.w900,
+                    fontSize: 50,
+                    color: Theme.of(context).colorScheme.onTertiaryContainer),
               ),
+              ProgressBar(
+                  width: MediaQuery.of(context).size.width -
+                      4 * UIConstants.defaultSize -
+                      2 * UIConstants.paddingEdge,
+                  progress: 0.8)
             ],
           ),
         ),
