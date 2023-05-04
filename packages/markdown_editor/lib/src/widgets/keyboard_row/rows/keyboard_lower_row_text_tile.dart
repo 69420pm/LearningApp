@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_toggle.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ui_components/ui_components.dart';
 
 // ignore: must_be_immutable
 class KeyboardLowerRowTextTile extends StatelessWidget {
@@ -54,13 +55,41 @@ class KeyboardLowerRowTextTile extends StatelessWidget {
                 );
           },
         ),
-        const IconButton(
+        IconButton(
           icon: Icon(Icons.format_color_text),
-          onPressed: null,
+          onPressed: () => showModalBottomSheet(
+            backgroundColor: Colors.transparent,
+            context: context,
+            builder: (_) => BlocProvider.value(
+              value: context.read<TextEditorBloc>(),
+              child: UIColorPicker(
+                onColorChanged: (value) => context.read<TextEditorBloc>().add(
+                      TextEditorKeyboardRowChange(
+                        //TODO value to textcolor
+                        textColor: TextColor.white60,
+                      ),
+                    ),
+              ),
+            ),
+          ),
         ),
-        const IconButton(
+        IconButton(
           icon: Icon(Icons.format_color_fill),
-          onPressed: null,
+          onPressed: () => showModalBottomSheet(
+            backgroundColor: Colors.transparent,
+            context: context,
+            builder: (_) => BlocProvider.value(
+              value: context.read<TextEditorBloc>(),
+              child: UIColorPicker(
+                onColorChanged: (value) => context.read<TextEditorBloc>().add(
+                      TextEditorKeyboardRowChange(
+                        //TODO value to bgcolor
+                        textBackgroundColor: TextBackgroundColor.noBG,
+                      ),
+                    ),
+              ),
+            ),
+          ),
         ),
         IconButton(
           icon: const Icon(Icons.functions),
