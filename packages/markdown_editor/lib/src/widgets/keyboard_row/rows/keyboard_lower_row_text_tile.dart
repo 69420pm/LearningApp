@@ -54,9 +54,13 @@ class KeyboardLowerRowTextTile extends StatelessWidget {
                 );
           },
         ),
-        IconButton(
-          icon: const Icon(Icons.format_color_text),
-          onPressed: () => context.read<KeyboardRowCubit>().expandTextColors(),
+        const IconButton(
+          icon: Icon(Icons.format_color_text),
+          onPressed: null,
+        ),
+        const IconButton(
+          icon: Icon(Icons.format_color_fill),
+          onPressed: null,
         ),
         IconButton(
           icon: const Icon(Icons.functions),
