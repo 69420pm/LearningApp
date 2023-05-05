@@ -32,6 +32,7 @@ class _UIColorPickerState extends State<UIColorPicker> {
     Colors.red
   ];
 
+  //TODO save and load
   List<Color> ownColors = List.empty(growable: true);
   List<Color> recentColors = List.empty(growable: true);
 
