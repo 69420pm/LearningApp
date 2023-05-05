@@ -24,7 +24,11 @@ class _KeyboardToggleState extends State<KeyboardToggle> {
     return SizedBox(
       width: widget.width,
       height: widget.height,
-      child: ElevatedButton(
+      child: IconButton(
+        icon: widget.icon,
+        color: _isPressed
+            ? Theme.of(context).colorScheme.primary
+            : Theme.of(context).colorScheme.onSurfaceVariant,
         onPressed: () {
           setState(() {
             _isPressed = !_isPressed;
@@ -33,16 +37,6 @@ class _KeyboardToggleState extends State<KeyboardToggle> {
             widget.onPressed!.call();
           }
         },
-        style: ElevatedButton.styleFrom(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
-          foregroundColor: _isPressed
-              ? Theme.of(context).colorScheme.primary
-              : Theme.of(context).colorScheme.onBackground,
-          backgroundColor: _isPressed
-              ? Theme.of(context).colorScheme.background
-              : Theme.of(context).colorScheme.shadow,
-        ),
-        child: Center(child: widget.icon),
       ),
     );
   }

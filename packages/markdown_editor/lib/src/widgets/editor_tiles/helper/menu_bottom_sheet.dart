@@ -9,45 +9,37 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ui_components/src/widgets/color_picker.dart';
 
 class MenuBottomSheet extends StatelessWidget {
-  MenuBottomSheet({super.key, required this.parentEditorTile}) {
-  }
+  MenuBottomSheet({super.key, required this.parentEditorTile}) {}
 
   EditorTile parentEditorTile;
 
   @override
   Widget build(BuildContext context) {
-    return UIBottomSheet(
-        child: Padding(
-      padding:
-          const EdgeInsets.symmetric(horizontal: UIConstants.defaultSize),
-      child: Column(
-        children: [
-          UIColorPicker(
-            onColorChanged: (value) {
-              final newTile = (parentEditorTile as CalloutTile).copyWith(
-                  tileColor: value,
-                  textTile: (parentEditorTile as CalloutTile).textTile);
-              context.read<TextEditorBloc>().add(TextEditorReplaceEditorTile(
-                    tileToRemove: parentEditorTile,
-                    newEditorTile: newTile,
-                    context: context,
-                    requestFocus: false,
-                  ));
-              parentEditorTile = newTile;
-            },
-          ),
-          UIButton(
-            onTap: () {
-              Navigator.pop(context);
-              context.read<TextEditorBloc>().add(TextEditorRemoveEditorTile(
-                  tileToRemove: parentEditorTile, context: context));
-            },
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [Icon(Icons.delete), Text("delete")]),
-          )
-        ],
-      ),
-    ));
+    return UIColorPicker(
+      onColorChanged: (value) {
+        final newTile = (parentEditorTile as CalloutTile).copyWith(
+            tileColor: value,
+            textTile: (parentEditorTile as CalloutTile).textTile);
+        context.read<TextEditorBloc>().add(TextEditorReplaceEditorTile(
+              tileToRemove: parentEditorTile,
+              newEditorTile: newTile,
+              context: context,
+              requestFocus: false,
+            ));
+        parentEditorTile = newTile;
+      },
+    );
   }
 }
+
+
+//UIButton(
+        //   onTap: () {
+        //     Navigator.pop(context);
+        //     context.read<TextEditorBloc>().add(TextEditorRemoveEditorTile(
+        //         tileToRemove: parentEditorTile, context: context));
+        //   },
+        //   child: Row(
+        //       mainAxisAlignment: MainAxisAlignment.center,
+        //       children: [Icon(Icons.delete), Text("delete")]),
+        // )

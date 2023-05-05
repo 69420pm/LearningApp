@@ -42,7 +42,12 @@ class UIBottomSheet extends StatelessWidget {
                 ),
               ),
             ),
-            child,
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: UIConstants.defaultSize * 2,
+                  vertical: UIConstants.defaultSize),
+              child: child,
+            ),
           ],
         ),
       ),
