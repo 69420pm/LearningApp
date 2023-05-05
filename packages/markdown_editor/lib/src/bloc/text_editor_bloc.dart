@@ -28,6 +28,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     on<TextEditorAddEditorTile>(_addTile);
     on<TextEditorRemoveEditorTile>(_removeTile);
     on<TextEditorReplaceEditorTile>(_replaceTile);
+    on<TextEditorUpdateEmoji>(_updateEmoji);
   }
 
   /// list of all editorTiles (textWidgets, Images, etc.) of text editor
@@ -268,5 +269,10 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
         }
       }
     }
+  }
+
+  FutureOr<void> _updateEmoji(
+      TextEditorUpdateEmoji event, Emitter<TextEditorState> emit) {
+    emit(TextEditorEditorTilesChanged(tiles: [event.toUpdate]));
   }
 }

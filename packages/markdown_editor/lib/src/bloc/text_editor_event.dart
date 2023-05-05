@@ -61,3 +61,9 @@ class TextEditorReplaceEditorTile extends TextEditorEvent {
       this.handOverText = false,
       this.requestFocus = true});
 }
+
+class TextEditorUpdateEmoji extends TextEditorEvent {
+  TextEditorUpdateEmoji(this.toUpdate);
+
+  final EditorTile toUpdate;
+}

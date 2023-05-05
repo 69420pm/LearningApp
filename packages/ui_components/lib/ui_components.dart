@@ -9,4 +9,4 @@ export 'src/widgets/color_picker.dart';
 export 'src/widgets/expansion_tile.dart';
 export 'src/widgets/graidiant_text.dart';
 export 'src/widgets/text_form_field.dart';
-export 'src/widgets/emoji_picker.dart';
+export 'src/widgets/emoji_picker/emoji_picker.dart';
