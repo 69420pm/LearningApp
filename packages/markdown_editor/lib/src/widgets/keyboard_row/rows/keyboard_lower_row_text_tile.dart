@@ -83,7 +83,6 @@ class KeyboardLowerRowTextTile extends StatelessWidget {
               child: UIColorPicker(
                 onColorChanged: (value) => context.read<TextEditorBloc>().add(
                       TextEditorKeyboardRowChange(
-                        //TODO value to bgcolor
                         textBackgroundColor: value,
                       ),
                     ),

@@ -1,7 +1,6 @@
 // ignore_for_file: public_member_api_docs
 
 import 'dart:convert';
-
 import 'package:ui_components/src/widgets/emoji_picker/emoji.dart';
 import 'package:ui_components/src/widgets/emoji_picker/emojis.dart';
 
@@ -9,6 +8,7 @@ class EmojiConvert {
   EmojiConvert() {
     getEmojis();
   }
+
   final path =
       'packages/ui_components/lib/src/widgets/emoji_picker/emojis.json';
 
