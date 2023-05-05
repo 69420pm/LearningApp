@@ -13,5 +13,5 @@ class UIConstants {
 
   static const double borderWidth = 2;
 
-  static const useDynamicColors = false;
+  static const useDynamicColors = true;
 }

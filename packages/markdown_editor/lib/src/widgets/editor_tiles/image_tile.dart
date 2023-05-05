@@ -1,15 +1,21 @@
-import 'package:flutter/material.dart';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:markdown_editor/src/widgets/editor_tiles/helper/image_menu_bottom_sheet.dart';
 
 class ImageTile extends StatelessWidget implements EditorTile {
-  ImageTile({super.key, this.focusNode}) {
+  ImageTile({super.key, this.focusNode, this.image}) {
     focusNode = focusNode ?? FocusNode();
+    // dismiss keyboard
+    FocusManager.instance.primaryFocus?.unfocus();
+
   }
-  File? _image;
+  File? image;
   @override
   FocusNode? focusNode;
 
@@ -20,23 +26,115 @@ class ImageTile extends StatelessWidget implements EditorTile {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ElevatedButton(onPressed: getImage, child: const Text('fd')),
-        if (_image != null)
-          Image.file(
-            _image!,
-            width: 250,
-            height: 250,
-            fit: BoxFit.cover,
+        if (image != null)
+          Stack(
+            children: [
+              Image.file(
+                image!,
+                // width: 250,
+                // height: 250,
+                fit: BoxFit.cover,
+              ),
+              Positioned(
+                right: 0,
+                top: 0,
+                child: IconButton(
+                icon: const Icon(Icons.more_vert),
+                onPressed: () => showModalBottomSheet(
+                  backgroundColor: Colors.transparent,
+                  context: context,
+                  builder: (_) => BlocProvider.value(
+                    value: context.read<TextEditorBloc>(),
+                    child: ImageMenuBottomSheet(
+                      parentEditorTile: this,
+                    ),
+                  ),
+                ),
+                          ),
+              )
+            ],
           )
         else
-          Text("fd"),
+          _EmptyImage(
+            image: image,
+            context: context,
+            parentTile: this,
+          )
       ],
     );
   }
 
-  Future<dynamic> getImage() async {
-    final image = await ImagePicker().pickImage(source: ImageSource.camera);
-    if (image == null) return;
-    _image = File(image.path);
+  /// copy with method
+  ImageTile copyWith({FocusNode? focusNode, File? image}) {
+    return ImageTile(
+      focusNode: focusNode ?? this.focusNode,
+      image: image ?? this.image,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ImageTile &&
+          runtimeType == other.runtimeType &&
+          image == other.image &&
+          focusNode == other.focusNode;
+}
+
+class _EmptyImage extends StatelessWidget {
+  _EmptyImage({
+    super.key,
+    required this.image,
+    required this.context,
+    required this.parentTile,
+  });
+  File? image;
+  BuildContext context;
+  ImageTile parentTile;
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(border: Border.all()),
+      child: Column(
+        children: [
+          Text("add image"),
+          Row(
+            children: [
+              ElevatedButton(
+                  onPressed: pickImageGallery, child: Text("gallery")),
+              ElevatedButton(onPressed: pickImageCamera, child: Text("camera"))
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Future<void> pickImageGallery() async {
+    final pickedImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedImage == null) return;
+    image = File(pickedImage.path);
+    context.read<TextEditorBloc>().add(
+          TextEditorReplaceEditorTile(
+            tileToRemove: parentTile,
+            newEditorTile: parentTile.copyWith(image: image),
+            context: context,
+          ),
+        );
+  }
+
+  Future<void> pickImageCamera() async {
+    final pickedImage =
+        await ImagePicker().pickImage(source: ImageSource.camera);
+    if (pickedImage == null) return;
+    image = File(pickedImage.path);
+    context.read<TextEditorBloc>().add(
+          TextEditorReplaceEditorTile(
+            tileToRemove: parentTile,
+            newEditorTile: parentTile.copyWith(image: image),
+            context: context,
+          ),
+        );
   }
 }

@@ -5,7 +5,6 @@ import 'package:markdown_editor/src/models/text_field_constants.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/helper/emoji_bottom_shett.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/helper/menu_bottom_sheet.dart';
-import 'package:markdown_editor/src/widgets/editor_tiles/helper/three_dot_menu.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -82,7 +81,8 @@ class CalloutTile extends StatelessWidget implements EditorTile {
               width: 12,
             ),
             Expanded(child: textTile),
-            ThreeDotMenu(
+            IconButton(
+              icon: const Icon(Icons.more_vert),
               onPressed: () => showModalBottomSheet(
                 backgroundColor: Colors.transparent,
                 context: context,
@@ -107,6 +107,13 @@ class CalloutTile extends StatelessWidget implements EditorTile {
     );
   }
 
+  @override
+  List<Object?> get props => [textTile, focusNode];
+
+  @override
+  bool? get stringify => false;
+
+  @override
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||

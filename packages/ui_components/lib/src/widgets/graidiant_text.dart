@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class UIGradientText extends StatelessWidget {
   const UIGradientText({
@@ -13,19 +14,19 @@ class UIGradientText extends StatelessWidget {
     final gradient = LinearGradient(
       colors: [
         Theme.of(context).colorScheme.onTertiaryContainer,
-        Theme.of(context).colorScheme.onPrimaryContainer,
+        Theme.of(context).colorScheme.primary,
       ],
     );
     return ShaderMask(
       blendMode: BlendMode.srcIn,
       shaderCallback: (bounds) => gradient
-          .createShader(Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
+          .createShader(Rect.fromLTRB(10, 0, bounds.width, bounds.height)),
       child: Text(
         text,
         style: Theme.of(context)
             .textTheme
-            .displayLarge
-            ?.copyWith(fontWeight: FontWeight.w900),
+            .bodyLarge
+            ?.copyWith(fontWeight: FontWeight.w900, fontSize: 50),
       ),
     );
   }

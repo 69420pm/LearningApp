@@ -5,7 +5,6 @@ import 'package:markdown_editor/src/cubit/keyboard_row_cubit.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/rows/keyboard_both_rows_add_tile.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/rows/keyboard_lower_row_text_tile.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/rows/keyboard_upper_row_extra_format.dart';
-import 'package:markdown_editor/src/widgets/keyboard_row/rows/keyboard_upper_row_text_colors.dart';
 
 class KeyboardRow extends StatelessWidget {
   KeyboardRow({super.key});
@@ -16,36 +15,23 @@ class KeyboardRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<KeyboardRowCubit, KeyboardRowState>(
       builder: (context, state) {
-        if (state is KeyboardRowTextColors) {
-          return Column(
+        return Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surfaceVariant,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(16),
+              topRight: Radius.circular(16),
+            ),
+          ),
+          child: Column(
             children: [
-              const KeyboardUpperRowTextColors(),
-              KeyboardLowerRowTextTile(),
+              if (state is KeyboardRowExtraFormat)
+                KeyboardUpperRowExtraFormat(),
+              if (state is KeyboardRowNewTextTile)
+                const KeyboardBothRowsAddTile(),
+              if (state is! KeyboardRowNewTextTile) KeyboardLowerRowTextTile(),
             ],
-          );
-        } else if (state is KeyboardRowFavorites) {
-          return Column(
-            children: [
-              KeyboardLowerRowTextTile(),
-            ],
-          );
-        } else if (state is KeyboardRowExtraFormat) {
-          return Column(
-            children: [
-              KeyboardUpperRowExtraFormat(),
-              KeyboardLowerRowTextTile()
-            ],
-          );
-        } else if (state is KeyboardRowNewTextTile) {
-          return Column(
-            children: [const KeyboardBothRowsAddTile()],
-          );
-        }
-        return Column(
-          children: [
-            const KeyboardUpperRowTextColors(),
-            KeyboardLowerRowTextTile(),
-          ],
+          ),
         );
       },
     );
@@ -97,7 +83,7 @@ class KeyboardRow extends StatelessWidget {
       case TextBackgroundColor.blueBG:
         return Colors.blue;
       case TextBackgroundColor.purpleBG:
-      return Colors.purple;
+        return Colors.purple;
       case TextBackgroundColor.pinkBG:
         return Colors.pink;
       case TextBackgroundColor.redBG:

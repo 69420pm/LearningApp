@@ -1,9 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:markdown_editor/src/bloc/text_editor_bloc.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_selectable.dart';
-import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_toggle.dart';
+// ignore_for_file: public_member_api_docs
 
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:markdown_editor/src/bloc/text_editor_bloc.dart';
+import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_toggle.dart';
+import 'package:ui_components/ui_components.dart';
+
+// ignore: must_be_immutable
 class KeyboardUpperRowExtraFormat extends StatelessWidget {
   KeyboardUpperRowExtraFormat({super.key});
   bool isCode = false;
@@ -11,27 +14,33 @@ class KeyboardUpperRowExtraFormat extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: SizedBox(
-        height: 20,
-        // width: 100,
+        height: UIConstants.defaultSize * 4,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            KeyboardSelectable(icon: const Icon(Icons.functions)),
+            const IconButton(
+              icon: Icon(Icons.functions),
+              onPressed: null,
+            ),
             KeyboardToggle(
               icon: const Icon(Icons.code),
-              height: 20,
-              width: 100,
               onPressed: () {
                 isCode = !isCode;
                 context.read<TextEditorBloc>().add(
-                    TextEditorKeyboardRowChange(
-                      isCode: isCode,
-                    ),
-                  );
+                      TextEditorKeyboardRowChange(
+                        isCode: isCode,
+                      ),
+                    );
               },
             ),
-            KeyboardSelectable(icon: const Icon(Icons.tag)),
-            KeyboardSelectable(icon: const Icon(Icons.alternate_email)),
+            const IconButton(
+              icon: Icon(Icons.tag),
+              onPressed: null,
+            ),
+            const IconButton(
+              icon: Icon(Icons.alternate_email),
+              onPressed: null,
+            ),
           ],
         ),
       ),

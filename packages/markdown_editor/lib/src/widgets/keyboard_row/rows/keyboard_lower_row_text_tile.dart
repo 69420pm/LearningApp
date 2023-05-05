@@ -1,11 +1,11 @@
-import 'dart:developer';
-
+// ignore_for_file: public_member_api_docs
 import 'package:flutter/material.dart';
 import 'package:markdown_editor/markdown_editor.dart';
-import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_expandable.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_toggle.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ui_components/ui_components.dart';
 
+// ignore: must_be_immutable
 class KeyboardLowerRowTextTile extends StatelessWidget {
   KeyboardLowerRowTextTile({super.key});
   bool isBold = false;
@@ -55,27 +55,55 @@ class KeyboardLowerRowTextTile extends StatelessWidget {
                 );
           },
         ),
-        KeyboardExpandable(
-          icon: const Icon(Icons.format_color_text),
-          onPressed: () => context.read<KeyboardRowCubit>().expandTextColors(),
+        IconButton(
+          icon: Icon(Icons.format_color_text),
+          onPressed: () => showModalBottomSheet(
+            backgroundColor: Colors.transparent,
+            context: context,
+            builder: (_) => BlocProvider.value(
+              value: context.read<TextEditorBloc>(),
+              child: UIColorPicker(
+                onColorChanged: (value) => context.read<TextEditorBloc>().add(
+                      TextEditorKeyboardRowChange(
+                        //TODO value to textcolor
+                        textColor: TextColor.white60,
+                      ),
+                    ),
+              ),
+            ),
+          ),
         ),
-        KeyboardExpandable(
+        IconButton(
+          icon: Icon(Icons.format_color_fill),
+          onPressed: () => showModalBottomSheet(
+            backgroundColor: Colors.transparent,
+            context: context,
+            builder: (_) => BlocProvider.value(
+              value: context.read<TextEditorBloc>(),
+              child: UIColorPicker(
+                onColorChanged: (value) => context.read<TextEditorBloc>().add(
+                      TextEditorKeyboardRowChange(
+                        //TODO value to bgcolor
+                        textBackgroundColor: TextBackgroundColor.noBG,
+                      ),
+                    ),
+              ),
+            ),
+          ),
+        ),
+        IconButton(
           icon: const Icon(Icons.functions),
-          onPressed: () {
-            context.read<KeyboardRowCubit>().expandExtraFormat();
-          },
+          onPressed: () => context.read<KeyboardRowCubit>().expandExtraFormat(),
         ),
         Container(
           width: 2,
           color: Theme.of(context).colorScheme.outline,
           height: 38,
         ),
-        KeyboardExpandable(
+        IconButton(
           icon: const Icon(Icons.add),
-          onPressed: (){
-            context.read<KeyboardRowCubit>().expandAddNewTextTile();
-          },
-          width: 70,
+          onPressed: () =>
+              context.read<KeyboardRowCubit>().expandAddNewTextTile(),
         ),
       ],
     );

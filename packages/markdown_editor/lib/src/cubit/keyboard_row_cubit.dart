@@ -26,11 +26,12 @@ class KeyboardRowCubit extends Cubit<KeyboardRowState> {
   }
 
   void expandAddNewTextTile() {
+    _textColors = false;
+    _extraFormat = false;
     emit(KeyboardRowNewTextTile());
   }
 
   void expandFavorites() {
-    print("expand");
     emit(KeyboardRowFavorites());
   }
 }
