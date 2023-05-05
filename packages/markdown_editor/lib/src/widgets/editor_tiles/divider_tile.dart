@@ -17,9 +17,10 @@ class DividerTile extends StatelessWidget implements EditorTile {
   @override
   TextFieldController? textFieldController;
   
-  @override
-  List<Object?> get props => [focusNode];
-  
-  @override
-  bool? get stringify => false;
+ @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DividerTile &&
+          runtimeType == other.runtimeType &&
+          focusNode == other.focusNode;
 }

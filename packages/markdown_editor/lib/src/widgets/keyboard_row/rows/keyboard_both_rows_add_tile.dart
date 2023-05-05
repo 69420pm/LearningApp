@@ -4,6 +4,7 @@ import 'package:markdown_editor/src/models/text_field_constants.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/callout_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/divider_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/header_tile.dart';
+import 'package:markdown_editor/src/widgets/editor_tiles/image_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/list_editor_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/quote_tile.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_expandable.dart';
@@ -34,53 +35,64 @@ class KeyboardBothRowsAddTile extends StatelessWidget {
                     icon: const Icon(Icons.title),
                     onPressed: () => context.read<TextEditorBloc>().add(
                           TextEditorAddEditorTile(
-                              newEditorTile: HeaderTile(
-                                textStyle: TextFieldConstants.header1,
-                                hintText: 'Header 1',
-                              ),
-                              context: context),
+                            newEditorTile: HeaderTile(
+                              textStyle: TextFieldConstants.header1,
+                              hintText: 'Header 1',
+                            ),
+                            context: context,
+                          ),
                         ),
                   ),
                   _KeyboardAddNewTileTile(
                     icon: const Icon(Icons.title),
                     onPressed: () => context.read<TextEditorBloc>().add(
                           TextEditorAddEditorTile(
-                              newEditorTile: HeaderTile(
-                                textStyle: TextFieldConstants.header2,
-                                hintText: 'Header 2',
-                              ),
-                              context: context),
+                            newEditorTile: HeaderTile(
+                              textStyle: TextFieldConstants.header2,
+                              hintText: 'Header 2',
+                            ),
+                            context: context,
+                          ),
                         ),
                   ),
                   _KeyboardAddNewTileTile(
                     icon: const Icon(Icons.title),
                     onPressed: () => context.read<TextEditorBloc>().add(
                           TextEditorAddEditorTile(
-                              newEditorTile: HeaderTile(
-                                textStyle: TextFieldConstants.header3,
-                                hintText: 'Header 3',
-                              ),
-                              context: context),
+                            newEditorTile: HeaderTile(
+                              textStyle: TextFieldConstants.header3,
+                              hintText: 'Header 3',
+                            ),
+                            context: context,
+                          ),
                         ),
                   ),
                   _KeyboardAddNewTileTile(
                     icon: const Icon(Icons.crop_16_9),
                     onPressed: () => context.read<TextEditorBloc>().add(
-                        TextEditorAddEditorTile(
-                            newEditorTile: CalloutTile(), context: context)),
+                          TextEditorAddEditorTile(
+                            newEditorTile: CalloutTile(),
+                            context: context,
+                          ),
+                        ),
                   ),
                   _KeyboardAddNewTileTile(
                     icon: const Icon(Icons.format_list_bulleted),
                     onPressed: () => context.read<TextEditorBloc>().add(
-                        TextEditorAddEditorTile(
-                            newEditorTile: ListEditorTile(), context: context)),
+                          TextEditorAddEditorTile(
+                            newEditorTile: ListEditorTile(),
+                            context: context,
+                          ),
+                        ),
                   ),
                   _KeyboardAddNewTileTile(
                     icon: const Icon(Icons.format_list_numbered),
                     onPressed: () => context.read<TextEditorBloc>().add(
-                        TextEditorAddEditorTile(
+                          TextEditorAddEditorTile(
                             newEditorTile: ListEditorTile(orderNumber: 1),
-                            context: context)),
+                            context: context,
+                          ),
+                        ),
                   ),
                 ],
               ),
@@ -91,20 +103,32 @@ class KeyboardBothRowsAddTile extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _KeyboardAddNewTileTile(icon: const Icon(Icons.functions)),
-                  _KeyboardAddNewTileTile(icon: const Icon(Icons.image)),
+                  _KeyboardAddNewTileTile(
+                    icon: const Icon(Icons.image),
+                    onPressed: () => context.read<TextEditorBloc>().add(
+                          TextEditorAddEditorTile(
+                            newEditorTile: ImageTile(),
+                            context: context,
+                          ),
+                        ),
+                  ),
                   _KeyboardAddNewTileTile(icon: const Icon(Icons.audio_file)),
                   _KeyboardAddNewTileTile(
                     icon: const Icon(Icons.format_quote),
                     onPressed: () => context.read<TextEditorBloc>().add(
                           TextEditorAddEditorTile(
-                              newEditorTile: QuoteTile(), context: context),
+                            newEditorTile: QuoteTile(),
+                            context: context,
+                          ),
                         ),
                   ),
                   _KeyboardAddNewTileTile(
                     icon: const Icon(Icons.horizontal_rule),
                     onPressed: () => context.read<TextEditorBloc>().add(
                           TextEditorAddEditorTile(
-                              newEditorTile: DividerTile(), context: context),
+                            newEditorTile: DividerTile(),
+                            context: context,
+                          ),
                         ),
                   ),
                   _KeyboardAddNewTileTile(

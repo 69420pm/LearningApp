@@ -34,6 +34,7 @@ dependencies:
   characters: ^1.2.1
   flutter_colorpicker: ^1.0.3
   flutter_animate: ^4.1.1+1
+  image_picker: ^0.8.7
   
 
 dev_dependencies:
@@ -41,7 +42,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   mocktail: ^0.3.0
-  very_good_analysis: ^3.1.0
+  very_good_analysis: ^4.0.0+1
 
 flutter:
   uses-material-design: true

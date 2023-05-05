@@ -32,7 +32,7 @@ class SearchPage extends StatelessWidget {
                   },
                 ),
               ),
-            
+              UIEmojiPicker(),
               BlocBuilder<SearchBloc, SearchState>(
                 builder: (context, state) {
                   if (state is SearchSuccess) {
