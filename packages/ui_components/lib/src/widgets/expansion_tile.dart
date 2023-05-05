@@ -2,8 +2,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
-import 'package:material/material.dart';
 import 'package:ui_components/ui_components.dart';
 
 class UIExpansionTile extends StatefulWidget {
@@ -84,7 +82,7 @@ class _UIExpansionTileState extends State<UIExpansionTile>
                     builder: (context, _) {
                       return Transform.rotate(
                           angle: pi * _animation.value,
-                          child: Icon(Icons.expand_more));
+                          child: const Icon(Icons.expand_more),);
                     },
                   ),
                   SizedBox(width: widget.titleSpacing),

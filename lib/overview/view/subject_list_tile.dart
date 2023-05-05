@@ -35,7 +35,7 @@ class SubjectListTile extends StatelessWidget {
                 Text(
                   subject.name,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface),
+                      color: Theme.of(context).colorScheme.onSurface,),
                 ),
                 IconButton(
                   onPressed: () =>

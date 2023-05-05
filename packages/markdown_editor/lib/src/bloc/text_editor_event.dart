@@ -16,7 +16,7 @@ class TextEditorKeyboardRowChange extends TextEditorEvent {
       this.isUnderlined,
       this.isCode,
       this.textColor,
-      this.textBackgroundColor});
+      this.textBackgroundColor,});
 }
 
 class TextEditorAddEditorTile extends TextEditorEvent {
@@ -59,5 +59,5 @@ class TextEditorReplaceEditorTile extends TextEditorEvent {
       required this.newEditorTile,
       required this.context,
       this.handOverText = false,
-      this.requestFocus = true});
+      this.requestFocus = true,});
 }

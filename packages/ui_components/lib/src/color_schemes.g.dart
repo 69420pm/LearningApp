@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 const lightColorScheme = ColorScheme(
@@ -68,3 +67,17 @@ const darkColorScheme = ColorScheme(
   outlineVariant: Color(0xFF46483C),
   scrim: Color(0xFF000000),
 );
+
+const defaultColors = [
+  Colors.white,
+  Colors.white60,
+  Colors.white38,
+  Colors.brown,
+  Colors.orange,
+  Colors.yellow,
+  Colors.green,
+  Colors.blue,
+  Colors.purple,
+  Colors.pink,
+  Colors.red
+];

@@ -1,5 +1,6 @@
 class EmojiJson {
-  static const emojiJson = """[
+  static const emojiJson = '''
+[
   {
     "emoji": "😀"
   , "description": "grinning face"
@@ -23479,5 +23480,5 @@ class EmojiJson {
   }
 ]
 
-""";
+''';
 }

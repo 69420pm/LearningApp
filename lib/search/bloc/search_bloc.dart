@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:cards_repository/cards_repository.dart';
-import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/card_list_tile_view.dart';
 import 'package:meta/meta.dart';
 

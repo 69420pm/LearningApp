@@ -1,4 +1,4 @@
-import "package:flutter/material.dart";
+import 'package:flutter/material.dart';
 
 /// constants for text fields, especially text styles for header1 or normal etc.
 class TextFieldConstants {
@@ -25,7 +25,7 @@ class TextFieldConstants {
   // TODO colors terror
   /// text for index of orderedListTile
   static const TextStyle orderedListIndex = TextStyle(
-      fontSize: 15, fontWeight: FontWeight.normal, color: Colors.white);
+      fontSize: 15, fontWeight: FontWeight.normal, color: Colors.white,);
 
   /// text style for the front textfield of the callout_tile
   /// which should get used for smileys

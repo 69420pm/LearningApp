@@ -12,7 +12,6 @@ import 'package:hive_cards_api/hive_cards_api.dart';
 import 'package:learning_app/app/app.dart';
 import 'package:learning_app/bootstrap.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
-import 'dart:developer';
 
 
 Future<void> main() async {

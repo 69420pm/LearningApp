@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:markdown_editor/src/bloc/text_editor_bloc.dart';
 import 'package:markdown_editor/src/cubit/keyboard_row_cubit.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/rows/keyboard_both_rows_add_tile.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/rows/keyboard_lower_row_text_tile.dart';
@@ -9,7 +8,7 @@ import 'package:markdown_editor/src/widgets/keyboard_row/rows/keyboard_upper_row
 class KeyboardRow extends StatelessWidget {
   KeyboardRow({super.key});
 
-  List<bool> _selections = List.generate(7, (index) => false);
+  final List<bool> _selections = List.generate(7, (index) => false);
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +17,7 @@ class KeyboardRow extends StatelessWidget {
         return Container(
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surfaceVariant,
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(16),
               topRight: Radius.circular(16),
             ),

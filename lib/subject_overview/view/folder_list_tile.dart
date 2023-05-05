@@ -22,7 +22,7 @@ class FolderListTileParent extends StatelessWidget {
 
   bool isHoverd = false;
 
-  var childListTiles = <String, Widget>{};
+  Map<String, Widget> childListTiles = <String, Widget>{};
   @override
   Widget build(BuildContext context) {
     context

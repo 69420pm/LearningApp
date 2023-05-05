@@ -62,7 +62,7 @@ class OverviewPage extends StatelessWidget {
             children: [
               const SizedBox(height: UIConstants.defaultSize * 1),
               SearchBar(
-                  onTap: () => Navigator.of(context).pushNamed('/search')),
+                  onTap: () => Navigator.of(context).pushNamed('/search'),),
               const SizedBox(height: UIConstants.defaultSize * 2),
               const LearnAllButton(),
               BlocBuilder<OverviewBloc, OverviewState>(

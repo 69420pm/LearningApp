@@ -4,7 +4,7 @@ import 'package:ui_components/src/widgets/emoji_picker/emoji_convert.dart';
 import 'package:ui_components/ui_components.dart';
 
 class UIEmojiPicker extends StatefulWidget {
-  UIEmojiPicker({super.key, required this.onEmojiClicked});
+  const UIEmojiPicker({super.key, required this.onEmojiClicked});
 
   final void Function(Emoji) onEmojiClicked;
 
@@ -58,16 +58,14 @@ class _UIEmojiPickerState extends State<UIEmojiPicker>
               mainAxisSize: MainAxisSize.min,
               children: [
                 TabBar(
-                  automaticIndicatorColorAdjustment: true,
-                  labelStyle: TextStyle(fontSize: 22),
+                  labelStyle: const TextStyle(fontSize: 22),
                   tabs: List.generate(
                     categories.length,
                     (index) => Tab(
-                      child: Text(emojis
+                      child: Text('${emojis
                               .firstWhere((element) =>
-                                  element.category == categories[index])
-                              .emoji +
-                          " "),
+                                  element.category == categories[index],)
+                              .emoji} ',),
                     ),
                   ),
                   controller: _tabController,
@@ -85,16 +83,16 @@ class _UIEmojiPickerState extends State<UIEmojiPicker>
                         mainAxisSpacing: UIConstants.defaultSize / 2,
                         children: emojis
                             .where((element) =>
-                                element.category == categories[index])
+                                element.category == categories[index],)
                             .map((e) => GestureDetector(
                                   onTap: () {
                                     widget.onEmojiClicked(e);
                                   },
                                   child: Text(
                                     e.emoji,
-                                    style: TextStyle(fontSize: 22),
+                                    style: const TextStyle(fontSize: 22),
                                   ),
-                                ))
+                                ),)
                             .toList(),
                       );
                     }),
@@ -105,6 +103,6 @@ class _UIEmojiPickerState extends State<UIEmojiPicker>
           }
         },
       ),
-    ));
+    ),);
   }
 }

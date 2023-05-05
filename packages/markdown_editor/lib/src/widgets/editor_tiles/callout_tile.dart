@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/models/text_field_constants.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/helper/menu_bottom_sheet.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ui_components/ui_components.dart';
 
 class CalloutTile extends StatelessWidget implements EditorTile {
@@ -42,7 +42,7 @@ class CalloutTile extends StatelessWidget implements EditorTile {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: tileColor,
-        borderRadius: BorderRadius.all(Radius.circular(8)),
+        borderRadius: const BorderRadius.all(Radius.circular(8)),
       ),
       child: Padding(
         padding: const EdgeInsets.only(left: 10),
@@ -63,8 +63,7 @@ class CalloutTile extends StatelessWidget implements EditorTile {
                       onEmojiClicked: (p0) {
                         _emojiController.text = p0.emoji;
 
-                        final newTile = (this as CalloutTile)
-                            .copyWith(iconString: p0.emoji);
+                        final newTile = copyWith(iconString: p0.emoji);
                         context
                             .read<TextEditorBloc>()
                             .add(TextEditorReplaceEditorTile(
@@ -72,7 +71,7 @@ class CalloutTile extends StatelessWidget implements EditorTile {
                               newEditorTile: newTile,
                               context: context,
                               requestFocus: false,
-                            ));
+                            ),);
 
                         Navigator.of(context).pop();
                       },
@@ -117,7 +116,7 @@ class CalloutTile extends StatelessWidget implements EditorTile {
   }
 
   CalloutTile copyWith(
-      {Color? tileColor, TextTile? textTile, String? iconString}) {
+      {Color? tileColor, TextTile? textTile, String? iconString,}) {
     return CalloutTile(
       tileColor: tileColor ?? this.tileColor,
       textTile: textTile ?? this.textTile,

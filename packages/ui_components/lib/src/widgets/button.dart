@@ -2,21 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:ui_components/src/ui_constants.dart';
 
 class UIButton extends StatelessWidget {
-  const UIButton({
-    super.key,
-    this.color,
-    this.textColor,
-    this.onTap,
-    this.height,
-    this.width,
-    this.lable,
-    this.child
-  });
+  const UIButton(
+      {super.key,
+      this.color,
+      this.textColor,
+      this.onTap,
+      this.height,
+      this.width,
+      this.label,
+      this.child,});
 
   final Color? color, textColor;
   final void Function()? onTap;
   final double? height, width;
-  final String? lable;
+  final String? label;
   final Widget? child;
 
   @override
@@ -38,13 +37,14 @@ class UIButton extends StatelessWidget {
               horizontal: UIConstants.defaultSize * 2,
               vertical: UIConstants.defaultSize,
             ),
-            child: child ?? Text(
-              lable ?? '',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: textColor ??
-                        Theme.of(context).colorScheme.onPrimaryContainer,
-                  ),
-            ),
+            child: child ??
+                Text(
+                  label ?? '',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: textColor ??
+                            Theme.of(context).colorScheme.onPrimaryContainer,
+                      ),
+                ),
           ),
         ),
       ),
