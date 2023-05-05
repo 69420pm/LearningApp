@@ -62,14 +62,12 @@ class TextTile extends StatefulWidget implements EditorTile {
   State<TextTile> createState() => _TextTileState();
 
   @override
-  List<Object?> get props => [
-        textStyle,
-        // parentEditorTile,
-        textFieldController
-      ];
-
-  @override
-  bool? get stringify => false;
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TextTile &&
+          runtimeType == other.runtimeType &&
+          textFieldController == other.textFieldController &&
+          focusNode == other.focusNode;
 }
 
 class _TextTileState extends State<TextTile> {

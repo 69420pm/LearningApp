@@ -3,13 +3,17 @@ import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/models/text_field_constants.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
+import 'package:markdown_editor/src/widgets/editor_tiles/helper/emoji_bottom_shett.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/helper/menu_bottom_sheet.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CalloutTile extends StatelessWidget implements EditorTile {
-  CalloutTile(
-      {super.key, this.tileColor = Colors.white12, TextTile? textTile}) {
+  CalloutTile({
+    super.key,
+    this.tileColor = Colors.white12,
+    TextTile? textTile,
+  }) {
     this.textTile = textTile ??
         TextTile(
           focusNode: focusNode,
@@ -44,18 +48,34 @@ class CalloutTile extends StatelessWidget implements EditorTile {
           children: [
             SizedBox(
               width: 25,
-              child: TextField(
-                controller: _emojiController,
-                style: TextFieldConstants.calloutStart,
-                maxLength: 1,
-                decoration: const InputDecoration(
-                    isDense: true,
-                    counterStyle: TextStyle(
-                      height: double.minPositive,
+              child: ElevatedButton(
+                child: Text(
+                  "😋",
+                  style: TextFieldConstants.calloutStart,
+                ),
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (_) => BlocProvider.value(
+                      value: context.read<TextEditorBloc>(),
+                      child: EmojiBottomSheet(
+                      ),
                     ),
-                    counterText: '',
-                    border: InputBorder.none),
+                  );
+                },
               ),
+              // TextField(
+              //   controller: _emojiController,
+              //   style: TextFieldConstants.calloutStart,
+              //   maxLength: 1,
+              //   decoration: const InputDecoration(
+              //       isDense: true,
+              //       counterStyle: TextStyle(
+              //         height: double.minPositive,
+              //       ),
+              //       counterText: '',
+              //       border: InputBorder.none),
+              // ),
             ),
             const SizedBox(
               width: 12,
@@ -93,6 +113,7 @@ class CalloutTile extends StatelessWidget implements EditorTile {
   @override
   bool? get stringify => false;
 
+  @override
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||

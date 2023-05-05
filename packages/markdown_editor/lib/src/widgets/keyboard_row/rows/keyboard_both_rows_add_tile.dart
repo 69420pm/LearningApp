@@ -4,6 +4,7 @@ import 'package:markdown_editor/src/models/text_field_constants.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/callout_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/divider_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/header_tile.dart';
+import 'package:markdown_editor/src/widgets/editor_tiles/image_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/list_editor_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/quote_tile.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -82,9 +83,11 @@ class KeyboardBothRowsAddTile extends StatelessWidget {
         icon: Icon(Icons.functions),
         onPressed: null,
       ),
-      const IconButton(
+      IconButton(
         icon: Icon(Icons.image),
-        onPressed: null,
+        onPressed: () => context.read<TextEditorBloc>().add(
+            TextEditorAddEditorTile(
+                newEditorTile: ImageTile(), context: context)),
       ),
       const IconButton(
         icon: Icon(Icons.audio_file),

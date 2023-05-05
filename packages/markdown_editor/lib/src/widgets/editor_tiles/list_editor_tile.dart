@@ -96,16 +96,12 @@ class ListEditorTile extends StatelessWidget implements EditorTile {
   }
 
   @override
-  List<Object?> get props => [_textTile, orderNumber];
-
-  @override
-  bool? get stringify => true;
-
-  @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is ListEditorTile &&
           runtimeType == other.runtimeType &&
           _textTile == other._textTile &&
-          orderNumber == other.orderNumber;
+          orderNumber == other.orderNumber &&
+          focusNode == other.focusNode;
+
 }

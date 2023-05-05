@@ -39,9 +39,11 @@ class QuoteTile extends StatelessWidget implements EditorTile {
     );
   }
 
-  @override
-  List<Object?> get props => [_textTile, focusNode];
-
-  @override
-  bool? get stringify => false;
+    @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is QuoteTile &&
+          runtimeType == other.runtimeType &&
+          _textTile == other._textTile &&
+          focusNode == other.focusNode;
 }
