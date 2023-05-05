@@ -66,7 +66,7 @@ class KeyboardLowerRowTextTile extends StatelessWidget {
                 onColorChanged: (value) => context.read<TextEditorBloc>().add(
                       TextEditorKeyboardRowChange(
                         //TODO value to textcolor
-                        textColor: TextColor.white60,
+                        textColor: value,
                       ),
                     ),
               ),
@@ -84,7 +84,7 @@ class KeyboardLowerRowTextTile extends StatelessWidget {
                 onColorChanged: (value) => context.read<TextEditorBloc>().add(
                       TextEditorKeyboardRowChange(
                         //TODO value to bgcolor
-                        textBackgroundColor: TextBackgroundColor.noBG,
+                        textBackgroundColor: value,
                       ),
                     ),
               ),

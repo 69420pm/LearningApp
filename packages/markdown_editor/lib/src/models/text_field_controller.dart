@@ -56,12 +56,9 @@ class TextFieldController extends TextEditingController {
     final isItalic = context.read<TextEditorBloc>().isItalic;
     final isUnderlined = context.read<TextEditorBloc>().isUnderlined;
     final isCode = context.read<TextEditorBloc>().isCode;
-    final textColor = KeyboardRow.returnColorFromTextColor(
-      context.read<TextEditorBloc>().textColor,
-    );
-    final textBackgroundColor = KeyboardRow.returnColorFromBackgroundColor(
-      context.read<TextEditorBloc>().textBackgroundColor,
-    );
+    final textColor = context.read<TextEditorBloc>().textColor;
+    final textBackgroundColor =
+        context.read<TextEditorBloc>().textBackgroundColor;
 
     final textDelta = text.characters.length - _previousText.characters.length;
     final newCharTiles = <int, CharTile>{};
@@ -119,8 +116,8 @@ class TextFieldController extends TextEditingController {
                 )
               : standardStyle.copyWith(
                   // TODO colors not theme specific
-                  color: Colors.white,
-                  background: Paint()..color = Colors.black,
+                  color: Theme.of(context).colorScheme.onBackground,
+                  background: Paint()..color = Colors.transparent,
                 ),
         );
       }
@@ -146,8 +143,8 @@ class TextFieldController extends TextEditingController {
                       background: standardStyle.background,
                     )
                   : standardStyle.copyWith(
-                      color: Colors.white,
-                      background: Paint()..color = Colors.black,
+                      color: Theme.of(context).colorScheme.onBackground,
+                      background: Paint()..color = Colors.transparent,
                     ),
             );
           }
@@ -169,7 +166,7 @@ class TextFieldController extends TextEditingController {
     _previousCode = isCode;
     _previousTextColor = textColor;
     _previousTextBackgroundColor = textBackgroundColor;
- 
+
     return TextSpan(style: style, children: children);
   }
 
