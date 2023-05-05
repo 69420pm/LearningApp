@@ -1,8 +1,31 @@
+// ignore_for_file: public_member_api_docs
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ui_components/src/ui_constants.dart';
 
 class UITextFormField extends StatefulWidget {
+  const UITextFormField({
+    super.key,
+    this.label,
+    required this.controller,
+    this.inputType,
+    this.maxLength,
+    this.formater,
+    this.initialValue,
+    required this.validation,
+    this.onChanged,
+    this.autofocus,
+    this.onFieldSubmitted,
+    this.hintText,
+    this.suffixIcon,
+    this.icon,
+    this.textInputAction,
+    this.onLoseFocus,
+    this.maxLines = 1,
+    this.prefixIcon,
+  });
+
   final String? label, hintText;
   final Widget? suffixIcon;
   final Widget? icon;
@@ -17,26 +40,6 @@ class UITextFormField extends StatefulWidget {
   final TextInputAction? textInputAction;
   final int? maxLines;
   final Widget? prefixIcon;
-
-  const UITextFormField(
-      {super.key,
-      this.label,
-      required this.controller,
-      this.inputType,
-      this.maxLength,
-      this.formater,
-      this.initialValue,
-      required this.validation,
-      this.onChanged,
-      this.autofocus,
-      this.onFieldSubmitted,
-      this.hintText,
-      this.suffixIcon,
-      this.icon,
-      this.textInputAction,
-      this.onLoseFocus,
-      this.maxLines = 1,
-      this.prefixIcon});
 
   @override
   State<UITextFormField> createState() => _UITextFormFieldState();

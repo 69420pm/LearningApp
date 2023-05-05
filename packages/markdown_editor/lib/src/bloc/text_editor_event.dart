@@ -8,16 +8,15 @@ class TextEditorKeyboardRowChange extends TextEditorEvent {
   bool? isItalic;
   bool? isUnderlined;
   bool? isCode;
-  TextColor? textColor;
-  TextBackgroundColor? textBackgroundColor;
-  TextEditorKeyboardRowChange({
-    this.isBold,
-    this.isItalic,
-    this.isUnderlined,
-    this.isCode,
-    this.textColor,
-    this.textBackgroundColor
-  });
+  Color? textColor;
+  Color? textBackgroundColor;
+  TextEditorKeyboardRowChange(
+      {this.isBold,
+      this.isItalic,
+      this.isUnderlined,
+      this.isCode,
+      this.textColor,
+      this.textBackgroundColor,});
 }
 
 class TextEditorAddEditorTile extends TextEditorEvent {
@@ -47,20 +46,18 @@ class TextEditorReplaceEditorTile extends TextEditorEvent {
   EditorTile tileToRemove;
   EditorTile newEditorTile;
   BuildContext context;
-  
 
   /// if tile gets deleted and text is still in textfield
   /// text gets passed to closest textfield above the deleted one
   bool handOverText;
 
-  /// whether the replaced tile get focused 
+  /// whether the replaced tile get focused
   bool requestFocus;
 
-  TextEditorReplaceEditorTile({
-    required this.tileToRemove,
-    required this.newEditorTile,
-    required this.context,
-    this.handOverText = false,
-    this.requestFocus = true
-  });
+  TextEditorReplaceEditorTile(
+      {required this.tileToRemove,
+      required this.newEditorTile,
+      required this.context,
+      this.handOverText = false,
+      this.requestFocus = true,});
 }

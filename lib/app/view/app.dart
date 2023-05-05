@@ -54,7 +54,6 @@ class AppView extends StatelessWidget {
               ? darkDynamic ?? darkColorScheme
               : darkColorScheme,
         ),
-        themeMode: ThemeMode.system,
         localizationsDelegates: const [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
@@ -86,7 +85,7 @@ class AppView extends StatelessWidget {
       colorScheme: colorScheme,
       scaffoldBackgroundColor: colorScheme.background,
       bottomSheetTheme: const BottomSheetThemeData(
-          backgroundColor: Colors.transparent, elevation: 0),
+          backgroundColor: Colors.transparent, elevation: 0,),
       useMaterial3: true,
       textTheme: GoogleFonts.openSansTextTheme(),
     );

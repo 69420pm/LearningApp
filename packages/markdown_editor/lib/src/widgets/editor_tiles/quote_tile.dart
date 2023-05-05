@@ -29,7 +29,7 @@ class QuoteTile extends StatelessWidget implements EditorTile {
         Container(
           width: 5,
           height: 25,
-          color: Color.fromARGB(255, 255, 255, 255),
+          color: const Color.fromARGB(255, 255, 255, 255),
         ),
         const SizedBox(
           width: 15,

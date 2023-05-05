@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/models/text_field_constants.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/callout_tile.dart';
@@ -7,7 +8,6 @@ import 'package:markdown_editor/src/widgets/editor_tiles/header_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/image_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/list_editor_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/quote_tile.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ui_components/src/ui_constants.dart';
 
 class KeyboardBothRowsAddTile extends StatelessWidget {
@@ -84,10 +84,10 @@ class KeyboardBothRowsAddTile extends StatelessWidget {
         onPressed: null,
       ),
       IconButton(
-        icon: Icon(Icons.image),
+        icon: const Icon(Icons.image),
         onPressed: () => context.read<TextEditorBloc>().add(
             TextEditorAddEditorTile(
-                newEditorTile: ImageTile(), context: context)),
+                newEditorTile: ImageTile(), context: context,),),
       ),
       const IconButton(
         icon: Icon(Icons.audio_file),

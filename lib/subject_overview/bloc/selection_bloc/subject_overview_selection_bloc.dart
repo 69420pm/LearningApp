@@ -72,7 +72,7 @@ class SubjectOverviewSelectionBloc
 
   Future<FutureOr<void>> _moveSelectedCards(
       SubjectOverviewSelectionMoveSelectedCards event,
-      Emitter<SubjectOverviewSelectionState> emit) async {
+      Emitter<SubjectOverviewSelectionState> emit,) async {
     cardsSelected.removeWhere((element) => element.parentId == event.parentId);
     await _cardsRepository.moveCards(cardsSelected, event.parentId);
     cardsSelected.clear();

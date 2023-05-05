@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart' hide Card;
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/edit_subject_bloc/subject_overview_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
@@ -7,7 +6,7 @@ import 'package:markdown_editor/markdown_editor.dart';
 import 'package:ui_components/ui_components.dart';
 
 class AddCardPage extends StatelessWidget {
-  AddCardPage({super.key, required this.parentId});
+  const AddCardPage({super.key, required this.parentId});
 
   /// when add_Card_page is used as edit_Card_page, when not let it empty
   final String parentId;
@@ -53,7 +52,7 @@ class AddCardPage extends StatelessWidget {
                       Navigator.pop(context);
                     },
                     autofocus: true,
-                    label: "Title",
+                    label: 'Title',
                     controller: frontController,
                     validation: (value) {
                       if (value!.isEmpty) {
@@ -63,7 +62,7 @@ class AddCardPage extends StatelessWidget {
                       }
                     },
                   ),
-                  MarkdownWidget(),
+                  const MarkdownWidget(),
                   ElevatedButton(
                     onPressed: () async {
                       if (formKey.currentState!.validate()) {
@@ -90,7 +89,7 @@ class AddCardPage extends StatelessWidget {
           ),
         ),
         Positioned(left: 0, right: 0, bottom: 0, child: KeyboardRow())
-      ]),
+      ],),
     );
   }
 }

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:ui_components/ui_components.dart';
 
@@ -51,7 +49,7 @@ class ProgressBar extends StatelessWidget {
                 size: 2,
                 curve: Curves.easeInOut,
                 delay: 2000.ms,
-                duration: 2000.ms),
+                duration: 2000.ms,),
       ],
     );
   }

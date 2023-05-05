@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:markdown_editor/src/bloc/text_editor_bloc.dart';
-import 'package:ui_components/ui_components.dart';
 
 class KeyboardToggle extends StatefulWidget {
   KeyboardToggle(
@@ -8,7 +6,7 @@ class KeyboardToggle extends StatefulWidget {
       required this.icon,
       this.onPressed,
       this.width = 50,
-      this.height = 40});
+      this.height = 40,});
   Icon icon;
   Function? onPressed;
   double width;

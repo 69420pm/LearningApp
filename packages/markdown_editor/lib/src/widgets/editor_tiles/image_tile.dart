@@ -83,7 +83,6 @@ class ImageTile extends StatelessWidget implements EditorTile {
 
 class _EmptyImage extends StatelessWidget {
   _EmptyImage({
-    super.key,
     required this.image,
     required this.context,
     required this.parentTile,
@@ -97,12 +96,12 @@ class _EmptyImage extends StatelessWidget {
       decoration: BoxDecoration(border: Border.all()),
       child: Column(
         children: [
-          Text("add image"),
+          const Text('add image'),
           Row(
             children: [
               ElevatedButton(
-                  onPressed: pickImageGallery, child: Text("gallery")),
-              ElevatedButton(onPressed: pickImageCamera, child: Text("camera"))
+                  onPressed: pickImageGallery, child: const Text('gallery'),),
+              ElevatedButton(onPressed: pickImageCamera, child: const Text('camera'))
             ],
           )
         ],

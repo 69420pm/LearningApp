@@ -23,7 +23,7 @@ class LearningScreen extends StatelessWidget {
           builder: (context, state) {
             final card = context.read<LearnCubit>().getNextCard();
             if (card == null) {
-              return Text("all cards finished");
+              return const Text('all cards finished');
             }
             return Column(
               children: [
@@ -44,7 +44,7 @@ class LearningScreen extends StatelessWidget {
                               onTap: () => context
                                   .read<LearnCubit>()
                                   .newCard(LearnFeedback.bad, card),
-                              lable: 'again',
+                              label: 'again',
                               color: Colors.red,
                               textColor: Colors.black,
                             ),
@@ -52,7 +52,7 @@ class LearningScreen extends StatelessWidget {
                               onTap: () => context
                                   .read<LearnCubit>()
                                   .newCard(LearnFeedback.medium, card),
-                              lable: 'almost',
+                              label: 'almost',
                               textColor: Colors.black,
                               color: Colors.yellow,
                             ),
@@ -60,7 +60,7 @@ class LearningScreen extends StatelessWidget {
                               onTap: () => context
                                   .read<LearnCubit>()
                                   .newCard(LearnFeedback.good, card),
-                              lable: 'easy',
+                              label: 'easy',
                               textColor: Colors.black,
                               color: Colors.green,
                             ),

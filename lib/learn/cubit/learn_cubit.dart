@@ -55,7 +55,7 @@ class LearnCubit extends Cubit<LearnState> {
       recallScore: nextRecallScore,
       dateToReview: nextTimeToReview.toIso8601String(),
     );
-    print("card alla");
+    print('card alla');
     print(nextRecallScore);
     print(nextTimeToReview);
     _cardsRepository.saveCard(newCard);

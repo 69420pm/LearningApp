@@ -1,4 +1,3 @@
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
@@ -11,7 +10,7 @@ class DividerTile extends StatelessWidget implements EditorTile {
 
   @override
   Widget build(BuildContext context) {
-    return Divider();
+    return const Divider();
   }
 
   @override

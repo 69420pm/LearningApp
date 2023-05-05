@@ -1,12 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:ui_components/src/ui_constants.dart';
-import 'package:ui_components/src/ui_constants.dart';
 import 'package:ui_components/ui_components.dart';
 
 class UIColorPicker extends StatefulWidget {
-  UIColorPicker({
+  const UIColorPicker({
     super.key,
     required this.onColorChanged,
   });
@@ -18,55 +16,43 @@ class UIColorPicker extends StatefulWidget {
 }
 
 class _UIColorPickerState extends State<UIColorPicker> {
-  final defaultColors = [
-    Colors.white,
-    Colors.white60,
-    Colors.white38,
-    Colors.brown,
-    Colors.orange,
-    Colors.yellow,
-    Colors.green,
-    Colors.blue,
-    Colors.purple,
-    Colors.pink,
-    Colors.red
-  ];
-
+  //TODO save and load
   List<Color> ownColors = List.empty(growable: true);
   List<Color> recentColors = List.empty(growable: true);
 
-  bool newColor = false;
-  Color currentColor = Colors.black;
-  final int maxRecent = 16;
+  bool showColorWheel = false;
+  Color currentColorInColorWheel = Colors.black;
+  final int maxRecentColors = 16;
 
   @override
   Widget build(BuildContext context) {
-    if (recentColors.length > maxRecent) {
+    if (recentColors.length > maxRecentColors) {
       recentColors = recentColors.sublist(
-          recentColors.length - maxRecent, recentColors.length);
+          recentColors.length - maxRecentColors, recentColors.length,);
     }
 
     final colorWheel = [
       ColorPicker(
-        pickerColor: currentColor,
+        pickerColor: currentColorInColorWheel,
         paletteType: PaletteType.hsl,
         onColorChanged: (value) {
-          currentColor = value;
+          currentColorInColorWheel = value;
         },
         colorHistory: defaultColors,
         enableAlpha: false,
         labelTypes: const [],
         pickerAreaBorderRadius:
-            BorderRadius.all(const Radius.circular(UIConstants.cornerRadius)),
+            const BorderRadius.all(Radius.circular(UIConstants.cornerRadius)),
       ),
       UIButton(
-        lable: "Save",
+        label: 'Save',
         onTap: () => setState(() {
-          if (!recentColors.contains(currentColor))
-            recentColors.add(currentColor);
-          newColor = false;
-          widget.onColorChanged(currentColor);
-          ownColors.add(currentColor);
+          if (!recentColors.contains(currentColorInColorWheel)) {
+            recentColors.add(currentColorInColorWheel);
+          }
+          showColorWheel = false;
+          widget.onColorChanged(currentColorInColorWheel);
+          ownColors.add(currentColorInColorWheel);
         }),
         color: Theme.of(context).colorScheme.primaryContainer,
       ),
@@ -74,7 +60,7 @@ class _UIColorPickerState extends State<UIColorPicker> {
 
     final colorGrids = [
       Text(
-        "Recent Colors",
+        'Recent Colors',
         style: Theme.of(context)
             .textTheme
             .bodyMedium
@@ -94,7 +80,7 @@ class _UIColorPickerState extends State<UIColorPicker> {
       ),
       const SizedBox(height: UIConstants.defaultSize),
       Text(
-        "Own Colors",
+        'Own Colors',
         style: Theme.of(context)
             .textTheme
             .bodyMedium
@@ -107,16 +93,17 @@ class _UIColorPickerState extends State<UIColorPicker> {
           (index) {
             if (index == ownColors.length) {
               return IconButton(
-                  onPressed: () => setState(() => newColor = true),
-                  icon: Icon(Icons.add));
+                  onPressed: () => setState(() => showColorWheel = true),
+                  icon: const Icon(Icons.add),);
             }
             return ColorButton(
               color: ownColors[index],
               onPressed: () {
                 widget.onColorChanged(ownColors[index]);
                 setState(() {
-                  if (!recentColors.contains(ownColors[index]))
+                  if (!recentColors.contains(ownColors[index])) {
                     recentColors.add(ownColors[index]);
+                  }
                 });
               },
             );
@@ -125,7 +112,7 @@ class _UIColorPickerState extends State<UIColorPicker> {
       ),
       const SizedBox(height: UIConstants.defaultSize),
       Text(
-        "Default Colors",
+        'Default Colors',
         style: Theme.of(context)
             .textTheme
             .bodyMedium
@@ -141,8 +128,9 @@ class _UIColorPickerState extends State<UIColorPicker> {
               onPressed: () {
                 widget.onColorChanged(defaultColors[index]);
                 setState(() {
-                  if (!recentColors.contains(defaultColors[index]))
+                  if (!recentColors.contains(defaultColors[index])) {
                     recentColors.add(defaultColors[index]);
+                  }
                 });
               },
             );
@@ -154,7 +142,7 @@ class _UIColorPickerState extends State<UIColorPicker> {
     return UIBottomSheet(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: newColor ? colorWheel : colorGrids,
+        children: showColorWheel ? colorWheel : colorGrids,
       ),
     );
   }
@@ -171,7 +159,7 @@ class ColorGridView extends StatelessWidget {
         crossAxisCount: 8,
         crossAxisSpacing: UIConstants.defaultSize,
         mainAxisSpacing: UIConstants.defaultSize,
-        children: children);
+        children: children,);
   }
 }
 

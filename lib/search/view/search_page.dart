@@ -20,7 +20,9 @@ class SearchPage extends StatelessWidget {
                 autofocus: true,
                 controller: searchController,
                 initialValue: context.read<SearchBloc>().lastSearch,
-                validation: (p0) {},
+                validation: (p0) {
+                  return null;
+                },
                 hintText: 'Search',
                 onFieldSubmitted: (p0) => context
                     .read<SearchBloc>()
@@ -32,7 +34,7 @@ class SearchPage extends StatelessWidget {
                   },
                 ),
               ),
-              UIEmojiPicker(),
+              //UIEmojiPicker(),
               BlocBuilder<SearchBloc, SearchState>(
                 builder: (context, state) {
                   if (state is SearchSuccess) {
@@ -42,11 +44,11 @@ class SearchPage extends StatelessWidget {
                       child: Column(children: state.foundCards),
                     );
                   } else if (state is SearchInitial) {
-                    return Text('use search bar below');
+                    return const Text('use search bar below');
                   } else if (state is SearchNothingFound) {
-                    return Text('nothing found');
+                    return const Text('nothing found');
                   }
-                  return Text("loading");
+                  return const Text('loading');
                 },
               )
             ],

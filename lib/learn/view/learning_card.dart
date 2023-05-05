@@ -37,7 +37,7 @@ class LearningCard extends StatelessWidget {
                     Text(
                       card.front,
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.headline2?.copyWith(
+                      style: Theme.of(context).textTheme.displayMedium?.copyWith(
                             color:
                                 Theme.of(context).colorScheme.onSurfaceVariant,
                             fontWeight: FontWeight.bold,

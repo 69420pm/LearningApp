@@ -1,8 +1,8 @@
 // ignore_for_file: public_member_api_docs
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_toggle.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ui_components/ui_components.dart';
 
 // ignore: must_be_immutable
@@ -56,7 +56,7 @@ class KeyboardLowerRowTextTile extends StatelessWidget {
           },
         ),
         IconButton(
-          icon: Icon(Icons.format_color_text),
+          icon: const Icon(Icons.format_color_text),
           onPressed: () => showModalBottomSheet(
             backgroundColor: Colors.transparent,
             context: context,
@@ -66,7 +66,7 @@ class KeyboardLowerRowTextTile extends StatelessWidget {
                 onColorChanged: (value) => context.read<TextEditorBloc>().add(
                       TextEditorKeyboardRowChange(
                         //TODO value to textcolor
-                        textColor: TextColor.white60,
+                        textColor: value,
                       ),
                     ),
               ),
@@ -74,7 +74,7 @@ class KeyboardLowerRowTextTile extends StatelessWidget {
           ),
         ),
         IconButton(
-          icon: Icon(Icons.format_color_fill),
+          icon: const Icon(Icons.format_color_fill),
           onPressed: () => showModalBottomSheet(
             backgroundColor: Colors.transparent,
             context: context,
@@ -84,7 +84,7 @@ class KeyboardLowerRowTextTile extends StatelessWidget {
                 onColorChanged: (value) => context.read<TextEditorBloc>().add(
                       TextEditorKeyboardRowChange(
                         //TODO value to bgcolor
-                        textBackgroundColor: TextBackgroundColor.noBG,
+                        textBackgroundColor: value,
                       ),
                     ),
               ),

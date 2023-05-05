@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:cards_api/cards_api.dart';
 import 'package:flutter/material.dart' hide Card;
@@ -60,7 +59,7 @@ class CardListTileView extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: UIConstants.defaultSize * 2,
-                        vertical: UIConstants.defaultSize),
+                        vertical: UIConstants.defaultSize,),
                     child: Row(
                       children: [
                         Icon(

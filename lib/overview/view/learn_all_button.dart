@@ -24,23 +24,23 @@ class LearnAllButton extends StatelessWidget {
           padding: const EdgeInsets.only(
               left: 2 * UIConstants.defaultSize,
               right: 2 * UIConstants.defaultSize,
-              bottom: 2 * UIConstants.defaultSize),
+              bottom: 2 * UIConstants.defaultSize,),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Learn All",
+                'Learn All',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     fontWeight: FontWeight.w900,
                     fontSize: 50,
-                    color: Theme.of(context).colorScheme.onTertiaryContainer),
+                    color: Theme.of(context).colorScheme.onTertiaryContainer,),
               ),
               ProgressBar(
                   width: MediaQuery.of(context).size.width -
                       4 * UIConstants.defaultSize -
                       2 * UIConstants.paddingEdge,
-                  progress: 0.8)
+                  progress: 0.8,)
             ],
           ),
         ),

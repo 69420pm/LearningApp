@@ -1,6 +1,4 @@
-import 'dart:developer';
 
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -52,6 +50,7 @@ class TextTile extends StatefulWidget implements EditorTile {
 
   /// text field controller for text field which is responsible
   /// for text formatting such as bold, italic, etc.
+  @override
   TextFieldController? textFieldController =
       TextFieldController(standardStyle: TextFieldConstants.normal);
 
@@ -144,7 +143,7 @@ class _TextTileState extends State<TextTile> {
                 border: InputBorder.none,
                 hintText: widget.hintText,
                 isDense: widget.isDense,
-                contentPadding: widget.contentPadding),
+                contentPadding: widget.contentPadding,),
           ),
         );
       },
@@ -154,7 +153,7 @@ class _TextTileState extends State<TextTile> {
   void _changeFocus() {
     if (widget.focusNode!.hasFocus) {
       _blocInstance.focusedTile =
-          widget.parentEditorTile == null ? widget : widget.parentEditorTile;
+          widget.parentEditorTile ?? widget;
     }
   }
 

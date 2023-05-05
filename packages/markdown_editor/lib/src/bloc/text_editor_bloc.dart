@@ -8,7 +8,6 @@ import 'package:markdown_editor/src/models/text_field_constants.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/list_editor_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
-import 'package:meta/meta.dart';
 
 part 'text_editor_event.dart';
 part 'text_editor_state.dart';
@@ -16,14 +15,14 @@ part 'text_editor_state.dart';
 /// bloc for handling all text editor relevant state management
 class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
   /// constructor
-  TextEditorBloc(
-      {this.isBold = false,
-      this.isItalic = false,
-      this.isUnderlined = false,
-      this.isCode = false,
-      this.textColor = TextColor.white,
-      this.textBackgroundColor = TextBackgroundColor.noBG})
-      : super(TextEditorInitial()) {
+  TextEditorBloc({
+    this.isBold = false,
+    this.isItalic = false,
+    this.isUnderlined = false,
+    this.isCode = false,
+    this.textColor = Colors.white,
+    this.textBackgroundColor = Colors.transparent,
+  }) : super(TextEditorInitial()) {
     on<TextEditorKeyboardRowChange>(_keyboardRowChange);
     on<TextEditorAddEditorTile>(_addTile);
     on<TextEditorRemoveEditorTile>(_removeTile);
@@ -49,11 +48,11 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
   /// whether text should get formatted as code
   bool isCode;
 
-  /// color of text as enum
-  TextColor textColor;
+  /// color of text
+  Color textColor;
 
-  /// background color of text as enum
-  TextBackgroundColor textBackgroundColor;
+  /// background color of text
+  Color textBackgroundColor;
 
   /// the currently focused editorTile, gets updated with events in TextTile
   EditorTile? focusedTile;
