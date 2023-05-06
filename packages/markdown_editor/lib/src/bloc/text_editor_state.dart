@@ -9,8 +9,31 @@ class TextEditorInitial extends TextEditorState {
 }
 
 class TextEditorKeyboardRowChanged extends TextEditorState {
+  bool isBold;
+  bool isItalic;
+  bool isUnderlined;
+  bool isCode;
+  Color textColor;
+  Color textBackgroundColor;
+  TextEditorKeyboardRowChanged({
+    required this.isBold,
+    required this.isItalic,
+    required this.isUnderlined,
+    required this.isCode,
+    required this.textColor,
+    required this.textBackgroundColor,
+  });
+
   @override
-  List<Object?> get props => [runtimeType];
+  List<Object?> get props => [
+        runtimeType,
+        isBold,
+        isItalic,
+        isUnderlined,
+        isCode,
+        textColor,
+        textBackgroundColor
+      ];
 }
 
 class TextEditorEditorTilesChanged extends TextEditorState {
