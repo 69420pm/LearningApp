@@ -62,6 +62,8 @@ class TextFieldController extends TextEditingController {
 
     final textDelta = text.characters.length - _previousText.characters.length;
     final newCharTiles = <int, CharTile>{};
+    
+    // change selection style
     if (text == _previousText &&
         (selection.end - selection.start) > 0 &&
         selection == _previousSelection) {

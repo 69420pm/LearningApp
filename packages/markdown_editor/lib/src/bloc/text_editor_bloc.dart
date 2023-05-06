@@ -70,7 +70,16 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     textBackgroundColor = event.textBackgroundColor != null
         ? event.textBackgroundColor!
         : textBackgroundColor;
-    emit(TextEditorKeyboardRowChanged());
+    emit(
+      TextEditorKeyboardRowChanged(
+        isBold: isBold,
+        isItalic: isItalic,
+        isUnderlined: isUnderlined,
+        isCode: isCode,
+        textColor: textColor,
+        textBackgroundColor: textBackgroundColor,
+      ),
+    );
   }
 
   FutureOr<void> _addTile(

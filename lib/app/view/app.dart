@@ -17,15 +17,20 @@ import 'package:learning_app/l10n/l10n.dart';
 import 'package:ui_components/ui_components.dart';
 
 class App extends StatelessWidget {
-  const App({super.key, required this.cardsRepository});
+  const App(
+      {super.key, required this.cardsRepository, required this.uiRepository});
 
   final CardsRepository cardsRepository;
+  final UIRepository uiRepository;
 
   @override
   Widget build(BuildContext context) {
     return RepositoryProvider.value(
       value: cardsRepository,
-      child: const AppView(),
+      child: RepositoryProvider.value(
+        value: uiRepository,
+        child: AppView(),
+      ),
     );
   }
 }
@@ -85,7 +90,9 @@ class AppView extends StatelessWidget {
       colorScheme: colorScheme,
       scaffoldBackgroundColor: colorScheme.background,
       bottomSheetTheme: const BottomSheetThemeData(
-          backgroundColor: Colors.transparent, elevation: 0,),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
       useMaterial3: true,
       textTheme: GoogleFonts.openSansTextTheme(),
     );
