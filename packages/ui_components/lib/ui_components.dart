@@ -10,3 +10,6 @@ export 'src/widgets/emoji_picker/emoji_picker.dart';
 export 'src/widgets/expansion_tile.dart';
 export 'src/widgets/graidiant_text.dart';
 export 'src/widgets/text_form_field.dart';
+export 'src/backend/hive_ui_api.dart';
+export 'src/backend/ui_api.dart';
+export 'src/backend/ui_repository.dart';

@@ -6,19 +6,27 @@
 // https://opensource.org/licenses/MIT.
 
 import 'package:cards_repository/cards_repository.dart';
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_cards_api/hive_cards_api.dart';
 import 'package:learning_app/app/app.dart';
 import 'package:learning_app/bootstrap.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
+import 'package:ui_components/ui_components.dart';
 
 Future<void> main() async {
+   /// Init hive
+  WidgetsFlutterBinding.ensureInitialized();
   final appDocumentDirectory =
       await path_provider.getApplicationDocumentsDirectory();
   Hive.init(appDocumentDirectory.path);
-
   final cardsApi = HiveCardsApi(await Hive.openBox('hive_cards'));
   final cardsRepository = CardsRepository(cardsApi: cardsApi);
 
-  await bootstrap(() => App(cardsRepository: cardsRepository));
+  final uiApi = HiveUIApi(await Hive.openBox('hive_ui'));
+  final uiRepository = UIRepository(uiApi: uiApi);
+  await bootstrap(() => App(
+        cardsRepository: cardsRepository,
+        uiRepository: uiRepository,
+      ));
 }
