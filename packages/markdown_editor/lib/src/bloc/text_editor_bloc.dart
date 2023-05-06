@@ -20,8 +20,8 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     this.isItalic = false,
     this.isUnderlined = false,
     this.isCode = false,
-    this.textColor = Colors.white,
-    this.textBackgroundColor = Colors.transparent,
+    this.textColor = Colors.red,
+    this.textBackgroundColor = Colors.green,
   }) : super(TextEditorInitial()) {
     on<TextEditorKeyboardRowChange>(_keyboardRowChange);
     on<TextEditorAddEditorTile>(_addTile);

@@ -56,7 +56,10 @@ class KeyboardLowerRowTextTile extends StatelessWidget {
           },
         ),
         IconButton(
-          icon: const Icon(Icons.format_color_text),
+          icon: Icon(
+            Icons.format_color_text,
+            color: context.read<TextEditorBloc>().textColor,
+          ),
           onPressed: () => showModalBottomSheet(
             backgroundColor: Colors.transparent,
             context: context,
@@ -65,7 +68,6 @@ class KeyboardLowerRowTextTile extends StatelessWidget {
               child: UIColorPicker(
                 onColorChanged: (value) => context.read<TextEditorBloc>().add(
                       TextEditorKeyboardRowChange(
-                        //TODO value to textcolor
                         textColor: value,
                       ),
                     ),
@@ -74,7 +76,8 @@ class KeyboardLowerRowTextTile extends StatelessWidget {
           ),
         ),
         IconButton(
-          icon: const Icon(Icons.format_color_fill),
+          icon: Icon(Icons.format_color_fill,
+              color: context.read<TextEditorBloc>().textBackgroundColor),
           onPressed: () => showModalBottomSheet(
             backgroundColor: Colors.transparent,
             context: context,
