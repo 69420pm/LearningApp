@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:ui_components/ui_components.dart';
@@ -87,40 +89,6 @@ class _UIColorPickerState extends State<UIColorPicker> {
       ),
       const SizedBox(height: UIConstants.defaultSize),
       Text(
-        'Own Colors',
-        style: Theme.of(context)
-            .textTheme
-            .bodyMedium
-            ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
-      ),
-      const SizedBox(height: UIConstants.defaultSize),
-      ColorGridView(
-        children: List.generate(
-          ownColors.length + 1,
-          (index) {
-            if (index == ownColors.length) {
-              return IconButton(
-                onPressed: () => setState(() => showColorWheel = true),
-                icon: const Icon(Icons.add),
-              );
-            }
-            return ColorButton(
-              color: ownColors[index],
-              onPressed: () {
-                widget.onColorChanged(ownColors[index], false);
-                setState(() {
-                  if (!recentColors.contains(ownColors[index])) {
-                    recentColors.add(ownColors[index]);
-                    context.read<UIRepository>().saveRecentColors(recentColors);
-                  }
-                });
-              },
-            );
-          },
-        ),
-      ),
-      const SizedBox(height: UIConstants.defaultSize),
-      Text(
         'Default Colors',
         style: Theme.of(context)
             .textTheme
@@ -150,18 +118,84 @@ class _UIColorPickerState extends State<UIColorPicker> {
                 },
               );
             } else {
+              final gradient = LinearGradient(
+                colors: [
+                  Theme.of(context).colorScheme.onBackground,
+                  Theme.of(context).colorScheme.background,
+                ],
+              );
               return GestureDetector(
                 onTap: () => widget.onColorChanged(null, true),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(UIConstants.cornerRadius),
+                child: Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(UIConstants.cornerRadius),
+                      ),
+                      child: Transform.rotate(
+                        angle: 1 / 4 * pi,
+                        child: ShaderMask(
+                          blendMode: BlendMode.srcIn,
+                          shaderCallback: (bounds) => gradient.createShader(
+                            Rect.fromLTRB(bounds.width / 2 - 1, 0,
+                                bounds.width / 2, bounds.height),
+                          ),
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
+                    Container(
+                      decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(UIConstants.cornerRadius),
+                          ),
+                          border: Border.all(
+                              color: Theme.of(context).colorScheme.primary,
+                              width: UIConstants.borderWidth * 2)),
+                    ),
+                  ],
                 ),
               );
             }
+          },
+        ),
+      ),
+      const SizedBox(height: UIConstants.defaultSize),
+      Text(
+        'Own Colors',
+        style: Theme.of(context)
+            .textTheme
+            .bodyMedium
+            ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+      ),
+      const SizedBox(height: UIConstants.defaultSize),
+      ColorGridView(
+        children: List.generate(
+          ownColors.length + 1,
+          (index) {
+            if (index == ownColors.length) {
+              return IconButton(
+                onPressed: () => setState(() => showColorWheel = true),
+                icon: const Icon(Icons.add),
+              );
+            }
+            return ColorButton(
+              color: ownColors[index],
+              onPressed: () {
+                widget.onColorChanged(ownColors[index], false);
+                setState(() {
+                  if (!recentColors.contains(ownColors[index])) {
+                    recentColors.add(ownColors[index]);
+                    context.read<UIRepository>().saveRecentColors(recentColors);
+                  }
+                });
+              },
+            );
           },
         ),
       ),
