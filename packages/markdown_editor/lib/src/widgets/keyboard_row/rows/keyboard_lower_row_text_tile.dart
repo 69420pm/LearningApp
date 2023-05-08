@@ -58,19 +58,23 @@ class KeyboardLowerRowTextTile extends StatelessWidget {
         IconButton(
           icon: Icon(
             Icons.format_color_text,
-            color: context.read<TextEditorBloc>().textColor,
+            color:
+                context.read<TextEditorBloc>().textColor == Colors.transparent
+                    ? Theme.of(context).colorScheme.onSurfaceVariant
+                    : context.read<TextEditorBloc>().textColor,
           ),
           onPressed: () => showModalBottomSheet(
-            backgroundColor: Colors.transparent,
             context: context,
             builder: (_) => BlocProvider.value(
               value: context.read<TextEditorBloc>(),
               child: UIColorPicker(
-                onColorChanged: (value) => context.read<TextEditorBloc>().add(
-                      TextEditorKeyboardRowChange(
-                        textColor: value,
-                      ),
-                    ),
+                onColorChanged: (color, isDefault) =>
+                    context.read<TextEditorBloc>().add(
+                          TextEditorKeyboardRowChange(
+                            textColor: color,
+                            isDefaultOnBackgroundTextColor: isDefault,
+                          ),
+                        ),
               ),
             ),
           ),
@@ -79,16 +83,16 @@ class KeyboardLowerRowTextTile extends StatelessWidget {
           icon: Icon(Icons.format_color_fill,
               color: context.read<TextEditorBloc>().textBackgroundColor),
           onPressed: () => showModalBottomSheet(
-            backgroundColor: Colors.transparent,
             context: context,
             builder: (_) => BlocProvider.value(
               value: context.read<TextEditorBloc>(),
               child: UIColorPicker(
-                onColorChanged: (value) => context.read<TextEditorBloc>().add(
-                      TextEditorKeyboardRowChange(
-                        textBackgroundColor: value,
-                      ),
-                    ),
+                onColorChanged: (color, isDefault) =>
+                    context.read<TextEditorBloc>().add(
+                          TextEditorKeyboardRowChange(
+                            textBackgroundColor: color,
+                          ),
+                        ),
               ),
             ),
           ),

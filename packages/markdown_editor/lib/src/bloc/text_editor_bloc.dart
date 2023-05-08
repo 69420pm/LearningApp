@@ -9,6 +9,8 @@ import 'package:markdown_editor/src/models/text_field_controller.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/list_editor_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
 
+import '../models/char_tile.dart';
+
 part 'text_editor_event.dart';
 part 'text_editor_state.dart';
 
@@ -21,7 +23,8 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     this.isUnderlined = false,
     this.isCode = false,
     this.textColor = Colors.red,
-    this.textBackgroundColor = Colors.green,
+    this.isDefaultOnBackgroundTextColor = true,
+    this.textBackgroundColor = Colors.transparent,
   }) : super(TextEditorInitial()) {
     on<TextEditorKeyboardRowChange>(_keyboardRowChange);
     on<TextEditorAddEditorTile>(_addTile);
@@ -51,6 +54,9 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
   /// color of text
   Color textColor;
 
+  /// if should render as colorScheme.onBackground
+  bool isDefaultOnBackgroundTextColor;
+
   /// background color of text
   Color textBackgroundColor;
 
@@ -70,12 +76,17 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     textBackgroundColor = event.textBackgroundColor != null
         ? event.textBackgroundColor!
         : textBackgroundColor;
+    isDefaultOnBackgroundTextColor =
+        event.isDefaultOnBackgroundTextColor != null
+            ? event.isDefaultOnBackgroundTextColor!
+            : isDefaultOnBackgroundTextColor;
     emit(
       TextEditorKeyboardRowChanged(
         isBold: isBold,
         isItalic: isItalic,
         isUnderlined: isUnderlined,
         isCode: isCode,
+        isDefaultOnBackgroundTextColor: isDefaultOnBackgroundTextColor,
         textColor: textColor,
         textBackgroundColor: textBackgroundColor,
       ),

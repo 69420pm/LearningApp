@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,6 +17,7 @@ class TextTile extends StatefulWidget implements EditorTile {
     this.focusNode,
     this.onBackspaceDoubleClick,
     this.onSubmit,
+    this.isDefaultOnBackgroundTextColor = true,
   }) {
     focusNode ??= FocusNode();
     textFieldController = TextFieldController(standardStyle: textStyle);
@@ -25,6 +25,10 @@ class TextTile extends StatefulWidget implements EditorTile {
 
   /// TextStyle of textfield and hint text
   final TextStyle textStyle;
+
+  ///if true, textColor will be set to colorsScheme.onBackground and
+  ///will be updated
+  final bool isDefaultOnBackgroundTextColor;
 
   /// MUST BE SET when [TextTile] is not directly
   /// the [EditorTile] that get's accessed
@@ -129,7 +133,9 @@ class _TextTileState extends State<TextTile> {
                 context.read<TextEditorBloc>().add(
                       TextEditorAddEditorTile(
                         newEditorTile: TextTile(
-                          textStyle: TextFieldConstants.normal,
+                          isDefaultOnBackgroundTextColor:
+                              widget.isDefaultOnBackgroundTextColor,
+                          textStyle: widget.textStyle,
                         ),
                         context: context,
                       ),
@@ -138,12 +144,16 @@ class _TextTileState extends State<TextTile> {
             },
             maxLines: null,
             keyboardType: TextInputType.multiline,
-            style: widget.textStyle,
+            style: widget.isDefaultOnBackgroundTextColor
+                ? widget.textStyle
+                    .copyWith(color: Theme.of(context).colorScheme.onBackground)
+                : widget.textStyle,
             decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: widget.hintText,
-                isDense: widget.isDense,
-                contentPadding: widget.contentPadding,),
+              border: InputBorder.none,
+              hintText: widget.hintText,
+              isDense: widget.isDense,
+              contentPadding: widget.contentPadding,
+            ),
           ),
         );
       },
@@ -152,8 +162,7 @@ class _TextTileState extends State<TextTile> {
 
   void _changeFocus() {
     if (widget.focusNode!.hasFocus) {
-      _blocInstance.focusedTile =
-          widget.parentEditorTile ?? widget;
+      _blocInstance.focusedTile = widget.parentEditorTile ?? widget;
     }
   }
 

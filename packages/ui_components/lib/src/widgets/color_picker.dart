@@ -10,7 +10,7 @@ class UIColorPicker extends StatefulWidget {
     required this.onColorChanged,
   });
 
-  final void Function(Color) onColorChanged;
+  final void Function(Color, bool) onColorChanged;
 
   @override
   State<UIColorPicker> createState() => _UIColorPickerState();
@@ -54,7 +54,7 @@ class _UIColorPickerState extends State<UIColorPicker> {
             context.read<UIRepository>().saveRecentColors(recentColors);
           }
           showColorWheel = false;
-          widget.onColorChanged(currentColorInColorWheel);
+          widget.onColorChanged(currentColorInColorWheel, false);
           ownColors.add(currentColorInColorWheel);
           context.read<UIRepository>().saveCustomColors(ownColors);
         }),
@@ -77,7 +77,8 @@ class _UIColorPickerState extends State<UIColorPicker> {
           (index) {
             return ColorButton(
               color: recentColors[index],
-              onPressed: () => widget.onColorChanged(recentColors[index]),
+              onPressed: () =>
+                  widget.onColorChanged(recentColors[index], false),
             );
           },
         ),
@@ -104,7 +105,7 @@ class _UIColorPickerState extends State<UIColorPicker> {
             return ColorButton(
               color: ownColors[index],
               onPressed: () {
-                widget.onColorChanged(ownColors[index]);
+                widget.onColorChanged(ownColors[index], false);
                 setState(() {
                   if (!recentColors.contains(ownColors[index])) {
                     recentColors.add(ownColors[index]);
@@ -127,20 +128,31 @@ class _UIColorPickerState extends State<UIColorPicker> {
       const SizedBox(height: UIConstants.defaultSize),
       ColorGridView(
         children: List.generate(
-          defaultColors.length,
+          defaultColors.length + 1,
           (index) {
-            return ColorButton(
-              color: defaultColors[index],
-              onPressed: () {
-                widget.onColorChanged(defaultColors[index]);
-                setState(() {
-                  if (!recentColors.contains(defaultColors[index])) {
-                    recentColors.add(defaultColors[index]);
-                    context.read<UIRepository>().saveRecentColors(recentColors);
-                  }
-                });
-              },
-            );
+            if (index < defaultColors.length) {
+              return ColorButton(
+                color: defaultColors[index],
+                onPressed: () {
+                  widget.onColorChanged(defaultColors[index], false);
+                  setState(() {
+                    if (!recentColors.contains(defaultColors[index])) {
+                      recentColors.add(defaultColors[index]);
+                      context
+                          .read<UIRepository>()
+                          .saveRecentColors(recentColors);
+                    }
+                  });
+                },
+              );
+            } else {
+              return ColorButton(
+                color: Colors.pink,
+                onPressed: () {
+                  widget.onColorChanged(Colors.transparent, true);
+                },
+              );
+            }
           },
         ),
       ),
