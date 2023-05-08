@@ -5,12 +5,14 @@ import 'package:ui_components/ui_components.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UIColorPicker extends StatefulWidget {
-  const UIColorPicker({
+  UIColorPicker({
     super.key,
     required this.onColorChanged,
+    this.showRemoveButton = false,
   });
 
-  final void Function(Color, bool) onColorChanged;
+  final void Function(Color?, bool?) onColorChanged;
+  bool showRemoveButton;
 
   @override
   State<UIColorPicker> createState() => _UIColorPickerState();
@@ -128,7 +130,9 @@ class _UIColorPickerState extends State<UIColorPicker> {
       const SizedBox(height: UIConstants.defaultSize),
       ColorGridView(
         children: List.generate(
-          defaultColors.length + 1,
+          widget.showRemoveButton
+              ? defaultColors.length + 1
+              : defaultColors.length,
           (index) {
             if (index < defaultColors.length) {
               return ColorButton(
@@ -146,11 +150,16 @@ class _UIColorPickerState extends State<UIColorPicker> {
                 },
               );
             } else {
-              return ColorButton(
-                color: Colors.pink,
-                onPressed: () {
-                  widget.onColorChanged(Colors.transparent, true);
-                },
+              return GestureDetector(
+                onTap: () => widget.onColorChanged(null, true),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(UIConstants.cornerRadius),
+                    ),
+                  ),
+                ),
               );
             }
           },

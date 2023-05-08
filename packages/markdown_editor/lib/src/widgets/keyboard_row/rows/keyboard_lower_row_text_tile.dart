@@ -55,47 +55,36 @@ class KeyboardLowerRowTextTile extends StatelessWidget {
                 );
           },
         ),
-        IconButton(
-          icon: Icon(
-            Icons.format_color_text,
-            color:
-                context.read<TextEditorBloc>().textColor == Colors.transparent
-                    ? Theme.of(context).colorScheme.onSurfaceVariant
-                    : context.read<TextEditorBloc>().textColor,
-          ),
-          onPressed: () => showModalBottomSheet(
-            context: context,
-            builder: (_) => BlocProvider.value(
-              value: context.read<TextEditorBloc>(),
-              child: UIColorPicker(
-                onColorChanged: (color, isDefault) =>
-                    context.read<TextEditorBloc>().add(
-                          TextEditorKeyboardRowChange(
-                            textColor: color,
-                            isDefaultOnBackgroundTextColor: isDefault,
-                          ),
-                        ),
-              ),
-            ),
-          ),
+        colorSelectorIconButton(
+          icon: Icons.format_color_text,
+          color: context.read<TextEditorBloc>().isDefaultOnBackgroundTextColor
+              ? Theme.of(context).colorScheme.onSurfaceVariant
+              : context.read<TextEditorBloc>().textColor,
+          onColorChanged: (color, isDefault) {
+            context.read<TextEditorBloc>().add(
+                  TextEditorKeyboardRowChange(
+                    textColor: color,
+                    isDefaultOnBackgroundTextColor: isDefault,
+                  ),
+                );
+            Navigator.pop(context);
+          },
         ),
-        IconButton(
-          icon: Icon(Icons.format_color_fill,
-              color: context.read<TextEditorBloc>().textBackgroundColor),
-          onPressed: () => showModalBottomSheet(
-            context: context,
-            builder: (_) => BlocProvider.value(
-              value: context.read<TextEditorBloc>(),
-              child: UIColorPicker(
-                onColorChanged: (color, isDefault) =>
-                    context.read<TextEditorBloc>().add(
-                          TextEditorKeyboardRowChange(
-                            textBackgroundColor: color,
-                          ),
-                        ),
-              ),
-            ),
-          ),
+        colorSelectorIconButton(
+          icon: Icons.format_color_fill,
+          color: context.read<TextEditorBloc>().textBackgroundColor ==
+                  Colors.transparent
+              ? Theme.of(context).colorScheme.onSurfaceVariant
+              : context.read<TextEditorBloc>().textBackgroundColor,
+          onColorChanged: (color, isDefault) {
+            context.read<TextEditorBloc>().add(
+                  TextEditorKeyboardRowChange(
+                    textBackgroundColor:
+                        isDefault ?? false ? Colors.transparent : color,
+                  ),
+                );
+            Navigator.pop(context);
+          },
         ),
         IconButton(
           icon: const Icon(Icons.functions),
@@ -112,6 +101,47 @@ class KeyboardLowerRowTextTile extends StatelessWidget {
               context.read<KeyboardRowCubit>().expandAddNewTextTile(),
         ),
       ],
+    );
+  }
+}
+
+class colorSelectorIconButton extends StatefulWidget {
+  colorSelectorIconButton({
+    super.key,
+    required this.onColorChanged,
+    required this.color,
+    required this.icon,
+  });
+  final void Function(Color?, bool?) onColorChanged;
+  Color color;
+  final IconData icon;
+  @override
+  State<colorSelectorIconButton> createState() =>
+      _colorSelectorIconButtonState();
+}
+
+class _colorSelectorIconButtonState extends State<colorSelectorIconButton> {
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Icon(
+        widget.icon,
+        color: widget.color,
+      ),
+      onPressed: () => showModalBottomSheet(
+        context: context,
+        builder: (_) => BlocProvider.value(
+          value: context.read<TextEditorBloc>(),
+          child: UIColorPicker(
+            showRemoveButton: true,
+            onColorChanged: (color, isDefault) => setState(() {
+              widget.color =
+                  color ?? Theme.of(context).colorScheme.onSurfaceVariant;
+              widget.onColorChanged(color, isDefault);
+            }),
+          ),
+        ),
+      ),
     );
   }
 }
