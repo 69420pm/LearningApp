@@ -81,7 +81,6 @@ class _TextTileState extends State<TextTile> {
   @override
   Widget build(BuildContext context) {
     _blocInstance = context.read<TextEditorBloc>();
-    _blocInstance.focusedTile = widget;
 
     return BlocBuilder<TextEditorBloc, TextEditorState>(
       buildWhen: (previous, current) {
