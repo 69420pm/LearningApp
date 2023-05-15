@@ -8,15 +8,18 @@ class TextEditorKeyboardRowChange extends TextEditorEvent {
   bool? isItalic;
   bool? isUnderlined;
   bool? isCode;
+  bool? isDefaultOnBackgroundTextColor;
   Color? textColor;
   Color? textBackgroundColor;
-  TextEditorKeyboardRowChange(
-      {this.isBold,
-      this.isItalic,
-      this.isUnderlined,
-      this.isCode,
-      this.textColor,
-      this.textBackgroundColor,});
+  TextEditorKeyboardRowChange({
+    this.isBold,
+    this.isItalic,
+    this.isUnderlined,
+    this.isCode,
+    this.isDefaultOnBackgroundTextColor,
+    this.textColor,
+    this.textBackgroundColor,
+  });
 }
 
 class TextEditorAddEditorTile extends TextEditorEvent {
@@ -54,10 +57,11 @@ class TextEditorReplaceEditorTile extends TextEditorEvent {
   /// whether the replaced tile get focused
   bool requestFocus;
 
-  TextEditorReplaceEditorTile(
-      {required this.tileToRemove,
-      required this.newEditorTile,
-      required this.context,
-      this.handOverText = false,
-      this.requestFocus = true,});
+  TextEditorReplaceEditorTile({
+    required this.tileToRemove,
+    required this.newEditorTile,
+    required this.context,
+    this.handOverText = false,
+    this.requestFocus = true,
+  });
 }

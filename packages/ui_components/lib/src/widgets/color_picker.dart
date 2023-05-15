@@ -1,16 +1,20 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:ui_components/ui_components.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UIColorPicker extends StatefulWidget {
-  const UIColorPicker({
+  UIColorPicker({
     super.key,
     required this.onColorChanged,
+    this.showRemoveButton = false,
   });
 
-  final void Function(Color) onColorChanged;
+  final void Function(Color?, bool?) onColorChanged;
+  bool showRemoveButton;
 
   @override
   State<UIColorPicker> createState() => _UIColorPickerState();
@@ -54,7 +58,7 @@ class _UIColorPickerState extends State<UIColorPicker> {
             context.read<UIRepository>().saveRecentColors(recentColors);
           }
           showColorWheel = false;
-          widget.onColorChanged(currentColorInColorWheel);
+          widget.onColorChanged(currentColorInColorWheel, false);
           ownColors.add(currentColorInColorWheel);
           context.read<UIRepository>().saveCustomColors(ownColors);
         }),
@@ -77,8 +81,87 @@ class _UIColorPickerState extends State<UIColorPicker> {
           (index) {
             return ColorButton(
               color: recentColors[index],
-              onPressed: () => widget.onColorChanged(recentColors[index]),
+              onPressed: () =>
+                  widget.onColorChanged(recentColors[index], false),
             );
+          },
+        ),
+      ),
+      const SizedBox(height: UIConstants.defaultSize),
+      Text(
+        'Default Colors',
+        style: Theme.of(context)
+            .textTheme
+            .bodyMedium
+            ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+      ),
+      const SizedBox(height: UIConstants.defaultSize),
+      ColorGridView(
+        children: List.generate(
+          widget.showRemoveButton
+              ? defaultColors.length + 1
+              : defaultColors.length,
+          (index) {
+            if (index < defaultColors.length) {
+              return ColorButton(
+                color: defaultColors[index],
+                onPressed: () {
+                  widget.onColorChanged(defaultColors[index], false);
+                  setState(() {
+                    if (!recentColors.contains(defaultColors[index])) {
+                      recentColors.add(defaultColors[index]);
+                      context
+                          .read<UIRepository>()
+                          .saveRecentColors(recentColors);
+                    }
+                  });
+                },
+              );
+            } else {
+              final gradient = LinearGradient(
+                colors: [
+                  Theme.of(context).colorScheme.onBackground,
+                  Theme.of(context).colorScheme.background,
+                ],
+              );
+              return GestureDetector(
+                onTap: () => widget.onColorChanged(null, true),
+                child: Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(UIConstants.cornerRadius),
+                      ),
+                      child: Transform.rotate(
+                        angle: 1 / 4 * pi,
+                        child: ShaderMask(
+                          blendMode: BlendMode.srcIn,
+                          shaderCallback: (bounds) => gradient.createShader(
+                            Rect.fromLTRB(bounds.width / 2 - 1, 0,
+                                bounds.width / 2, bounds.height),
+                          ),
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(UIConstants.cornerRadius),
+                          ),
+                          border: Border.all(
+                              color: Theme.of(context).colorScheme.primary,
+                              width: UIConstants.borderWidth * 2)),
+                    ),
+                  ],
+                ),
+              );
+            }
           },
         ),
       ),
@@ -104,38 +187,11 @@ class _UIColorPickerState extends State<UIColorPicker> {
             return ColorButton(
               color: ownColors[index],
               onPressed: () {
-                widget.onColorChanged(ownColors[index]);
+                widget.onColorChanged(ownColors[index], false);
                 setState(() {
                   if (!recentColors.contains(ownColors[index])) {
                     recentColors.add(ownColors[index]);
-                    context.read<UIRepository>().saveRecentColors(recentColors);
-                  }
-                });
-              },
-            );
-          },
-        ),
-      ),
-      const SizedBox(height: UIConstants.defaultSize),
-      Text(
-        'Default Colors',
-        style: Theme.of(context)
-            .textTheme
-            .bodyMedium
-            ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
-      ),
-      const SizedBox(height: UIConstants.defaultSize),
-      ColorGridView(
-        children: List.generate(
-          defaultColors.length,
-          (index) {
-            return ColorButton(
-              color: defaultColors[index],
-              onPressed: () {
-                widget.onColorChanged(defaultColors[index]);
-                setState(() {
-                  if (!recentColors.contains(defaultColors[index])) {
-                    recentColors.add(defaultColors[index]);
+
                     context.read<UIRepository>().saveRecentColors(recentColors);
                   }
                 });

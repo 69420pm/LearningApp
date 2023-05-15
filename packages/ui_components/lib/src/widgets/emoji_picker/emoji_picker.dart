@@ -1,10 +1,14 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:ui_components/src/widgets/emoji_picker/emoji.dart';
 import 'package:ui_components/src/widgets/emoji_picker/emoji_convert.dart';
 import 'package:ui_components/ui_components.dart';
 
 class UIEmojiPicker extends StatefulWidget {
-  const UIEmojiPicker({super.key, required this.onEmojiClicked});
+  const UIEmojiPicker({
+    super.key,
+    required this.onEmojiClicked,
+  });
 
   final void Function(Emoji) onEmojiClicked;
 
@@ -18,14 +22,16 @@ class _UIEmojiPickerState extends State<UIEmojiPicker>
   List<Emoji> emojis = List.empty(growable: true);
   List<String> categories = List.empty(growable: true);
   bool isLoaded = false;
+  bool isInSearch = false;
+  final searchTextEditingController = TextEditingController();
 
   @override
   void initState() {
-    getEmojies();
+    getEmojis();
     super.initState();
   }
 
-  getEmojies() async {
+  Future<void> getEmojis() async {
     emojis = await EmojiConvert.getEmojis();
     for (final e in emojis) {
       if (!categories.contains(e.category)) {
@@ -47,44 +53,59 @@ class _UIEmojiPickerState extends State<UIEmojiPicker>
   @override
   Widget build(BuildContext context) {
     return UIBottomSheet(
-        child: SizedBox(
-      height: UIConstants.defaultSize * 40,
-      child: Builder(
-        builder: (context) {
-          if (!isLoaded) {
-            return const SizedBox();
-          } else {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TabBar(
-                  labelStyle: const TextStyle(fontSize: 22),
-                  tabs: List.generate(
-                    categories.length,
-                    (index) => Tab(
-                      child: Text('${emojis
-                              .firstWhere((element) =>
-                                  element.category == categories[index],)
-                              .emoji} ',),
-                    ),
+      child: SizedBox(
+        height: UIConstants.defaultSize * 40,
+        child: Builder(
+          builder: (context) {
+            if (!isLoaded && !isInSearch) {
+              return const SizedBox();
+            } else if (isLoaded && !isInSearch) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TabBar(
+                          labelStyle: const TextStyle(fontSize: 22),
+                          tabs: List.generate(
+                            categories.length,
+                            (index) => Tab(
+                              child: Text(
+                                '${emojis.firstWhere(
+                                      (element) =>
+                                          element.category == categories[index],
+                                    ).emoji}',
+                              ),
+                            ),
+                          ),
+                          controller: _tabController,
+                          indicatorSize: TabBarIndicatorSize.tab,
+                        ),
+                      ),
+                      const SizedBox(width: UIConstants.defaultSize),
+                      IconButton(
+                          onPressed: () => setState(() => isInSearch = true),
+                          icon: Icon(Icons.search)),
+                    ],
                   ),
-                  controller: _tabController,
-                  indicatorSize: TabBarIndicatorSize.tab,
-                ),
-                const SizedBox(height: UIConstants.defaultSize),
-                Expanded(
-                  child: TabBarView(
-                    controller: _tabController,
-                    children: List.generate(categories.length, (index) {
-                      return GridView.count(
-                        shrinkWrap: true,
-                        crossAxisCount: 10,
-                        crossAxisSpacing: UIConstants.defaultSize / 2,
-                        mainAxisSpacing: UIConstants.defaultSize / 2,
-                        children: emojis
-                            .where((element) =>
-                                element.category == categories[index],)
-                            .map((e) => GestureDetector(
+                  const SizedBox(height: UIConstants.defaultSize),
+                  Expanded(
+                    child: TabBarView(
+                      controller: _tabController,
+                      children: List.generate(categories.length, (index) {
+                        return GridView.count(
+                          shrinkWrap: true,
+                          crossAxisCount: 10,
+                          crossAxisSpacing: UIConstants.defaultSize / 2,
+                          mainAxisSpacing: UIConstants.defaultSize / 2,
+                          children: emojis
+                              .where(
+                                (element) =>
+                                    element.category == categories[index],
+                              )
+                              .map(
+                                (e) => GestureDetector(
                                   onTap: () {
                                     widget.onEmojiClicked(e);
                                   },
@@ -92,17 +113,84 @@ class _UIEmojiPickerState extends State<UIEmojiPicker>
                                     e.emoji,
                                     style: const TextStyle(fontSize: 22),
                                   ),
-                                ),)
-                            .toList(),
-                      );
-                    }),
+                                ),
+                              )
+                              .toList(),
+                        );
+                      }),
+                    ),
                   ),
-                ),
-              ],
-            );
-          }
-        },
+                ],
+              );
+            } else {
+              const maxLengthOfSearch = 100;
+              var searchEmojisList = emojis.where(
+                (element) {
+                  if (element.description
+                      .contains(searchTextEditingController.text)) {
+                    return true;
+                  }
+                  for (final element in element.tags) {
+                    if (element.contains(searchTextEditingController.text)) {
+                      return true;
+                    }
+                  }
+                  return false;
+                },
+              ).toList();
+
+              if (searchEmojisList.length > maxLengthOfSearch) {
+                print("object");
+                searchEmojisList =
+                    searchEmojisList.sublist(0, maxLengthOfSearch);
+              }
+
+              return Column(
+                children: [
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: () => setState(() {
+                          isInSearch = false;
+                        }),
+                        icon: const Icon(Icons.arrow_back),
+                      ),
+                      Expanded(
+                        child: UITextFormField(
+                          onChanged: (p0) => setState(() {}),
+                          controller: searchTextEditingController,
+                          validation: (value) {
+                            return null;
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                  GridView.count(
+                    shrinkWrap: true,
+                    crossAxisCount: 10,
+                    crossAxisSpacing: UIConstants.defaultSize / 2,
+                    mainAxisSpacing: UIConstants.defaultSize / 2,
+                    children: searchEmojisList
+                        .map(
+                          (e) => GestureDetector(
+                            onTap: () {
+                              widget.onEmojiClicked(e);
+                            },
+                            child: Text(
+                              e.emoji,
+                              style: const TextStyle(fontSize: 22),
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ],
+              );
+            }
+          },
+        ),
       ),
-    ),);
+    );
   }
 }

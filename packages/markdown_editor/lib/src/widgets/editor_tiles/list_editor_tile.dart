@@ -6,6 +6,8 @@ import 'package:markdown_editor/src/models/text_field_constants.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
 
+import '../../models/char_tile.dart';
+
 class ListEditorTile extends StatelessWidget implements EditorTile {
   /// initialize ListEditorTile
   ListEditorTile({super.key, this.orderNumber = 0, TextTile? textTile}) {
@@ -101,5 +103,4 @@ class ListEditorTile extends StatelessWidget implements EditorTile {
           _textTile == other._textTile &&
           orderNumber == other.orderNumber &&
           focusNode == other.focusNode;
-
 }

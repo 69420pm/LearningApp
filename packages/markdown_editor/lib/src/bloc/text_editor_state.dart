@@ -13,6 +13,7 @@ class TextEditorKeyboardRowChanged extends TextEditorState {
   bool isItalic;
   bool isUnderlined;
   bool isCode;
+  bool isDefaultOnBackgroundTextColor;
   Color textColor;
   Color textBackgroundColor;
   TextEditorKeyboardRowChanged({
@@ -20,6 +21,7 @@ class TextEditorKeyboardRowChanged extends TextEditorState {
     required this.isItalic,
     required this.isUnderlined,
     required this.isCode,
+    required this.isDefaultOnBackgroundTextColor,
     required this.textColor,
     required this.textBackgroundColor,
   });

@@ -28,7 +28,7 @@ class FolderListTileParent extends StatelessWidget {
     context
         .read<FolderListTileBloc>()
         .add(FolderListTileGetChildrenById(id: folder.id));
-    // print("rebuild" + folder.name);
+
     return Padding(
       padding: const EdgeInsets.only(
         bottom: UIConstants.defaultSize,
