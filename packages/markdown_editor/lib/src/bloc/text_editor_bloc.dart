@@ -116,7 +116,6 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     for (var i = 0; i < editorTiles.length; i++) {
       if (editorTiles[i] == event.tileToRemove) {
         editorTiles[i] = event.newEditorTile;
-        // focusedTile = editorTiles[i];
         if (editorTiles[i].focusNode != null && event.requestFocus) {
           editorTiles[i].focusNode?.requestFocus();
         }
@@ -131,10 +130,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     for (var i = 0; i < editorTiles.length; i++) {
       // get focused/current editorTile,
       // or the last one when no tile is focused
-      if (editorTiles[i] == focusedTile ||
-          (editorTiles[i].focusNode != null &&
-              editorTiles[i].focusNode!.hasFocus) ||
-          i == editorTiles.length - 1) {
+      if (editorTiles[i] == focusedTile || i == editorTiles.length - 1) {
         // if focused textfield is an empty TextTile
         if (editorTiles[i].focusNode != null &&
             editorTiles[i].focusNode!.hasFocus &&
@@ -142,7 +138,6 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
             (editorTiles[i] as TextTile).textFieldController!.text.isEmpty) {
           // replace empty TextTile
           editorTiles[i] = toAdd;
-          // focusedTile = editorTiles[i];
           editorTiles[i].focusNode?.requestFocus();
           return;
         }
@@ -224,7 +219,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
           if (editorTiles[j].focusNode != null) {
             if (handOverText == false) {
               editorTiles[j].focusNode?.requestFocus();
-              focusedTile = editorTiles[i];
+              // focusedTile = editorTiles[j];
               break;
             }
             highestFocusNodeTile = i;

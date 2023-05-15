@@ -191,6 +191,7 @@ class _UIColorPickerState extends State<UIColorPicker> {
                 setState(() {
                   if (!recentColors.contains(ownColors[index])) {
                     recentColors.add(ownColors[index]);
+
                     context.read<UIRepository>().saveRecentColors(recentColors);
                   }
                 });
