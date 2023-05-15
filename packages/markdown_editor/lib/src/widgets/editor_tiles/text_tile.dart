@@ -1,3 +1,4 @@
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -74,7 +75,7 @@ class _TextTileState extends State<TextTile> {
   late TextEditorBloc _blocInstance;
   @override
   void initState() {
-    widget.focusNode!.addListener(_changeFocus);
+    widget.textFieldController!.addListener(_changeFocus);
     super.initState();
   }
 
@@ -139,10 +140,11 @@ class _TextTileState extends State<TextTile> {
             keyboardType: TextInputType.multiline,
             style: widget.textStyle,
             decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: widget.hintText,
-                isDense: widget.isDense,
-                contentPadding: widget.contentPadding,),
+              border: InputBorder.none,
+              hintText: widget.hintText,
+              isDense: widget.isDense,
+              contentPadding: widget.contentPadding,
+            ),
           ),
         );
       },
@@ -150,15 +152,16 @@ class _TextTileState extends State<TextTile> {
   }
 
   void _changeFocus() {
-    if (widget.focusNode!.hasFocus) {
-      _blocInstance.focusedTile =
-          widget.parentEditorTile ?? widget;
+    if (_blocInstance.focusedTile != widget ||
+        _blocInstance.focusedTile != widget.parentEditorTile) {
+      _blocInstance.focusedTile = widget.parentEditorTile ?? widget;
+      log(widget.textFieldController!.text + " active");
     }
   }
 
   @override
   void dispose() {
-    widget.focusNode!.removeListener(_changeFocus);
+    widget.textFieldController!.removeListener(_changeFocus);
     super.dispose();
     // widget.focusNode!.dispose();
   }

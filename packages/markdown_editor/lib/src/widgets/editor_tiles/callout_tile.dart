@@ -9,6 +9,7 @@ import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
 import 'package:ui_components/ui_components.dart';
 
 class CalloutTile extends StatelessWidget implements EditorTile {
+  /// initialize CalloutTile
   CalloutTile({
     super.key,
     this.tileColor = Colors.white12,
@@ -39,6 +40,30 @@ class CalloutTile extends StatelessWidget implements EditorTile {
   @override
   Widget build(BuildContext context) {
     _emojiController.text = iconString;
+final replacingTextTile = TextTile(
+      textStyle: TextFieldConstants.normal,
+    );
+    textTile
+      .onBackspaceDoubleClick = () {
+        textTile.focusNode = FocusNode();
+        final tiles = <CharTile>[];
+        textTile.textFieldController!.charTiles.forEach((key, value) {
+          tiles.add(value);
+        });
+        replacingTextTile.textFieldController!.addText(
+          tiles,
+          context,
+        );
+        context.read<TextEditorBloc>().add(
+              TextEditorReplaceEditorTile(
+                tileToRemove: this,
+                newEditorTile: replacingTextTile,
+                handOverText: true,
+                context: context,
+              ),
+            );
+      };
+
     return DecoratedBox(
       decoration: BoxDecoration(
         color: tileColor,
@@ -64,14 +89,14 @@ class CalloutTile extends StatelessWidget implements EditorTile {
                         _emojiController.text = p0.emoji;
 
                         final newTile = copyWith(iconString: p0.emoji);
-                        context
-                            .read<TextEditorBloc>()
-                            .add(TextEditorReplaceEditorTile(
-                              tileToRemove: this,
-                              newEditorTile: newTile,
-                              context: context,
-                              requestFocus: false,
-                            ),);
+                        context.read<TextEditorBloc>().add(
+                              TextEditorReplaceEditorTile(
+                                tileToRemove: this,
+                                newEditorTile: newTile,
+                                context: context,
+                                requestFocus: false,
+                              ),
+                            );
 
                         Navigator.of(context).pop();
                       },
@@ -79,18 +104,6 @@ class CalloutTile extends StatelessWidget implements EditorTile {
                   ),
                 ),
               ),
-              // TextField(
-              //   controller: _emojiController,
-              //   style: TextFieldConstants.calloutStart,
-              //   maxLength: 1,
-              //   decoration: const InputDecoration(
-              //       isDense: true,
-              //       counterStyle: TextStyle(
-              //         height: double.minPositive,
-              //       ),
-              //       counterText: '',
-              //       border: InputBorder.none),
-              // ),
             ),
             const SizedBox(
               width: 12,
@@ -115,8 +128,12 @@ class CalloutTile extends StatelessWidget implements EditorTile {
     );
   }
 
-  CalloutTile copyWith(
-      {Color? tileColor, TextTile? textTile, String? iconString,}) {
+  /// copy with function of CalloutTile
+  CalloutTile copyWith({
+    Color? tileColor,
+    TextTile? textTile,
+    String? iconString,
+  }) {
     return CalloutTile(
       tileColor: tileColor ?? this.tileColor,
       textTile: textTile ?? this.textTile,
@@ -124,13 +141,6 @@ class CalloutTile extends StatelessWidget implements EditorTile {
     );
   }
 
-  @override
-  List<Object?> get props => [textTile, focusNode];
-
-  @override
-  bool? get stringify => false;
-
-  @override
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
