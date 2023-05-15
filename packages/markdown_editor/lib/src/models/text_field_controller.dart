@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
@@ -26,6 +27,7 @@ class TextFieldController extends TextEditingController {
   bool _previousCode = false;
   Color _previousTextColor = Colors.white;
   Color _previousTextBackgroundColor = Colors.transparent;
+  int _previousSelectionStart = 0;
 
   @override
   TextSpan buildTextSpan({
@@ -62,7 +64,22 @@ class TextFieldController extends TextEditingController {
 
     final textDelta = text.characters.length - _previousText.characters.length;
     final newCharTiles = <int, CharTile>{};
-    
+    int shiftSelectionEnd = 0;
+    int shiftSelectionStart = 0;
+    int previousSelectionStart = _previousSelectionStart;
+    for (var i = 0; i < text.characters.length; i++) {
+      if (text.characters.elementAt(i) != text[i + shiftSelectionEnd] &&
+          i < selection.end - shiftSelectionEnd) {
+        shiftSelectionEnd += 1;
+      }
+      if (text.characters.elementAt(i) != text[i + shiftSelectionStart] &&
+          i < selection.start - shiftSelectionStart) {
+        shiftSelectionStart += 1;
+      }
+      if (i + 1 == selection.start - shiftSelectionEnd) {
+        _previousSelectionStart = i + 1;
+      }
+    }
     // change selection style
     if (text == _previousText &&
         (selection.end - selection.start) > 0 &&
@@ -91,7 +108,9 @@ class TextFieldController extends TextEditingController {
       if (textBackgroundColor != _previousTextBackgroundColor) {
         textBackgroundColorToChange = textBackgroundColor;
       }
-      for (var i = selection.start; i < selection.end; i++) {
+      for (var i = selection.start - shiftSelectionStart;
+          i < selection.end - shiftSelectionEnd;
+          i++) {
         charTiles[i] = CharTile(
           char: text.characters.elementAt(i),
           style: !isCode
@@ -123,33 +142,36 @@ class TextFieldController extends TextEditingController {
                 ),
         );
       }
-    } else {
+    } else if (text != _previousText) {
       for (var i = 0; i < text.characters.length; i++) {
-        if (i < selection.end) {
-          if (text.characters.elementAt(i) == charTiles[i]?.char) {
-            newCharTiles[i] = charTiles[i]!;
-          } else {
-            newCharTiles[i] = CharTile(
-              char: text.characters.elementAt(i),
-              style: !isCode
-                  ? standardStyle.copyWith(
-                      color: textColor,
-                      backgroundColor: textBackgroundColor,
-                      fontWeight:
-                          isBold ? FontWeight.bold : standardStyle.fontWeight,
-                      fontStyle:
-                          isItalic ? FontStyle.italic : standardStyle.fontStyle,
-                      decoration: isUnderlined
-                          ? TextDecoration.underline
-                          : standardStyle.decoration,
-                      background: standardStyle.background,
-                    )
-                  : standardStyle.copyWith(
-                      color: Theme.of(context).colorScheme.onBackground,
-                      background: Paint()..color = Colors.transparent,
-                    ),
-            );
-          }
+        if (i < (selection.end - shiftSelectionEnd) &&
+            i >= previousSelectionStart) {
+          // if (text.characters.elementAt(i) == charTiles[i]?.char) {
+          //   newCharTiles[i] = charTiles[i]!;
+          // } else {
+          newCharTiles[i] = CharTile(
+            char: text.characters.elementAt(i),
+            style: !isCode
+                ? standardStyle.copyWith(
+                    color: textColor,
+                    backgroundColor: textBackgroundColor,
+                    fontWeight:
+                        isBold ? FontWeight.bold : standardStyle.fontWeight,
+                    fontStyle:
+                        isItalic ? FontStyle.italic : standardStyle.fontStyle,
+                    decoration: isUnderlined
+                        ? TextDecoration.underline
+                        : standardStyle.decoration,
+                    background: standardStyle.background,
+                  )
+                : standardStyle.copyWith(
+                    color: Theme.of(context).colorScheme.onBackground,
+                    background: Paint()..color = Colors.transparent,
+                  ),
+          );
+          // }
+        } else if (i < selection.end - shiftSelectionEnd) {
+          newCharTiles[i] = charTiles[i]!;
         } else {
           newCharTiles[i] = charTiles[i - textDelta]!;
         }
@@ -190,11 +212,14 @@ class TextFieldController extends TextEditingController {
   }
 }
 
-class CharTile {
+class CharTile extends Equatable {
   String char;
   TextStyle style;
   CharTile({
     required this.char,
     required this.style,
   });
+
+  @override
+  List<Object?> get props => [char.characters, style];
 }
