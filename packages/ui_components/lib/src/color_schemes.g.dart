@@ -68,16 +68,11 @@ const darkColorScheme = ColorScheme(
   scrim: Color(0xFF000000),
 );
 
-const defaultColors = [
-  Colors.white,
-  Colors.white60,
-  Colors.white38,
-  Colors.brown,
-  Colors.orange,
-  Colors.yellow,
-  Colors.green,
-  Colors.blue,
-  Colors.purple,
-  Colors.pink,
-  Colors.red
+final List<Color> defaultColors = [
+  Colors.redAccent[100]!,
+  Colors.orangeAccent[100]!,
+  Colors.yellowAccent[100]!,
+  Colors.greenAccent[100]!,
+  Colors.blueAccent[100]!,
+  Colors.deepPurpleAccent[100]!,
 ];

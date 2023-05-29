@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/src/bloc/text_editor_bloc.dart';
 
 class MarkdownWidget extends StatelessWidget {
-  const MarkdownWidget({super.key});
-
+  MarkdownWidget({super.key});
+  final ScrollController scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TextEditorBloc, TextEditorState>(
@@ -13,11 +13,16 @@ class MarkdownWidget extends StatelessWidget {
       builder: (context, state) {
         final editorTiles = context.watch<TextEditorBloc>().editorTiles;
         return Expanded(
-          child: ListView.builder(
-            itemCount: editorTiles.length,
-            itemBuilder: (context, index) {
-              return editorTiles[index] as Widget;
-            },
+          child: Scrollbar(
+            thickness: 10,
+            interactive: true,
+            child: ListView.builder(
+              itemCount: editorTiles.length,
+              itemBuilder: (context, index) {
+                return editorTiles[index] as Widget;
+              },
+              controller: ScrollController(), // Use a unique ScrollController
+            ),
           ),
         );
       },

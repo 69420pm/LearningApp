@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/bloc/text_editor_bloc.dart';
+import 'package:markdown_editor/src/models/char_tile.dart';
 
 // https://medium.com/dartlang/dart-string-manipulation-done-right-5abd0668ba3e
 
@@ -25,6 +26,7 @@ class TextFieldController extends TextEditingController {
   bool _previousItalic = false;
   bool _previousUnderlined = false;
   bool _previousCode = false;
+  bool _previousDefaultColor = true;
   Color _previousTextColor = Colors.white;
   Color _previousTextBackgroundColor = Colors.transparent;
   int _previousSelectionStart = 0;
@@ -58,12 +60,15 @@ class TextFieldController extends TextEditingController {
     final isItalic = context.read<TextEditorBloc>().isItalic;
     final isUnderlined = context.read<TextEditorBloc>().isUnderlined;
     final isCode = context.read<TextEditorBloc>().isCode;
+    final isDefaultColor =
+        context.read<TextEditorBloc>().isDefaultOnBackgroundTextColor;
     final textColor = context.read<TextEditorBloc>().textColor;
     final textBackgroundColor =
         context.read<TextEditorBloc>().textBackgroundColor;
 
     final textDelta = text.characters.length - _previousText.characters.length;
     final newCharTiles = <int, CharTile>{};
+
     int shiftSelectionEnd = 0;
     int shiftSelectionStart = 0;
     int previousSelectionStart = _previousSelectionStart;
@@ -80,6 +85,7 @@ class TextFieldController extends TextEditingController {
         _previousSelectionStart = i + 1;
       }
     }
+
     // change selection style
     if (text == _previousText &&
         (selection.end - selection.start) > 0 &&
@@ -88,6 +94,7 @@ class TextFieldController extends TextEditingController {
       bool? italicToChange;
       bool? underlinedToChange;
       bool? codeToChange;
+      bool? defaultColorChange;
       Color? textColorToChange;
       Color? textBackgroundColorToChange;
       if (isBold != _previousBold) {
@@ -98,6 +105,9 @@ class TextFieldController extends TextEditingController {
       }
       if (isUnderlined != _previousUnderlined) {
         underlinedToChange = isUnderlined;
+      }
+      if (isDefaultColor != _previousDefaultColor) {
+        defaultColorChange = isDefaultColor;
       }
       if (textColor != _previousTextColor) {
         textColorToChange = textColor;
@@ -113,9 +123,12 @@ class TextFieldController extends TextEditingController {
           i++) {
         charTiles[i] = CharTile(
           char: text.characters.elementAt(i),
+          isDefaultOnBackgroundTextColor: isDefaultColor,
           style: !isCode
               ? standardStyle.copyWith(
-                  color: textColorToChange ?? charTiles[i]!.style.color,
+                  color: defaultColorChange ?? false
+                      ? Theme.of(context).colorScheme.onBackground
+                      : textColorToChange ?? charTiles[i]!.style.color,
                   backgroundColor: textBackgroundColorToChange ??
                       charTiles[i]!.style.backgroundColor,
                   fontWeight: boldToChange != null
@@ -168,6 +181,7 @@ class TextFieldController extends TextEditingController {
                     color: Theme.of(context).colorScheme.onBackground,
                     background: Paint()..color = Colors.transparent,
                   ),
+            isDefaultOnBackgroundTextColor: isDefaultColor,
           );
           // }
         } else if (i < selection.end - shiftSelectionEnd) {
@@ -180,7 +194,12 @@ class TextFieldController extends TextEditingController {
     }
 
     charTiles.forEach((key, value) {
-      children.add(TextSpan(text: value.char, style: value.style));
+      children.add(TextSpan(
+          text: value.char,
+          style: value.isDefaultOnBackgroundTextColor
+              ? (value.style
+                  .copyWith(color: Theme.of(context).colorScheme.onBackground))
+              : value.style));
     });
     _previousText = text;
     _previousSelection = selection;
@@ -188,6 +207,7 @@ class TextFieldController extends TextEditingController {
     _previousItalic = isItalic;
     _previousUnderlined = isUnderlined;
     _previousCode = isCode;
+    _previousDefaultColor = isDefaultColor;
     _previousTextColor = textColor;
     _previousTextBackgroundColor = textBackgroundColor;
 
@@ -210,16 +230,4 @@ class TextFieldController extends TextEditingController {
       onlyUpdateCharTiles: true,
     );
   }
-}
-
-class CharTile extends Equatable {
-  String char;
-  TextStyle style;
-  CharTile({
-    required this.char,
-    required this.style,
-  });
-
-  @override
-  List<Object?> get props => [char.characters, style];
 }

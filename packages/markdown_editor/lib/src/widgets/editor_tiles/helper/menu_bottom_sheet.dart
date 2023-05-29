@@ -13,16 +13,19 @@ class MenuBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return UIColorPicker(
-      onColorChanged: (value) {
+      onColorChanged: (color, isDefaultColor) {
         final newTile = (parentEditorTile as CalloutTile).copyWith(
-            tileColor: value,
-            textTile: (parentEditorTile as CalloutTile).textTile,);
-        context.read<TextEditorBloc>().add(TextEditorReplaceEditorTile(
-              tileToRemove: parentEditorTile,
-              newEditorTile: newTile,
-              context: context,
-              requestFocus: false,
-            ),);
+          tileColor: color,
+          textTile: (parentEditorTile as CalloutTile).textTile,
+        );
+        context.read<TextEditorBloc>().add(
+              TextEditorReplaceEditorTile(
+                tileToRemove: parentEditorTile,
+                newEditorTile: newTile,
+                context: context,
+                requestFocus: false,
+              ),
+            );
         parentEditorTile = newTile;
       },
     );

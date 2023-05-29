@@ -19,6 +19,7 @@ class TextTile extends StatefulWidget implements EditorTile {
     this.focusNode,
     this.onBackspaceDoubleClick,
     this.onSubmit,
+    this.isDefaultOnBackgroundTextColor = true,
   }) {
     focusNode ??= FocusNode();
     textFieldController = TextFieldController(standardStyle: textStyle);
@@ -26,6 +27,10 @@ class TextTile extends StatefulWidget implements EditorTile {
 
   /// TextStyle of textfield and hint text
   final TextStyle textStyle;
+
+  ///if true, textColor will be set to colorsScheme.onBackground and
+  ///will be updated
+  final bool isDefaultOnBackgroundTextColor;
 
   /// MUST BE SET when [TextTile] is not directly
   /// the [EditorTile] that get's accessed
@@ -117,6 +122,9 @@ class _TextTileState extends State<TextTile> {
                     );
               }
             }
+            // if(event.isKeyPressed(LogicalKeyboardKey.enter)){
+            //   print("enter");
+            // }
           },
           child: TextField(
             controller: widget.textFieldController,
@@ -129,16 +137,22 @@ class _TextTileState extends State<TextTile> {
                 context.read<TextEditorBloc>().add(
                       TextEditorAddEditorTile(
                         newEditorTile: TextTile(
-                          textStyle: TextFieldConstants.normal,
+                          isDefaultOnBackgroundTextColor:
+                              widget.isDefaultOnBackgroundTextColor,
+                          textStyle: widget.textStyle,
                         ),
                         context: context,
                       ),
                     );
               }
             },
+            onEditingComplete: (){},
             maxLines: null,
             keyboardType: TextInputType.multiline,
-            style: widget.textStyle,
+            style: widget.isDefaultOnBackgroundTextColor
+                ? widget.textStyle
+                    .copyWith(color: Theme.of(context).colorScheme.onBackground)
+                : widget.textStyle,
             decoration: InputDecoration(
               border: InputBorder.none,
               hintText: widget.hintText,
@@ -155,7 +169,6 @@ class _TextTileState extends State<TextTile> {
     if (_blocInstance.focusedTile != widget ||
         _blocInstance.focusedTile != widget.parentEditorTile) {
       _blocInstance.focusedTile = widget.parentEditorTile ?? widget;
-      log(widget.textFieldController!.text + " active");
     }
   }
 

@@ -55,41 +55,36 @@ class KeyboardLowerRowTextTile extends StatelessWidget {
                 );
           },
         ),
-        IconButton(
-          icon: const Icon(Icons.format_color_text),
-          onPressed: () => showModalBottomSheet(
-            backgroundColor: Colors.transparent,
-            context: context,
-            builder: (_) => BlocProvider.value(
-              value: context.read<TextEditorBloc>(),
-              child: UIColorPicker(
-                onColorChanged: (value) => context.read<TextEditorBloc>().add(
-                      TextEditorKeyboardRowChange(
-                        //TODO value to textcolor
-                        textColor: value,
-                      ),
-                    ),
-              ),
-            ),
-          ),
+        colorSelectorIconButton(
+          icon: Icons.format_color_text,
+          color: context.read<TextEditorBloc>().isDefaultOnBackgroundTextColor
+              ? Theme.of(context).colorScheme.onSurfaceVariant
+              : context.read<TextEditorBloc>().textColor,
+          onColorChanged: (color, isDefault) {
+            context.read<TextEditorBloc>().add(
+                  TextEditorKeyboardRowChange(
+                    textColor: color,
+                    isDefaultOnBackgroundTextColor: isDefault,
+                  ),
+                );
+            Navigator.pop(context);
+          },
         ),
-        IconButton(
-          icon: const Icon(Icons.format_color_fill),
-          onPressed: () => showModalBottomSheet(
-            backgroundColor: Colors.transparent,
-            context: context,
-            builder: (_) => BlocProvider.value(
-              value: context.read<TextEditorBloc>(),
-              child: UIColorPicker(
-                onColorChanged: (value) => context.read<TextEditorBloc>().add(
-                      TextEditorKeyboardRowChange(
-                        //TODO value to bgcolor
-                        textBackgroundColor: value,
-                      ),
-                    ),
-              ),
-            ),
-          ),
+        colorSelectorIconButton(
+          icon: Icons.format_color_fill,
+          color: context.read<TextEditorBloc>().textBackgroundColor ==
+                  Colors.transparent
+              ? Theme.of(context).colorScheme.onSurfaceVariant
+              : context.read<TextEditorBloc>().textBackgroundColor,
+          onColorChanged: (color, isDefault) {
+            context.read<TextEditorBloc>().add(
+                  TextEditorKeyboardRowChange(
+                    textBackgroundColor:
+                        isDefault ?? false ? Colors.transparent : color,
+                  ),
+                );
+            Navigator.pop(context);
+          },
         ),
         IconButton(
           icon: const Icon(Icons.functions),
@@ -106,6 +101,47 @@ class KeyboardLowerRowTextTile extends StatelessWidget {
               context.read<KeyboardRowCubit>().expandAddNewTextTile(),
         ),
       ],
+    );
+  }
+}
+
+class colorSelectorIconButton extends StatefulWidget {
+  colorSelectorIconButton({
+    super.key,
+    required this.onColorChanged,
+    required this.color,
+    required this.icon,
+  });
+  final void Function(Color?, bool?) onColorChanged;
+  Color color;
+  final IconData icon;
+  @override
+  State<colorSelectorIconButton> createState() =>
+      _colorSelectorIconButtonState();
+}
+
+class _colorSelectorIconButtonState extends State<colorSelectorIconButton> {
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Icon(
+        widget.icon,
+        color: widget.color,
+      ),
+      onPressed: () => showModalBottomSheet(
+        context: context,
+        builder: (_) => BlocProvider.value(
+          value: context.read<TextEditorBloc>(),
+          child: UIColorPicker(
+            showRemoveButton: true,
+            onColorChanged: (color, isDefault) => setState(() {
+              widget.color =
+                  color ?? Theme.of(context).colorScheme.onSurfaceVariant;
+              widget.onColorChanged(color, isDefault);
+            }),
+          ),
+        ),
+      ),
     );
   }
 }
