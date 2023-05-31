@@ -25,8 +25,10 @@ Future<void> main() async {
 
   final uiApi = HiveUIApi(await Hive.openBox('hive_ui'));
   final uiRepository = UIRepository(uiApi: uiApi);
-  await bootstrap(() => App(
-        cardsRepository: cardsRepository,
-        uiRepository: uiRepository,
-      ));
+  await bootstrap(
+    () => App(
+      cardsRepository: cardsRepository,
+      uiRepository: uiRepository,
+    ),
+  );
 }

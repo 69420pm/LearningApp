@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -78,7 +80,7 @@ class _TextTileState extends State<TextTile> {
   late TextEditorBloc _blocInstance;
   @override
   void initState() {
-    widget.focusNode!.addListener(_changeFocus);
+    widget.textFieldController!.addListener(_changeFocus);
     super.initState();
   }
 
@@ -120,6 +122,9 @@ class _TextTileState extends State<TextTile> {
                     );
               }
             }
+            // if(event.isKeyPressed(LogicalKeyboardKey.enter)){
+            //   print("enter");
+            // }
           },
           child: TextField(
             controller: widget.textFieldController,
@@ -141,6 +146,7 @@ class _TextTileState extends State<TextTile> {
                     );
               }
             },
+            onEditingComplete: (){},
             maxLines: null,
             keyboardType: TextInputType.multiline,
             style: widget.isDefaultOnBackgroundTextColor
@@ -160,14 +166,15 @@ class _TextTileState extends State<TextTile> {
   }
 
   void _changeFocus() {
-    if (widget.focusNode!.hasFocus) {
+    if (_blocInstance.focusedTile != widget ||
+        _blocInstance.focusedTile != widget.parentEditorTile) {
       _blocInstance.focusedTile = widget.parentEditorTile ?? widget;
     }
   }
 
   @override
   void dispose() {
-    widget.focusNode!.removeListener(_changeFocus);
+    widget.textFieldController!.removeListener(_changeFocus);
     super.dispose();
     // widget.focusNode!.dispose();
   }

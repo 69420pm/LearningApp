@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_subject/cubit/add_subject_cubit.dart';
 import 'package:learning_app/add_subject/view/add_subject_bottom_sheet.dart';
@@ -62,7 +62,8 @@ class OverviewPage extends StatelessWidget {
             children: [
               const SizedBox(height: UIConstants.defaultSize * 1),
               SearchBar(
-                  onTap: () => Navigator.of(context).pushNamed('/search'),),
+                onTap: () => Navigator.of(context).pushNamed('/search'),
+              ),
               const SizedBox(height: UIConstants.defaultSize * 2),
               const LearnAllButton(),
               BlocBuilder<OverviewBloc, OverviewState>(

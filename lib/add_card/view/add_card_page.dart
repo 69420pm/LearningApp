@@ -62,7 +62,7 @@ class AddCardPage extends StatelessWidget {
                       }
                     },
                   ),
-                  const MarkdownWidget(),
+                  MarkdownWidget(),
                   ElevatedButton(
                     onPressed: () async {
                       if (formKey.currentState!.validate()) {

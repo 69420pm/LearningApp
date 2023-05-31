@@ -68,7 +68,7 @@ class TextFieldController extends TextEditingController {
 
     final textDelta = text.characters.length - _previousText.characters.length;
     final newCharTiles = <int, CharTile>{};
-    
+
     int shiftSelectionEnd = 0;
     int shiftSelectionStart = 0;
     int previousSelectionStart = _previousSelectionStart;
@@ -181,6 +181,7 @@ class TextFieldController extends TextEditingController {
                     color: Theme.of(context).colorScheme.onBackground,
                     background: Paint()..color = Colors.transparent,
                   ),
+            isDefaultOnBackgroundTextColor: isDefaultColor,
           );
           // }
         } else if (i < selection.end - shiftSelectionEnd) {
