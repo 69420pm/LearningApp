@@ -83,6 +83,7 @@ class KeyboardBothRowsAddTile extends StatelessWidget {
         icon: Icon(Icons.functions),
         onPressed: null,
       ),
+      
       IconButton(
         icon: const Icon(Icons.image),
         onPressed: () => context.read<TextEditorBloc>().add(

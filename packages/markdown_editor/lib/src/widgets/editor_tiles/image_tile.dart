@@ -8,61 +8,21 @@ import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/helper/image_menu_bottom_sheet.dart';
 
-class ImageTile extends StatelessWidget implements EditorTile {
+class ImageTile extends StatefulWidget implements EditorTile {
   ImageTile({super.key, this.focusNode, this.image}) {
     focusNode = focusNode ?? FocusNode();
     // dismiss keyboard
     FocusManager.instance.primaryFocus?.unfocus();
-
   }
   File? image;
   @override
   FocusNode? focusNode;
 
   @override
-  TextFieldController? textFieldController;
+  State<ImageTile> createState() => _ImageTileState();
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        if (image != null)
-          Stack(
-            children: [
-              Image.file(
-                image!,
-                // width: 250,
-                // height: 250,
-                fit: BoxFit.cover,
-              ),
-              Positioned(
-                right: 0,
-                top: 0,
-                child: IconButton(
-                icon: const Icon(Icons.more_vert),
-                onPressed: () => showModalBottomSheet(
-                  backgroundColor: Colors.transparent,
-                  context: context,
-                  builder: (_) => BlocProvider.value(
-                    value: context.read<TextEditorBloc>(),
-                    child: ImageMenuBottomSheet(
-                      parentEditorTile: this,
-                    ),
-                  ),
-                ),
-                          ),
-              )
-            ],
-          )
-        else
-          _EmptyImage(
-            image: image,
-            context: context,
-            parentTile: this,
-          )
-      ],
-    );
-  }
+  TextFieldController? textFieldController;
 
   /// copy with method
   ImageTile copyWith({FocusNode? focusNode, File? image}) {
@@ -79,6 +39,45 @@ class ImageTile extends StatelessWidget implements EditorTile {
           runtimeType == other.runtimeType &&
           image == other.image &&
           focusNode == other.focusNode;
+}
+
+class _ImageTileState extends State<ImageTile> {
+  @override
+  Widget build(BuildContext context) {
+    if (widget.image != null) {
+      return Stack(
+        children: [
+          Image.file(
+            widget.image!,
+            fit: BoxFit.cover,
+          ),
+          Positioned(
+            right: 0,
+            top: 0,
+            child: IconButton(
+              icon: const Icon(Icons.more_vert),
+              onPressed: () => showModalBottomSheet(
+                backgroundColor: Colors.transparent,
+                context: context,
+                builder: (_) => BlocProvider.value(
+                  value: context.read<TextEditorBloc>(),
+                  child: ImageMenuBottomSheet(
+                    parentEditorTile: widget,
+                  ),
+                ),
+              ),
+            ),
+          )
+        ],
+      );
+    } else {
+      return _EmptyImage(
+        image: widget.image,
+        context: context,
+        parentTile: widget,
+      );
+    }
+  }
 }
 
 class _EmptyImage extends StatelessWidget {
@@ -100,8 +99,11 @@ class _EmptyImage extends StatelessWidget {
           Row(
             children: [
               ElevatedButton(
-                  onPressed: pickImageGallery, child: const Text('gallery'),),
-              ElevatedButton(onPressed: pickImageCamera, child: const Text('camera'))
+                onPressed: pickImageGallery,
+                child: const Text('gallery'),
+              ),
+              ElevatedButton(
+                  onPressed: pickImageCamera, child: const Text('camera'))
             ],
           )
         ],
