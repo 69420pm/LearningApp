@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
+import 'package:markdown_editor/src/helper/image_helper.dart';
 import 'package:markdown_editor/src/models/text_field_constants.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/callout_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/divider_tile.dart';
@@ -83,15 +86,36 @@ class KeyboardBothRowsAddTile extends StatelessWidget {
         icon: Icon(Icons.functions),
         onPressed: null,
       ),
-      
+
       IconButton(
         icon: const Icon(Icons.image),
-        onPressed: () => context.read<TextEditorBloc>().add(
-              TextEditorAddEditorTile(
-                newEditorTile: ImageTile(),
-                context: context,
-              ),
-            ),
+        onPressed: () async {
+          final image = await ImageHelper.pickImageGallery();
+          if (image != null) {
+            context.read<TextEditorBloc>().add(
+                  TextEditorAddEditorTile(
+                    newEditorTile: ImageTile(image: image),
+                    context: context,
+                    
+                  ),
+                );
+          }
+        },
+      ),
+      IconButton(
+        icon: const Icon(Icons.camera_alt),
+        onPressed: () async {
+          final image = await ImageHelper.pickImageCamera();
+          if (image != null) {
+            context.read<TextEditorBloc>().add(
+                  TextEditorAddEditorTile(
+                    newEditorTile: ImageTile(image: image),
+                    context: context,
+                    
+                  ),
+                );
+          }
+        },
       ),
       const IconButton(
         icon: Icon(Icons.audio_file),
@@ -115,10 +139,10 @@ class KeyboardBothRowsAddTile extends StatelessWidget {
               ),
             ),
       ),
-      const IconButton(
-        icon: Icon(Icons.table_chart),
-        onPressed: null,
-      ),
+      // const IconButton(
+      //   icon: Icon(Icons.table_chart),
+      //   onPressed: null,
+      // ),
     ];
 
     return Row(
@@ -132,8 +156,8 @@ class KeyboardBothRowsAddTile extends StatelessWidget {
             shrinkWrap: true,
             primary: true,
             crossAxisSpacing: UIConstants.defaultSize,
-            mainAxisSpacing: UIConstants.defaultSize,
-            maxCrossAxisExtent: UIConstants.defaultSize * 8,
+            mainAxisSpacing: UIConstants.defaultSize*0,
+            maxCrossAxisExtent: UIConstants.defaultSize * 6,
             children: tiles,
           ),
         )

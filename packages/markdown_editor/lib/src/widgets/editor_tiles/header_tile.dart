@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/src/bloc/text_editor_bloc.dart';
@@ -13,6 +12,7 @@ class HeaderTile extends StatelessWidget implements EditorTile {
       hintText: hintText,
       focusNode: focusNode,
       parentEditorTile: this,
+      isDense: true,
     );
   }
 

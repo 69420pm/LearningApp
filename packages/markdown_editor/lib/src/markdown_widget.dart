@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/src/bloc/text_editor_bloc.dart';
+import 'package:markdown_editor/src/models/text_field_constants.dart';
+
+import 'widgets/editor_tiles/text_tile.dart';
 
 class MarkdownWidget extends StatelessWidget {
   MarkdownWidget({super.key});
@@ -13,16 +16,17 @@ class MarkdownWidget extends StatelessWidget {
       builder: (context, state) {
         final editorTiles = context.watch<TextEditorBloc>().editorTiles;
         return Expanded(
-          child: Scrollbar(
-            thickness: 10,
-            interactive: true,
-            child: ListView.builder(
-              itemCount: editorTiles.length,
-              itemBuilder: (context, index) {
-                return editorTiles[index] as Widget;
-              },
-              controller: ScrollController(), // Use a unique ScrollController
-            ),
+          child: ListView.builder(
+            itemCount: editorTiles.length + 1,
+            itemBuilder: (context, index) {
+              if (index == editorTiles.length) {
+                return const SizedBox(
+                  height: 120,
+                );
+              }
+              return editorTiles[index] as Widget;
+            },
+            controller: ScrollController(), // Use a unique ScrollController
           ),
         );
       },

@@ -22,6 +22,9 @@ class TextFieldConstants {
   static const TextStyle quote =
       TextStyle(fontSize: 15, fontStyle: FontStyle.italic);
 
+  /// fontSize is zero
+  static const TextStyle zero = TextStyle(fontSize: 0);
+
   // TODO colors terror
   /// text for index of orderedListTile
   static const TextStyle orderedListIndex = TextStyle(

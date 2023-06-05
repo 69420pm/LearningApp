@@ -33,8 +33,9 @@ Future<void> bootstrap(
 
   Bloc.observer = AppBlocObserver();
 
-  await runZonedGuarded(
-    () async => runApp(await builder()),
-    (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
-  );
+  runApp(await builder());
+  // await runZonedGuarded(
+  //   () async => runApp(await builder()),
+  //   (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
+  // );
 }

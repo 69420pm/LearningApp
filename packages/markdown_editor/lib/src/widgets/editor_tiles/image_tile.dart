@@ -2,19 +2,22 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/helper/image_menu_bottom_sheet.dart';
 
 class ImageTile extends StatefulWidget implements EditorTile {
-  ImageTile({super.key, this.focusNode, this.image}) {
-    focusNode = focusNode ?? FocusNode();
+  /// constructor focusNode gets focusNode of widget and [image] is a File
+  /// that gets displayed
+  ImageTile({super.key, required this.image}) {
     // dismiss keyboard
-    FocusManager.instance.primaryFocus?.unfocus();
+    // FocusManager.instance.primaryFocus?.unfocus();
   }
-  File? image;
+
+  /// image that gets displayed
+  File image;
+
   @override
   FocusNode? focusNode;
 
@@ -25,9 +28,8 @@ class ImageTile extends StatefulWidget implements EditorTile {
   TextFieldController? textFieldController;
 
   /// copy with method
-  ImageTile copyWith({FocusNode? focusNode, File? image}) {
+  ImageTile copyWith({File? image}) {
     return ImageTile(
-      focusNode: focusNode ?? this.focusNode,
       image: image ?? this.image,
     );
   }
@@ -42,100 +44,122 @@ class ImageTile extends StatefulWidget implements EditorTile {
 }
 
 class _ImageTileState extends State<ImageTile> {
+  double _scale = 1;
   @override
   Widget build(BuildContext context) {
-    if (widget.image != null) {
-      return Stack(
-        children: [
-          Image.file(
-            widget.image!,
-            fit: BoxFit.cover,
-          ),
-          Positioned(
-            right: 0,
-            top: 0,
-            child: IconButton(
-              icon: const Icon(Icons.more_vert),
-              onPressed: () => showModalBottomSheet(
-                backgroundColor: Colors.transparent,
-                context: context,
-                builder: (_) => BlocProvider.value(
-                  value: context.read<TextEditorBloc>(),
-                  child: ImageMenuBottomSheet(
-                    parentEditorTile: widget,
-                  ),
+    return Center(
+      child: LayoutBuilder(
+        builder: (context, constraints) => Stack(
+          children: [
+            SizedBox(
+              width: constraints.maxWidth * _scale,
+              child: Center(
+                child: Image.file(
+                  widget.image,
+                  // fit: BoxFit.cover,
                 ),
               ),
             ),
-          )
-        ],
-      );
-    } else {
-      return _EmptyImage(
-        image: widget.image,
-        context: context,
-        parentTile: widget,
-      );
-    }
-  }
-}
-
-class _EmptyImage extends StatelessWidget {
-  _EmptyImage({
-    required this.image,
-    required this.context,
-    required this.parentTile,
-  });
-  File? image;
-  BuildContext context;
-  ImageTile parentTile;
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(border: Border.all()),
-      child: Column(
-        children: [
-          const Text('add image'),
-          Row(
-            children: [
-              ElevatedButton(
-                onPressed: pickImageGallery,
-                child: const Text('gallery'),
+            Positioned.fill(
+              // bottom: 0,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Stack(
+                  children: [
+                    SizedBox(
+                      width: constraints.maxWidth * 0.3,
+                      height: constraints.maxHeight,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onHorizontalDragUpdate: (details) {
+                          setState(() {
+                            _scale -= details.delta.dx * 0.01;
+                            _scale = _scale.clamp(0.3, 1.0);
+                          });
+                        },
+                      ),
+                    ),
+                    Positioned.fill(
+                      left: 16,
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: IgnorePointer(
+                          child: Container(
+                            width: 6,
+                            height: 44,
+                            decoration: const BoxDecoration(
+                              color: Color.fromARGB(140, 255, 255, 255),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8)),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              ElevatedButton(
-                  onPressed: pickImageCamera, child: const Text('camera'))
-            ],
-          )
-        ],
+            ),
+            Positioned.fill(
+              // bottom: 0,
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Stack(
+                  children: [
+                    SizedBox(
+                      width: constraints.maxWidth * 0.3,
+                      height: constraints.maxHeight,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onHorizontalDragUpdate: (details) {
+                          setState(() {
+                            _scale += details.delta.dx * 0.01;
+                            _scale = _scale.clamp(0.3, 1.0);
+                          });
+                        },
+                      ),
+                    ),
+                    Positioned.fill(
+                      right: 16,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: IgnorePointer(
+                          child: Container(
+                            width: 6,
+                            height: 44,
+                            decoration: const BoxDecoration(
+                              color: Color.fromARGB(140, 255, 255, 255),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8)),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              right: 0,
+              top: 0,
+              child: IconButton(
+                icon: const Icon(Icons.more_vert),
+                onPressed: () => showModalBottomSheet(
+                  backgroundColor: Colors.transparent,
+                  context: context,
+                  builder: (_) => BlocProvider.value(
+                    value: context.read<TextEditorBloc>(),
+                    child: ImageMenuBottomSheet(
+                      parentEditorTile: widget,
+                    ),
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
-  }
-
-  Future<void> pickImageGallery() async {
-    final pickedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedImage == null) return;
-    image = File(pickedImage.path);
-    context.read<TextEditorBloc>().add(
-          TextEditorReplaceEditorTile(
-            tileToRemove: parentTile,
-            newEditorTile: parentTile.copyWith(image: image),
-            context: context,
-          ),
-        );
-  }
-
-  Future<void> pickImageCamera() async {
-    final pickedImage =
-        await ImagePicker().pickImage(source: ImageSource.camera);
-    if (pickedImage == null) return;
-    image = File(pickedImage.path);
-    context.read<TextEditorBloc>().add(
-          TextEditorReplaceEditorTile(
-            tileToRemove: parentTile,
-            newEditorTile: parentTile.copyWith(image: image),
-            context: context,
-          ),
-        );
   }
 }
