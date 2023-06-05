@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/helper/image_helper.dart';
 import 'package:markdown_editor/src/models/text_field_constants.dart';
+import 'package:markdown_editor/src/widgets/editor_tiles/audio_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/callout_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/divider_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/header_tile.dart';
@@ -96,7 +97,6 @@ class KeyboardBothRowsAddTile extends StatelessWidget {
                   TextEditorAddEditorTile(
                     newEditorTile: ImageTile(image: image),
                     context: context,
-                    
                   ),
                 );
           }
@@ -111,15 +111,16 @@ class KeyboardBothRowsAddTile extends StatelessWidget {
                   TextEditorAddEditorTile(
                     newEditorTile: ImageTile(image: image),
                     context: context,
-                    
                   ),
                 );
           }
         },
       ),
-      const IconButton(
+      IconButton(
         icon: Icon(Icons.audio_file),
-        onPressed: null,
+        onPressed: () => context.read<TextEditorBloc>().add(
+            TextEditorAddEditorTile(
+                newEditorTile: AudioTile(), context: context)),
       ),
       IconButton(
         icon: const Icon(Icons.format_quote),
@@ -156,7 +157,7 @@ class KeyboardBothRowsAddTile extends StatelessWidget {
             shrinkWrap: true,
             primary: true,
             crossAxisSpacing: UIConstants.defaultSize,
-            mainAxisSpacing: UIConstants.defaultSize*0,
+            mainAxisSpacing: UIConstants.defaultSize * 0,
             maxCrossAxisExtent: UIConstants.defaultSize * 6,
             children: tiles,
           ),

@@ -18,4 +18,5 @@ abstract class ImageHelper {
     if (pickedImage == null) return null;
     return File(pickedImage.path);
   }
+
 }

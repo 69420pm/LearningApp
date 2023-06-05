@@ -106,7 +106,6 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
   ) {
     _removeEditorTile(event.tileToRemove, event.context, handOverText: true);
     _addLastTextTileIfNeeded();
-
     emit(TextEditorEditorTilesChanged(tiles: List.of(editorTiles)));
   }
 

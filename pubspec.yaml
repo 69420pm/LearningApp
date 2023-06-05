@@ -35,6 +35,8 @@ dependencies:
   flutter_colorpicker: ^1.0.3
   flutter_animate: ^4.1.1+1
   image_picker: ^0.8.7
+  flutter_sound_lite: ^8.5.0
+  permission_handler: ^10.2.0
 
 dev_dependencies:
   bloc_test: ^9.1.1

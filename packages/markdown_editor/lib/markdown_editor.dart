@@ -6,3 +6,4 @@ export 'src/cubit/keyboard_row_cubit.dart';
 export 'src/markdown_editor.dart';
 export 'src/markdown_widget.dart';
 export 'src/widgets/keyboard_row/keyboard_row.dart';
+export 'src/cubit/audio_tile_cubit.dart';
