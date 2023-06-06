@@ -17,6 +17,8 @@ dev_dependencies:
   flutter_bloc: ^8.1.2
   ui_components:
     path: ../ui_components
+  audioplayers: ^4.1.0
+  path_provider: ^2.0.14
 
 dependencies:
   equatable: ^2.0.5

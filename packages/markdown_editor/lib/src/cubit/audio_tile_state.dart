@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'audio_tile_cubit.dart';
 
-abstract class AudioTileState extends Equatable{}
+abstract class AudioTileState extends Equatable {}
 
 class AudioTileInitial extends AudioTileState {
   @override
@@ -19,7 +19,15 @@ class AudioTileRecordAudio extends AudioTileState {
   List<Object?> get props => [isRecording];
 }
 
-class AudioTilePlayAudio extends AudioTileState{
+class AudioTilePlayAudio extends AudioTileState {
+  bool isPlaying;
+  Duration? duration;
+  Duration? position;
+  AudioTilePlayAudio({
+    required this.isPlaying,
+    this.duration,
+    this.position,
+  });
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [isPlaying, duration, position];
 }

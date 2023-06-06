@@ -27,8 +27,14 @@ class AudioTile extends StatelessWidget implements EditorTile {
                   isRecording: state.isRecording,
                   stoppedRightNow: state.stoppedRightNow,
                 );
+              } else if (state is AudioTilePlayAudio) {
+                return _PlayAudio(
+                  isPlaying: state.isPlaying,
+                  duration: state.duration,
+                  position: state.position,
+                );
               } else {
-                return const _PlayAudio();
+                return ErrorWidget("internal bloc error");
               }
             },
           ),
@@ -74,15 +80,17 @@ class _AudioInitial extends StatelessWidget {
 }
 
 class _RecordAudio extends StatelessWidget {
-  const _RecordAudio(
-      {super.key, required this.isRecording, required this.stoppedRightNow});
+  const _RecordAudio({
+    super.key,
+    required this.isRecording,
+    required this.stoppedRightNow,
+  });
   final bool isRecording;
   final bool stoppedRightNow;
   @override
   Widget build(BuildContext context) {
     if (stoppedRightNow) {
-          context.read<AudioTileCubit>().playAudio();
-
+      context.read<AudioTileCubit>().switchToAudioPage();
     }
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -90,10 +98,11 @@ class _RecordAudio extends StatelessWidget {
         CircleAvatar(
           backgroundColor: isRecording ? Colors.red : Colors.black,
           child: IconButton(
-              onPressed: () {
-                context.read<AudioTileCubit>().toggleRecording();
-              },
-              icon: isRecording ? Icon(Icons.stop) : Icon(Icons.mic)),
+            onPressed: () {
+              context.read<AudioTileCubit>().toggleRecording();
+            },
+            icon: isRecording ? Icon(Icons.stop) : Icon(Icons.mic),
+          ),
         ),
         Slider(
           min: 0,
@@ -107,14 +116,43 @@ class _RecordAudio extends StatelessWidget {
 }
 
 class _PlayAudio extends StatelessWidget {
-  const _PlayAudio({super.key});
+  _PlayAudio(
+      {required this.isPlaying, Duration? duration, Duration? position}) {
+    this.duration = duration ?? this.duration;
+    this.position = position ?? this.position;
+  }
 
+  bool isPlaying;
+  Duration duration = Duration.zero;
+  Duration position = Duration.zero;
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         CircleAvatar(
-            child: IconButton(icon: Icon(Icons.play_arrow), onPressed: () {}))
+          child: IconButton(
+            icon: isPlaying ? Icon(Icons.pause) : Icon(Icons.play_arrow),
+            onPressed: () {
+              context.read<AudioTileCubit>().togglePlaying();
+            },
+          ),
+        ),
+        Column(
+          children: [
+            Slider(
+              max: duration.inMicroseconds.toDouble(),
+              value: position.inMicroseconds.toDouble(),
+              onChanged: (value) {},
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(position.inSeconds.toString()),
+                Text(duration.inSeconds.toString())
+              ],
+            )
+          ],
+        )
       ],
     );
   }
