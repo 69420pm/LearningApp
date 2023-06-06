@@ -3,18 +3,20 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/bloc/text_editor_bloc.dart';
 import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/models/text_field_constants.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
 
-class TextTile extends StatefulWidget implements EditorTile {
+class TextTile extends StatelessWidget implements EditorTile {
+  /// constructor
   TextTile({
     super.key,
     required this.textStyle,
     this.parentEditorTile,
     this.hintText = 'write anything',
-    this.isDense,
+    this.isDense = true,
     this.contentPadding,
     this.focusNode,
     this.onBackspaceDoubleClick,
@@ -23,6 +25,9 @@ class TextTile extends StatefulWidget implements EditorTile {
   }) {
     focusNode ??= FocusNode();
     textFieldController = TextFieldController(standardStyle: textStyle);
+    if (textStyle == TextFieldConstants.normal) {
+      contentPadding ??= const EdgeInsets.only(top:6, bottom: 6);
+    }
   }
 
   /// TextStyle of textfield and hint text
@@ -43,7 +48,7 @@ class TextTile extends StatefulWidget implements EditorTile {
   final bool? isDense;
 
   /// contentPadding o [TextField]
-  final EdgeInsetsGeometry? contentPadding;
+  EdgeInsetsGeometry? contentPadding;
 
   /// event which should get called when the backspace button
   /// get's pressed multiple times
@@ -63,38 +68,17 @@ class TextTile extends StatefulWidget implements EditorTile {
   @override
   FocusNode? focusNode;
 
-  @override
-  State<TextTile> createState() => _TextTileState();
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is TextTile &&
-          runtimeType == other.runtimeType &&
-          textFieldController == other.textFieldController &&
-          focusNode == other.focusNode;
-}
-
-class _TextTileState extends State<TextTile> {
   final FocusNode _rawKeyboardListenerNode = FocusNode();
-  late TextEditorBloc _blocInstance;
-  @override
-  void initState() {
-    widget.textFieldController!.addListener(_changeFocus);
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
-    _blocInstance = context.read<TextEditorBloc>();
-
     return BlocBuilder<TextEditorBloc, TextEditorState>(
       buildWhen: (previous, current) {
         if (current is! TextEditorKeyboardRowChanged) {
           return false;
         }
-        if ((widget.textFieldController!.selection.end -
-                widget.textFieldController!.selection.start) >
+        if ((textFieldController!.selection.end -
+                textFieldController!.selection.start) >
             0) {
           return true;
         }
@@ -105,17 +89,16 @@ class _TextTileState extends State<TextTile> {
           focusNode: _rawKeyboardListenerNode,
           onKey: (event) {
             if (event.isKeyPressed(LogicalKeyboardKey.backspace) &&
-                widget.focusNode!.hasFocus &&
-                widget.textFieldController!.selection.start == 0 &&
-                widget.textFieldController!.selection.end == 0) {
-              if (widget.onBackspaceDoubleClick != null) {
-                widget.onBackspaceDoubleClick!.call();
+                focusNode!.hasFocus &&
+                textFieldController!.selection.start == 0 &&
+                textFieldController!.selection.end == 0) {
+              if (onBackspaceDoubleClick != null) {
+                onBackspaceDoubleClick!.call();
               } else {
                 context.read<TextEditorBloc>().add(
                       TextEditorRemoveEditorTile(
-                        tileToRemove: widget.parentEditorTile == null
-                            ? widget
-                            : widget.parentEditorTile!,
+                        tileToRemove:
+                            parentEditorTile == null ? this : parentEditorTile!,
                         context: context,
                         handOverText: true,
                       ),
@@ -127,37 +110,43 @@ class _TextTileState extends State<TextTile> {
             // }
           },
           child: TextField(
-            controller: widget.textFieldController,
-            focusNode: widget.focusNode,
+            autofocus: true,
+            controller: textFieldController,
+            focusNode: focusNode,
             textInputAction: TextInputAction.done,
+            // textfield gets pushed 80 above keyboard, that textfield
+            // doesn't get hided by keyboard row, standard is 20
+            scrollPadding: const EdgeInsets.all(50),
             onSubmitted: (value) {
-              if (widget.onSubmit != null) {
-                widget.onSubmit?.call();
+              if (onSubmit != null) {
+                onSubmit?.call();
               } else {
                 context.read<TextEditorBloc>().add(
                       TextEditorAddEditorTile(
                         newEditorTile: TextTile(
                           isDefaultOnBackgroundTextColor:
-                              widget.isDefaultOnBackgroundTextColor,
-                          textStyle: widget.textStyle,
+                              isDefaultOnBackgroundTextColor,
+                          textStyle: TextFieldConstants.normal,
                         ),
                         context: context,
                       ),
                     );
               }
             },
-            onEditingComplete: (){},
+            onEditingComplete: () {},
             maxLines: null,
             keyboardType: TextInputType.multiline,
-            style: widget.isDefaultOnBackgroundTextColor
-                ? widget.textStyle
-                    .copyWith(color: Theme.of(context).colorScheme.onBackground)
-                : widget.textStyle,
+            style: isDefaultOnBackgroundTextColor
+                ? textStyle.copyWith(
+                    color: Theme.of(context).colorScheme.onBackground)
+                : textStyle,
             decoration: InputDecoration(
               border: InputBorder.none,
-              hintText: widget.hintText,
-              isDense: widget.isDense,
-              contentPadding: widget.contentPadding,
+              hintText: hintText,
+              isDense: isDense,
+              contentPadding: contentPadding,
+              labelStyle: TextFieldConstants.zero,
+              labelText: '',
             ),
           ),
         );
@@ -165,17 +154,10 @@ class _TextTileState extends State<TextTile> {
     );
   }
 
-  void _changeFocus() {
-    if (_blocInstance.focusedTile != widget ||
-        _blocInstance.focusedTile != widget.parentEditorTile) {
-      _blocInstance.focusedTile = widget.parentEditorTile ?? widget;
-    }
-  }
-
   @override
-  void dispose() {
-    widget.textFieldController!.removeListener(_changeFocus);
-    super.dispose();
-    // widget.focusNode!.dispose();
-  }
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TextTile &&
+          textFieldController == other.textFieldController &&
+          focusNode == other.focusNode;
 }

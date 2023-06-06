@@ -34,6 +34,7 @@ class AddCardPage extends StatelessWidget {
                 children: [
                   const SizedBox(height: UIConstants.defaultSize * 1),
                   UITextFormField(
+                    
                     onFieldSubmitted: (value) async {
                       if (formKey.currentState!.validate()) {
                         // await context.read<AddCardCubit>().saveCard(
@@ -51,7 +52,7 @@ class AddCardPage extends StatelessWidget {
                       }
                       Navigator.pop(context);
                     },
-                    autofocus: true,
+                    autofocus: false,
                     label: 'Title',
                     controller: frontController,
                     validation: (value) {
