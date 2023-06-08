@@ -1,9 +1,9 @@
 import 'dart:io';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:markdown_editor/src/helper/audio_helper.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:file_picker/file_picker.dart';
 
@@ -37,7 +37,7 @@ class AudioTileCubit extends Cubit<AudioTileState> {
   }
 
   /// show initial page with option to record audio or choose file form storage
-  void switchToInitPage(){
+  void switchToInitPage() {
     emit(AudioTileInitial());
   }
 
@@ -96,6 +96,8 @@ class AudioTileCubit extends Cubit<AudioTileState> {
   void togglePlaying() async {
     _isPlaying = !_isPlaying;
     if (_isPlaying) {
+      await audioPlayer.play(DeviceFileSource(directory!.path + '/file.aac'));
+      duration = await audioPlayer.getDuration();
       await _audioPlayer.play(DeviceFileSource(_filePath!),
           position: _position);
       // duration = await audioPlayer.getDuration();
