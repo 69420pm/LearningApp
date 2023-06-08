@@ -1,47 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:markdown_editor/src/cubit/audio_tile_cubit.dart';
+import 'package:markdown_editor/src/helper/audio_helper.dart';
 import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
 import 'package:ui_components/ui_components.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/app/helper/uid.dart';
 
-class AudioTile extends StatelessWidget implements EditorTile {
+class AudioTile extends StatefulWidget implements EditorTile {
   AudioTile({super.key});
 
+  final String uid = Uid().uid().substring(0, 9);
+
   @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: DecoratedBox(
-        decoration: const BoxDecoration(
-          color: Colors.green,
-          borderRadius: BorderRadius.all(Radius.circular(8)),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: BlocBuilder<AudioTileCubit, AudioTileState>(
-            builder: (context, state) {
-              if (state is AudioTileInitial) {
-                return const _AudioInitial();
-              } else if (state is AudioTileRecordAudio) {
-                return _RecordAudio(
-                  isRecording: state.isRecording,
-                  stoppedRightNow: state.stoppedRightNow,
-                );
-              } else if (state is AudioTilePlayAudio) {
-                return _PlayAudio(
-                  isPlaying: state.isPlaying,
-                  duration: state.duration,
-                  position: state.position,
-                );
-              } else {
-                return ErrorWidget("internal bloc error");
-              }
-            },
-          ),
-        ),
-      ),
-    );
-  }
+  State<AudioTile> createState() => _AudioTileState();
+
+  @override
+  FocusNode? focusNode;
+
+  @override
+  TextFieldController? textFieldController;
 
   @override
   bool operator ==(Object other) =>
@@ -49,29 +27,71 @@ class AudioTile extends StatelessWidget implements EditorTile {
       other is AudioTile &&
           runtimeType == other.runtimeType &&
           focusNode == focusNode;
+}
+
+class _AudioTileState extends State<AudioTile> {
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => AudioTileCubit(),
+      child: Center(
+        child: DecoratedBox(
+          decoration: const BoxDecoration(
+            color: Colors.green,
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: BlocBuilder<AudioTileCubit, AudioTileState>(
+              builder: (context, state) {
+                if (state is AudioTileInitial) {
+                  return _AudioInitial(uid: widget.uid);
+                } else if (state is AudioTileRecordAudio) {
+                  return _RecordAudio(
+                    isRecording: state.isRecording,
+                    stoppedRightNow: state.stoppedRightNow,
+                  );
+                } else if (state is AudioTilePlayAudio) {
+                  return _PlayAudio(
+                      isPlaying: state.isPlaying,
+                      duration: state.duration,
+                      position: state.position,
+                      uid: widget.uid);
+                } else {
+                  return ErrorWidget("internal bloc error");
+                }
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
-  FocusNode? focusNode;
-
-  @override
-  TextFieldController? textFieldController;
+  void dispose() {
+    AudioHelper.disposeRecorder();
+    super.dispose();
+  }
 }
 
 class _AudioInitial extends StatelessWidget {
-  const _AudioInitial({super.key});
-
+  const _AudioInitial({super.key, required this.uid});
+  final String uid;
   @override
   Widget build(BuildContext context) {
+    context.read<AudioTileCubit>().initState(uid + ".aac");
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         UIButton(
-          onTap: () => context.read<AudioTileCubit>().switchToRecordingPage(),
-          child: Row(
-            children: [Icon(Icons.mic), Text('record')],
-          ),
-        ),
+            onTap: () => context.read<AudioTileCubit>().switchToRecordingPage(),
+            child: Row(
+              children: [Icon(Icons.mic), Text('record')],
+            )),
         UIButton(
+          onTap: () => context.read<AudioTileCubit>().loadFile(),
           child: Row(children: [Icon(Icons.folder), Text('file')]),
         )
       ],
@@ -105,8 +125,6 @@ class _RecordAudio extends StatelessWidget {
           ),
         ),
         Slider(
-          min: 0,
-          max: 1,
           value: 0.5,
           onChanged: (value) {},
         ),
@@ -117,7 +135,10 @@ class _RecordAudio extends StatelessWidget {
 
 class _PlayAudio extends StatelessWidget {
   _PlayAudio(
-      {required this.isPlaying, Duration? duration, Duration? position}) {
+      {required this.isPlaying,
+      Duration? duration,
+      Duration? position,
+      required this.uid}) {
     this.duration = duration ?? this.duration;
     this.position = position ?? this.position;
   }
@@ -125,9 +146,13 @@ class _PlayAudio extends StatelessWidget {
   bool isPlaying;
   Duration duration = Duration.zero;
   Duration position = Duration.zero;
+
+  final String uid;
+
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         CircleAvatar(
           child: IconButton(
@@ -140,9 +165,13 @@ class _PlayAudio extends StatelessWidget {
         Column(
           children: [
             Slider(
-              max: duration.inMicroseconds.toDouble(),
-              value: position.inMicroseconds.toDouble(),
-              onChanged: (value) {},
+              max: duration.inMilliseconds.toDouble(),
+              value: position.inMilliseconds.toDouble(),
+              onChanged: (value) {
+                context
+                    .read<AudioTileCubit>()
+                    .jumpTo(Duration(milliseconds: value.toInt()));
+              },
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -152,7 +181,13 @@ class _PlayAudio extends StatelessWidget {
               ],
             )
           ],
-        )
+        ),
+        CircleAvatar(
+            child: IconButton(
+          icon: Icon(Icons.replay),
+          onPressed: () =>
+              context.read<AudioTileCubit>().switchToRecordingPage(),
+        ))
       ],
     );
   }

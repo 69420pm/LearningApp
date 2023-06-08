@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/src/bloc/text_editor_bloc.dart';
 
-
 class MarkdownWidget extends StatelessWidget {
   MarkdownWidget({super.key});
   final ScrollController scrollController = ScrollController();
@@ -15,14 +14,27 @@ class MarkdownWidget extends StatelessWidget {
         final editorTiles = context.read<TextEditorBloc>().editorTiles;
         return Expanded(
           child: ListView.builder(
+            // onReorder: (oldIndex, newIndex) {
+            //   context.read<TextEditorBloc>().add(
+            //         TextEditorChangeOrderOfTile(
+            //           oldIndex: oldIndex,
+            //           newIndex: newIndex,
+            //         ),
+            //       );
+            // },
             itemCount: editorTiles.length + 1,
             itemBuilder: (context, index) {
               if (index == editorTiles.length) {
-                return const SizedBox(
+                return SizedBox(
+                  key: ValueKey(DateTime.now()),
                   height: 120,
                 );
               }
               return editorTiles[index] as Widget;
+              // return _ListTile(
+              //   child: editorTiles[index] as Widget,
+              //   key: ValueKey(DateTime.now()),
+              // );
             },
             controller: ScrollController(), // Use a unique ScrollController
           ),
@@ -31,6 +43,15 @@ class MarkdownWidget extends StatelessWidget {
     );
   }
 }
+
+// class _ListTile extends StatelessWidget {
+//   _ListTile({super.key, required this.child});
+//   Widget child;
+//   @override
+//   Widget build(BuildContext context) {
+//     return child;
+//   }
+// }
 
 /// # heading 1
 /// ## heading 2
