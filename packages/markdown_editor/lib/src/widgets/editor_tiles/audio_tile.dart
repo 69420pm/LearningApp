@@ -33,7 +33,9 @@ class _AudioTileState extends State<AudioTile> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AudioTileCubit(),
+      create: (context) {
+        return AudioTileCubit()..initState('${widget.uid}.aac');
+      },
       child: Center(
         child: DecoratedBox(
           decoration: const BoxDecoration(
@@ -45,7 +47,7 @@ class _AudioTileState extends State<AudioTile> {
             child: BlocBuilder<AudioTileCubit, AudioTileState>(
               builder: (context, state) {
                 if (state is AudioTileInitial) {
-                  return _AudioInitial(uid: widget.uid);
+                  return _AudioInitial();
                 } else if (state is AudioTileRecordAudio) {
                   return _RecordAudio(
                     isRecording: state.isRecording,
@@ -76,12 +78,9 @@ class _AudioTileState extends State<AudioTile> {
 }
 
 class _AudioInitial extends StatelessWidget {
-  const _AudioInitial({super.key, required this.uid});
-  final String uid;
+  const _AudioInitial({super.key});
   @override
   Widget build(BuildContext context) {
-    context.read<AudioTileCubit>().initState(uid + ".aac");
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
@@ -185,8 +184,7 @@ class _PlayAudio extends StatelessWidget {
         CircleAvatar(
             child: IconButton(
           icon: Icon(Icons.replay),
-          onPressed: () =>
-              context.read<AudioTileCubit>().switchToRecordingPage(),
+          onPressed: () => context.read<AudioTileCubit>().switchToInitPage(),
         ))
       ],
     );

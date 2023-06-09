@@ -8,6 +8,7 @@ import 'package:markdown_editor/src/widgets/editor_tiles/callout_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/divider_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/header_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/image_tile.dart';
+import 'package:markdown_editor/src/widgets/editor_tiles/latex_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/list_editor_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/quote_tile.dart';
 import 'package:ui_components/src/ui_constants.dart';
@@ -23,7 +24,6 @@ class KeyboardBothRowsAddTile extends StatelessWidget {
         onPressed: () => context.read<TextEditorBloc>().add(
               TextEditorAddEditorTile(
                 newEditorTile: HeaderTile(
-                  key: ValueKey(DateTime.now()),
                   textStyle: TextFieldConstants.header1,
                   hintText: 'Header 1',
                 ),
@@ -36,7 +36,6 @@ class KeyboardBothRowsAddTile extends StatelessWidget {
         onPressed: () => context.read<TextEditorBloc>().add(
               TextEditorAddEditorTile(
                 newEditorTile: HeaderTile(
-                  key: ValueKey(DateTime.now()),
                   textStyle: TextFieldConstants.header2,
                   hintText: 'Header 2',
                 ),
@@ -49,7 +48,6 @@ class KeyboardBothRowsAddTile extends StatelessWidget {
         onPressed: () => context.read<TextEditorBloc>().add(
               TextEditorAddEditorTile(
                 newEditorTile: HeaderTile(
-                  key: ValueKey(DateTime.now()),
                   textStyle: TextFieldConstants.header3,
                   hintText: 'Header 3',
                 ),
@@ -61,9 +59,7 @@ class KeyboardBothRowsAddTile extends StatelessWidget {
         icon: const Icon(Icons.crop_16_9),
         onPressed: () => context.read<TextEditorBloc>().add(
               TextEditorAddEditorTile(
-                newEditorTile: CalloutTile(
-                  key: ValueKey(DateTime.now()),
-                ),
+                newEditorTile: CalloutTile(),
                 context: context,
               ),
             ),
@@ -72,9 +68,7 @@ class KeyboardBothRowsAddTile extends StatelessWidget {
         icon: const Icon(Icons.format_list_bulleted),
         onPressed: () => context.read<TextEditorBloc>().add(
               TextEditorAddEditorTile(
-                newEditorTile: ListEditorTile(
-                  key: ValueKey(DateTime.now()),
-                ),
+                newEditorTile: ListEditorTile(),
                 context: context,
               ),
             ),
@@ -83,15 +77,16 @@ class KeyboardBothRowsAddTile extends StatelessWidget {
         icon: const Icon(Icons.format_list_numbered),
         onPressed: () => context.read<TextEditorBloc>().add(
               TextEditorAddEditorTile(
-                newEditorTile: ListEditorTile(
-                    key: ValueKey(DateTime.now()), orderNumber: 1),
+                newEditorTile: ListEditorTile(orderNumber: 1),
                 context: context,
               ),
             ),
       ),
-      const IconButton(
+      IconButton(
         icon: Icon(Icons.functions),
-        onPressed: null,
+        onPressed: () => context.read<TextEditorBloc>().add(
+            TextEditorAddEditorTile(
+                newEditorTile: LatexTile(), context: context)),
       ),
 
       IconButton(
@@ -101,8 +96,7 @@ class KeyboardBothRowsAddTile extends StatelessWidget {
           if (image != null) {
             context.read<TextEditorBloc>().add(
                   TextEditorAddEditorTile(
-                    newEditorTile:
-                        ImageTile(key: ValueKey(DateTime.now()), image: image),
+                    newEditorTile: ImageTile(image: image),
                     context: context,
                   ),
                 );
@@ -116,8 +110,7 @@ class KeyboardBothRowsAddTile extends StatelessWidget {
           if (image != null) {
             context.read<TextEditorBloc>().add(
                   TextEditorAddEditorTile(
-                    newEditorTile:
-                        ImageTile(key: ValueKey(DateTime.now()), image: image),
+                    newEditorTile: ImageTile(image: image),
                     context: context,
                   ),
                 );
@@ -126,20 +119,15 @@ class KeyboardBothRowsAddTile extends StatelessWidget {
       ),
       IconButton(
         icon: Icon(Icons.audio_file),
-        onPressed: () =>
-            context.read<TextEditorBloc>().add(TextEditorAddEditorTile(
-                newEditorTile: AudioTile(
-                  key: ValueKey(DateTime.now()),
-                ),
-                context: context)),
+        onPressed: () => context.read<TextEditorBloc>().add(
+            TextEditorAddEditorTile(
+                newEditorTile: AudioTile(), context: context)),
       ),
       IconButton(
         icon: const Icon(Icons.format_quote),
         onPressed: () => context.read<TextEditorBloc>().add(
               TextEditorAddEditorTile(
-                newEditorTile: QuoteTile(
-                  key: ValueKey(DateTime.now()),
-                ),
+                newEditorTile: QuoteTile(),
                 context: context,
               ),
             ),
@@ -148,9 +136,7 @@ class KeyboardBothRowsAddTile extends StatelessWidget {
         icon: const Icon(Icons.horizontal_rule),
         onPressed: () => context.read<TextEditorBloc>().add(
               TextEditorAddEditorTile(
-                newEditorTile: DividerTile(
-                  key: ValueKey(DateTime.now()),
-                ),
+                newEditorTile: DividerTile(),
                 context: context,
               ),
             ),

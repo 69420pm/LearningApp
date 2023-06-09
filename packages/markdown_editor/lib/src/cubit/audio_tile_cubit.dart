@@ -29,12 +29,19 @@ class AudioTileCubit extends Cubit<AudioTileState> {
     _directory ??= await getApplicationDocumentsDirectory();
     _fileName = fileName;
     _filePath = _directory!.path + '/' + fileName;
-    if (await File(_filePath!).exists() && state is! AudioTilePlayAudio) {
+    print(_filePath);
+    if (File(_filePath!).existsSync() && state is! AudioTilePlayAudio) {
       _isPlaying = false;
       await switchToAudioPage();
     }
   }
 
+  /// show initial page with option to record audio or choose file form storage
+  void switchToInitPage(){
+    emit(AudioTileInitial());
+  }
+
+  /// switch to recording page to record audio
   Future<void> switchToRecordingPage() async {
     if (await AudioHelper.initRecorder()) {
       _directory ??= await getApplicationDocumentsDirectory();
@@ -49,6 +56,7 @@ class AudioTileCubit extends Cubit<AudioTileState> {
     }
   }
 
+  /// toggle recording on or off
   void toggleRecording() async {
     _isRecording = await AudioHelper.toggleRecording(_filePath!);
     final stoppedRightNow = !_isRecording;
@@ -61,6 +69,7 @@ class AudioTileCubit extends Cubit<AudioTileState> {
     );
   }
 
+  /// load file from local storage and play it
   Future<void> loadFile() async {
     final result = await FilePicker.platform.pickFiles(type: FileType.audio);
     if (result != null) {

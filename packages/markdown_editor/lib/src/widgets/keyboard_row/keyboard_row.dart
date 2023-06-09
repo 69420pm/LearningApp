@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/src/cubit/keyboard_row_cubit.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/rows/keyboard_both_rows_add_tile.dart';
+import 'package:markdown_editor/src/widgets/keyboard_row/rows/keyboard_latex_row.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/rows/keyboard_lower_row_text_tile.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/rows/keyboard_upper_row_extra_format.dart';
 
@@ -43,7 +44,10 @@ class _KeyboardRowState extends State<KeyboardRow> with WidgetsBindingObserver {
                   KeyboardUpperRowExtraFormat(),
                 if (state is KeyboardRowNewTextTile)
                   const KeyboardBothRowsAddTile(),
-                if (state is! KeyboardRowNewTextTile) KeyboardLowerRowTextTile(),
+                if (state is KeyboardRowLatex) KeyboardLatexRow(),
+                if (state is! KeyboardRowNewTextTile &&
+                    state is! KeyboardRowLatex)
+                  KeyboardLowerRowTextTile(),
               ],
             ),
           ),
@@ -60,13 +64,12 @@ class _KeyboardRowState extends State<KeyboardRow> with WidgetsBindingObserver {
 
   @override
   void didChangeMetrics() {
-    
-    if(WidgetsBinding.instance.window.viewInsets.bottom > 0.0){
+    if (WidgetsBinding.instance.window.viewInsets.bottom > 0.0) {
       print("open");
       setState(() {
         isVisible = true;
       });
-    }else{
+    } else {
       print("close");
       setState(() {
         isVisible = false;

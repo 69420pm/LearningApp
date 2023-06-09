@@ -14,6 +14,7 @@ class MarkdownWidget extends StatelessWidget {
         final editorTiles = context.read<TextEditorBloc>().editorTiles;
         return Expanded(
           child: ListView.builder(
+            // buildDefaultDragHandles: false,
             // onReorder: (oldIndex, newIndex) {
             //   context.read<TextEditorBloc>().add(
             //         TextEditorChangeOrderOfTile(
@@ -31,9 +32,10 @@ class MarkdownWidget extends StatelessWidget {
                 );
               }
               return editorTiles[index] as Widget;
-              // return _ListTile(
-              //   child: editorTiles[index] as Widget,
+              // return ReorderableDelayedDragStartListener(
+              //   index: index,
               //   key: ValueKey(DateTime.now()),
+              //   child: editorTiles[index] as Widget,
               // );
             },
             controller: ScrollController(), // Use a unique ScrollController

@@ -36,7 +36,6 @@ class AppRouter {
       FolderListTileBloc(_cardsRepository);
   final TextEditorBloc _textEditorBloc = TextEditorBloc();
   final KeyboardRowCubit _keyboardRowCubit = KeyboardRowCubit();
-  final AudioTileCubit _audioTileCubit = AudioTileCubit();
 
   Route<dynamic> onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
