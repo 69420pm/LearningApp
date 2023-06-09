@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
@@ -10,6 +8,7 @@ import 'package:markdown_editor/src/widgets/editor_tiles/callout_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/divider_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/header_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/image_tile.dart';
+import 'package:markdown_editor/src/widgets/editor_tiles/latex_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/list_editor_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/quote_tile.dart';
 import 'package:ui_components/src/ui_constants.dart';
@@ -83,9 +82,11 @@ class KeyboardBothRowsAddTile extends StatelessWidget {
               ),
             ),
       ),
-      const IconButton(
+      IconButton(
         icon: Icon(Icons.functions),
-        onPressed: null,
+        onPressed: () => context.read<TextEditorBloc>().add(
+            TextEditorAddEditorTile(
+                newEditorTile: LatexTile(), context: context)),
       ),
 
       IconButton(

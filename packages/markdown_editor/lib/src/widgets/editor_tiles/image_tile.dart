@@ -70,7 +70,7 @@ class _ImageTileState extends State<ImageTile> {
                       width: constraints.maxWidth * 0.3,
                       height: constraints.maxHeight,
                       child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
+                        behavior: HitTestBehavior.translucent,
                         onHorizontalDragUpdate: (details) {
                           setState(() {
                             _scale -= details.delta.dx * 0.01;

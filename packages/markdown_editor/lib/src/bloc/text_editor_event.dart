@@ -65,3 +65,14 @@ class TextEditorReplaceEditorTile extends TextEditorEvent {
     this.requestFocus = true,
   });
 }
+
+class TextEditorChangeOrderOfTile extends TextEditorEvent {
+  int oldIndex;
+  int newIndex;
+  TextEditorChangeOrderOfTile({
+    required this.oldIndex,
+    required this.newIndex,
+  });
+
+
+}

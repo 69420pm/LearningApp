@@ -79,7 +79,7 @@ class TextTile extends StatelessWidget implements EditorTile {
         }
         if ((textFieldController!.selection.end -
                 textFieldController!.selection.start) >
-            0) {
+            0 && focusNode == FocusManager.instance.primaryFocus) {
           return true;
         }
         return false;
@@ -124,6 +124,7 @@ class TextTile extends StatelessWidget implements EditorTile {
                 context.read<TextEditorBloc>().add(
                       TextEditorAddEditorTile(
                         newEditorTile: TextTile(
+                          key: ValueKey(DateTime.now()),
                           isDefaultOnBackgroundTextColor:
                               isDefaultOnBackgroundTextColor,
                           textStyle: TextFieldConstants.normal,

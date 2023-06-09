@@ -1,36 +1,35 @@
-import 'dart:io';
-
 import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:path_provider/path_provider.dart';
 
 abstract class AudioHelper {
   static FlutterSoundRecorder? _audioRecorder;
-  static FlutterSoundPlayer? _audioPlayer;
   static bool _isRecorderInitialized = false;
-  static Directory? _directory;
 
   bool get isRecording => _audioRecorder!.isRecording;
 
   /// initialize AudioHelper
-  static Future<void> initRecorder() async {
+  static Future<bool> initRecorder() async {
+    if (_audioRecorder != null) return false;
     _audioRecorder = FlutterSoundRecorder();
     final status = await Permission.microphone.request();
     if (status != PermissionStatus.granted) {
       throw RecordingPermissionException('Microphone permission denied');
     }
-    _directory = await getApplicationDocumentsDirectory();
     await _audioRecorder!.openAudioSession();
     _isRecorderInitialized = true;
-    printDirectory();
+    return true;
   }
 
   /// start or stop recording according to current recording state
   static Future<bool> toggleRecording(String filePath) async {
-    _audioRecorder!.isStopped
-        ? await _recordAudio(_directory!.path + "/" + filePath)
-        : await _stopRecordingAudio();
-    return _audioRecorder!.isRecording;
+    if (_audioRecorder!.isStopped) {
+      await _recordAudio(filePath);
+      return _audioRecorder!.isRecording;
+    } else {
+      await _stopRecordingAudio();
+      disposeRecorder();
+      return false;
+    }
   }
 
   static Future<void> _recordAudio(String filePath) async {
@@ -43,7 +42,6 @@ abstract class AudioHelper {
     if (!_isRecorderInitialized) return;
 
     await _audioRecorder!.stopRecorder();
-    printDirectory();
   }
 
   /// dispose and clean up the audioRecorder
@@ -52,7 +50,6 @@ abstract class AudioHelper {
     _audioRecorder!.closeAudioSession();
     _audioRecorder = null;
     _isRecorderInitialized = false;
-    _directory = null;
   }
 
   // static Future<void> initPlayer() async{
@@ -89,13 +86,4 @@ abstract class AudioHelper {
   //   _audioPlayer!.closeAudioSession();
   //   _audioPlayer = null;
   // }
-
-  static void printDirectory(){
-     List<FileSystemEntity> content = _directory!.listSync();
-
-    // Print the names of the files and directories
-    for (var entity in content) {
-      print("directory " + entity.path);
-    }
-  }
 }

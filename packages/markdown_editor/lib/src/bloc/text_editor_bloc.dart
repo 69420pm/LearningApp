@@ -29,6 +29,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     on<TextEditorAddEditorTile>(_addTile);
     on<TextEditorRemoveEditorTile>(_removeTile);
     on<TextEditorReplaceEditorTile>(_replaceTile);
+    on<TextEditorChangeOrderOfTile>(_changeOrderOfTile);
   }
 
   /// list of all editorTiles (textWidgets, Images, etc.) of text editor
@@ -297,5 +298,10 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
         ),
       );
     }
+  }
+
+  void _changeOrderOfTile(TextEditorChangeOrderOfTile event, Emitter<TextEditorState> emit) {
+    editorTiles.insert(event.newIndex, editorTiles[event.oldIndex]);
+    editorTiles.removeAt(event.oldIndex);
   }
 }

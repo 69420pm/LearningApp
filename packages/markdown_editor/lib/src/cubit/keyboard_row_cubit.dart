@@ -33,4 +33,8 @@ class KeyboardRowCubit extends Cubit<KeyboardRowState> {
   void expandFavorites() {
     emit(KeyboardRowFavorites());
   }
+
+  void expandLatex(){
+    emit(KeyboardRowLatex());
+  }
 }

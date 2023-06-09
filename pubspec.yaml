@@ -38,6 +38,8 @@ dependencies:
   flutter_sound_lite: ^8.5.0
   permission_handler: ^10.2.0
   audioplayers: ^4.1.0
+  file_picker: ^5.3.2
+  flutter_math_fork: ^0.7.1
 
 dev_dependencies:
   bloc_test: ^9.1.1
