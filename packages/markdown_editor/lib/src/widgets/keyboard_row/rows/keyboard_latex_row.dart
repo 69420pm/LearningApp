@@ -24,55 +24,71 @@ class KeyboardLatexRow extends StatelessWidget {
       TextButton(
         input: r'\',
         onPressed: () {
-          addChar(r"\");
+          addString(r"\");
         },
       ),
       TextButton(
-        input: '{ }',
-        onPressed: (){
-          addParenthesis('{', '}');
-        }
-      ),
+          input: '{ }',
+          onPressed: () {
+            addParenthesis('{', '}');
+          }),
       TextButton(
-        input: '( )',
-        onPressed: (){
-          addParenthesis('(', ')');
-        }
-      ),
+          input: '( )',
+          onPressed: () {
+            addParenthesis('(', ')');
+          }),
       TextButton(
         input: '^',
         onPressed: () {
-          addChar("^");
+          addString("^");
         },
       ),
       TextButton(
         input: '_',
         onPressed: () {
-          addChar("_");
+          addString("_");
         },
       ),
       TextButton(
         input: '=',
         onPressed: () {
-          addChar("=");
+          addString("=");
         },
       ),
       TextButton(
         input: '&',
         onPressed: () {
-          addChar("&");
+          addString("&");
         },
       ),
       TextButton(
-        input: '-',
+        input: r'\frac',
         onPressed: () {
-          addChar("-");
+          addString(r"\frac{numerator}{}", selectionStart: 6, selectionEnd: 15);
         },
       ),
       TextButton(
-        input: '-',
+        input: '√',
         onPressed: () {
-          addChar("-");
+          addString(r"\sqrt{}", selectionStart: 6, selectionEnd: 6);
+        },
+      ),
+      TextButton(
+        input: '→',
+        onPressed: () {
+          addString(r"\rightarrow",);
+        },
+      ),
+      TextButton(
+        input: r'\vec',
+        onPressed: () {
+          addString(r"\vec{}", selectionStart: 5, selectionEnd: 5);
+        },
+      ),
+      TextButton(
+        input: 'space',
+        onPressed: () {
+          addString(r"\ ",);
         },
       ),
     ];
@@ -92,19 +108,6 @@ class KeyboardLatexRow extends StatelessWidget {
     );
   }
 
-  void addChar(String char) {
-    final previousSelection = textEditingController.selection;
-    final previousText = textEditingController.text;
-    textEditingController
-      ..text = previousText.substring(0, previousSelection.start) +
-          char +
-          previousText.substring(previousSelection.end)
-      ..selection = TextSelection(
-        baseOffset: previousSelection.start + 1,
-        extentOffset: previousSelection.start + 1,
-      );
-  }
-
   void addParenthesis(String open, String closed) {
     final previousSelection = textEditingController.selection;
     final previousText = textEditingController.text;
@@ -118,6 +121,21 @@ class KeyboardLatexRow extends StatelessWidget {
       ..selection = TextSelection(
         baseOffset: previousSelection.end + 1,
         extentOffset: previousSelection.end + 1,
+      );
+  }
+
+  void addString(String command, {int? selectionStart, int? selectionEnd}) {
+    selectionStart ??= command.length;
+    selectionEnd ??= command.length;
+    final previousSelection = textEditingController.selection;
+    final previousText = textEditingController.text;
+    textEditingController
+      ..text = previousText.substring(0, previousSelection.start) +
+          command +
+          previousText.substring(previousSelection.end)
+      ..selection = TextSelection(
+        baseOffset: previousSelection.start + selectionStart,
+        extentOffset: previousSelection.start + selectionEnd,
       );
   }
 }

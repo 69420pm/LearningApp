@@ -9,9 +9,9 @@ class LatexTextFieldController extends TextEditingController {
   late final Pattern pattern;
   String pureText = '';
   final Map<String, TextStyle> map = {
+    r'(?<!\\)%(.*?)(?:\r?\n|$)': const TextStyle(color: Color.fromARGB(83, 0, 0, 0)),
     r'\\([A-Za-z]+|_|&|{|}|#|!|$|%|>|\||:|;|,)': const TextStyle(color: Color.fromARGB(255, 0, 255, 0)),
-    r'{|}|&': const TextStyle(color: Color.fromARGB(255, 168, 168, 168)),
-    r'(?<!\\)%(.+?)(?:\r?\n|$)': const TextStyle(color: Color.fromARGB(255, 105, 105, 105)),
+    r'{|}|&|_|^': const TextStyle(color: Color.fromARGB(255, 131, 131, 131)),
     r'__(.*?)__': const TextStyle(fontStyle: FontStyle.italic),
     '~~(.*?)~~': const TextStyle(decoration: TextDecoration.lineThrough),
     r'```(.*?)```': const TextStyle(
