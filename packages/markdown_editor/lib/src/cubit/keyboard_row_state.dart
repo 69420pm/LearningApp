@@ -10,5 +10,3 @@ class KeyboardRowExtraFormat extends KeyboardRowState {}
 class KeyboardRowNewTextTile extends KeyboardRowState {}
 
 class KeyboardRowFavorites extends KeyboardRowState {}
-
-class KeyboardRowLatex extends KeyboardRowState {}

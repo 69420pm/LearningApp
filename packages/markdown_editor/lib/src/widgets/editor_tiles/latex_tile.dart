@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/models/editor_tile.dart';
+import 'package:markdown_editor/src/models/latex_text_field_controller.dart';
 import 'package:markdown_editor/src/models/text_field_constants.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
+import 'package:markdown_editor/src/widgets/editor_tiles/helper/latex_bottom_sheet.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
 import 'package:flutter_math_fork/ast.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
@@ -10,15 +12,9 @@ import 'package:flutter_math_fork/tex.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LatexTile extends StatelessWidget implements EditorTile {
-  LatexTile({super.key}) {
-    _textTile = TextTile(
-      focusNode: focusNode,
-      textStyle: TextFieldConstants.quote,
-      parentEditorTile: this,
-    );
-  }
+  LatexTile({super.key, this.latexText = r"\frac{1}{2}"});
 
-  late final TextTile _textTile;
+  String latexText;
 
   @override
   FocusNode? focusNode;
@@ -26,27 +22,58 @@ class LatexTile extends StatelessWidget implements EditorTile {
   @override
   TextFieldController? textFieldController;
 
+  TextEditingController textEditingController = LatexTextFieldController();
+
   @override
   Widget build(BuildContext context) {
-    textFieldController = _textTile.textFieldController;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap:(){
-        context.read<KeyboardRowCubit>().expandLatex();
+      onTap: () {
+        showModalBottomSheet<dynamic>(
+          context: context,
+          isScrollControlled: true,
+          builder: (_) => Wrap(
+            children: [
+              LatexBottomSheet(
+                textEditingController: textEditingController,
+                latexText: latexText,
+              ),
+            ],
+          ),
+        ).whenComplete(() {
+          context.read<TextEditorBloc>().add(
+                TextEditorReplaceEditorTile(
+                  tileToRemove: this,
+                  newEditorTile:
+                      this.copyWith(latexText: textEditingController.text),
+                  context: context,
+                ),
+              );
+        });
       },
       child: Center(
         child: Math.tex(
-          r'f(x) = \int_{-\infty}^\infty f\hat \xi\,e^{2 \pi i \xi x}\,d\xi',
-          mathStyle: MathStyle.display,
-          textStyle: TextStyle(fontSize: 25),
+          latexText,
+          textStyle: const TextStyle(fontSize: 25),
           onErrorFallback: (err) => Container(
             color: Colors.red,
-            child:
-                Text(err.messageWithType, style: TextStyle(color: Colors.yellow)),
+            child: Text(
+              err.messageWithType,
+              style: TextStyle(color: Colors.yellow),
+            ),
           ),
         ),
       ),
     ); // Default
+  }
+
+  /// copy with function of CalloutTile
+  LatexTile copyWith({
+    String? latexText,
+  }) {
+    return LatexTile(
+      latexText: latexText ?? this.latexText,
+    );
   }
 
   @override
@@ -54,6 +81,6 @@ class LatexTile extends StatelessWidget implements EditorTile {
       identical(this, other) ||
       other is LatexTile &&
           runtimeType == other.runtimeType &&
-          _textTile == other._textTile &&
+          latexText == other.latexText &&
           focusNode == other.focusNode;
 }

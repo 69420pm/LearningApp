@@ -33,4 +33,6 @@ class TextFieldConstants {
   /// text style for the front textfield of the callout_tile
   /// which should get used for smileys
   static const TextStyle calloutStart = TextStyle(fontSize:20);
+
+  static const TextStyle textButton = TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
 }

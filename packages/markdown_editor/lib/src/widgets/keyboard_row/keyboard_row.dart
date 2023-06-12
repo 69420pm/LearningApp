@@ -44,9 +44,7 @@ class _KeyboardRowState extends State<KeyboardRow> with WidgetsBindingObserver {
                   KeyboardUpperRowExtraFormat(),
                 if (state is KeyboardRowNewTextTile)
                   const KeyboardBothRowsAddTile(),
-                if (state is KeyboardRowLatex) KeyboardLatexRow(),
-                if (state is! KeyboardRowNewTextTile &&
-                    state is! KeyboardRowLatex)
+                if (state is! KeyboardRowNewTextTile)
                   KeyboardLowerRowTextTile(),
               ],
             ),
