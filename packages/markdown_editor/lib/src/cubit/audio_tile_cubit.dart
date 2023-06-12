@@ -37,7 +37,7 @@ class AudioTileCubit extends Cubit<AudioTileState> {
   }
 
   /// show initial page with option to record audio or choose file form storage
-  void switchToInitPage(){
+  void switchToInitPage() {
     emit(AudioTileInitial());
   }
 
