@@ -25,7 +25,6 @@ dev_dependencies:
   path_provider: ^2.0.14
   flutter_math_fork: ^0.7.1
 
-
 dependencies:
   equatable: ^2.0.5
   material: ^1.0.0+2
