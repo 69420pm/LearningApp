@@ -3,7 +3,7 @@ class UIConstants {
 
   static const double paddingEdge = 16;
 
-  static const double cornerRadius = 16;
+  static const double cornerRadius = 35;
 
   static const double shadowBlur = 10;
   static const double shadowSpread = 1;

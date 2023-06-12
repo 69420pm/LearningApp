@@ -96,7 +96,7 @@ class AppView extends StatelessWidget {
         elevation: 0,
       ),
       useMaterial3: true,
-      textTheme: GoogleFonts.openSansTextTheme(),
+      textTheme: GoogleFonts.robotoTextTheme(),
     );
   }
 }
