@@ -135,7 +135,7 @@ class _SubjectOverviewViewState extends State<SubjectOverviewView> {
               key: formKey,
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: UIConstants.paddingEdge,
+                  horizontal: UIConstants.cardHorizontalPadding,
                 ),
                 child: Column(
                   children: [

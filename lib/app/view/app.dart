@@ -49,12 +49,14 @@ class AppView extends StatelessWidget {
         title: 'Learning App',
         theme: _themeData(
           isLightMode: true,
+          //colorScheme: lightBlackAndWhiteColorScheme
           colorScheme: UIConstants.useDynamicColors
               ? (lightDynamic ?? lightColorScheme)
               : lightColorScheme,
         ),
         darkTheme: _themeData(
           isLightMode: false,
+          //colorScheme: darkBlackAndWhiteColorScheme
           colorScheme: UIConstants.useDynamicColors
               ? darkDynamic ?? darkColorScheme
               : darkColorScheme,
@@ -94,7 +96,7 @@ class AppView extends StatelessWidget {
         elevation: 0,
       ),
       useMaterial3: true,
-      textTheme: GoogleFonts.openSansTextTheme(),
+      textTheme: GoogleFonts.robotoTextTheme(),
     );
   }
 }
