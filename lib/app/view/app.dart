@@ -87,15 +87,15 @@ class AppView extends StatelessWidget {
     }
 
     return ThemeData(
-      brightness: isLightMode ? Brightness.light : Brightness.dark,
-      colorScheme: colorScheme,
-      scaffoldBackgroundColor: colorScheme.background,
-      bottomSheetTheme: const BottomSheetThemeData(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      useMaterial3: true,
-      fontFamily: "Inter",
-    );
+        brightness: isLightMode ? Brightness.light : Brightness.dark,
+        colorScheme: colorScheme,
+        scaffoldBackgroundColor: colorScheme.background,
+        bottomSheetTheme: const BottomSheetThemeData(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+        useMaterial3: true,
+        fontFamily: "Inter",
+        textTheme: const TextTheme());
   }
 }

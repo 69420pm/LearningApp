@@ -14,3 +14,4 @@ export 'src/backend/hive_ui_api.dart';
 export 'src/backend/ui_api.dart';
 export 'src/backend/ui_repository.dart';
 export 'src/widgets/card.dart';
+export 'src/ui_text.dart';

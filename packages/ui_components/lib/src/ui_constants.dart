@@ -1,3 +1,6 @@
+import 'dart:ui' hide TextStyle;
+import 'package:flutter/material.dart';
+
 class UIConstants {
   static const double defaultSize = 8;
 

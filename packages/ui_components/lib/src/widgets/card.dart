@@ -7,31 +7,32 @@ class UICard extends StatelessWidget {
     Key? key,
     this.onTap,
     this.color,
-    this.hight,
-    this.width,
     required this.child,
   }) : super(key: key);
 
   final void Function()? onTap;
   final Color? color;
   final Widget child;
-  final double? width;
-  final double? hight;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-          width: width,
-          height: hight,
-          decoration: BoxDecoration(
-            color: color ?? Theme.of(context).colorScheme.primaryContainer,
-            borderRadius: const BorderRadius.all(
-              Radius.circular(40),
-            ),
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: color ?? Theme.of(context).colorScheme.primaryContainer,
+          borderRadius: BorderRadius.all(
+            Radius.circular(UIConstants.cornerRadius),
           ),
-          child: child),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+              horizontal: UIConstants.cardHorizontalPadding,
+              vertical: UIConstants.cardVerticalPadding),
+          child: child,
+        ),
+      ),
     );
   }
 }
