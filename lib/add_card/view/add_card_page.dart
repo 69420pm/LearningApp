@@ -5,12 +5,18 @@ import 'package:markdown_editor/markdown_editor.dart';
 
 import 'package:ui_components/ui_components.dart';
 
-class AddCardPage extends StatelessWidget {
+class AddCardPage extends StatefulWidget {
   const AddCardPage({super.key, required this.parentId});
 
   /// when add_Card_page is used as edit_Card_page, when not let it empty
   final String parentId;
 
+  @override
+  State<AddCardPage> createState() => _AddCardPageState();
+}
+
+class _AddCardPageState extends State<AddCardPage> {
+  final List<bool> _isOpen = [false, false];
   @override
   Widget build(BuildContext context) {
     final frontController = TextEditingController();
@@ -23,74 +29,111 @@ class AddCardPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: UIAppBar(title: const Text('Add Card Page')),
-      body: Stack(children: [
-        Padding(
-          padding:
-              const EdgeInsets.symmetric(horizontal: UIConstants.paddingEdge),
-          child: SafeArea(
-            child: Form(
-              key: formKey,
-              child: Column(
-                children: [
-                  const SizedBox(height: UIConstants.defaultSize * 1),
-                  UITextFormField(
-                    
-                    onFieldSubmitted: (value) async {
-                      if (formKey.currentState!.validate()) {
-                        // await context.read<AddCardCubit>().saveCard(
-                        //     frontController.text,
-                        //     backController.text,
-                        //     recommendedSubjectParent!,
-                        //     iconController.text);
-                        context.read<EditSubjectBloc>().add(
-                              EditSubjectAddCard(
-                                front: frontController.text,
-                                back: backController.text,
-                                parentId: parentId,
-                              ),
-                            );
-                      }
-                      Navigator.pop(context);
-                    },
-                    autofocus: false,
-                    label: 'Title',
-                    controller: frontController,
-                    validation: (value) {
-                      if (value!.isEmpty) {
-                        return 'Enter something';
-                      } else {
-                        return null;
-                      }
-                    },
-                  ),
-                  MarkdownWidget(),
-                  ElevatedButton(
-                    onPressed: () async {
-                      if (formKey.currentState!.validate()) {
-                        // await context.read<AddCardCubit>().saveCard(
-                        //     frontController.text,
-                        //     backController.text,
-                        //     recommendedSubjectParent!,
-                        //     iconController.text);
-                        context.read<EditSubjectBloc>().add(
-                              EditSubjectAddCard(
-                                front: frontController.text,
-                                back: backController.text,
-                                parentId: parentId,
-                              ),
-                            );
-                      }
-                      Navigator.pop(context);
-                    },
-                    child: const Text('Save'),
-                  ),
-                ],
+      body: Stack(
+        children: [
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: UIConstants.paddingEdge),
+            child: SafeArea(
+              child: Form(
+                key: formKey,
+                child: Column(
+                  children: [
+                    const SizedBox(height: UIConstants.defaultSize * 1),
+                    UITextFormField(
+                      onFieldSubmitted: (value) async {
+                        if (formKey.currentState!.validate()) {
+                          // await context.read<AddCardCubit>().saveCard(
+                          //     frontController.text,
+                          //     backController.text,
+                          //     recommendedSubjectParent!,
+                          //     iconController.text);
+                          context.read<EditSubjectBloc>().add(
+                                EditSubjectAddCard(
+                                  front: frontController.text,
+                                  back: backController.text,
+                                  parentId: widget.parentId,
+                                ),
+                              );
+                        }
+                        Navigator.pop(context);
+                      },
+                      autofocus: false,
+                      label: 'Title',
+                      controller: frontController,
+                      validation: (value) {
+                        if (value!.isEmpty) {
+                          return 'Enter something';
+                        } else {
+                          return null;
+                        }
+                      },
+                    ),
+                    ExpansionPanelList(
+                      expansionCallback: (panelIndex, isExpanded) {
+                        setState(() {
+                          _isOpen[panelIndex] = !isExpanded;
+                        });
+                      },
+                      children: [
+                        ExpansionPanel(
+                          isExpanded: _isOpen[0],
+                          headerBuilder: (context, isExpanded) {
+                            return Text("Front",
+                                style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onBackground));
+                          },
+                          body: BlocProvider(
+                            create: (context) => TextEditorBloc(),
+                            child: MarkdownWidget(),
+                          ),
+                        ),
+                        ExpansionPanel(
+                          isExpanded: _isOpen[1],
+                          headerBuilder: (context, isExpanded) {
+                            return Text("Back",
+                                style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onBackground));
+                          },
+                          body: BlocProvider(
+                            create: (context) => TextEditorBloc(),
+                            child: MarkdownWidget(),
+                          ),
+                        )
+                      ],
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        if (formKey.currentState!.validate()) {
+                          // await context.read<AddCardCubit>().saveCard(
+                          //     frontController.text,
+                          //     backController.text,
+                          //     recommendedSubjectParent!,
+                          //     iconController.text);
+                          context.read<EditSubjectBloc>().add(
+                                EditSubjectAddCard(
+                                  front: frontController.text,
+                                  back: backController.text,
+                                  parentId: widget.parentId,
+                                ),
+                              );
+                        }
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Save'),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        Positioned(left: 0, right: 0, bottom: 0, child: KeyboardRow())
-      ],),
+          Positioned(left: 0, right: 0, bottom: 0, child: KeyboardRow())
+        ],
+      ),
     );
   }
 }
