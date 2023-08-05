@@ -17,8 +17,8 @@ class LearningScreen extends StatelessWidget {
         scrolledUnderElevation: 0,
       ),
       body: Padding(
-        padding:
-            const EdgeInsets.symmetric(horizontal: UIConstants.paddingEdge),
+        padding: const EdgeInsets.symmetric(
+            horizontal: UIConstants.cardHorizontalPadding),
         child: BlocBuilder<LearnCubit, LearnState>(
           builder: (context, state) {
             final card = context.read<LearnCubit>().getNextCard();

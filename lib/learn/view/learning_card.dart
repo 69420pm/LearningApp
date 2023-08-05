@@ -29,7 +29,7 @@ class LearningCard extends StatelessWidget {
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: UIConstants.paddingEdge / 2,
+                  horizontal: UIConstants.cardHorizontalPadding / 2,
                 ),
                 child: Column(
                   children: [
@@ -37,7 +37,10 @@ class LearningCard extends StatelessWidget {
                     Text(
                       card.front,
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                      style: Theme.of(context)
+                          .textTheme
+                          .displayMedium
+                          ?.copyWith(
                             color:
                                 Theme.of(context).colorScheme.onSurfaceVariant,
                             fontWeight: FontWeight.bold,
@@ -52,7 +55,7 @@ class LearningCard extends StatelessWidget {
                           interactive: false,
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: UIConstants.paddingEdge / 2,
+                              horizontal: UIConstants.cardHorizontalPadding / 2,
                             ),
                             child: SingleChildScrollView(
                               child: Text(

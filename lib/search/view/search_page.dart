@@ -11,8 +11,8 @@ class SearchPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding:
-            const EdgeInsets.symmetric(horizontal: UIConstants.paddingEdge),
+        padding: const EdgeInsets.symmetric(
+            horizontal: UIConstants.cardHorizontalPadding),
         child: SafeArea(
           child: Column(
             children: [
