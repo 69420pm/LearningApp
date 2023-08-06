@@ -21,7 +21,7 @@ class LearnAllButton extends StatelessWidget {
                 style: UIText.titleBig.copyWith(color: UIColors.textDark),
               ),
               const SizedBox(
-                height: UIConstants.cardItemPadding / 4,
+                height: UIConstants.itemPadding / 4,
               ),
               Text(
                 '69 Cards remaining',
@@ -31,7 +31,7 @@ class LearnAllButton extends StatelessWidget {
               )
             ],
           ),
-          UIIcons.arrowForward
+          UIIcons.arrowForward.copyWith(color: UIColors.overlay)
         ],
       ),
     );

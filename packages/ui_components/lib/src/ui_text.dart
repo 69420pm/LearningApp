@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ui_components/ui_components.dart';
 
 class UIText {
   /// biggest and boldest font available, for really big titles
@@ -22,28 +23,31 @@ class UIText {
   /// 3rd biggest and boldest font available, for labels and short text
   static const label = TextStyle(
     fontFamily: "Inter",
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: FontWeight.w600,
-    height: 20.8 / 16,
+    height: 20.8 / 18,
   );
+
   /// normal bold font for small but important text
   static const normalBold = TextStyle(
     fontFamily: "Inter",
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: FontWeight.w800,
-    height: 15.6 / 12,
+    height: 15.6 / 14,
   );
+
   /// normal font for longer smaller text
   static const normal = TextStyle(
     fontFamily: "Inter",
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: FontWeight.w500,
-    height: 15.6 / 12,
+    height: 15.6 / 14,
   );
+
   /// smallest font for explain texts
   static const small = TextStyle(
     fontFamily: "Inter",
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: FontWeight.w400,
     height: 14 / 12,
   );

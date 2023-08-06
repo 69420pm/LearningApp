@@ -19,3 +19,4 @@ export 'src/widgets/ui_card.dart';
 export 'src/widgets/ui_icon_button.dart';
 export 'src/widgets/ui_label_row.dart';
 export 'src/ui_colors.dart';
+export 'src/widgets/ui_page.dart';
