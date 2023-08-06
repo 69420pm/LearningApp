@@ -11,41 +11,63 @@ class SubjectListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: UIConstants.defaultSize),
-      child: GestureDetector(
-        onTap: () => Navigator.of(context)
-            .pushNamed('/subject_overview', arguments: subject),
-        child: Container(
-          height: UIConstants.defaultSize * 6,
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceVariant,
-            borderRadius: const BorderRadius.all(
-              Radius.circular(UIConstants.cornerRadius),
-            ),
+    return InkWell(
+      onTap: () => Navigator.of(context)
+          .pushNamed('/subject_overview', arguments: subject),
+      child: Row(
+        children: [
+          //Icon with progressindicator
+          // TODO implement progressindicator
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              Container(
+                height: 48,
+                width: 48,
+                decoration: BoxDecoration(
+                    color: UIColors.primary,
+                    borderRadius: BorderRadius.all(Radius.circular(100))),
+              ),
+              Container(
+                height: 38,
+                width: 38,
+                decoration: BoxDecoration(
+                    color: UIColors.background,
+                    borderRadius: BorderRadius.all(Radius.circular(100))),
+              ),
+              UIIcons.download
+            ],
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: UIConstants.defaultSize * 2,
-              vertical: UIConstants.defaultSize,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  subject.name,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface,),
+          SizedBox(
+            width: UIConstants.itemPadding,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                subject.name,
+                style: UIText.normalBold.copyWith(
+                  color: UIColors.textLight,
                 ),
-                IconButton(
-                  onPressed: () =>
-                      context.read<AddSubjectCubit>().deleteSubject(subject.id),
-                  icon: const Icon(Icons.delete),
-                )
-              ],
-            ),
+              ),
+              const SizedBox(height: UIConstants.defaultSize / 2),
+              RichText(
+                text: TextSpan(
+                  style: UIText.normal.copyWith(color: UIColors.smallText),
+                  children: <TextSpan>[
+                    TextSpan(text: "classtest in "),
+                    TextSpan(
+                        text: "2 ",
+                        style: UIText.normal.copyWith(color: UIColors.primary)),
+                    TextSpan(text: "days"),
+                  ],
+                ),
+              )
+            ],
           ),
-        ),
+          const Spacer(),
+          UIIcons.arrowForward.copyWith(color: UIColors.smallText),
+        ],
       ),
     );
   }

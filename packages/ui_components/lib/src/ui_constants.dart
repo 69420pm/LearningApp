@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class UIConstants {
   static const double defaultSize = 8;
 
-  static const double cardItemPadding = 16;
+  static const double itemPadding = 16;
   static const double cardHorizontalPadding = 24;
   static const double cardVerticalPadding = 16;
   static const double cardVerticalPaddingLarge = 24;

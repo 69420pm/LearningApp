@@ -7,28 +7,31 @@ class LearnAllButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return UICard(
+      color: UIColors.primary,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Learn All',
-                style: UIText.titleBig,
+                style: UIText.titleBig.copyWith(color: UIColors.textDark),
               ),
-              const SizedBox(height: UIConstants.cardItemPadding/4,),
+              const SizedBox(
+                height: UIConstants.itemPadding / 4,
+              ),
               Text(
                 '69 Cards remaining',
                 style: UIText.label.copyWith(
-                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  color: UIColors.textDark,
                 ),
               )
             ],
           ),
-          UIIcons.arrowForward
+          UIIcons.arrowForward.copyWith(color: UIColors.overlay)
         ],
       ),
     );
