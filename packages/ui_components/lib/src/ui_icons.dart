@@ -10,6 +10,8 @@ class UIIcons {
   static UIIcon arrowDown = UIIcon(Symbols.expand_more);
   static UIIcon add = UIIcon(Symbols.add_rounded);
   static UIIcon download = UIIcon(Symbols.download);
+  static UIIcon account = UIIcon(Symbols.account_circle);
+  static UIIcon search = UIIcon(Symbols.search);
 }
 
 class UIIcon extends Icon {
