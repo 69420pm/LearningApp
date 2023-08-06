@@ -72,9 +72,7 @@ class OverviewPage extends StatelessWidget {
                 actionWidgets: [
                   UIIconButton(
                     icon: UIIcons.download,
-                    onPressed: () {
-
-                    },
+                    onPressed: () {},
                   ),
                   // SizedBox(
                   //   width: UIConstants.cardItemPadding / 4,
@@ -82,13 +80,13 @@ class OverviewPage extends StatelessWidget {
                   UIIconButton(
                     icon: UIIcons.add,
                     onPressed: () => showModalBottomSheet(
-              elevation: 0,
-              context: context,
-              builder: (_) => BlocProvider.value(
-                value: context.read<AddSubjectCubit>(),
-                child: AddSubjectBottomSheet(),
-              ),
-            ),
+                      elevation: 0,
+                      context: context,
+                      builder: (_) => BlocProvider.value(
+                        value: context.read<AddSubjectCubit>(),
+                        child: AddSubjectBottomSheet(),
+                      ),
+                    ),
                   ),
                 ],
               ),
