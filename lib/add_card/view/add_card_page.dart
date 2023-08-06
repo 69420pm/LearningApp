@@ -32,8 +32,8 @@ class _AddCardPageState extends State<AddCardPage> {
       body: Stack(
         children: [
           Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: UIConstants.paddingEdge),
+            padding: const EdgeInsets.symmetric(
+                horizontal: UIConstants.cardHorizontalPadding),
             child: SafeArea(
               child: Form(
                 key: formKey,
@@ -69,43 +69,7 @@ class _AddCardPageState extends State<AddCardPage> {
                         }
                       },
                     ),
-                    ExpansionPanelList(
-                      expansionCallback: (panelIndex, isExpanded) {
-                        setState(() {
-                          _isOpen[panelIndex] = !isExpanded;
-                        });
-                      },
-                      children: [
-                        ExpansionPanel(
-                          isExpanded: _isOpen[0],
-                          headerBuilder: (context, isExpanded) {
-                            return Text("Front",
-                                style: TextStyle(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onBackground));
-                          },
-                          body: BlocProvider(
-                            create: (context) => TextEditorBloc(),
-                            child: MarkdownWidget(),
-                          ),
-                        ),
-                        ExpansionPanel(
-                          isExpanded: _isOpen[1],
-                          headerBuilder: (context, isExpanded) {
-                            return Text("Back",
-                                style: TextStyle(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onBackground));
-                          },
-                          body: BlocProvider(
-                            create: (context) => TextEditorBloc(),
-                            child: MarkdownWidget(),
-                          ),
-                        )
-                      ],
-                    ),
+                    MarkdownWidget(),
                     ElevatedButton(
                       onPressed: () async {
                         if (formKey.currentState!.validate()) {

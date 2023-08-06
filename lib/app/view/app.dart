@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:learning_app/app/routes/app_router.dart';
 import 'package:learning_app/l10n/l10n.dart';
 import 'package:ui_components/ui_components.dart';
@@ -88,15 +87,15 @@ class AppView extends StatelessWidget {
     }
 
     return ThemeData(
-      brightness: isLightMode ? Brightness.light : Brightness.dark,
-      colorScheme: colorScheme,
-      scaffoldBackgroundColor: colorScheme.background,
-      bottomSheetTheme: const BottomSheetThemeData(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      useMaterial3: true,
-      textTheme: GoogleFonts.robotoTextTheme(),
-    );
+        brightness: isLightMode ? Brightness.light : Brightness.dark,
+        colorScheme: colorScheme,
+        scaffoldBackgroundColor: colorScheme.background,
+        bottomSheetTheme: const BottomSheetThemeData(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+        useMaterial3: true,
+        fontFamily: "Inter",
+        textTheme: const TextTheme());
   }
 }

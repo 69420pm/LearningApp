@@ -30,7 +30,6 @@ dependencies:
     path: packages/markdown_editor
   uuid: ^3.0.7
   dynamic_color: ^1.5.4
-  google_fonts: ^5.1.0
   characters: ^1.2.1
   flutter_colorpicker: ^1.0.3
   flutter_animate: ^4.1.1+1
@@ -40,6 +39,7 @@ dependencies:
   audioplayers: ^5.0.0
   file_picker: ^5.3.2
   flutter_math_fork: ^0.7.1
+  material_symbols_icons: ^4.2668.0
 
 dev_dependencies:
   bloc_test: ^9.1.1
@@ -51,3 +51,24 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/inter/Inter-Black.ttf
+          weight: 900
+        - asset: assets/fonts/inter/Inter-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/inter/Inter-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/inter/Inter-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/inter/Inter-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/inter/Inter-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/inter/Inter-Light.ttf
+          weight: 300
+        - asset: assets/fonts/inter/Inter-ExtraLight.ttf
+          weight: 200
+        - asset: assets/fonts/inter/Inter-Thin.ttf
+          weight: 100
