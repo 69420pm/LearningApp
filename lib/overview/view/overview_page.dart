@@ -19,26 +19,26 @@ class OverviewPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          FloatingActionButton.extended(
-            icon: const Icon(Icons.add),
-            label: Text(
-              'Add Subject',
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(color: Theme.of(context).colorScheme.onSurface),
-            ),
-            heroTag: 'subject',
-            onPressed: () => showModalBottomSheet(
-              elevation: 0,
-              context: context,
-              builder: (_) => BlocProvider.value(
-                value: context.read<AddSubjectCubit>(),
-                child: AddSubjectBottomSheet(),
-              ),
-            ),
-            backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
-          ),
+          // FloatingActionButton.extended(
+          //   icon: const Icon(Icons.add),
+          //   label: Text(
+          //     'Add Subject',
+          //     style: Theme.of(context)
+          //         .textTheme
+          //         .bodyMedium
+          //         ?.copyWith(color: Theme.of(context).colorScheme.onSurface),
+          //   ),
+          //   heroTag: 'subject',
+          //   onPressed: () => showModalBottomSheet(
+          //     elevation: 0,
+          //     context: context,
+          //     builder: (_) => BlocProvider.value(
+          //       value: context.read<AddSubjectCubit>(),
+          //       child: AddSubjectBottomSheet(),
+          //     ),
+          //   ),
+          //   backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+          // ),
           const SizedBox(
             height: UIConstants.defaultSize,
           ),
@@ -64,8 +64,35 @@ class OverviewPage extends StatelessWidget {
               SearchBar(
                 onTap: () => Navigator.of(context).pushNamed('/search'),
               ),
-              const SizedBox(height: UIConstants.defaultSize * 2),
+              const SizedBox(height: UIConstants.cardItemPadding),
               const LearnAllButton(),
+              const SizedBox(height: UIConstants.cardItemPadding),
+              UILabelRow(
+                labelText: 'Subjects',
+                actionWidgets: [
+                  UIIconButton(
+                    icon: UIIcons.download,
+                    onPressed: () {
+
+                    },
+                  ),
+                  // SizedBox(
+                  //   width: UIConstants.cardItemPadding / 4,
+                  // ),
+                  UIIconButton(
+                    icon: UIIcons.add,
+                    onPressed: () => showModalBottomSheet(
+              elevation: 0,
+              context: context,
+              builder: (_) => BlocProvider.value(
+                value: context.read<AddSubjectCubit>(),
+                child: AddSubjectBottomSheet(),
+              ),
+            ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: UIConstants.cardItemPadding),
               BlocBuilder<OverviewBloc, OverviewState>(
                 buildWhen: (previous, current) => previous != current,
                 builder: (context, state) {

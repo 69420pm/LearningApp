@@ -29,7 +29,7 @@ class UICard extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(
               horizontal: UIConstants.cardHorizontalPadding,
-              vertical: UIConstants.cardVerticalPadding),
+              vertical: UIConstants.cardVerticalPaddingLarge),
           child: child,
         ),
       ),

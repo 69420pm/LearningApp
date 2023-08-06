@@ -54,7 +54,8 @@ class LatexTile extends StatelessWidget implements EditorTile {
       child: Center(
         child: Math.tex(
           latexText,
-          textStyle: const TextStyle(fontSize: 25),
+          textStyle: TextStyle(
+              fontSize: 25, color: Theme.of(context).colorScheme.onBackground),
           onErrorFallback: (err) => Container(
             color: Colors.red,
             child: Text(

@@ -5,12 +5,18 @@ import 'package:markdown_editor/markdown_editor.dart';
 
 import 'package:ui_components/ui_components.dart';
 
-class AddCardPage extends StatelessWidget {
+class AddCardPage extends StatefulWidget {
   const AddCardPage({super.key, required this.parentId});
 
   /// when add_Card_page is used as edit_Card_page, when not let it empty
   final String parentId;
 
+  @override
+  State<AddCardPage> createState() => _AddCardPageState();
+}
+
+class _AddCardPageState extends State<AddCardPage> {
+  final List<bool> _isOpen = [false, false];
   @override
   Widget build(BuildContext context) {
     final frontController = TextEditingController();
@@ -46,7 +52,7 @@ class AddCardPage extends StatelessWidget {
                                 EditSubjectAddCard(
                                   front: frontController.text,
                                   back: backController.text,
-                                  parentId: parentId,
+                                  parentId: widget.parentId,
                                 ),
                               );
                         }
@@ -76,7 +82,7 @@ class AddCardPage extends StatelessWidget {
                                 EditSubjectAddCard(
                                   front: frontController.text,
                                   back: backController.text,
-                                  parentId: parentId,
+                                  parentId: widget.parentId,
                                 ),
                               );
                         }

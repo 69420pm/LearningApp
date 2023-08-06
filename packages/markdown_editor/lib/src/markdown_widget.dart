@@ -12,7 +12,8 @@ class MarkdownWidget extends StatelessWidget {
           currentState is TextEditorEditorTilesChanged,
       builder: (context, state) {
         final editorTiles = context.read<TextEditorBloc>().editorTiles;
-        return Expanded(
+        return Container(
+          height: 300,
           child: ListView.builder(
             // buildDefaultDragHandles: false,
             // onReorder: (oldIndex, newIndex) {
