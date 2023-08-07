@@ -67,6 +67,7 @@ class OverviewPage extends StatelessWidget {
               const SizedBox(height: UIConstants.cardItemPadding),
               const LearnAllButton(),
               const SizedBox(height: UIConstants.cardItemPadding),
+              UICircularProgressIndicator(),
               UILabelRow(
                 labelText: 'Subjects',
                 actionWidgets: [
