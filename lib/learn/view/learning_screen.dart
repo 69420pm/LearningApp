@@ -13,8 +13,7 @@ class LearningScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: UIAppBar(
-        title: const Text('Learning Site'),
-        scrolledUnderElevation: 0,
+        title: 'Learning Site',
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(

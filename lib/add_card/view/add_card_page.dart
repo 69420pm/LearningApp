@@ -28,7 +28,7 @@ class _AddCardPageState extends State<AddCardPage> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
-      appBar: UIAppBar(title: const Text('Add Card Page')),
+      appBar: UIAppBar(title: 'Add Card Page'),
       body: Stack(
         children: [
           Padding(

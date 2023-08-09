@@ -23,14 +23,16 @@ class UILabelRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: horizontalPadding ? UIConstants.cardHorizontalPadding : 0,
+      padding: EdgeInsets.only(
+        left: horizontalPadding ? UIConstants.cardHorizontalPadding : 0,
+        right: horizontalPadding ? UIConstants.cardHorizontalPadding : 0,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           // TODO add color
-          Text(labelText, style: UIText.label),
+          Text(labelText,
+              style: UIText.label.copyWith(color: UIColors.smallText)),
           Row(children: actionWidgets ?? [])
         ],
       ),

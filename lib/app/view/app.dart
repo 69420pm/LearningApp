@@ -6,7 +6,6 @@
 // https://opensource.org/licenses/MIT.
 
 import 'package:cards_repository/cards_repository.dart';
-import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,31 +41,26 @@ class AppView extends StatelessWidget {
     final cardsRepository = context.read<CardsRepository>();
     final appRouter = AppRouter(cardsRepository);
 
-    return DynamicColorBuilder(
-      builder: (lightDynamic, darkDynamic) => MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Learning App',
-        theme: _themeData(
-          isLightMode: true,
-          //colorScheme: lightBlackAndWhiteColorScheme
-          colorScheme: UIConstants.useDynamicColors
-              ? (lightDynamic ?? lightColorScheme)
-              : lightColorScheme,
-        ),
-        darkTheme: _themeData(
-          isLightMode: false,
-          //colorScheme: darkBlackAndWhiteColorScheme
-          colorScheme: UIConstants.useDynamicColors
-              ? darkDynamic ?? darkColorScheme
-              : darkColorScheme,
-        ),
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-        ],
-        supportedLocales: AppLocalizations.supportedLocales,
-        onGenerateRoute: appRouter.onGenerateRoute,
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Learning App',
+      theme: _themeData(
+        isLightMode: true,
+        //colorScheme: lightBlackAndWhiteColorScheme
+        colorScheme: lightColorScheme,
       ),
+      darkTheme: _themeData(
+        isLightMode: false,
+        //colorScheme: darkBlackAndWhiteColorScheme
+        colorScheme: darkColorScheme,
+      ),
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
+      onGenerateRoute: appRouter.onGenerateRoute,
+      themeMode: ThemeMode.dark,
     );
   }
 

@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:ui_components/ui_components.dart';
 
@@ -8,23 +10,38 @@ class UICard extends StatelessWidget {
     this.onTap,
     this.color,
     required this.child,
+    this.useGradient = false,
+    this.distanceToTop = 0,
   }) : super(key: key);
 
   final void Function()? onTap;
   final Color? color;
   final Widget child;
+  final bool useGradient;
+  final double distanceToTop;
 
   @override
   Widget build(BuildContext context) {
+    final relativeGradientPos =
+        clampDouble(distanceToTop / MediaQuery.of(context).size.height, 0, 1);
     return GestureDetector(
       onTap: onTap,
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: color ?? Theme.of(context).colorScheme.primaryContainer,
+          color: color ?? UIColors.overlay,
           borderRadius: BorderRadius.all(
             Radius.circular(UIConstants.cornerRadius),
           ),
+          image: useGradient
+              ? DecorationImage(
+                  image: AssetImage("assets/gradient.png"),
+                  alignment: Alignment.lerp(Alignment.topCenter,
+                          Alignment.bottomCenter, relativeGradientPos) ??
+                      Alignment.center,
+                  fit: BoxFit.cover,
+                )
+              : null,
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(

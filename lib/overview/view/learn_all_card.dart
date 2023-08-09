@@ -1,34 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:ui_components/ui_components.dart';
 
-class LearnAllButton extends StatelessWidget {
-  const LearnAllButton({super.key});
+class LearnAllCard extends StatelessWidget {
+  const LearnAllCard({super.key});
 
   @override
   Widget build(BuildContext context) {
     return UICard(
+      useGradient: true,
+      distanceToTop: 80,
+      color: UIColors.primary,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Learn All',
-                style: UIText.titleBig,
+                style: UIText.titleBig.copyWith(color: UIColors.textDark),
               ),
-              const SizedBox(height: UIConstants.cardItemPadding/4,),
+              const SizedBox(
+                height: UIConstants.defaultSize,
+              ),
               Text(
                 '69 Cards remaining',
                 style: UIText.label.copyWith(
-                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  color: UIColors.textDark,
                 ),
               )
             ],
           ),
-          UIIcons.arrowForward
+          UIIcons.arrowForwardNormal.copyWith(color: UIColors.overlay)
         ],
       ),
     );

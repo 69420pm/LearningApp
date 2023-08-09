@@ -1,7 +1,5 @@
 import 'package:cards_api/cards_api.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:learning_app/add_subject/cubit/add_subject_cubit.dart';
 import 'package:ui_components/ui_components.dart';
 
 class SubjectListTile extends StatelessWidget {
@@ -11,41 +9,49 @@ class SubjectListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: UIConstants.defaultSize),
-      child: GestureDetector(
-        onTap: () => Navigator.of(context)
-            .pushNamed('/subject_overview', arguments: subject),
-        child: Container(
-          height: UIConstants.defaultSize * 6,
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceVariant,
-            borderRadius: const BorderRadius.all(
-              Radius.circular(UIConstants.cornerRadius),
-            ),
+    return InkWell(
+      onTap: () => Navigator.of(context)
+          .pushNamed('/subject_overview', arguments: subject),
+      child: Row(
+        children: [
+          // Icon with progress indicator
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              UICircularProgressIndicator(value: 0.5),
+              UIIcons.download.copyWith(size: 24, color: UIColors.primary)
+            ],
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: UIConstants.defaultSize * 2,
-              vertical: UIConstants.defaultSize,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  subject.name,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface,),
+          const SizedBox(
+            width: UIConstants.itemPadding*1.5,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                subject.name,
+                style: UIText.labelBold.copyWith(
+                  color: UIColors.textLight,
                 ),
-                IconButton(
-                  onPressed: () =>
-                      context.read<AddSubjectCubit>().deleteSubject(subject.id),
-                  icon: const Icon(Icons.delete),
-                )
-              ],
-            ),
+              ),
+              const SizedBox(height: UIConstants.defaultSize / 2),
+              RichText(
+                text: TextSpan(
+                  style: UIText.normal.copyWith(color: UIColors.smallText),
+                  children: <TextSpan>[
+                    const TextSpan(text: 'class test in '),
+                    TextSpan(
+                        text: '2 ',
+                        style: UIText.normal.copyWith(color: UIColors.primary)),
+                    const TextSpan(text: 'days'),
+                  ],
+                ),
+              )
+            ],
           ),
-        ),
+          const Spacer(),
+          UIIcons.arrowForwardMedium.copyWith(color: UIColors.smallText),
+        ],
       ),
     );
   }
