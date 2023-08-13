@@ -45,12 +45,12 @@ class CardsSearchResults extends StatelessWidget {
             ],
           ),
           const SizedBox(
-            height: UIConstants.itemPadding * 1.5,
+            height: UIConstants.itemPaddingLarge,
           ),
           Column(
             children: widgetCards,
           ),
-          const SizedBox(height: UIConstants.itemPadding * 3),
+          const SizedBox(height: UIConstants.itemPaddingLarge * 2),
         ],
       );
     } else {

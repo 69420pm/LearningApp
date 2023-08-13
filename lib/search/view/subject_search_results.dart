@@ -6,17 +6,21 @@ import 'package:ui_components/ui_components.dart';
 class SubjectsSearchResults extends StatelessWidget {
   SubjectsSearchResults({super.key, required this.foundSubjects}) {
     if (foundSubjects.isNotEmpty) {
-      int i = 0;
+      var i = 0;
       for (final element in foundSubjects!) {
         subjectTiles.add(SubjectListTile(subject: element));
         if (i < foundSubjects.length - 1) {
-          subjectTiles.add(const SizedBox(
-            height: UIConstants.itemPadding * 1.5,
-          ));
+          subjectTiles.add(
+            const SizedBox(
+              height: UIConstants.itemPadding * 1.5,
+            ),
+          );
         } else {
-          subjectTiles.add(const SizedBox(
-            height: UIConstants.itemPadding * 0.5,
-          ));
+          subjectTiles.add(
+            const SizedBox(
+              height: UIConstants.itemPadding * 0.5,
+            ),
+          );
         }
         i++;
       }
@@ -44,12 +48,12 @@ class SubjectsSearchResults extends StatelessWidget {
             ],
           ),
           const SizedBox(
-            height: UIConstants.itemPadding * 1.5,
+            height: UIConstants.itemPaddingLarge,
           ),
           Column(
             children: subjectTiles,
           ),
-          const SizedBox(height: UIConstants.itemPadding * 3),
+          const SizedBox(height: UIConstants.itemPaddingLarge * 2),
         ],
       );
     } else {

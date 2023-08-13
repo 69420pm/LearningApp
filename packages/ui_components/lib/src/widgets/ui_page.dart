@@ -16,7 +16,7 @@ class UIPage extends StatelessWidget {
           padding: const EdgeInsets.only(
             left: UIConstants.pageHorizontalPadding,
             right: UIConstants.pageHorizontalPadding,
-            top: UIConstants.cardVerticalPadding
+            top: UIConstants.pageVerticalPadding
           ),
           child: body,
         ),

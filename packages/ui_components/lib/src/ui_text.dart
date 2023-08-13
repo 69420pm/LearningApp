@@ -22,7 +22,7 @@ class UIText {
   /// 3rd biggest and boldest font available, for labels and short text
   static const label = TextStyle(
     fontFamily: 'Inter',
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: FontWeight.w600,
     height: 20.8 / 18,
   );

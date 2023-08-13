@@ -29,9 +29,9 @@ class OverviewPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const LearnAllCard(),
-          const SizedBox(height: UIConstants.itemPadding),
+          const SizedBox(height: UIConstants.itemPaddingLarge),
           const CalendarCard(),
-          const SizedBox(height: UIConstants.itemPadding * 2),
+          const SizedBox(height: UIConstants.itemPaddingLarge * 2),
           UILabelRow(
             labelText: 'Subjects',
             actionWidgets: [
@@ -52,13 +52,13 @@ class OverviewPage extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(
-          height: UIConstants.itemPadding,
-        ),
-          SubjectList(),
-          const SizedBox(height: UIConstants.itemPadding * 2),
+          const SizedBox(
+            height: UIConstants.itemPaddingLarge,
+          ),
+          const SubjectList(),
+          const SizedBox(height: UIConstants.itemPaddingLarge * 2),
           UILabelRow(
-            labelText: "Disabled",
+            labelText: 'Disabled',
             actionWidgets: [
               UIIcons.arrowDown.copyWith(color: UIColors.smallText)
             ],

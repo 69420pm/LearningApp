@@ -5,9 +5,12 @@ import 'package:ui_components/ui_components.dart';
 /// all static icons
 class UIIcons {
   /// arrow forward to indicate that an element is clickable
-  static UIIcon arrowForwardNormal = UIIcon(Icons.arrow_forward_ios_rounded, size: 32);
-  static UIIcon arrowForwardMedium = UIIcon(Icons.arrow_forward_ios_rounded, size: 24);
-  static UIIcon arrowForwardSmall = UIIcon(Icons.arrow_forward_ios_rounded, size: 22);
+  static UIIcon arrowForwardNormal =
+      UIIcon(Icons.arrow_forward_ios_rounded, size: 32);
+  static UIIcon arrowForwardMedium =
+      UIIcon(Icons.arrow_forward_ios_rounded, size: 24);
+  static UIIcon arrowForwardSmall =
+      UIIcon(Icons.arrow_forward_ios_rounded, size: 22);
   static UIIcon arrowDown = UIIcon(Icons.expand_more_rounded);
   static UIIcon arrowBack = UIIcon(Icons.arrow_back_rounded);
   static UIIcon add = UIIcon(Icons.add_rounded);
@@ -15,6 +18,7 @@ class UIIcons {
   static UIIcon account = UIIcon(Icons.account_circle_rounded);
   static UIIcon search = UIIcon(Icons.search_rounded);
   static UIIcon cancel = UIIcon(Icons.cancel_rounded);
+  static UIIcon close = UIIcon(Icons.close, size: 32);
   static UIIcon card = UIIcon(Icons.article_outlined, size: 32);
   static UIIcon folder = UIIcon(Icons.folder_outlined);
   static UIIcon placeHolder = UIIcon(Icons.grid_4x4);

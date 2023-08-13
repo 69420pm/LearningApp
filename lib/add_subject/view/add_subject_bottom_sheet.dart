@@ -23,6 +23,19 @@ class AddSubjectBottomSheet extends StatelessWidget {
       locationController.text = recommendedSubjectParentId!;
     }
     return UIBottomSheet(
+      actionLeft: UIIconButton(
+        icon: UIIcons.close,
+        onPressed: () {},
+      ),
+      title: UIButton(
+        child: Text("Add Subject", style: UIText.label),
+        onPressed: () {},
+      ),
+      actionRight: UIButton(
+        child: Text("Save",
+            style: UIText.labelBold.copyWith(color: UIColors.primary)),
+        onPressed: () {},
+      ),
       child: Form(
         key: formKey,
         child: Padding(

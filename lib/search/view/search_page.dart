@@ -19,7 +19,7 @@ class SearchPage extends StatelessWidget {
         children: [
           SearchTextField(),
           const SizedBox(
-            height: UIConstants.itemPadding * 1.5,
+            height: UIConstants.itemPaddingLarge,
           ),
           BlocBuilder<SearchBloc, SearchState>(
             builder: (context, state) {
