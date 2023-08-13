@@ -38,15 +38,19 @@ class UIBottomSheet extends StatelessWidget {
               left: UIConstants.pageHorizontalPadding,
               right: UIConstants.pageHorizontalPadding,
               top: UIConstants.pageVerticalPadding),
-          child: Column(children: [
-            UIBottomSheetTitleRow(
-              actionLeft: actionLeft,
-              actionRight: actionRight,
-              title: title,
-            ),
-            const SizedBox(height: UIConstants.itemPaddingLarge,),
-            child
-          ]),
+          child: Column(
+            children: [
+              UIBottomSheetTitleRow(
+                actionLeft: actionLeft,
+                actionRight: actionRight,
+                title: title,
+              ),
+              const SizedBox(
+                height: UIConstants.itemPaddingLarge,
+              ),
+              child
+            ],
+          ),
         ),
       ),
     );

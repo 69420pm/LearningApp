@@ -12,9 +12,12 @@ class UIButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(onTap: onPressed, child: Padding(
-      padding: const EdgeInsets.all(UIConstants.itemPadding/2),
-      child: child,
-    ));
+    return GestureDetector(
+      onTap: onPressed,
+      child: Padding(
+        padding: const EdgeInsets.all(UIConstants.itemPadding / 2),
+        child: child,
+      ),
+    );
   }
 }

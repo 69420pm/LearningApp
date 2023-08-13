@@ -5,7 +5,7 @@ class UIText {
   static const titleBig = TextStyle(
     fontFamily: 'Inter',
     fontSize: 38,
-    fontWeight: FontWeight.w900,
+    fontWeight: FontWeight.w800,
     letterSpacing: -38 * 0.02,
     height: 41.8 / 38,
   );
