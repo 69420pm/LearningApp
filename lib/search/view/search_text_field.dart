@@ -8,6 +8,7 @@ class SearchTextField extends StatelessWidget {
     super.key,
   });
   final searchController = TextEditingController();
+  final focusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -25,13 +26,16 @@ class SearchTextField extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextFormField(
+              focusNode: focusNode,
               controller: searchController,
               cursorColor: UIColors.smallText,
               style: UIText.labelBold,
               autofocus: true,
-              onFieldSubmitted: (p0) => context
-                  .read<SearchBloc>()
-                  .add(SearchRequest(searchController.text)),
+              onFieldSubmitted: (p0) {
+                context
+                    .read<SearchBloc>()
+                    .add(SearchRequest(searchController.text));
+              },
               decoration: InputDecoration(
                 isDense: true,
                 hintText: 'search',
@@ -48,6 +52,8 @@ class SearchTextField extends StatelessWidget {
                       .copyWith(size: 24, color: UIColors.smallText),
                   onPressed: () {
                     searchController.clear();
+                    context.read<SearchBloc>().resetState();
+                    focusNode.requestFocus();
                   },
                 ),
                 border: InputBorder.none,

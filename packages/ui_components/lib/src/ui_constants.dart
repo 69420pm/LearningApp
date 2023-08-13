@@ -16,6 +16,7 @@ class UIConstants {
   static const double borderWidth = 2;
 
   static const double iconSize = 32;
+  static const double iconSizeSmall = 20;
 
   static const useDynamicColors = true;
 }

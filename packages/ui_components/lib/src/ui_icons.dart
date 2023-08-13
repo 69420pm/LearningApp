@@ -15,6 +15,9 @@ class UIIcons {
   static UIIcon account = UIIcon(Icons.account_circle_rounded);
   static UIIcon search = UIIcon(Icons.search_rounded);
   static UIIcon cancel = UIIcon(Icons.cancel_rounded);
+  static UIIcon card = UIIcon(Icons.article_outlined, size: 32);
+  static UIIcon folder = UIIcon(Icons.folder_outlined);
+  static UIIcon placeHolder = UIIcon(Icons.grid_4x4);
 }
 
 class UIIcon extends Icon {
