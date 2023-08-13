@@ -1,12 +1,68 @@
 import 'package:cards_api/cards_api.dart';
-import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
-import 'package:flutter/scheduler.dart';
 import 'package:learning_app/search/view/parentObjects.dart';
 import 'package:ui_components/ui_components.dart';
 
-class CardListTileSearch extends StatelessWidget {
-  const CardListTileSearch({
+class CardsSearchResults extends StatelessWidget {
+  CardsSearchResults({
+    super.key,
+    required this.foundCards,
+    this.searchRequest,
+  }) {
+    if (foundCards.isNotEmpty) {
+      var i = 0;
+      for (final result in foundCards) {
+        widgetCards.add(
+          _CardListTileSearch(
+            card: result.searchedObject as Card,
+            searchRequest: searchRequest!,
+            parentObjects: result.parentObjects,
+          ),
+        );
+        if (i < foundCards.length - 1) {
+          widgetCards.add(const SizedBox(height: UIConstants.itemPadding));
+        }
+        i++;
+      }
+    }
+  }
+  final List<SearchResult> foundCards;
+  List<Widget> widgetCards = List.empty(growable: true);
+  String? searchRequest;
+
+  @override
+  Widget build(BuildContext context) {
+    if (foundCards.isNotEmpty) {
+      return Column(
+        children: [
+          UILabelRow(
+            labelText: 'Cards',
+            actionWidgets: [
+              Text(
+                '${foundCards.length} Found',
+                style: UIText.label.copyWith(color: UIColors.smallText),
+              )
+            ],
+          ),
+          const SizedBox(
+            height: UIConstants.itemPadding * 1.5,
+          ),
+          Column(
+            children: widgetCards,
+          ),
+          const SizedBox(height: UIConstants.itemPadding * 3),
+        ],
+      );
+    } else {
+      return Container();
+    }
+  }
+}
+
+
+
+class _CardListTileSearch extends StatelessWidget {
+  const _CardListTileSearch({
     super.key,
     required this.card,
     required this.searchRequest,

@@ -13,8 +13,10 @@ class UIPage extends StatelessWidget {
       appBar: appBar,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: UIConstants.pageHorizontalPadding,
+          padding: const EdgeInsets.only(
+            left: UIConstants.pageHorizontalPadding,
+            right: UIConstants.pageHorizontalPadding,
+            top: UIConstants.cardVerticalPadding
           ),
           child: body,
         ),

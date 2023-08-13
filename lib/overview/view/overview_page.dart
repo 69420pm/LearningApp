@@ -28,7 +28,6 @@ class OverviewPage extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: UIConstants.itemPadding),
           const LearnAllCard(),
           const SizedBox(height: UIConstants.itemPadding),
           const CalendarCard(),
