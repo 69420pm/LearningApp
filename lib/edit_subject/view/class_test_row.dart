@@ -68,8 +68,8 @@ class ClassTestListTile extends StatelessWidget {
                 const SizedBox(
                   width: UIConstants.itemPadding * 0.5,
                 ),
-                UIIcons.arrowForwardNormal
-                    .copyWith(size: UIConstants.iconSizeSmall, color: UIColors.smallText),
+                UIIcons.arrowForwardSmall
+                    .copyWith(color: UIColors.smallText),
               ],
             ),
           ],
