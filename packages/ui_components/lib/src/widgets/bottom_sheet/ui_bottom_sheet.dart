@@ -34,11 +34,17 @@ class UIBottomSheet extends StatelessWidget {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.only(
-              left: UIConstants.pageHorizontalPadding,
-              right: UIConstants.pageHorizontalPadding,
-              top: UIConstants.pageVerticalPadding),
+          padding: EdgeInsets.only(
+            left: UIConstants.pageHorizontalPadding,
+            right: UIConstants.pageHorizontalPadding,
+            top: UIConstants.pageVerticalPadding,
+            // bottom is static height, if bottomsheet should move with keyboard
+            // use MediaQuery.of(context).viewInsets.bottom,
+            // however the animation is a bit leggy and not smooth
+            bottom: MediaQuery.of(context).size.height * 0.55,
+          ),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               UIBottomSheetTitleRow(
                 actionLeft: actionLeft,

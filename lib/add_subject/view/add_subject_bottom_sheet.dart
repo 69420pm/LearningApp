@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_subject/cubit/add_subject_cubit.dart';
+import 'package:learning_app/add_subject/view/weekday_picker.dart';
 import 'package:ui_components/ui_components.dart';
 
 class AddSubjectBottomSheet extends StatefulWidget {
@@ -18,36 +19,38 @@ class AddSubjectBottomSheet extends StatefulWidget {
 
 class _AddSubjectBottomSheetState extends State<AddSubjectBottomSheet> {
   final nameController = TextEditingController();
-
-  final locationController = TextEditingController();
-
   final iconController = TextEditingController();
 
   bool canSave = false;
 
   @override
   Widget build(BuildContext context) {
-    if (widget.recommendedSubjectParentId != null) {
-      locationController.text = widget.recommendedSubjectParentId!;
-    }
-    final weekDayPicker = UIWeekdayPicker();
     return UIBottomSheet(
       actionLeft: UIIconButton(
         icon: UIIcons.close,
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pop(context);
+        },
       ),
       title: const Text('Add Subject', style: UIText.label),
       actionRight: UIButton(
         child: Text(
           'Save',
           style: UIText.labelBold.copyWith(
-              color: canSave ? UIColors.primary : UIColors.primaryDisabled),
+            color: canSave ? UIColors.primary : UIColors.primaryDisabled,
+          ),
         ),
         onPressed: () {
-          print(weekDayPicker.getSelectedDays());
+          if (canSave) {
+            context
+                .read<AddSubjectCubit>()
+                .saveSubject(nameController.text, 'TODO', context.read<AddSubjectCubit>().selectedDays);
+            Navigator.pop(context);
+          }
         },
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             children: [
@@ -66,6 +69,7 @@ class _AddSubjectBottomSheetState extends State<AddSubjectBottomSheet> {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a subject name';
                     }
+                    return null;
                   },
                   onChanged: (p0) {
                     if (p0 == null || p0.isEmpty) {
@@ -87,9 +91,14 @@ class _AddSubjectBottomSheetState extends State<AddSubjectBottomSheet> {
           ),
           const UILabelRow(labelText: 'Schedule'),
           const SizedBox(
-            height: UIConstants.itemPadding*0.75,
+            height: UIConstants.itemPadding * 0.75,
           ),
-          weekDayPicker
+          WeekdayPicker(),
+          const SizedBox(height: UIConstants.descriptionPadding),
+          Text(
+            'Select weekdays on which this subject is scheduled to let the test algorithm adapt to your needs',
+            style: UIText.small.copyWith(color: UIColors.smallText),
+          )
         ],
       ),
     );

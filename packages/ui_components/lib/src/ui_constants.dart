@@ -6,6 +6,7 @@ class UIConstants {
 
   static const double itemPadding = 16;
   static const double itemPaddingLarge = 24;
+  static const double descriptionPadding = 2;
 
   static const double pageHorizontalPadding = 30;
   static const double pageVerticalPadding = 24;

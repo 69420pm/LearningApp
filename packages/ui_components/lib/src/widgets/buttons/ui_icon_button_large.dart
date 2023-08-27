@@ -6,6 +6,7 @@ class UIIconButtonLarge extends StatefulWidget {
     super.key,
     required this.icon,
     required this.onPressed,
+    this.onBottomSheet = true
   });
 
   /// displayed icon
@@ -13,6 +14,9 @@ class UIIconButtonLarge extends StatefulWidget {
 
   /// callback when button gets pressed
   final void Function() onPressed;
+
+  /// whether button is on bottom sheet do set background color
+  final bool onBottomSheet;
 
   @override
   State<UIIconButtonLarge> createState() => _UIIconButtonLargeState();
@@ -24,8 +28,8 @@ class _UIIconButtonLargeState extends State<UIIconButtonLarge> {
     return Container(
       height: 48,
       width: 48,
-      decoration: const BoxDecoration(
-        color: UIColors.onOverlayCard,
+      decoration: BoxDecoration(
+        color: widget.onBottomSheet?UIColors.onOverlayCard:UIColors.overlay,
         borderRadius: BorderRadius.all(Radius.circular(420)),
       ),
       child: IconButton(

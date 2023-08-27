@@ -14,9 +14,13 @@ class OverviewPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return UIPage(
       appBar: UIAppBar(
-        leading: UIIconButton(
-          icon: UIIcons.account,
-          onPressed: () {},
+        leading: Builder(
+          builder: (context) {
+            return UIIconButton(
+              icon: UIIcons.account,
+              onPressed: () {},
+            );
+          },
         ),
         actions: [
           UIIconButton(
@@ -41,14 +45,22 @@ class OverviewPage extends StatelessWidget {
               ),
               UIIconButton(
                 icon: UIIcons.add.copyWith(color: UIColors.smallText),
-                onPressed: () => showModalBottomSheet(
-                  elevation: 0,
-                  context: context,
-                  builder: (_) => BlocProvider.value(
-                    value: context.read<AddSubjectCubit>(),
-                    child: AddSubjectBottomSheet(),
-                  ),
-                ),
+                onPressed: () {
+                  final bottomSheetController = showModalBottomSheet(
+                    elevation: 0,
+                    isScrollControlled: true,
+                    context: context,
+                    builder: (_) {
+                      // context.read<AddSubjectCubit>().resetWeekDays();
+                      return BlocProvider.value(
+                        value: context.read<AddSubjectCubit>(),
+                        child: AddSubjectBottomSheet(),
+                      );
+                    },
+                  )..whenComplete(
+                      () => context.read<AddSubjectCubit>().resetWeekDays(),
+                    );
+                },
               ),
             ],
           ),

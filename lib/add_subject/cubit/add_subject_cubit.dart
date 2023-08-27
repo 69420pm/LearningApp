@@ -8,16 +8,20 @@ class AddSubjectCubit extends Cubit<AddSubjectState> {
   AddSubjectCubit(this._cardsRepository) : super(AddSubjectInitial());
 
   final CardsRepository _cardsRepository;
+  List<bool> selectedDays = [false, false, false, false, false, false, false];
 
-  Future<void> saveSubject(String name, String parentId, String icon) async {
+  Future<void> saveSubject(String name, String icon, List<bool> daysToGetNotified) async {
     emit(AddSubjectLoading());
     final newSubject = Subject(
-        id: Uid().uid(),
-        name: name,
-        dateCreated: DateTime.now().toIso8601String(),
-        prefixIcon: icon,
-        classTests: List<String>.empty(growable: true),
-        daysToGetNotified: List<String>.empty(growable: true),);
+      id: Uid().uid(),
+      name: name,
+      dateCreated: DateTime.now().toIso8601String(),
+      prefixIcon: icon,
+      classTests: [],
+      daysToGetNotified: daysToGetNotified,
+      streakRelevant: true,
+      disabled: false
+    );
     try {
       await _cardsRepository.saveSubject(newSubject);
 
@@ -39,5 +43,15 @@ class AddSubjectCubit extends Cubit<AddSubjectState> {
     } catch (e) {
       emit(AddSubjectFailure(errorMessage: 'Subject deletion failed'));
     }
+  }
+
+  void resetWeekDays(){
+    selectedDays = [false, false, false, false, false, false, false];
+    emit(AddSubjectUpdateWeekdays(selectedDays: selectedDays));
+  }
+
+  void updateWeekdays(int idToSwitch){
+    selectedDays[idToSwitch] = !selectedDays[idToSwitch];
+    emit(AddSubjectUpdateWeekdays(selectedDays: selectedDays));
   }
 }

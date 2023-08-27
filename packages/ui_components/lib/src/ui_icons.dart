@@ -22,6 +22,10 @@ class UIIcons {
   static UIIcon card = UIIcon(Icons.article_outlined, size: 32);
   static UIIcon folder = UIIcon(Icons.folder_outlined);
   static UIIcon placeHolder = UIIcon(Icons.grid_4x4);
+  static UIIcon settings = UIIcon(Icons.settings_rounded, size:32);
+  static UIIcon addFolder = UIIcon(Icons.create_new_folder_rounded, size:32);
+  static UIIcon share = UIIcon(Icons.share_rounded, size:32);
+  static UIIcon classTest = UIIcon(Icons.calendar_month_rounded, size: 32,);
 }
 
 class UIIcon extends Icon {
