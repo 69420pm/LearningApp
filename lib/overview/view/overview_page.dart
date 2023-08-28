@@ -47,12 +47,9 @@ class OverviewPage extends StatelessWidget {
                 icon: UIIcons.add.copyWith(color: UIColors.smallText),
                 onPressed: () {
                   context.read<AddSubjectCubit>().resetWeekDays();
-                  showModalBottomSheet(
-                    elevation: 0,
-                    isScrollControlled: true,
+                  UIBottomSheet.showUIBottomSheet(
                     context: context,
                     builder: (_) {
-                      // context.read<AddSubjectCubit>().resetWeekDays();
                       return BlocProvider.value(
                         value: context.read<AddSubjectCubit>(),
                         child: AddSubjectBottomSheet(),

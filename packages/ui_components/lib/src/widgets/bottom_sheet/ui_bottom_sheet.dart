@@ -24,41 +24,55 @@ class UIBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: DecoratedBox(
-        decoration: const BoxDecoration(
-          color: UIColors.overlay,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(UIConstants.bottomSheetCornerRadius),
-            topRight: Radius.circular(UIConstants.bottomSheetCornerRadius),
+    return Padding(
+      padding: EdgeInsets.only(
+        left: UIConstants.pageHorizontalPadding,
+        right: UIConstants.pageHorizontalPadding,
+        // bottom is static height, if bottomsheet should move with keyboard
+        // use MediaQuery.of(context).viewInsets.bottom,
+        // however the animation is a bit leggy and not smooth
+        //! not for me. constant height was more leggy and there is no dynamic height possible.
+
+        //bottom: MediaQuery.of(context).size.height * 0.55,
+        bottom: MediaQuery.of(context).viewInsets.bottom +
+            UIConstants.cardVerticalPadding,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          UIBottomSheetTitleRow(
+            actionLeft: actionLeft,
+            actionRight: actionRight,
+            title: title,
           ),
-        ),
-        child: Padding(
-          padding: EdgeInsets.only(
-            left: UIConstants.pageHorizontalPadding,
-            right: UIConstants.pageHorizontalPadding,
-            top: UIConstants.pageVerticalPadding,
-            // bottom is static height, if bottomsheet should move with keyboard
-            // use MediaQuery.of(context).viewInsets.bottom,
-            // however the animation is a bit leggy and not smooth
-            bottom: MediaQuery.of(context).size.height * 0.55,
+          const SizedBox(
+            height: UIConstants.itemPaddingLarge,
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              UIBottomSheetTitleRow(
-                actionLeft: actionLeft,
-                actionRight: actionRight,
-                title: title,
-              ),
-              const SizedBox(
-                height: UIConstants.itemPaddingLarge,
-              ),
-              child
-            ],
-          ),
-        ),
+          child
+        ],
       ),
     );
+  }
+
+  static Future<UIBottomSheet?> showUIBottomSheet({
+    required BuildContext context,
+    required WidgetBuilder builder,
+  }) {
+    final navigator = Navigator.of(context);
+    final localizations = MaterialLocalizations.of(context);
+
+    return navigator.push(ModalBottomSheetRoute<UIBottomSheet>(
+      builder: builder,
+      capturedThemes:
+          InheritedTheme.capture(from: context, to: navigator.context),
+      isScrollControlled: true,
+      barrierLabel: localizations.scrimLabel,
+      barrierOnTapHint:
+          localizations.scrimOnTapHint(localizations.bottomSheetLabel),
+      backgroundColor: UIColors.overlay,
+      elevation: 0,
+      modalBarrierColor: Theme.of(context).bottomSheetTheme.modalBarrierColor,
+      showDragHandle: true,
+    ));
   }
 }
