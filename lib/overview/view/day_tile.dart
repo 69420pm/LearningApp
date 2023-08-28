@@ -15,12 +15,15 @@ class DayTile extends StatelessWidget {
     final isToday = day == now.day;
     final isClastest = clastests[index];
     final isStreak = streak[index];
+    final width = (MediaQuery.of(context).size.width -
+            2 * UIConstants.cardHorizontalPadding -
+            2 * UIConstants.pageHorizontalPadding) /
+        7;
 
     return SizedBox(
-      width: (MediaQuery.of(context).size.width -
-              4 * UIConstants.cardHorizontalPadding) /
-          7,
+      width: width,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
@@ -34,8 +37,8 @@ class DayTile extends StatelessWidget {
             alignment: Alignment.center,
             children: [
               Container(
-                height: 40,
-                width: 40,
+                height: width / 1.2,
+                width: width / 1.2,
                 decoration: BoxDecoration(
                   color: isToday ? UIColors.textDark : Colors.transparent,
                   borderRadius: BorderRadius.all(Radius.circular(100)),
@@ -48,7 +51,7 @@ class DayTile extends StatelessWidget {
               ),
               if (isToday)
                 Positioned(
-                  bottom: 6,
+                  bottom: 5,
                   child: Container(
                     height: 5,
                     width: 5,
