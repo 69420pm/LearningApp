@@ -24,6 +24,8 @@ class UIBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).viewInsets.bottom +
+        UIConstants.cardVerticalPadding;
     return Padding(
       padding: EdgeInsets.only(
         left: UIConstants.pageHorizontalPadding,
@@ -34,8 +36,7 @@ class UIBottomSheet extends StatelessWidget {
         //! not for me. constant height was more leggy and there is no dynamic height possible.
 
         //bottom: MediaQuery.of(context).size.height * 0.55,
-        bottom: MediaQuery.of(context).viewInsets.bottom +
-            UIConstants.cardVerticalPadding,
+        bottom: height,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
