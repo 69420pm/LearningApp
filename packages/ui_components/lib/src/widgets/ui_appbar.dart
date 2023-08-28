@@ -20,12 +20,16 @@ class UIAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leading: Padding(
-        padding: EdgeInsets.only(left: UIConstants.cardHorizontalPadding),
-        child: leading,
+      leading: Builder(
+        builder: (context) {
+          return Padding(
+            padding: EdgeInsets.only(left: UIConstants.cardHorizontalPadding),
+            child: leading,
+          );
+        },
       ),
       elevation: 0,
-      leadingWidth: 0,
+      leadingWidth: 44,
       titleSpacing: 0,
       backgroundColor: UIColors.background,
       systemOverlayStyle: SystemUiOverlayStyle(

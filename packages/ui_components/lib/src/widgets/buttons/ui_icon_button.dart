@@ -45,6 +45,7 @@ class _UIIconButtonState extends State<UIIconButton> {
     );
     return GestureDetector(
       onTap: widget.onPressed,
+      behavior: HitTestBehavior.opaque,
       onTapDown: (details) {
         setState(() {
           isIconColored = true;
