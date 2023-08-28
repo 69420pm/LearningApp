@@ -21,8 +21,8 @@ class PageWeekdayPicker extends StatelessWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(
-              vertical: UIConstants.itemPadding * 0.75,
-              horizontal: UIConstants.itemPaddingLarge,
+              vertical: UIConstants.itemPadding*0.75,
+              horizontal: UIConstants.itemPadding,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -30,14 +30,12 @@ class PageWeekdayPicker extends StatelessWidget {
                 _WeekDay(
                   text: 'Mon',
                   id: 0,
-                  subject: subject,
                   isSelected: state is EditSubjectUpdateWeekdays
                       ? state.selectedDays[0]
                       : false,
                 ),
                 _WeekDay(
                   text: 'Tue',
-                  subject: subject,
                   id: 1,
                   isSelected: state is EditSubjectUpdateWeekdays
                       ? state.selectedDays[1]
@@ -46,7 +44,6 @@ class PageWeekdayPicker extends StatelessWidget {
                 _WeekDay(
                   text: 'Wed',
                   id: 2,
-                  subject: subject,
                   isSelected: state is EditSubjectUpdateWeekdays
                       ? state.selectedDays[2]
                       : false,
@@ -54,7 +51,6 @@ class PageWeekdayPicker extends StatelessWidget {
                 _WeekDay(
                   text: 'Thu',
                   id: 3,
-                  subject: subject,
                   isSelected: state is EditSubjectUpdateWeekdays
                       ? state.selectedDays[3]
                       : false,
@@ -62,7 +58,6 @@ class PageWeekdayPicker extends StatelessWidget {
                 _WeekDay(
                   text: 'Fri',
                   id: 4,
-                  subject: subject,
                   isSelected: state is EditSubjectUpdateWeekdays
                       ? state.selectedDays[4]
                       : false,
@@ -70,7 +65,6 @@ class PageWeekdayPicker extends StatelessWidget {
                 _WeekDay(
                   text: 'Sat',
                   id: 5,
-                  subject: subject,
                   isSelected: state is EditSubjectUpdateWeekdays
                       ? state.selectedDays[5]
                       : false,
@@ -78,7 +72,6 @@ class PageWeekdayPicker extends StatelessWidget {
                 _WeekDay(
                   text: 'Sun',
                   id: 6,
-                  subject: subject,
                   isSelected: state is EditSubjectUpdateWeekdays
                       ? state.selectedDays[6]
                       : false,
@@ -98,20 +91,18 @@ class _WeekDay extends StatelessWidget {
     required this.text,
     required this.id,
     required this.isSelected,
-    required this.subject
   });
 
   String text;
   int id;
   bool isSelected;
-  Subject subject;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       child: Container(
-        height: 42,
-        width: 42,
+        height: 44,
+        width: 44,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(
             Radius.circular(UIConstants.cornerRadiusSmall),
@@ -128,7 +119,7 @@ class _WeekDay extends StatelessWidget {
         ),
       ),
       onTap: () {
-        context.read<EditSubjectCubit>().updateWeekdays(id, subject);
+        context.read<EditSubjectCubit>().updateWeekdays(id);
       },
     );
   }

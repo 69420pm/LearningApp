@@ -9,11 +9,13 @@ class EditSubjectCubit extends Cubit<EditSubjectState> {
 
   final CardsRepository _cardsRepository;
   List<bool> selectedDays = [false, false, false, false, false, false, false];
-  List<ClassTest> classTests = []; 
+  List<ClassTest> classTests = [];
+  Subject? subject;
 
   void init(Subject subject) {
     selectedDays = subject.daysToGetNotified;
     classTests = subject.classTests;
+    this.subject = subject;
     emit(EditSubjectUpdateWeekdays(selectedDays: selectedDays));
   }
 
@@ -33,20 +35,36 @@ class EditSubjectCubit extends Cubit<EditSubjectState> {
     }
   }
 
-  Future<void> saveClassTest(ClassTest classTest, Subject subject) async {
-    classTests = subject.classTests;
+  Future<void> saveClassTest(
+    ClassTest classTest,
+  ) async {
+    classTests = subject!.classTests;
     for (var element in classTests) {
-      if(element.id == classTest.id){
+      if (element.id == classTest.id) {
         element = classTest;
         break;
       }
     }
-    await saveSubject(subject.copyWith(classTests: classTests));
+    await saveSubject(subject!.copyWith(classTests: classTests));
+    emit(EditSubjectClassTestChanged(canSave: true));
   }
 
-  Future<void> updateWeekdays(int idToSwitch, Subject subject) async {
+  void changeClassTest(ClassTest classTest) {
+    if (classTest.name != '' && classTest.date != '') {
+      emit(EditSubjectClassTestChanged(canSave: true));
+    }
+    else if(classTest.date != ''){
+      emit(EditSubjectClassTestChanged(canSave: false));
+    }
+  }
+
+  Future<void> updateWeekdays(int idToSwitch) async {
     selectedDays[idToSwitch] = !selectedDays[idToSwitch];
-    await saveSubject(subject.copyWith(daysToGetNotified: selectedDays));
+    await saveSubject(subject!.copyWith(daysToGetNotified: selectedDays));
     emit(EditSubjectUpdateWeekdays(selectedDays: selectedDays));
+  }
+
+  void changeCanSave(bool canSave) {
+    emit(EditSubjectClassTestChanged(canSave: canSave));
   }
 }

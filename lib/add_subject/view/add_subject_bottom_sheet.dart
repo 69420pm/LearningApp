@@ -33,7 +33,8 @@ class _AddSubjectBottomSheetState extends State<AddSubjectBottomSheet> {
         },
       ),
       title: const Text('Add Subject', style: UIText.label),
-      actionRight: UIButton(
+      actionRight: 
+      UIButton(
         child: Text(
           'Save',
           style: UIText.labelBold.copyWith(

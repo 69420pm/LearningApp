@@ -1,7 +1,7 @@
 import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:learning_app/edit_subject/view/class_test_row.dart';
+import 'package:learning_app/edit_subject/view/class_test_column.dart';
 import 'package:learning_app/edit_subject/view/page_weekday_picker.dart';
 import 'package:ui_components/ui_components.dart';
 
@@ -74,7 +74,7 @@ class EditSubjectPage extends StatelessWidget {
             height: UIConstants.itemPaddingLarge,
           ),
           UILabelRow(
-            labelText: 'Exams',
+            labelText: 'Class Tests',
             horizontalPadding: true,
             actionWidgets: [
               UIIconButton(

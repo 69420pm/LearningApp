@@ -16,6 +16,14 @@ class EditSubjectUpdateWeekdays extends EditSubjectState {
   });
 }
 
+class EditSubjectClassTestChanged extends EditSubjectState {
+  bool canSave;
+  EditSubjectClassTestChanged({
+    required this.canSave,
+  });
+}
+
+
 class EditSubjectFailure extends EditSubjectState {
   EditSubjectFailure({
     required this.errorMessage,

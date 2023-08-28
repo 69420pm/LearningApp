@@ -26,6 +26,8 @@ class UIIcons {
   static UIIcon addFolder = UIIcon(Icons.create_new_folder_rounded, size:32);
   static UIIcon share = UIIcon(Icons.share_rounded, size:32);
   static UIIcon classTest = UIIcon(Icons.calendar_month_rounded, size: 32,);
+  static UIIcon edit = UIIcon(Icons.edit_rounded, size: 24,);
+
 }
 
 class UIIcon extends Icon {

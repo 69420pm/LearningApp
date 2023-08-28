@@ -46,7 +46,8 @@ class OverviewPage extends StatelessWidget {
               UIIconButton(
                 icon: UIIcons.add.copyWith(color: UIColors.smallText),
                 onPressed: () {
-                  final bottomSheetController = showModalBottomSheet(
+                  context.read<AddSubjectCubit>().resetWeekDays();
+                  showModalBottomSheet(
                     elevation: 0,
                     isScrollControlled: true,
                     context: context,
@@ -57,9 +58,7 @@ class OverviewPage extends StatelessWidget {
                         child: AddSubjectBottomSheet(),
                       );
                     },
-                  )..whenComplete(
-                      () => context.read<AddSubjectCubit>().resetWeekDays(),
-                    );
+                  );
                 },
               ),
             ],
