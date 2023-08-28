@@ -17,10 +17,7 @@ class EditSubjectPage extends StatelessWidget {
     context.read<EditSubjectCubit>().init(subject);
     return UIPage(
       appBar: UIAppBar(
-        leading: UIIconButton(
-          icon: UIIcons.arrowBack,
-          onPressed: () {},
-        ),
+        leadingBackButton: true,
         actions: [UIIconButton(icon: UIIcons.share, onPressed: () {})],
         title: 'Subject Settings',
       ),
@@ -78,12 +75,12 @@ class EditSubjectPage extends StatelessWidget {
             horizontalPadding: true,
             actionWidgets: [
               UIIconButton(
-                  icon: UIIcons.add.copyWith(color: UIColors.smallText),
-                  onPressed: () {
-                            Navigator.of(context).pushNamed('/subject_overview/edit_subject/add_class_test');
-
-                  },
-                  )
+                icon: UIIcons.add.copyWith(color: UIColors.smallText),
+                onPressed: () {
+                  Navigator.of(context).pushNamed(
+                      '/subject_overview/edit_subject/add_class_test');
+                },
+              )
             ],
           ),
           ClassTestColumn()

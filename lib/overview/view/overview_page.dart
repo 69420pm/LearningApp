@@ -14,12 +14,11 @@ class OverviewPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return UIPage(
       appBar: UIAppBar(
-        leading: Builder(
-          builder: (context) {
-            return UIIconButton(
-              icon: UIIcons.account,
-              onPressed: () {},
-            );
+        automaticallyImplyLeading: true,
+        leading: UIIconButton(
+          icon: UIIcons.account,
+          onPressed: () {
+            print("object");
           },
         ),
         actions: [
