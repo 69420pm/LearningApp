@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ui_components/ui_components.dart';
@@ -10,22 +11,29 @@ class UIAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.actions,
     this.leading,
     this.bottom,
+    this.leadingBackButton = false,
   }) : super(key: key);
   final String? title;
   final bool automaticallyImplyLeading;
   final List<Widget>? actions;
   final Widget? leading;
   final PreferredSizeWidget? bottom;
+  final bool leadingBackButton;
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       leading: Padding(
         padding: EdgeInsets.only(left: UIConstants.cardHorizontalPadding),
-        child: leading,
+        child: leadingBackButton
+            ? UIIconButton(
+                icon: UIIcons.arrowBack,
+                onPressed: () => Navigator.pop(context),
+              )
+            : Align(alignment: Alignment.centerLeft, child: leading),
       ),
       elevation: 0,
-      leadingWidth: 0,
+      leadingWidth: UIConstants.buttonSize, //! only works for iconbuttons
       titleSpacing: 0,
       backgroundColor: UIColors.background,
       systemOverlayStyle: SystemUiOverlayStyle(

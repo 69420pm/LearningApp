@@ -74,12 +74,7 @@ class _SubjectOverviewViewState extends State<SubjectOverviewView> {
       builder: (context, blocBuilderState) {
         return UIPage(
           appBar: UIAppBar(
-            leading: UIIconButton(
-              icon: UIIcons.arrowBack,
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
+            leadingBackButton: true,
             actions: [
               UIIconButton(
                 icon: UIIcons.search,
@@ -203,7 +198,8 @@ class _SubjectOverviewViewState extends State<SubjectOverviewView> {
                       icon:
                           UIIcons.addFolder.copyWith(color: UIColors.smallText),
                       onPressed: () {
-                         Navigator.of(context).pushNamed('/subject_overview/add_folder');
+                        Navigator.of(context)
+                            .pushNamed('/subject_overview/add_folder');
                       },
                     ),
                     UIIconButton(
