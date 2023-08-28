@@ -29,7 +29,7 @@ class CalendarCard extends StatelessWidget {
                     height: UIConstants.defaultSize,
                   ),
                   Text(
-                    '69th July 2023',
+                    "${DateTime.now().day}.${DateTime.now().month}.${DateTime.now().year}",
                     style: UIText.label.copyWith(
                       color: UIColors.textDark,
                     ),
