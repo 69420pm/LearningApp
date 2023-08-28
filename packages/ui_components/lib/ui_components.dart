@@ -25,3 +25,4 @@ export 'src/widgets/buttons/ui_button.dart';
 export 'src/widgets/buttons/ui_icon_button_large.dart';
 export 'src/widgets/text_fields/ui_text_field_large.dart';
 export 'src/widgets/ui_container.dart';
+export 'src/widgets/buttons/ui_text_button.dart';

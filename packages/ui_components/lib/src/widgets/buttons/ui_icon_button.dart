@@ -9,10 +9,14 @@ class UIIconButton extends StatefulWidget {
     required this.onPressed,
     this.alignment = Alignment.center,
     this.animateToWhite = false,
+    this.text,
   });
 
   /// displayed icon
   final UIIcon icon;
+
+  /// text next to icon
+  final String? text;
 
   /// callback when button gets pressed
   final void Function() onPressed;
@@ -32,13 +36,12 @@ class _UIIconButtonState extends State<UIIconButton> {
 
   @override
   Widget build(BuildContext context) {
-    final startColor =
-        widget.icon.color != null ? widget.icon.color : Colors.white;
+    final startColor = widget.icon.color ?? Colors.white;
     final animateColor = Color.fromARGB(
       128,
-      startColor!.red,
-      startColor!.blue,
-      startColor!.green,
+      startColor.red,
+      startColor.blue,
+      startColor.green,
     );
     return GestureDetector(
       onTap: widget.onPressed,
@@ -69,16 +72,37 @@ class _UIIconButtonState extends State<UIIconButton> {
           .custom(
             duration: 50.ms,
             builder: (context, value, child) {
-              return Container(
-                height: 44,
-                width: 44,
-                child: widget.icon.copyWith(
-                color: Color.lerp(startColor, animateColor, value),
-                          ),
-              );
+              if (widget.text == null) {
+                return SizedBox(
+                  height: 44,
+                  width: 44,
+                  child: widget.icon.copyWith(
+                    color: Color.lerp(startColor, animateColor, value),
+                  ),
+                );
+              } else {
+                return Row(
+                  children: [
+                    Text(
+                      widget.text!,
+                      style: UIText.label.copyWith(
+                        color: Color.lerp(startColor, animateColor, value),
+                      ),
+                    ),
+                   
+                    Container(
+                      height: 44,
+                      width: 44,
+                      alignment: widget.alignment,
+                      child: widget.icon.copyWith(
+                        color: Color.lerp(startColor, animateColor, value),
+                      ),
+                    )
+                  ],
+                );
+              }
             },
           ),
-          
     );
   }
 }
