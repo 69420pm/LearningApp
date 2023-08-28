@@ -14,17 +14,28 @@ class OverviewPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return UIPage(
       appBar: UIAppBar(
-        leading: UIIcons.account,
-        actions: [UIIcons.search],
+        leading: Builder(
+          builder: (context) {
+            return UIIconButton(
+              icon: UIIcons.account,
+              onPressed: () {},
+            );
+          },
+        ),
+        actions: [
+          UIIconButton(
+            icon: UIIcons.search,
+            onPressed: () => Navigator.of(context).pushNamed('/search'),
+          )
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: UIConstants.itemPadding),
           const LearnAllCard(),
-          const SizedBox(height: UIConstants.itemPadding),
+          const SizedBox(height: UIConstants.itemPaddingLarge),
           const CalendarCard(),
-          const SizedBox(height: UIConstants.itemPadding * 2),
+          const SizedBox(height: UIConstants.itemPaddingLarge * 2),
           UILabelRow(
             labelText: 'Subjects',
             actionWidgets: [
@@ -34,21 +45,32 @@ class OverviewPage extends StatelessWidget {
               ),
               UIIconButton(
                 icon: UIIcons.add.copyWith(color: UIColors.smallText),
-                onPressed: () => showModalBottomSheet(
-                  elevation: 0,
-                  context: context,
-                  builder: (_) => BlocProvider.value(
-                    value: context.read<AddSubjectCubit>(),
-                    child: AddSubjectBottomSheet(),
-                  ),
-                ),
+                onPressed: () {
+                  final bottomSheetController = showModalBottomSheet(
+                    elevation: 0,
+                    isScrollControlled: true,
+                    context: context,
+                    builder: (_) {
+                      // context.read<AddSubjectCubit>().resetWeekDays();
+                      return BlocProvider.value(
+                        value: context.read<AddSubjectCubit>(),
+                        child: AddSubjectBottomSheet(),
+                      );
+                    },
+                  )..whenComplete(
+                      () => context.read<AddSubjectCubit>().resetWeekDays(),
+                    );
+                },
               ),
             ],
           ),
-          SubjectList(),
-          const SizedBox(height: UIConstants.itemPadding * 2),
+          const SizedBox(
+            height: UIConstants.itemPaddingLarge,
+          ),
+          const SubjectList(),
+          const SizedBox(height: UIConstants.itemPaddingLarge * 2),
           UILabelRow(
-            labelText: "Disabled",
+            labelText: 'Disabled',
             actionWidgets: [
               UIIcons.arrowDown.copyWith(color: UIColors.smallText)
             ],

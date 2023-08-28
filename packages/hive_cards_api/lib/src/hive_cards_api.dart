@@ -530,23 +530,120 @@ class HiveCardsApi extends CardsApi {
   }
 
   @override
-  List<Card> search(String searchRequest) {
-    final foundedCards = <Card>[];
-    for (final element in _indexedPaths) {
+  List<SearchResult> searchCard(String searchRequest) {
+    final searchResults = <SearchResult>[];
+    for (final indexedPath in _indexedPaths) {
       final loadedCardStrings =
-          _hiveBox.get(_makePathStorable(element)) as List<String>?;
+          _hiveBox.get(_makePathStorable(indexedPath)) as List<String>?;
       if (loadedCardStrings == null) continue;
       for (final loadedCardString in loadedCardStrings) {
-        if (loadedCardString.substring(46).startsWith('front')) {
-          final card = Card.fromJson(loadedCardString);
-          if (card.front.toLowerCase().contains(searchRequest.toLowerCase()) ||
-              card.back.toLowerCase().contains(searchRequest.toLowerCase())) {
-            foundedCards.add(card);
+        if (loadedCardString.toLowerCase().contains(searchRequest)) {
+          try {
+            final card = Card.fromJson(loadedCardString);
+            if (card.front
+                    .toLowerCase()
+                    .contains(searchRequest.toLowerCase()) ||
+                card.back.toLowerCase().contains(searchRequest.toLowerCase())) {
+              searchResults.add(SearchResult(searchedObject: card, parentObjects: _getParentNamesFromPath(indexedPath)));
+            }
+          } catch (e) {
+            continue;
           }
         }
       }
     }
-    return foundedCards;
+    return searchResults;
+  }
+
+  @override
+  List<Subject> searchSubject(String searchRequest) {
+    final foundSubjects = <Subject>[];
+
+    final loadedCardStrings = _hiveBox.get("/subjects") as List<String>?;
+    if (loadedCardStrings == null) return List.empty();
+    for (final loadedCardString in loadedCardStrings) {
+      if (!loadedCardString.substring(46).startsWith('front') &&
+          loadedCardString
+              .toLowerCase()
+              .contains(searchRequest.toLowerCase())) {
+        final subject = Subject.fromJson(loadedCardString);
+        if (subject.name.toLowerCase().contains(searchRequest.toLowerCase())) {
+          foundSubjects.add(subject);
+        }
+      }
+    }
+
+    return foundSubjects;
+  }
+
+  @override
+  List<SearchResult> searchFolder(String searchRequest) {
+    final searchResults = <SearchResult>[];
+    for (final indexedPath in _indexedPaths) {
+      final loadedCardStrings =
+          _hiveBox.get(_makePathStorable(indexedPath)) as List<String>?;
+      if (loadedCardStrings == null) continue;
+      for (final loadedCardString in loadedCardStrings) {
+        if (!loadedCardString.substring(46).startsWith('front') &&
+            loadedCardString.toLowerCase().contains(searchRequest)) {
+          try {
+            final folder = Folder.fromJson(loadedCardString);
+            if (folder.name
+                .toLowerCase()
+                .contains(searchRequest.toLowerCase())) {
+              searchResults.add(SearchResult(searchedObject: folder, parentObjects: _getParentNamesFromPath(indexedPath)));
+
+            }
+          } catch (e) {
+            continue;
+          }
+        }
+      }
+    }
+    return searchResults;
+  }
+
+  List<Object> _getParentNamesFromPath(String path) {
+    final parentNames = <Object>[];
+    var currentPath = path;
+    var idToMatch = '';
+
+    while (true) {
+      final regex = RegExp('^(.*)/');
+      final match = regex.firstMatch(currentPath);
+      if (match != null && match.group(1) != '') {
+        final newPath = match.group(1)!;
+        idToMatch = currentPath.substring(newPath.length + 1);
+        currentPath = newPath;
+
+        if (currentPath == '/subjects') {
+          final subjects = _subjectStreamController.value;
+          for (final element in subjects) {
+            if (element.id == idToMatch) {
+              parentNames.add(element);
+              return parentNames.reversed.toList();
+            }
+          }
+        }
+
+        final elements =
+            _hiveBox.get(_makePathStorable(currentPath)) as List<String>?;
+        innerLoop:
+        for (final element in elements!) {
+          try {
+            final folder = Folder.fromJson(element);
+            if (folder.id == idToMatch) {
+              parentNames.add(folder);
+              break innerLoop;
+            }
+          } catch (e) {
+            // element is no folder
+          }
+        }
+      } else {
+        return parentNames.reversed.toList();
+      }
+    }
   }
 
   String? _getPath(String parentId) {

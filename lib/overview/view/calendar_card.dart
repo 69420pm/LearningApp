@@ -36,7 +36,7 @@ class CalendarCard extends StatelessWidget {
                   )
                 ],
               ),
-              UIIcons.arrowForward.copyWith(color: UIColors.overlay)
+              UIIcons.arrowForwardNormal.copyWith(color: UIColors.overlay)
             ],
           ),
           const SizedBox(

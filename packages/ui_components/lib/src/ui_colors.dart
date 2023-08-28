@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class UIColors {
   static const primary = Color(0xFFACDEA4);
+  static const primaryDisabled = Color.fromARGB(133, 172, 222, 164);
   static const secondary = Color(0xFFEC2AFD);
 
   static const background = Color(0xFF040C02);

@@ -10,3 +10,4 @@ library cards_api;
 
 export 'src/cards_api.dart';
 export 'src/models/models.dart';
+export 'src/helper/subject_helper.dart';

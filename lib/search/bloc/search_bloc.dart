@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
 import 'package:learning_app/subject_overview/view/card_list_tile_view.dart';
 import 'package:meta/meta.dart';
@@ -16,33 +17,27 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   final CardsRepository _cardsRepository;
   String lastSearch = '';
 
+  List<SearchResult> folderSearchResults = [];
+  List<SearchResult> cardSearchResults = [];
+  List<Subject> subjectSearchResults = [];
+
   FutureOr<void> request(SearchRequest event, Emitter<SearchState> emit) {
     emit(SearchLoading());
     if(event.searchRequest.isEmpty){
       emit(SearchInitial());
-      return null;
     }
-    final cards = _cardsRepository.search(event.searchRequest);
-    final tiles = <CardListTileView>[];
-    lastSearch = event.searchRequest;
-    for (final card in cards) {
-      tiles.add(
-        CardListTileView(
-          card: card,
-          isSelected: false,
-          height: 40,
-        ),
-      );
-    }
-    if (tiles.isEmpty) {
+    cardSearchResults = _cardsRepository.searchCard(event.searchRequest);
+    subjectSearchResults = _cardsRepository.searchSubject(event.searchRequest);
+    folderSearchResults = _cardsRepository.searchFolder(event.searchRequest);
+
+    if(cardSearchResults.isNotEmpty || folderSearchResults.isNotEmpty || subjectSearchResults.isNotEmpty){
+      emit(SearchSuccess(searchRequest: event.searchRequest));
+    }else{
       emit(SearchNothingFound());
     }
-    else {
-      emit(
-        SearchSuccess(
-          foundCards: tiles,
-        ),
-      );
-    }
+  }
+
+  void resetState(){
+    emit(SearchInitial());
   }
 }

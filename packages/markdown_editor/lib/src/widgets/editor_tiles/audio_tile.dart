@@ -84,15 +84,15 @@ class _AudioInitial extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        UIButton(
-            onTap: () => context.read<AudioTileCubit>().switchToRecordingPage(),
-            child: Row(
-              children: [Icon(Icons.mic), Text('record')],
-            )),
-        UIButton(
-          onTap: () => context.read<AudioTileCubit>().loadFile(),
-          child: Row(children: [Icon(Icons.folder), Text('file')]),
-        )
+        // UIButton(
+        //     onTap: () => context.read<AudioTileCubit>().switchToRecordingPage(),
+        //     child: Row(
+        //       children: [Icon(Icons.mic), Text('record')],
+        //     )),
+        // UIButton(
+        //   onTap: () => context.read<AudioTileCubit>().loadFile(),
+        //   child: Row(children: [Icon(Icons.folder), Text('file')]),
+        // )
       ],
     );
   }

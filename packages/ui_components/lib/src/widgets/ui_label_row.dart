@@ -26,7 +26,6 @@ class UILabelRow extends StatelessWidget {
       padding: EdgeInsets.only(
         left: horizontalPadding ? UIConstants.cardHorizontalPadding : 0,
         right: horizontalPadding ? UIConstants.cardHorizontalPadding : 0,
-        bottom: UIConstants.defaultSize,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

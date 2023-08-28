@@ -3,14 +3,14 @@ import 'package:flutter/services.dart';
 import 'package:ui_components/ui_components.dart';
 
 class UIAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const UIAppBar(
-      {Key? key,
-      this.title,
-      this.automaticallyImplyLeading = true,
-      this.actions,
-      this.leading,
-      this.bottom})
-      : super(key: key);
+  const UIAppBar({
+    Key? key,
+    this.title,
+    this.automaticallyImplyLeading = true,
+    this.actions,
+    this.leading,
+    this.bottom,
+  }) : super(key: key);
   final String? title;
   final bool automaticallyImplyLeading;
   final List<Widget>? actions;
@@ -29,24 +29,25 @@ class UIAppBar extends StatelessWidget implements PreferredSizeWidget {
       titleSpacing: 0,
       backgroundColor: UIColors.background,
       systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarColor: UIColors.background,
-          statusBarBrightness: Theme.of(context).brightness == Brightness.light
-              ? Brightness.dark
-              : Brightness.light,
-          systemNavigationBarContrastEnforced: true,
-          statusBarIconBrightness:
-              Theme.of(context).brightness == Brightness.light
-                  ? Brightness.dark
-                  : Brightness.light,
-          systemNavigationBarColor: UIColors.background,
-          systemNavigationBarIconBrightness:
-              Theme.of(context).brightness == Brightness.light
-                  ? Brightness.dark
-                  : Brightness.light),
+        statusBarColor: UIColors.background,
+        statusBarBrightness: Theme.of(context).brightness == Brightness.light
+            ? Brightness.dark
+            : Brightness.light,
+        systemNavigationBarContrastEnforced: true,
+        statusBarIconBrightness:
+            Theme.of(context).brightness == Brightness.light
+                ? Brightness.dark
+                : Brightness.light,
+        systemNavigationBarColor: UIColors.background,
+        systemNavigationBarIconBrightness:
+            Theme.of(context).brightness == Brightness.light
+                ? Brightness.dark
+                : Brightness.light,
+      ),
       automaticallyImplyLeading: automaticallyImplyLeading,
       centerTitle: true,
       title: Text(
-        title ?? "",
+        title ?? '',
         style: UIText.labelBold.copyWith(color: UIColors.textLight),
       ),
       actions: actions != null

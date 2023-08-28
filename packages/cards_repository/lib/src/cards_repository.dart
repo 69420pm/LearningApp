@@ -22,7 +22,17 @@ class CardsRepository {
   /// return all cards to learn
   List<Card> learnAllCards() => _cardsApi.learnAllCards();
 
-  List<Card> search(String searchRequest) => _cardsApi.search(searchRequest);
+  /// search request to search in all cards
+  List<SearchResult> searchCard(String searchRequest) =>
+      _cardsApi.searchCard(searchRequest);
+
+  /// search request to search in all subjects
+  List<Subject> searchSubject(String searchRequest) =>
+      _cardsApi.searchSubject(searchRequest);
+
+  /// search request to search in all folders
+  List<SearchResult> searchFolder(String searchRequest) =>
+      _cardsApi.searchFolder(searchRequest);
 
   /// return all children for a given parentId in a stream
   Stream<List<Object>> getChildrenById(String id) =>
@@ -67,5 +77,5 @@ class CardsRepository {
       _cardsApi.moveFolder(folder, newParentId);
 
   Future<void> moveCards(List<Card> cards, String newParentId) =>
-    _cardsApi.moveCards(cards, newParentId);
+      _cardsApi.moveCards(cards, newParentId);
 }

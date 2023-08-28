@@ -8,6 +8,7 @@ import 'package:learning_app/subject_overview/bloc/folder_bloc/folder_list_tile_
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
+import 'package:learning_app/subject_overview/view/subject_card.dart';
 import 'package:ui_components/ui_components.dart';
 
 class SubjectOverviewPage extends StatelessWidget {
@@ -72,7 +73,23 @@ class _SubjectOverviewViewState extends State<SubjectOverviewView> {
         SubjectOverviewSelectionState>(
       builder: (context, blocBuilderState) {
         return UIPage(
-          appBar: AppBar(
+          appBar: UIAppBar(
+            leading: UIIconButton(
+              icon: UIIcons.arrowBack,
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            actions: [
+              UIIconButton(
+                icon: UIIcons.search,
+                onPressed: () {
+                  // Navigator.of(context).pushNamed('/search');
+                },
+              )
+            ],
+          ),
+          /* AppBar(
             leading: (blocBuilderState is SubjectOverviewSelectionModeOn)
                 ? IconButton(
                     onPressed: () {
@@ -128,32 +145,35 @@ class _SubjectOverviewViewState extends State<SubjectOverviewView> {
                       icon: const Icon(Icons.create_new_folder_rounded),
                     ),
                   ],
-          ),
+          ), */
           body: Form(
             key: formKey,
             child: Column(
               children: [
-                const SizedBox(height: UIConstants.defaultSize),
+                SubjectCard(
+                  subject: widget.subjectToEdit,
+                ),
+                // const SizedBox(height: UIConstants.defaultSize),
 
                 /// Name
-                UITextFormField(
-                  label: 'Name',
-                  controller: nameController,
-                  initialValue: widget.subjectToEdit.name,
-                  validation: (value) {
-                    if (value!.isEmpty) {
-                      return 'Enter something';
-                    } else {
-                      return null;
-                    }
-                  },
-                  onLoseFocus: (_) => save(
-                    formKey,
-                    nameController.text,
-                    iconController.text,
-                    context,
-                  ),
-                ),
+                // UITextFormField(
+                //   label: 'Name',
+                //   controller: nameController,
+                //   initialValue: widget.subjectToEdit.name,
+                //   validation: (value) {
+                //     if (value!.isEmpty) {
+                //       return 'Enter something';
+                //     } else {
+                //       return null;
+                //     }
+                //   },
+                //   onLoseFocus: (_) => save(
+                //     formKey,
+                //     nameController.text,
+                //     iconController.text,
+                //     context,
+                //   ),
+                // ),
 
                 // /// Prefix icon
                 // UITextFormField(
@@ -168,7 +188,34 @@ class _SubjectOverviewViewState extends State<SubjectOverviewView> {
                 //     context,
                 //   ),
                 // ),
-
+                const SizedBox(
+                  height: UIConstants.itemPaddingLarge,
+                ),
+                UILabelRow(
+                  labelText: 'Files',
+                  actionWidgets: [
+                    UIIconButton(
+                      icon:
+                          UIIcons.download.copyWith(color: UIColors.smallText),
+                      onPressed: () {},
+                    ),
+                    UIIconButton(
+                      icon:
+                          UIIcons.addFolder.copyWith(color: UIColors.smallText),
+                      onPressed: () {
+                         Navigator.of(context).pushNamed('/subject_overview/add_folder');
+                      },
+                    ),
+                    UIIconButton(
+                      icon: UIIcons.placeHolder
+                          .copyWith(color: UIColors.smallText),
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: UIConstants.itemPaddingLarge,
+                ),
                 BlocBuilder<EditSubjectBloc, EditSubjectState>(
                   buildWhen: (previous, current) {
                     if (current is EditSubjectRetrieveChildren) {

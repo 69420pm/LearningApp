@@ -1,7 +1,5 @@
 import 'package:cards_api/cards_api.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:learning_app/add_subject/cubit/add_subject_cubit.dart';
 import 'package:ui_components/ui_components.dart';
 
 class SubjectListTile extends StatelessWidget {
@@ -16,37 +14,23 @@ class SubjectListTile extends StatelessWidget {
           .pushNamed('/subject_overview', arguments: subject),
       child: Row(
         children: [
-          //Icon with progressindicator
-          // TODO implement progressindicator
+          // Icon with progress indicator
           Stack(
             alignment: Alignment.center,
             children: [
-              Container(
-                height: 48,
-                width: 48,
-                decoration: BoxDecoration(
-                    color: UIColors.primary,
-                    borderRadius: BorderRadius.all(Radius.circular(100))),
-              ),
-              Container(
-                height: 38,
-                width: 38,
-                decoration: BoxDecoration(
-                    color: UIColors.background,
-                    borderRadius: BorderRadius.all(Radius.circular(100))),
-              ),
-              UIIcons.download
+              UICircularProgressIndicator(value: 0.5),
+              UIIcons.download.copyWith(size: 24, color: UIColors.primary)
             ],
           ),
-          SizedBox(
-            width: UIConstants.itemPadding,
+          const SizedBox(
+            width: UIConstants.itemPadding*1.5,
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 subject.name,
-                style: UIText.normalBold.copyWith(
+                style: UIText.labelBold.copyWith(
                   color: UIColors.textLight,
                 ),
               ),
@@ -55,18 +39,18 @@ class SubjectListTile extends StatelessWidget {
                 text: TextSpan(
                   style: UIText.normal.copyWith(color: UIColors.smallText),
                   children: <TextSpan>[
-                    TextSpan(text: "classtest in "),
+                    const TextSpan(text: 'class test in '),
                     TextSpan(
-                        text: "2 ",
+                        text: '2 ',
                         style: UIText.normal.copyWith(color: UIColors.primary)),
-                    TextSpan(text: "days"),
+                    const TextSpan(text: 'days'),
                   ],
                 ),
               )
             ],
           ),
           const Spacer(),
-          UIIcons.arrowForward.copyWith(color: UIColors.smallText),
+          UIIcons.arrowForwardMedium.copyWith(color: UIColors.smallText),
         ],
       ),
     );

@@ -50,20 +50,20 @@ class _UIColorPickerState extends State<UIColorPicker> {
         pickerAreaBorderRadius:
             const BorderRadius.all(Radius.circular(UIConstants.cornerRadius)),
       ),
-      UIButton(
-        label: 'Save',
-        onTap: () => setState(() {
-          if (!recentColors.contains(currentColorInColorWheel)) {
-            recentColors.add(currentColorInColorWheel);
-            context.read<UIRepository>().saveRecentColors(recentColors);
-          }
-          showColorWheel = false;
-          widget.onColorChanged(currentColorInColorWheel, false);
-          ownColors.add(currentColorInColorWheel);
-          context.read<UIRepository>().saveCustomColors(ownColors);
-        }),
-        color: Theme.of(context).colorScheme.primaryContainer,
-      ),
+      // UIButton(
+      //   label: 'Save',
+      //   onTap: () => setState(() {
+      //     if (!recentColors.contains(currentColorInColorWheel)) {
+      //       recentColors.add(currentColorInColorWheel);
+      //       context.read<UIRepository>().saveRecentColors(recentColors);
+      //     }
+      //     showColorWheel = false;
+      //     widget.onColorChanged(currentColorInColorWheel, false);
+      //     ownColors.add(currentColorInColorWheel);
+      //     context.read<UIRepository>().saveCustomColors(ownColors);
+      //   }),
+      //   color: Theme.of(context).colorScheme.primaryContainer,
+      // ),
     ];
 
     final colorGrids = [

@@ -8,9 +8,9 @@ class SearchInitial extends SearchState {}
 class SearchLoading extends SearchState {}
 
 class SearchSuccess extends SearchState {
-  List<CardListTileView> foundCards;
+  String searchRequest;
   SearchSuccess({
-    required this.foundCards,
+    required this.searchRequest,
   });
 }
 

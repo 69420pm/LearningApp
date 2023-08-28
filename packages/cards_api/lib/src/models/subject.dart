@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:cards_api/cards_api.dart';
 import 'package:equatable/equatable.dart';
 
 class Subject extends Equatable {
@@ -16,11 +17,17 @@ class Subject extends Equatable {
   /// prefix icon
   final String prefixIcon;
 
-  final List<String> daysToGetNotified;
-  final List<String> classTests;
+  /// days on which subject is scheduled
+  final List<bool> daysToGetNotified;
 
+  /// jsons of class tests
+  final List<ClassTest> classTests;
 
+  /// whether the subject should get considered for streak
+  final bool streakRelevant;
 
+  /// whether this subject is disabled
+  final bool disabled;
   const Subject({
     required this.id,
     required this.name,
@@ -28,15 +35,20 @@ class Subject extends Equatable {
     required this.prefixIcon,
     required this.daysToGetNotified,
     required this.classTests,
+    required this.streakRelevant,
+    required this.disabled,
   });
+ 
 
   Subject copyWith({
     String? id,
     String? name,
     String? dateCreated,
     String? prefixIcon,
-    List<String>? daysToGetNotified,
-    List<String>? classTests,
+    List<bool>? daysToGetNotified,
+    List<ClassTest>? classTests,
+    bool? streakRelevant,
+    bool? disabled,
   }) {
     return Subject(
       id: id ?? this.id,
@@ -45,6 +57,8 @@ class Subject extends Equatable {
       prefixIcon: prefixIcon ?? this.prefixIcon,
       daysToGetNotified: daysToGetNotified ?? this.daysToGetNotified,
       classTests: classTests ?? this.classTests,
+      streakRelevant: streakRelevant ?? this.streakRelevant,
+      disabled: disabled ?? this.disabled,
     );
   }
 
@@ -55,7 +69,9 @@ class Subject extends Equatable {
       'dateCreated': dateCreated,
       'prefixIcon': prefixIcon,
       'daysToGetNotified': daysToGetNotified,
-      'classTests': classTests,
+      'classTests': classTests.map((x) => x.toMap()).toList(),
+      'streakRelevant': streakRelevant,
+      'disabled': disabled,
     };
   }
 
@@ -65,16 +81,16 @@ class Subject extends Equatable {
       name: map['name'] as String,
       dateCreated: map['dateCreated'] as String,
       prefixIcon: map['prefixIcon'] as String,
-      daysToGetNotified:
-          List<String>.from(map['daysToGetNotified'] as List<dynamic>),
-      classTests: List<String>.from(map['classTests'] as List<dynamic>),
+      daysToGetNotified: List<bool>.from(map['daysToGetNotified'] as List<bool>),
+      classTests: List<ClassTest>.from((map['classTests'] as List<int>).map<ClassTest>((x) => ClassTest.fromMap(x as Map<String,dynamic>),),),
+      streakRelevant: map['streakRelevant'] as bool,
+      disabled: map['disabled'] as bool,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory Subject.fromJson(String source) =>
-      Subject.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory Subject.fromJson(String source) => Subject.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   bool get stringify => true;
@@ -88,6 +104,8 @@ class Subject extends Equatable {
       prefixIcon,
       daysToGetNotified,
       classTests,
+      streakRelevant,
+      disabled,
     ];
   }
 }

@@ -9,6 +9,13 @@ class AddSubjectLoading extends AddSubjectState {}
 
 class AddSubjectSuccess extends AddSubjectState {}
 
+class AddSubjectUpdateWeekdays extends AddSubjectState {
+  AddSubjectUpdateWeekdays({
+    required this.selectedDays,
+  });
+  List<bool> selectedDays;
+}
+
 class AddSubjectFailure extends AddSubjectState {
   AddSubjectFailure({
     required this.errorMessage,

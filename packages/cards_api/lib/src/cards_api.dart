@@ -20,8 +20,14 @@ abstract class CardsApi {
   /// return all cards which should get learned
   List<Card> learnAllCards();
 
-  /// search for cards or folders
-  List<Card> search(String searchRequest);
+  /// search for cards 
+  List<SearchResult> searchCard(String searchRequest);
+
+  /// search for cards 
+  List<SearchResult> searchFolder(String searchRequest);
+
+  /// search for cards 
+  List<Subject> searchSubject(String searchRequest);
 
   /// Saves a [card]
   /// If a [card] with same id already exists, it will be replaced
