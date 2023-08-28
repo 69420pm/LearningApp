@@ -1,6 +1,8 @@
 import 'package:cards_api/cards_api.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:learning_app/edit_subject/cubit/edit_subject_cubit.dart';
 import 'package:ui_components/ui_components.dart';
 
 class ClassTestColumn extends StatelessWidget {
@@ -44,6 +46,7 @@ class ClassTestListTile extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       onTap: (){
         Navigator.of(context).pushNamed('/subject_overview/edit_subject/add_class_test', arguments: classTest);
+        // context.read<EditSubjectCubit>().init(subject);
       },
       child: Padding(
         padding: const EdgeInsets.all(UIConstants.itemPadding / 2),
@@ -62,7 +65,7 @@ class ClassTestListTile extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  DateFormat('MM/dd').format(DateTime.parse(classTest.date)),
+                  DateFormat('MM/dd/yyyy').format(DateTime.parse(classTest.date)),
                   style: UIText.label,
                 ),
                 const SizedBox(

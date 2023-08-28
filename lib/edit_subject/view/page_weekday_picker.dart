@@ -21,8 +21,8 @@ class PageWeekdayPicker extends StatelessWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(
-              vertical: UIConstants.itemPadding * 0.75,
-              horizontal: UIConstants.itemPaddingLarge,
+              vertical: UIConstants.itemPadding*0.75,
+              horizontal: UIConstants.itemPadding,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -101,8 +101,8 @@ class _WeekDay extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       child: Container(
-        height: 42,
-        width: 42,
+        height: 44,
+        width: 44,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(
             Radius.circular(UIConstants.cornerRadiusSmall),
