@@ -17,10 +17,7 @@ class EditSubjectPage extends StatelessWidget {
     context.read<EditSubjectCubit>().init(subject);
     return UIPage(
       appBar: UIAppBar(
-        leading: UIIconButton(
-          icon: UIIcons.arrowBack,
-          onPressed: () {},
-        ),
+        leadingBackButton: true,
         actions: [UIIconButton(icon: UIIcons.share, onPressed: () {})],
         title: 'Subject Settings',
       ),
@@ -64,7 +61,8 @@ class EditSubjectPage extends StatelessWidget {
           const SizedBox(height: UIConstants.descriptionPadding),
           Padding(
             padding: const EdgeInsets.symmetric(
-                horizontal: UIConstants.itemPaddingLarge),
+              horizontal: UIConstants.itemPaddingLarge,
+            ),
             child: Text(
               'Select weekdays on which this subject is scheduled to let the test algorithm adapt to your needs',
               style: UIText.small.copyWith(color: UIColors.smallText),
@@ -73,20 +71,7 @@ class EditSubjectPage extends StatelessWidget {
           const SizedBox(
             height: UIConstants.itemPaddingLarge,
           ),
-          UILabelRow(
-            labelText: 'Class Tests',
-            horizontalPadding: true,
-            actionWidgets: [
-              UIIconButton(
-                  icon: UIIcons.add.copyWith(color: UIColors.smallText),
-                  onPressed: () {
-                            Navigator.of(context).pushNamed('/subject_overview/edit_subject/add_class_test');
-
-                  },
-                  )
-            ],
-          ),
-          ClassTestColumn()
+          const ClassTestColumn(),
         ],
       ),
     );

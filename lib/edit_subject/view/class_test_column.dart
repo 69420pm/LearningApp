@@ -10,29 +10,53 @@ class ClassTestColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(UIConstants.cornerRadius),
-        color: UIColors.overlay,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: UIConstants.cardVerticalPadding,
-          vertical: UIConstants.cardVerticalPadding / 2,
-        ),
-        child: Column(
-          children: [
-            ClassTestListTile(
-              classTest: ClassTest(
-                date: DateTime.now().toIso8601String(),
-                id: "fd",
-                name: "fd",
-                folderIds: [],
+    return BlocBuilder<EditSubjectCubit, EditSubjectState>(
+      builder: (context, state) {
+        final classTests = context.read<EditSubjectCubit>().classTests;
+        if (classTests.isEmpty) {
+          return UILabelRow(
+            labelText: 'Class Tests',
+            horizontalPadding: true,
+            actionWidgets: [
+              UIIconButton(
+                icon: UIIcons.add.copyWith(color: UIColors.primary),
+                onPressed: () {
+                  Navigator.of(context).pushNamed(
+                    '/subject_overview/edit_subject/add_class_test',
+                  );
+                },
               ),
-            )
+            ],
+          );
+        }
+        return Column(
+          children: [
+             UILabelRow(
+            labelText: 'Class Tests',
+            horizontalPadding: true,
+            actionWidgets: [
+              UIIconButton(
+                icon: UIIcons.add.copyWith(color: UIColors.smallText),
+                onPressed: () {
+                  Navigator.of(context).pushNamed(
+                    '/subject_overview/edit_subject/add_class_test',
+                  );
+                },
+              ),
+            ],
+          ),
+            UIContainer(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: classTests.length,
+                itemBuilder: (context, index) {
+                  return ClassTestListTile(classTest: classTests[index]);
+                },
+              ),
+            ),
           ],
-        ),
-      ),
+        );
+      },
     );
   }
 }
@@ -44,8 +68,11 @@ class ClassTestListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: (){
-        Navigator.of(context).pushNamed('/subject_overview/edit_subject/add_class_test', arguments: classTest);
+      onTap: () {
+        Navigator.of(context).pushNamed(
+          '/subject_overview/edit_subject/add_class_test',
+          arguments: classTest,
+        );
         // context.read<EditSubjectCubit>().init(subject);
       },
       child: Padding(
@@ -65,14 +92,14 @@ class ClassTestListTile extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  DateFormat('MM/dd/yyyy').format(DateTime.parse(classTest.date)),
+                  DateFormat('MM/dd/yyyy')
+                      .format(DateTime.parse(classTest.date)),
                   style: UIText.label,
                 ),
                 const SizedBox(
                   width: UIConstants.itemPadding * 0.5,
                 ),
-                UIIcons.arrowForwardSmall
-                    .copyWith(color: UIColors.smallText),
+                UIIcons.arrowForwardSmall.copyWith(color: UIColors.smallText),
               ],
             ),
           ],

@@ -24,5 +24,7 @@ class UIConstants {
   static const double iconSize = 32;
   static const double iconSizeSmall = 20;
 
+  static const double buttonSize = 44;
+
   static const useDynamicColors = true;
 }

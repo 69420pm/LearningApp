@@ -61,7 +61,9 @@ class AddClassTestPage extends StatelessWidget {
       appBar: UIAppBar(
         leading: UIIconButton(
           icon: UIIcons.arrowBack,
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
         actions: [
           if (addClassTest)
@@ -81,11 +83,16 @@ class AddClassTestPage extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    context.read<EditSubjectCubit>().saveClassTest(classTest!);
+                    if (canSave) {
+                      context
+                          .read<EditSubjectCubit>()
+                          .saveClassTest(classTest!)
+                          .then((value) => Navigator.pop(context));
+                    }
                   },
                 );
               },
-            )
+            ),
         ],
         title: addClassTest ? 'Add Class Test' : 'Edit Class Test',
       ),
@@ -137,13 +144,12 @@ class AddClassTestPage extends StatelessWidget {
                       Row(
                         children: [
                           UIIconButton(
-                            icon:
-                                UIIcons.add.copyWith(color: UIColors.smallText),
+                            icon: UIIcons.add.copyWith(color: UIColors.primary),
                             onPressed: () {
                               _showDatePicker(context);
                             },
                             text: 'Add Date',
-                          )
+                          ),
                         ],
                       )
                     else
@@ -185,9 +191,22 @@ class AddClassTestPage extends StatelessWidget {
               UIIconButton(
                 icon: UIIcons.add.copyWith(color: UIColors.smallText),
                 onPressed: () {},
-              )
+              ),
             ],
-          )
+          ),
+          const SizedBox(
+            height: UIConstants.itemPaddingLarge,
+          ),
+          if (!addClassTest)
+            UIDeletionRow(
+              deletionText: 'Delete Class Test',
+              onPressed: () {
+                context
+                    .read<EditSubjectCubit>()
+                    .deleteClassTest(classTest!)
+                    .then((value) => Navigator.pop(context));
+              },
+            ),
         ],
       ),
     );
