@@ -58,6 +58,7 @@ class AddClassTestPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return UIPage(
+      dismissFocusOnTap: true,
       appBar: UIAppBar(
         leading: UIIconButton(
           icon: UIIcons.arrowBack,
@@ -124,6 +125,7 @@ class AddClassTestPage extends StatelessWidget {
                           .changeClassTest(classTest!);
                     }
                   },
+                  // onFieldSubmitted: (_){},
                 ),
               ),
             ],
@@ -136,6 +138,13 @@ class AddClassTestPage extends StatelessWidget {
                 current is EditSubjectClassTestChanged,
             builder: (context, state) {
               return UIContainer(
+                padding: const EdgeInsets.only(
+                  left: UIConstants.cardHorizontalPadding,
+                  right: UIConstants.cardHorizontalPadding-6,
+                  top: UIConstants.cardVerticalPadding-6,
+                  bottom: UIConstants.cardVerticalPadding-6
+
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -148,7 +157,6 @@ class AddClassTestPage extends StatelessWidget {
                             onPressed: () {
                               _showDatePicker(context);
                             },
-                            text: 'Add Date',
                           ),
                         ],
                       )

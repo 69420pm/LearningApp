@@ -1,11 +1,10 @@
-import 'dart:ui' hide TextStyle;
-import 'package:flutter/material.dart';
 
 class UIConstants {
   static const double defaultSize = 8;
 
-  static const double itemPadding = 16;
   static const double itemPaddingLarge = 24;
+  static const double itemPadding = 16;
+  static const double itemPaddingSmall = 12;
   static const double descriptionPadding = 2;
 
   static const double pageHorizontalPadding = 30;

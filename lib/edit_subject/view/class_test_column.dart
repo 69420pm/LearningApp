@@ -14,17 +14,27 @@ class ClassTestColumn extends StatelessWidget {
       builder: (context, state) {
         final classTests = context.read<EditSubjectCubit>().classTests;
         if (classTests.isEmpty) {
-          return UILabelRow(
-            labelText: 'Class Tests',
-            horizontalPadding: true,
-            actionWidgets: [
-              UIIconButton(
-                icon: UIIcons.add.copyWith(color: UIColors.primary),
-                onPressed: () {
-                  Navigator.of(context).pushNamed(
-                    '/subject_overview/edit_subject/add_class_test',
-                  );
-                },
+          return Column(
+            children: [
+              UILabelRow(
+                labelText: 'Class Tests',
+                horizontalPadding: true,
+                actionWidgets: [
+                  UIIconButton(
+                    icon: UIIcons.add.copyWith(color: UIColors.primary),
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(
+                        '/subject_overview/edit_subject/add_class_test',
+                      );
+                    },
+                  ),
+                ],
+              ),
+              UIContainer(
+                child: UIDescription(
+                          text:
+                  'Add exams with date to this subject to increase test frequency when approaching an exam, that you are always well prepared for your exams',
+                        ),
               ),
             ],
           );
@@ -43,6 +53,7 @@ class ClassTestColumn extends StatelessWidget {
                   );
                 },
               ),
+              
             ],
           ),
             UIContainer(
@@ -54,6 +65,11 @@ class ClassTestColumn extends StatelessWidget {
                 },
               ),
             ),
+            UIDescription(
+            text:
+                'Add exams with date to this subject to higher test frequency when approaching an exam, that you are always well prepared for your exams',
+            horizontalPadding: true,
+          ),
           ],
         );
       },

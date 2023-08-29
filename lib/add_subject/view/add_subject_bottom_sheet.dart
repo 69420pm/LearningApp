@@ -33,8 +33,7 @@ class _AddSubjectBottomSheetState extends State<AddSubjectBottomSheet> {
         },
       ),
       title: const Text('Add Subject', style: UIText.label),
-      actionRight: 
-      UIButton(
+      actionRight: UIButton(
         child: Text(
           'Save',
           style: UIText.labelBold.copyWith(
@@ -43,9 +42,11 @@ class _AddSubjectBottomSheetState extends State<AddSubjectBottomSheet> {
         ),
         onPressed: () {
           if (canSave) {
-            context
-                .read<AddSubjectCubit>()
-                .saveSubject(nameController.text, 'TODO', context.read<AddSubjectCubit>().selectedDays);
+            context.read<AddSubjectCubit>().saveSubject(
+                  nameController.text,
+                  'TODO',
+                  context.read<AddSubjectCubit>().selectedDays,
+                );
             Navigator.pop(context);
           }
         },
@@ -92,14 +93,13 @@ class _AddSubjectBottomSheetState extends State<AddSubjectBottomSheet> {
           ),
           const UILabelRow(labelText: 'Schedule'),
           const SizedBox(
-            height: UIConstants.itemPadding * 0.75,
+            height: UIConstants.itemPaddingSmall,
           ),
           WeekdayPicker(),
-          const SizedBox(height: UIConstants.descriptionPadding),
-          Text(
-            'Select weekdays on which this subject is scheduled to let the test algorithm adapt to your needs',
-            style: UIText.small.copyWith(color: UIColors.smallText),
-          )
+          UIDescription(
+            text:
+                'Select weekdays on which this subject is scheduled to let the test algorithm adapt to your needs ',
+          ),
         ],
       ),
     );

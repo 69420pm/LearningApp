@@ -3,10 +3,13 @@ import 'package:ui_components/src/ui_constants.dart';
 import 'package:ui_components/ui_components.dart';
 
 class UIContainer extends StatelessWidget {
-  UIContainer({super.key, required this.child});
+  UIContainer({super.key, required this.child, this.padding});
 
   /// child of container
   Widget child;
+
+  /// custom padding
+  EdgeInsets? padding;
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
@@ -15,8 +18,8 @@ class UIContainer extends StatelessWidget {
         color: UIColors.overlay,
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: UIConstants.cardVerticalPaddingLarge,
+        padding: padding ?? const EdgeInsets.symmetric(
+          horizontal: UIConstants.cardHorizontalPadding,
           vertical: UIConstants.cardVerticalPadding,
         ),
         child: child,

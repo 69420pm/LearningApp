@@ -40,12 +40,13 @@ class ClassTest extends Equatable {
 
   factory ClassTest.fromMap(Map<String, dynamic> map) {
     return ClassTest(
-        id: map['id'] as String,
-        name: map['name'] as String,
-        date: map['date'] as String,
-        folderIds: List<String>.from(
-          map['folderIds'] as List<String>,
-        ));
+      id: map['id'] as String,
+      name: map['name'] as String,
+      date: map['date'] as String,
+      folderIds: List<String>.from(
+        map['folderIds'] as List<String>,
+      ),
+    );
   }
 
   String toJson() => json.encode(toMap());

@@ -23,9 +23,26 @@ class EditSubjectCubit extends Cubit<EditSubjectState> {
     emit(EditSubjectLoading());
 
     try {
+      subject = newSubject;
       await _cardsRepository.saveSubject(newSubject);
 
-      // emit(EditSubjectSuccess());
+      emit(EditSubjectSuccess());
+    } catch (e) {
+      emit(
+        EditSubjectFailure(
+          errorMessage: 'Subject saving failed, while communicating with hive',
+        ),
+      );
+    }
+  }
+
+  Future<void> deleteSubject(String subjectId) async{
+emit(EditSubjectLoading());
+
+    try {
+      await _cardsRepository.deleteSubject(subjectId);
+
+      emit(EditSubjectSuccess());
     } catch (e) {
       emit(
         EditSubjectFailure(
