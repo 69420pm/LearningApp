@@ -75,18 +75,35 @@ class Subject extends Equatable {
     };
   }
 
+  // factory Subject.fromMap(Map<String, dynamic> map) {
+  //   return Subject(
+  //     id: map['id'] as String,
+  //     name: map['name'] as String,
+  //     dateCreated: map['dateCreated'] as String,
+  //     prefixIcon: map['prefixIcon'] as String,
+  //     daysToGetNotified: List<bool>.from(map['daysToGetNotified'] as List<bool>),
+  //     classTests: List<ClassTest>.from((map['classTests'] as List<int>).map<ClassTest>((x) => ClassTest.fromMap(x as Map<String,dynamic>),),),
+  //     streakRelevant: map['streakRelevant'] as bool,
+  //     disabled: map['disabled'] as bool,
+  //   );
+  // }
   factory Subject.fromMap(Map<String, dynamic> map) {
-    return Subject(
-      id: map['id'] as String,
-      name: map['name'] as String,
-      dateCreated: map['dateCreated'] as String,
-      prefixIcon: map['prefixIcon'] as String,
-      daysToGetNotified: List<bool>.from(map['daysToGetNotified'] as List<bool>),
-      classTests: List<ClassTest>.from((map['classTests'] as List<int>).map<ClassTest>((x) => ClassTest.fromMap(x as Map<String,dynamic>),),),
-      streakRelevant: map['streakRelevant'] as bool,
-      disabled: map['disabled'] as bool,
-    );
-  }
+  return Subject(
+    id: map['id'] as String,
+    name: map['name'] as String,
+    dateCreated: map['dateCreated'] as String,
+    prefixIcon: map['prefixIcon'] as String,
+    daysToGetNotified: List<bool>.from(map['daysToGetNotified'] as List<dynamic>),
+    classTests: (map["classTests"] as List<dynamic>).map((e) => ClassTest.fromJson(e as String)).toList(),
+    /* List<ClassTest>.from(
+      (map['classTests'] as List<Map<String, dynamic>>).map(
+        (x) => ClassTest.fromMap(x),
+      ), */
+    // ),
+    streakRelevant: map['streakRelevant'] as bool,
+    disabled: map['disabled'] as bool,
+  );
+}
 
   String toJson() => json.encode(toMap());
 

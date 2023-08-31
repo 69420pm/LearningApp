@@ -10,6 +10,7 @@ class UIIconButton extends StatefulWidget {
     this.alignment = Alignment.center,
     this.animateToWhite = false,
     this.text,
+    this.swapTextWithIcon = false
   });
 
   /// displayed icon
@@ -26,6 +27,10 @@ class UIIconButton extends StatefulWidget {
 
   /// whether the icon should lighten up or darken
   final bool animateToWhite;
+
+  /// whether when text is given, 
+  /// the text should get displayed first or the icon
+  final bool swapTextWithIcon;
 
   @override
   State<UIIconButton> createState() => _UIIconButtonState();
@@ -45,6 +50,7 @@ class _UIIconButtonState extends State<UIIconButton> {
     );
     return GestureDetector(
       onTap: widget.onPressed,
+      behavior: HitTestBehavior.opaque,
       onTapDown: (details) {
         setState(() {
           isIconColored = true;
@@ -81,6 +87,27 @@ class _UIIconButtonState extends State<UIIconButton> {
                   ),
                 );
               } else {
+                if(widget.swapTextWithIcon){
+                  return Row(
+                  children: [
+                     Container(
+                      height: 44,
+                      width: 44,
+                      alignment: widget.alignment,
+                      child: widget.icon.copyWith(
+                        color: Color.lerp(startColor, animateColor, value),
+                      ),
+                    ),
+                    Text(
+                      widget.text!,
+                      style: UIText.label.copyWith(
+                        color: Color.lerp(startColor, animateColor, value),
+                      ),
+                    ),
+                   
+                  ],
+                );
+                }
                 return Row(
                   children: [
                     Text(
@@ -89,7 +116,6 @@ class _UIIconButtonState extends State<UIIconButton> {
                         color: Color.lerp(startColor, animateColor, value),
                       ),
                     ),
-                   
                     Container(
                       height: 44,
                       width: 44,

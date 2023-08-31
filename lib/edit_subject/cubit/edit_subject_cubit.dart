@@ -23,9 +23,26 @@ class EditSubjectCubit extends Cubit<EditSubjectState> {
     emit(EditSubjectLoading());
 
     try {
+      subject = newSubject;
       await _cardsRepository.saveSubject(newSubject);
 
-      // emit(EditSubjectSuccess());
+      emit(EditSubjectSuccess());
+    } catch (e) {
+      emit(
+        EditSubjectFailure(
+          errorMessage: 'Subject saving failed, while communicating with hive',
+        ),
+      );
+    }
+  }
+
+  Future<void> deleteSubject(String subjectId) async{
+emit(EditSubjectLoading());
+
+    try {
+      await _cardsRepository.deleteSubject(subjectId);
+
+      emit(EditSubjectSuccess());
     } catch (e) {
       emit(
         EditSubjectFailure(
@@ -39,11 +56,27 @@ class EditSubjectCubit extends Cubit<EditSubjectState> {
     ClassTest classTest,
   ) async {
     classTests = subject!.classTests;
-    for (var element in classTests) {
-      if (element.id == classTest.id) {
-        element = classTest;
+    if(classTests.isEmpty){
+      classTests.add(classTest);
+    }
+    for (var i = 0; i < classTests.length; i++) {
+      if (classTests[i].id == classTest.id) {
+        classTests[i] = classTest;
         break;
       }
+      // if nothing found
+      if(i==classTests.length-1){
+        classTests.add(classTest);
+      }
+    }
+
+    await saveSubject(subject!.copyWith(classTests: classTests));
+    emit(EditSubjectClassTestChanged(canSave: true));
+  }
+
+  Future<void> deleteClassTest(ClassTest classTest) async {
+    if(classTests.contains(classTest)){
+      classTests.remove(classTest);
     }
     await saveSubject(subject!.copyWith(classTests: classTests));
     emit(EditSubjectClassTestChanged(canSave: true));
@@ -52,8 +85,7 @@ class EditSubjectCubit extends Cubit<EditSubjectState> {
   void changeClassTest(ClassTest classTest) {
     if (classTest.name != '' && classTest.date != '') {
       emit(EditSubjectClassTestChanged(canSave: true));
-    }
-    else if(classTest.date != ''){
+    } else if (classTest.date != '') {
       emit(EditSubjectClassTestChanged(canSave: false));
     }
   }
