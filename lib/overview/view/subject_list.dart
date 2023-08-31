@@ -5,10 +5,10 @@ import 'package:learning_app/overview/view/subject_list_tile.dart';
 import 'package:ui_components/ui_components.dart';
 
 class SubjectList extends StatelessWidget {
-  const SubjectList({
-    super.key,
-  });
+  SubjectList({super.key, this.showDisabled = false});
 
+  /// if true show disabled, if false show only enabled subjects
+  bool showDisabled;
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<OverviewBloc, OverviewState>(
@@ -18,14 +18,26 @@ class SubjectList extends StatelessWidget {
           return ListView.builder(
             shrinkWrap: true,
             itemCount: state.subjects.length,
-            itemBuilder: (context, index) => Padding(
-              padding: EdgeInsets.only(
-                  top: index != 0 ? UIConstants.itemPadding / 2 : 0,
-                  bottom: index != state.subjects.length - 1
-                      ? UIConstants.itemPadding / 2
-                      : 0),
-              child: SubjectListTile(subject: state.subjects[index]),
-            ),
+            itemBuilder: (context, index) {
+              if (showDisabled) {
+                if (!state.subjects[index].disabled) {
+                  return const SizedBox.shrink();
+                }
+              } else {
+                if (state.subjects[index].disabled) {
+                  return const SizedBox.shrink();
+                }
+              }
+
+              return Padding(
+                padding: EdgeInsets.only(
+                    top: index != 0 ? UIConstants.itemPadding / 2 : 0,
+                    bottom: index != state.subjects.length - 1
+                        ? UIConstants.itemPadding / 2
+                        : 0),
+                child: SubjectListTile(subject: state.subjects[index]),
+              );
+            },
           );
         } else if (state is OverviewLoading) {
           // TODO add loading placeholder

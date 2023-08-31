@@ -54,7 +54,7 @@ class FolderListTileBloc
           if (element is Folder) {
             childListTiles[element.id] = FolderListTileParent(
               folder: element,
-              cardsRepository: _cardsRepository,
+              // cardsRepository: _cardsRepository,
             );
           } else if (element is Card) {
             childListTiles[element.id] = CardListTile(
@@ -160,7 +160,7 @@ class FolderListTileBloc
       create: (context) => FolderListTileBloc(_cardsRepository),
       child: FolderListTileParent(
         folder: element,
-        cardsRepository: _cardsRepository,
+        // cardsRepository: _cardsRepository,
       ),
     );
   }

@@ -28,7 +28,8 @@ class UIIcons {
   static UIIcon classTest = UIIcon(Icons.calendar_month_rounded, size: 32,);
   static UIIcon edit = UIIcon(Icons.edit_rounded, size: 24,);
   static UIIcon delete = UIIcon(Icons.delete_rounded, size:26, color: UIColors.delete,);
-
+  static UIIcon info = UIIcon(Icons.info_outline_rounded, size: 20);
+  static UIIcon expandMore = UIIcon(Icons.expand_more_rounded, size: 32);
 }
 
 class UIIcon extends Icon {

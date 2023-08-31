@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
+import 'package:equatable/equatable.dart';
 
 part 'edit_subject_state.dart';
 
@@ -25,8 +26,7 @@ class EditSubjectCubit extends Cubit<EditSubjectState> {
     try {
       subject = newSubject;
       await _cardsRepository.saveSubject(newSubject);
-
-      emit(EditSubjectSuccess());
+      emit(EditSubjectSuccess(subject: subject!));
     } catch (e) {
       emit(
         EditSubjectFailure(
@@ -41,8 +41,7 @@ emit(EditSubjectLoading());
 
     try {
       await _cardsRepository.deleteSubject(subjectId);
-
-      emit(EditSubjectSuccess());
+      subject = null;
     } catch (e) {
       emit(
         EditSubjectFailure(

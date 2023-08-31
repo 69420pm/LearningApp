@@ -46,7 +46,7 @@ class _UIExpansionTileState extends State<UIExpansionTile>
     );
     _animation = CurvedAnimation(
       parent: _animationController,
-      curve: Curves.easeInOut,
+      curve: Curves.easeOut,
     );
   }
 
@@ -76,13 +76,13 @@ class _UIExpansionTileState extends State<UIExpansionTile>
               decoration: const BoxDecoration(color: Colors.transparent),
               child: Row(
                 children: [
-                  SizedBox(width: widget.iconSpacing),
                   AnimatedBuilder(
                     animation: _animation,
                     builder: (context, _) {
                       return Transform.rotate(
-                          angle: pi * _animation.value,
-                          child: const Icon(Icons.expand_more),);
+                        angle: pi * _animation.value / 2 - pi / 2,
+                        child: UIIcons.expandMore,
+                      );
                     },
                   ),
                   SizedBox(width: widget.titleSpacing),

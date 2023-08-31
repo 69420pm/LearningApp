@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:learning_app/overview/view/day_tile.dart';
 import 'package:ui_components/ui_components.dart';
 
@@ -29,7 +30,8 @@ class CalendarCard extends StatelessWidget {
                     height: UIConstants.defaultSize,
                   ),
                   Text(
-                    "${DateTime.now().day}.${DateTime.now().month}.${DateTime.now().year}",
+                    DateFormat('EEEE, MMMM. dd').format(DateTime.now()),
+                    // "${DateTime.now().day}.${DateTime.now().month}.${DateTime.now().year}",
                     style: UIText.label.copyWith(
                       color: UIColors.textDark,
                     ),

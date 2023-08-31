@@ -16,6 +16,9 @@ class EditSubjectPage extends StatelessWidget {
     nameController.text = subject.name;
     context.read<EditSubjectCubit>().init(subject);
 
+    String json = subject.toJson();
+    Subject b = Subject.fromJson(json);
+
     return UIPage(
       dismissFocusOnTap: true,
       appBar: UIAppBar(
@@ -42,7 +45,7 @@ class EditSubjectPage extends StatelessWidget {
                     subject = subject.copyWith(name: p0);
                     context.read<EditSubjectCubit>().saveSubject(subject);
                   },
-                  onFieldSubmitted: (_){},
+                  onFieldSubmitted: (_) {},
                 ),
               ),
             ],
@@ -88,20 +91,36 @@ class EditSubjectPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text('Streak Relevant', style: UIText.label),
-                UISwitch(
-                  startValue: subject.streakRelevant,
-                  onChanged: null //(value) {
-                  //   subject = subject.copyWith(streakRelevant: value);
-                  //   context.read<EditSubjectCubit>().saveSubject(subject);
-                  // },
+                BlocBuilder<EditSubjectCubit, EditSubjectState>(
+                  buildWhen: (previous, current) =>
+                      current is EditSubjectSuccess,
+                  builder: (context, state) {
+                    if (state is EditSubjectSuccess) {
+                      subject = state.subject;
+                    }
+                    if (subject.disabled) {
+                      subject = subject.copyWith(streakRelevant: false);
+                    }
+                    return UISwitch(
+                      disabled: subject.disabled,
+                      startValue: subject.streakRelevant,
+                      onChanged: (value) {
+                        this.subject = subject.copyWith(streakRelevant: value);
+                        context
+                            .read<EditSubjectCubit>()
+                            .saveSubject(this.subject);
+                      },
+                    );
+                  },
                 ),
               ],
             ),
           ),
           UIDescription(
-              horizontalPadding: true,
-              text:
-                  "If disabled subject doesn't get considered for streaks and notifications"),
+            horizontalPadding: true,
+            text:
+                "If disabled subject doesn't get considered for streaks and notifications",
+          ),
           const SizedBox(
             height: UIConstants.itemPadding,
           ),
@@ -114,29 +133,53 @@ class EditSubjectPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text('Disable Subject', style: UIText.label),
-                UISwitch(
-                  startValue: subject.disabled,
-                  
-                  onChanged: (value) {
-                    subject = subject.copyWith(disabled: value);
-                    context.read<EditSubjectCubit>().saveSubject(subject);
+                BlocBuilder<EditSubjectCubit, EditSubjectState>(
+                  buildWhen: (previous, current) =>
+                      current is EditSubjectSuccess,
+                  builder: (context, state) {
+                    if (state is EditSubjectSuccess) {
+                      subject = state.subject;
+                    }
+                    return UISwitch(
+                      startValue: subject.disabled,
+                      onChanged: (value) {
+                        this.subject = subject.copyWith(disabled: value);
+                        context
+                            .read<EditSubjectCubit>()
+                            .saveSubject(this.subject);
+                      },
+                    );
                   },
                 ),
               ],
             ),
           ),
           UIDescription(
-              horizontalPadding: true,
-              text:
-                  "If disabled, subject doesn't get considered for streaks and doesn't get displayed normally on start page, it is now displayed under the 'disabled' category"),
+            horizontalPadding: true,
+            text:
+                "When disabled, the subject is excluded from streaks and the usual start page display. It's now visible in the 'disabled' category.",
+          ),
           const SizedBox(
             height: UIConstants.itemPaddingLarge,
           ),
           UIDeletionRow(
-              deletionText: "Delete Subject",
-              onPressed: () {
-                context.read<EditSubjectCubit>().deleteSubject(subject.id);
-              })
+            deletionText: 'Delete Subject',
+            onPressed: () {
+              //
+              showDialog(
+                context: context,
+                builder: (context) => BlocProvider.value(
+                  value: context.read<EditSubjectCubit>(),
+                  child: UIDeletionDialog(
+                    whatToDelete: 'Subject',
+                    onAccepted: () => context
+                        .read<EditSubjectCubit>()
+                        .deleteSubject(subject.id),
+                  ),
+                ),
+              );
+            },
+          ),
         ],
       ),
     );

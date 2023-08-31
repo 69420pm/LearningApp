@@ -9,7 +9,12 @@ class SubjectListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    final nextClassTestInDays = SubjectHelper.daysTillNextClassTest(
+      subject,
+      DateTime.now(),
+    );
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () => Navigator.of(context)
           .pushNamed('/subject_overview', arguments: subject),
       child: Row(
@@ -23,7 +28,7 @@ class SubjectListTile extends StatelessWidget {
             ],
           ),
           const SizedBox(
-            width: UIConstants.itemPadding*1.5,
+            width: UIConstants.itemPaddingLarge,
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,19 +39,38 @@ class SubjectListTile extends StatelessWidget {
                   color: UIColors.textLight,
                 ),
               ),
-              const SizedBox(height: UIConstants.defaultSize / 2),
-              RichText(
-                text: TextSpan(
-                  style: UIText.normal.copyWith(color: UIColors.smallText),
-                  children: <TextSpan>[
-                    const TextSpan(text: 'class test in '),
-                    TextSpan(
-                        text: '2 ',
-                        style: UIText.normal.copyWith(color: UIColors.primary)),
-                    const TextSpan(text: 'days'),
+              if (nextClassTestInDays > -1 && nextClassTestInDays < 15)
+                Column(
+                  children: [
+                    const SizedBox(height: UIConstants.defaultSize / 2),
+                    RichText(
+                      text: TextSpan(
+                        style:
+                            UIText.normal.copyWith(color: UIColors.smallText),
+                        children: <TextSpan>[
+                          const TextSpan(text: 'class test in '),
+                          TextSpan(
+                              text: nextClassTestInDays.toString(),
+                              style: UIText.normal
+                                  .copyWith(color: nextClassTestInDays<5?UIColors.delete: UIColors.primary)),
+                          TextSpan(text: nextClassTestInDays == 1? ' day': ' days'),
+                        ],
+                      ),
+                    )
                   ],
-                ),
-              )
+                )
+              // RichText(
+              //   text: TextSpan(
+              //     style: UIText.normal.copyWith(color: UIColors.smallText),
+              //     children: <TextSpan>[
+              //       const TextSpan(text: 'class test in '),
+              //       TextSpan(
+              //           text: '2 ',
+              //           style: UIText.normal.copyWith(color: UIColors.primary)),
+              //       const TextSpan(text: 'days'),
+              //     ],
+              //   ),
+              // )
             ],
           ),
           const Spacer(),

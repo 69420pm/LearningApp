@@ -2,9 +2,9 @@ import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:learning_app/subject_overview/bloc/edit_subject_bloc/subject_overview_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/folder_bloc/folder_list_tile_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
+import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dart';
 import 'package:learning_app/subject_overview/view/folder_draggable_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile_view.dart';
 import 'package:learning_app/subject_overview/view/inactive_folder_list_tile.dart';
@@ -14,13 +14,13 @@ class FolderListTileParent extends StatelessWidget {
   FolderListTileParent({
     super.key,
     required this.folder,
-    required this.cardsRepository,
+    // required this.cardsRepository,
   });
 
   final Folder folder;
-  final CardsRepository cardsRepository;
+  // final CardsRepository cardsRepository;
 
-  bool isHoverd = false;
+  bool isHovered = false;
 
   Map<String, Widget> childListTiles = <String, Widget>{};
   @override
@@ -42,7 +42,7 @@ class FolderListTileParent extends StatelessWidget {
               folder: folder,
             ),
             onDragEnd: (details) {
-              isHoverd = false;
+              isHovered = false;
               context
                   .read<FolderListTileBloc>()
                   .add(FolderListTileClearHovers());
@@ -52,16 +52,16 @@ class FolderListTileParent extends StatelessWidget {
             childWhenDragging: const PlaceholderWhileDragging(),
             child: DragTarget(
               onMove: (details) {
-                if (isHoverd == false) {
-                  isHoverd = true;
+                if (isHovered == false) {
+                  isHovered = true;
                   context
                       .read<FolderListTileBloc>()
                       .add(FolderListTileUpdate(id: folder.id));
                 }
               },
               onLeave: (data) {
-                if (isHoverd == true) {
-                  isHoverd = false;
+                if (isHovered == true) {
+                  isHovered = false;
                   context
                       .read<FolderListTileBloc>()
                       .add(FolderListTileUpdate(id: folder.id));
@@ -70,8 +70,8 @@ class FolderListTileParent extends StatelessWidget {
               onAccept: (data) {
                 if (data is Folder) {
                   if (data.parentId == folder.id) return;
-                  context.read<EditSubjectBloc>().add(
-                        EditSubjectSetFolderParent(
+                  context.read<SubjectBloc>().add(
+                        SubjectSetFolderParent(
                           folder: data,
                           parentId: folder.id,
                         ),
@@ -86,8 +86,8 @@ class FolderListTileParent extends StatelessWidget {
                             ),
                           );
                     } else {
-                      context.read<EditSubjectBloc>().add(
-                            EditSubjectSetCardParent(
+                      context.read<SubjectBloc>().add(
+                            SubjectSetCardParent(
                               card: data,
                               parentId: folder.id,
                             ),
@@ -121,13 +121,13 @@ class FolderListTileParent extends StatelessWidget {
                   buildWhen: (previous, current) {
                     if (current is FolderListTileRetrieveChildren &&
                         current.senderId == folder.id) {
-                      isHoverd = false;
+                      isHovered = false;
                       return true;
                     } else if (current is FolderListTileUpdateOnHover) {
                       if (current.id == folder.id) return true;
                     } else if (current is FolderListTileToClearHover) {
-                      if (isHoverd == true) {
-                        isHoverd = false;
+                      if (isHovered == true) {
+                        isHovered = false;
                         return true;
                       }
                     }
@@ -151,7 +151,7 @@ class FolderListTileParent extends StatelessWidget {
                         SubjectOverviewSelectionState>(
                       builder: (context, state) {
                         return FolderListTileView(
-                          isHoverd: isHoverd,
+                          isHoverd: isHovered,
                           inSelectionMode:
                               state is SubjectOverviewSelectionModeOn,
                           folder: folder,

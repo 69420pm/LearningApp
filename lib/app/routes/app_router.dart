@@ -5,8 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_card/cubit/add_card_cubit.dart';
 import 'package:learning_app/add_card/view/add_card_page.dart';
 import 'package:learning_app/add_edit_class_test/view/add_class_test_page.dart';
-import 'package:learning_app/add_folder/cubit/add_folder_cubit.dart';
-import 'package:learning_app/add_folder/view/add_folder_page.dart';
 import 'package:learning_app/add_subject/cubit/add_subject_cubit.dart';
 import 'package:learning_app/app/view/error.dart';
 import 'package:learning_app/edit_subject/cubit/edit_subject_cubit.dart';
@@ -17,9 +15,9 @@ import 'package:learning_app/overview/bloc/overview_bloc.dart';
 import 'package:learning_app/overview/view/overview_page.dart';
 import 'package:learning_app/search/bloc/search_bloc.dart';
 import 'package:learning_app/search/view/search_page.dart';
-import 'package:learning_app/subject_overview/bloc/edit_subject_bloc/subject_overview_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/folder_bloc/folder_list_tile_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
+import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dart';
 import 'package:learning_app/subject_overview/view/subject_overview_page.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 
@@ -29,10 +27,9 @@ class AppRouter {
 
   final CardsRepository _cardsRepository;
 
-  late final EditSubjectBloc _editSubjectBloc =
-      EditSubjectBloc(_cardsRepository);
+  late final SubjectBloc _editSubjectBloc =
+      SubjectBloc(_cardsRepository);
   late final AddCardCubit _addCardCubit = AddCardCubit(_cardsRepository);
-  late final AddFolderCubit _addFolderCubit = AddFolderCubit(_cardsRepository);
   late final OverviewBloc _overviewBloc = OverviewBloc(_cardsRepository)
     ..add(OverviewSubjectSubscriptionRequested());
   late final EditSubjectCubit _editSubjectCubit =
@@ -83,7 +80,7 @@ class AppRouter {
         );
 
       case '/subject_overview':
-        final esb = EditSubjectBloc(_cardsRepository);
+        final esb = SubjectBloc(_cardsRepository);
         final sosb = SubjectOverviewSelectionBloc(_cardsRepository);
         return MaterialPageRoute(
           builder: (_) => MultiBlocProvider(
@@ -97,6 +94,7 @@ class AppRouter {
               // BlocProvider.value(
               //   value: _editSubjectBloc
               // ),
+              BlocProvider.value(value: _editSubjectCubit),
               BlocProvider(
                 create: (context) => sosb,
               ),
@@ -111,15 +109,7 @@ class AppRouter {
             ),
           ),
         );
-      case '/subject_overview/add_folder':
-        return MaterialPageRoute(
-          builder: (_) => MultiBlocProvider(
-            providers: [
-              BlocProvider.value(value: _addFolderCubit),
-            ],
-            child: const AddFolderPage(),
-          ),
-        );
+
       case '/subject_overview/edit_subject':
         return MaterialPageRoute(
           builder: (_) => MultiBlocProvider(

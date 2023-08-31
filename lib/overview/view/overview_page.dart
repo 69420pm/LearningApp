@@ -63,14 +63,20 @@ class OverviewPage extends StatelessWidget {
             const SizedBox(
               height: UIConstants.itemPaddingLarge,
             ),
-            const SubjectList(),
+            SubjectList(),
             const SizedBox(height: UIConstants.itemPaddingLarge * 2),
             UILabelRow(
               labelText: 'Disabled',
               actionWidgets: [
                 UIIcons.arrowDown.copyWith(color: UIColors.smallText)
               ],
-            )
+            ),
+            const SizedBox(
+              height: UIConstants.itemPaddingLarge,
+            ),
+            SubjectList(
+              showDisabled: true,
+            ),
           ],
         ),
       ),
