@@ -50,4 +50,12 @@ class UIText {
     fontWeight: FontWeight.w400,
     height: 14 / 12,
   );
+
+  /// second smallest font for explain texts
+  static const smallBold = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    height: 14 / 12,
+  );
 }

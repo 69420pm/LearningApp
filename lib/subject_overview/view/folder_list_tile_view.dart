@@ -42,13 +42,11 @@ class _FolderListTileViewState extends State<FolderListTileView> {
       title: Text(
         widget.folder.name,
         overflow: TextOverflow.ellipsis,
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onBackground,
-            ),
+        style: UIText.label
       ),
       iconSpacing: UIConstants.defaultSize,
       titleSpacing: UIConstants.defaultSize,
-      trailing: PopupMenuButton<int>(
+      trailing: UILinearProgressIndicator(value: 0.5),/* PopupMenuButton<int>(
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(UIConstants.cornerRadius),
@@ -115,7 +113,7 @@ class _FolderListTileViewState extends State<FolderListTileView> {
             }
           }
         },
-      ),
+      ), */
       children: [
         Padding(
           padding: const EdgeInsets.only(

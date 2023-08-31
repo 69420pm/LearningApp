@@ -44,7 +44,7 @@ class ClassTest extends Equatable {
       name: map['name'] as String,
       date: map['date'] as String,
       folderIds: List<String>.from(
-        map['folderIds'] as List<String>,
+        map['folderIds'] as List<dynamic>,
       ),
     );
   }

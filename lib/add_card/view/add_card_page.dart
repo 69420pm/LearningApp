@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:learning_app/subject_overview/bloc/edit_subject_bloc/subject_overview_bloc.dart';
+import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 
 import 'package:ui_components/ui_components.dart';
@@ -48,8 +48,8 @@ class _AddCardPageState extends State<AddCardPage> {
                           //     backController.text,
                           //     recommendedSubjectParent!,
                           //     iconController.text);
-                          context.read<EditSubjectBloc>().add(
-                                EditSubjectAddCard(
+                          context.read<SubjectBloc>().add(
+                                SubjectAddCard(
                                   front: frontController.text,
                                   back: backController.text,
                                   parentId: widget.parentId,
@@ -78,8 +78,8 @@ class _AddCardPageState extends State<AddCardPage> {
                           //     backController.text,
                           //     recommendedSubjectParent!,
                           //     iconController.text);
-                          context.read<EditSubjectBloc>().add(
-                                EditSubjectAddCard(
+                          context.read<SubjectBloc>().add(
+                                SubjectAddCard(
                                   front: frontController.text,
                                   back: backController.text,
                                   parentId: widget.parentId,
