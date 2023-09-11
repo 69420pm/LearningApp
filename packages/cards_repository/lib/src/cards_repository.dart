@@ -22,17 +22,21 @@ class CardsRepository {
   /// return all cards to learn
   List<Card> learnAllCards() => _cardsApi.learnAllCards();
 
-  /// search request to search in all cards
-  List<SearchResult> searchCard(String searchRequest) =>
-      _cardsApi.searchCard(searchRequest);
+  /// search request to search in all cards, give parent[id] only search 
+  /// everything saved in this id or below, e.g. when only searched all 
+  /// subject contents, give subject id
+  List<SearchResult> searchCard(String searchRequest, String? id) =>
+      _cardsApi.searchCard(searchRequest, id);
 
   /// search request to search in all subjects
   List<Subject> searchSubject(String searchRequest) =>
       _cardsApi.searchSubject(searchRequest);
 
-  /// search request to search in all folders
-  List<SearchResult> searchFolder(String searchRequest) =>
-      _cardsApi.searchFolder(searchRequest);
+  /// search request to search in all folders, give parent[id] only search 
+  /// everything saved in this id or below, e.g. when only searched all 
+  /// subject contents, give subject id
+  List<SearchResult> searchFolder(String searchRequest, String? id) =>
+      _cardsApi.searchFolder(searchRequest, id);
 
   /// return all children for a given parentId in a stream
   Stream<List<Object>> getChildrenById(String id) =>

@@ -16,9 +16,6 @@ class EditSubjectPage extends StatelessWidget {
     nameController.text = subject.name;
     context.read<EditSubjectCubit>().init(subject);
 
-    String json = subject.toJson();
-    Subject b = Subject.fromJson(json);
-
     return UIPage(
       dismissFocusOnTap: true,
       appBar: UIAppBar(
@@ -168,13 +165,16 @@ class EditSubjectPage extends StatelessWidget {
               //
               showDialog(
                 context: context,
-                builder: (context) => BlocProvider.value(
+                builder: (_) => BlocProvider.value(
                   value: context.read<EditSubjectCubit>(),
                   child: UIDeletionDialog(
                     whatToDelete: 'Subject',
-                    onAccepted: () => context
+                    onAccepted: () async {
+                      await context
                         .read<EditSubjectCubit>()
-                        .deleteSubject(subject.id),
+                        .deleteSubject(subject.id);
+                      await Navigator.of(context).pushNamed('/');
+                    },
                   ),
                 ),
               );

@@ -8,16 +8,19 @@ import 'package:learning_app/search/view/subject_search_results.dart';
 import 'package:ui_components/ui_components.dart';
 
 class SearchPage extends StatelessWidget {
-  const SearchPage({super.key});
+  SearchPage({super.key, required this.searchId});
+  /// parent id to search e.g. within subjects or folders
+  final String? searchId;
 
   @override
   Widget build(BuildContext context) {
     context.read<SearchBloc>().resetState();
+    context.read<SearchBloc>().searchId = searchId;
     return UIPage(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SearchTextField(),
+          SearchTextField(searchSubject: searchId!=null,),
           const SizedBox(
             height: UIConstants.itemPaddingLarge,
           ),
