@@ -21,10 +21,10 @@ abstract class CardsApi {
   List<Card> learnAllCards();
 
   /// search for cards 
-  List<SearchResult> searchCard(String searchRequest);
+  List<SearchResult> searchCard(String searchRequest, String? id);
 
   /// search for cards 
-  List<SearchResult> searchFolder(String searchRequest);
+  List<SearchResult> searchFolder(String searchRequest, String? id);
 
   /// search for cards 
   List<Subject> searchSubject(String searchRequest);

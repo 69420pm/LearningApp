@@ -530,9 +530,10 @@ class HiveCardsApi extends CardsApi {
   }
 
   @override
-  List<SearchResult> searchCard(String searchRequest) {
+  List<SearchResult> searchCard(String searchRequest, String? id) {
     final searchResults = <SearchResult>[];
     for (final indexedPath in _indexedPaths) {
+      if (id != null && !indexedPath.contains(id)) continue;
       final loadedCardStrings =
           _hiveBox.get(_makePathStorable(indexedPath)) as List<String>?;
       if (loadedCardStrings == null) continue;
@@ -544,7 +545,9 @@ class HiveCardsApi extends CardsApi {
                     .toLowerCase()
                     .contains(searchRequest.toLowerCase()) ||
                 card.back.toLowerCase().contains(searchRequest.toLowerCase())) {
-              searchResults.add(SearchResult(searchedObject: card, parentObjects: _getParentNamesFromPath(indexedPath)));
+              searchResults.add(SearchResult(
+                  searchedObject: card,
+                  parentObjects: _getParentNamesFromPath(indexedPath)));
             }
           } catch (e) {
             continue;
@@ -577,9 +580,11 @@ class HiveCardsApi extends CardsApi {
   }
 
   @override
-  List<SearchResult> searchFolder(String searchRequest) {
+  List<SearchResult> searchFolder(String searchRequest, String? id) {
     final searchResults = <SearchResult>[];
     for (final indexedPath in _indexedPaths) {
+      if (id != null && !indexedPath.contains(id)) continue;
+
       final loadedCardStrings =
           _hiveBox.get(_makePathStorable(indexedPath)) as List<String>?;
       if (loadedCardStrings == null) continue;
@@ -591,8 +596,9 @@ class HiveCardsApi extends CardsApi {
             if (folder.name
                 .toLowerCase()
                 .contains(searchRequest.toLowerCase())) {
-              searchResults.add(SearchResult(searchedObject: folder, parentObjects: _getParentNamesFromPath(indexedPath)));
-
+              searchResults.add(SearchResult(
+                  searchedObject: folder,
+                  parentObjects: _getParentNamesFromPath(indexedPath)));
             }
           } catch (e) {
             continue;

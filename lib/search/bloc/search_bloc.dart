@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
-import 'package:learning_app/subject_overview/view/card_list_tile_view.dart';
-import 'package:meta/meta.dart';
 
 part 'search_event.dart';
 part 'search_state.dart';
@@ -16,6 +14,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   final CardsRepository _cardsRepository;
   String lastSearch = '';
+  String? searchId;
 
   List<SearchResult> folderSearchResults = [];
   List<SearchResult> cardSearchResults = [];
@@ -23,21 +22,31 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   FutureOr<void> request(SearchRequest event, Emitter<SearchState> emit) {
     emit(SearchLoading());
-    if(event.searchRequest.isEmpty){
+    if (event.searchRequest.isEmpty) {
       emit(SearchInitial());
     }
-    cardSearchResults = _cardsRepository.searchCard(event.searchRequest);
-    subjectSearchResults = _cardsRepository.searchSubject(event.searchRequest);
-    folderSearchResults = _cardsRepository.searchFolder(event.searchRequest);
-
-    if(cardSearchResults.isNotEmpty || folderSearchResults.isNotEmpty || subjectSearchResults.isNotEmpty){
-      emit(SearchSuccess(searchRequest: event.searchRequest));
+    cardSearchResults =
+        _cardsRepository.searchCard(event.searchRequest, searchId);
+    if (searchId == null || searchId!.isEmpty) {
+      subjectSearchResults =
+          _cardsRepository.searchSubject(event.searchRequest);
+      
     }else{
+      subjectSearchResults = [];
+    }
+    folderSearchResults =
+        _cardsRepository.searchFolder(event.searchRequest, searchId);
+
+    if (cardSearchResults.isNotEmpty ||
+        folderSearchResults.isNotEmpty ||
+        subjectSearchResults.isNotEmpty) {
+      emit(SearchSuccess(searchRequest: event.searchRequest));
+    } else {
       emit(SearchNothingFound());
     }
   }
 
-  void resetState(){
+  void resetState() {
     emit(SearchInitial());
   }
 }

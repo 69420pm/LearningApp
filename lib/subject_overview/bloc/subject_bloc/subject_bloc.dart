@@ -16,12 +16,6 @@ part 'subject_state.dart';
 class SubjectBloc extends Bloc<SubjectEvent, SubjectState> {
   SubjectBloc(this.cardsRepository) : super(SubjectInitial()) {
     on<SubjectSaveSubject>(_saveSubject);
-    // on<EditSubjectCardSubscriptionRequested>((event, emit) async {
-    //   await _cardSubscriptionRequested(event, emit);
-    // });
-    // on<EditSubjectFolderSubscriptionRequested>((event, emit) async {
-    //   await _folderSubscriptionRequested(event, emit);
-    // });
     on<SubjectAddFolder>((event, emit) async {
       await _saveFolder(event, emit);
     });

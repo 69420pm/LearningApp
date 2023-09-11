@@ -18,7 +18,7 @@ import 'package:learning_app/search/view/search_page.dart';
 import 'package:learning_app/subject_overview/bloc/folder_bloc/folder_list_tile_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dart';
-import 'package:learning_app/subject_overview/view/subject_overview_page.dart';
+import 'package:learning_app/subject_overview/view/subject_page.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 
 /// Handles complete app routing and is injected in MaterialApp()
@@ -38,7 +38,7 @@ class AppRouter {
   late final SearchBloc _searchBloc = SearchBloc(_cardsRepository);
   late final FolderListTileBloc _folderListTileBloc =
       FolderListTileBloc(_cardsRepository);
-  // final TextEditorBloc _textEditorBloc = TextEditorBloc();
+  final TextEditorBloc _textEditorBloc = TextEditorBloc();
   final KeyboardRowCubit _keyboardRowCubit = KeyboardRowCubit();
 
   Route<dynamic> onGenerateRoute(RouteSettings routeSettings) {
@@ -64,7 +64,7 @@ class AppRouter {
             providers: [
               BlocProvider.value(value: _addCardCubit),
               BlocProvider.value(value: _editSubjectBloc),
-              // BlocProvider.value(value: _textEditorBloc),
+              BlocProvider.value(value: _textEditorBloc),
               BlocProvider.value(value: _keyboardRowCubit),
               // BlocProvider.value(value: _audioTileCubit)
             ],
@@ -75,7 +75,7 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => MultiBlocProvider(
             providers: [BlocProvider.value(value: _searchBloc)],
-            child: const SearchPage(),
+            child: SearchPage(searchId: routeSettings.arguments as String?,),
           ),
         );
 
@@ -102,7 +102,7 @@ class AppRouter {
               //   value: _addFolderCubit,
               // )
             ],
-            child: SubjectOverviewPage(
+            child: SubjectPage(
               subjectToEdit: routeSettings.arguments! as Subject,
               editSubjectBloc: esb,
               cardsRepository: _cardsRepository,

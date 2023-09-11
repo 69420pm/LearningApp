@@ -6,15 +6,16 @@ import 'package:ui_components/ui_components.dart';
 class SearchTextField extends StatelessWidget {
   SearchTextField({
     super.key,
+    this.searchSubject = false
   });
   final searchController = TextEditingController();
   final focusNode = FocusNode();
+  final bool searchSubject;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 54,
-      width: double.infinity,
       decoration: const BoxDecoration(
         color: UIColors.overlay,
         borderRadius:
@@ -38,7 +39,7 @@ class SearchTextField extends StatelessWidget {
               },
               decoration: InputDecoration(
                 isDense: true,
-                hintText: 'search',
+                hintText: 'search${searchSubject?' folder' : ''}',
                 contentPadding: const EdgeInsets.symmetric(vertical: 14),
                 prefixIcon: UIIconButton(
                   icon: UIIcons.arrowBack
