@@ -16,9 +16,12 @@ class SubjectOverviewSelectionBloc
     on<SubjectOverviewSelectionDeleteSelectedCards>(_deleteCards);
     on<SubjectOverviewSelectionMoveSelectedCards>(_moveSelectedCards);
     on<SubjectOverviewDraggingChange>(_toggleDragging);
+    on<SubjectOverviewSetSoftSelectFolder>(_setSoftSelectFolder);
   }
 
   final List<Card> cardsSelected = List.empty(growable: true);
+  final List<String> foldersSelected = List.empty(growable: true);
+  String? folderSoftSelected = null;
   final CardsRepository _cardsRepository;
   bool isInDragging = false;
   bool isInSelectMode = false;
@@ -42,11 +45,14 @@ class SubjectOverviewSelectionBloc
     Emitter<SubjectOverviewSelectionState> emit,
   ) {
     if (event.addCard && !cardsSelected.contains(event.card)) {
+      //* new card selected
       cardsSelected.add(event.card);
     } else if (!event.addCard) {
+      //* card removed from selection
       cardsSelected.remove(event.card);
 
       if (cardsSelected.isEmpty && state is SubjectOverviewSelectionModeOn) {
+        //* if last card removed from selection, selection mode off
         isInSelectMode = false;
         emit(SubjectOverviewSelectionModeOff());
       }
@@ -71,8 +77,9 @@ class SubjectOverviewSelectionBloc
   }
 
   Future<FutureOr<void>> _moveSelectedCards(
-      SubjectOverviewSelectionMoveSelectedCards event,
-      Emitter<SubjectOverviewSelectionState> emit,) async {
+    SubjectOverviewSelectionMoveSelectedCards event,
+    Emitter<SubjectOverviewSelectionState> emit,
+  ) async {
     cardsSelected.removeWhere((element) => element.parentId == event.parentId);
     await _cardsRepository.moveCards(cardsSelected, event.parentId);
     cardsSelected.clear();
@@ -95,5 +102,11 @@ class SubjectOverviewSelectionBloc
         emit(SubjectOverviewSelectionModeOn());
       }
     }
+  }
+
+  FutureOr<void> _setSoftSelectFolder(SubjectOverviewSetSoftSelectFolder event,
+      Emitter<SubjectOverviewSelectionState> emit) {
+    folderSoftSelected = event.folder;
+    emit(SubjectOverviewSelectionModeOff());
   }
 }

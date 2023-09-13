@@ -83,14 +83,15 @@ class _CardListTileState extends State<CardListTile> {
             if (!widget.isCardSelected) {
               context.read<SubjectOverviewSelectionBloc>().add(
                     SubjectOverviewSelectionToggleSelectMode(
-                        inSelectMode: true,),
-                  );
-              context.read<SubjectOverviewSelectionBloc>().add(
-                    SubjectOverviewSelectionChange(
-                      card: widget.card,
-                      addCard: true,
+                      inSelectMode: true,
                     ),
                   );
+              context
+                  .read<SubjectOverviewSelectionBloc>()
+                  .add(SubjectOverviewSelectionChange(
+                    card: widget.card,
+                    addCard: true,
+                  ));
             }
           },
           feedback: Builder(

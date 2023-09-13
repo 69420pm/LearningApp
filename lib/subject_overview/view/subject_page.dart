@@ -67,18 +67,32 @@ class _SubjectViewState extends State<SubjectView> {
     return BlocBuilder<SubjectOverviewSelectionBloc,
         SubjectOverviewSelectionState>(
       builder: (context, blocBuilderState) {
+        var isInSelectionMode =
+            context.read<SubjectOverviewSelectionBloc>().isInSelectMode;
         return UIPage(
           appBar: UIAppBar(
-            leadingBackButton: true,
-            actions: [
-              UIIconButton(
-                icon: UIIcons.search,
-                onPressed: () {
-                  Navigator.of(context)
-                      .pushNamed('/search', arguments: widget.subjectToEdit.id);
-                },
-              ),
-            ],
+            leadingBackButton: !isInSelectionMode,
+            leading: isInSelectionMode
+                ? UIIconButton(
+                    icon: UIIcons.close,
+                    onPressed: () =>
+                        context.read<SubjectOverviewSelectionBloc>().add(
+                              SubjectOverviewSelectionToggleSelectMode(
+                                  inSelectMode: false),
+                            ),
+                  )
+                : null,
+            actions: isInSelectionMode
+                ? []
+                : [
+                    UIIconButton(
+                      icon: UIIcons.search,
+                      onPressed: () {
+                        Navigator.of(context).pushNamed('/search',
+                            arguments: widget.subjectToEdit.id);
+                      },
+                    ),
+                  ],
           ),
           body: Column(
             children: [
@@ -93,7 +107,12 @@ class _SubjectViewState extends State<SubjectView> {
                 actionWidgets: [
                   UIIconButton(
                     icon: UIIcons.download.copyWith(color: UIColors.smallText),
-                    onPressed: () {},
+                    onPressed: () {
+                      context.read<SubjectBloc>().add(SubjectAddCard(
+                          front: "test",
+                          back: "test Back",
+                          parentId: widget.subjectToEdit.id));
+                    },
                   ),
                   UIIconButton(
                     icon: UIIcons.addFolder.copyWith(color: UIColors.smallText),
@@ -115,7 +134,8 @@ class _SubjectViewState extends State<SubjectView> {
                     icon:
                         UIIcons.placeHolder.copyWith(color: UIColors.smallText),
                     onPressed: () {
-                      Navigator.of(context).pushNamed('/add_card', arguments: widget.subjectToEdit.id);
+                      Navigator.of(context).pushNamed('/add_card',
+                          arguments: widget.subjectToEdit.id);
                     },
                   ),
                 ],
