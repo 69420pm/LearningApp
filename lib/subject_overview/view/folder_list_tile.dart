@@ -7,7 +7,7 @@ import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overvi
 import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dart';
 import 'package:learning_app/subject_overview/view/folder_draggable_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile_view.dart';
-import 'package:learning_app/subject_overview/view/inactive_folder_list_tile.dart';
+import 'package:learning_app/subject_overview/view/inactive_list_tile.dart';
 import 'package:ui_components/ui_components.dart';
 
 class FolderListTileParent extends StatelessWidget {
@@ -36,132 +36,146 @@ class FolderListTileParent extends StatelessWidget {
       child: BlocBuilder<SubjectOverviewSelectionBloc,
           SubjectOverviewSelectionState>(
         builder: (context, state) {
-          return LongPressDraggable<Folder>(
-            data: folder,
-            feedback: FolderDraggableTile(
-              folder: folder,
-            ),
-            onDragEnd: (details) {
-              isHovered = false;
-              context
-                  .read<FolderListTileBloc>()
-                  .add(FolderListTileClearHovers());
+          var isSoftSelected = folder ==
+              context.read<SubjectOverviewSelectionBloc>().folderSoftSelected;
+          return GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () {
+              if (state is! SubjectOverviewSelectionModeOn) {
+                context.read<SubjectOverviewSelectionBloc>().add(
+                      SubjectOverviewSetSoftSelectFolder(
+                        folder: isSoftSelected ? null : folder,
+                      ),
+                    );
+              }
             },
-            maxSimultaneousDrags:
-                state is SubjectOverviewSelectionModeOn ? 0 : 1,
-            childWhenDragging: const PlaceholderWhileDragging(),
-            child: DragTarget(
-              onMove: (details) {
-                if (isHovered == false) {
-                  isHovered = true;
-                  context
-                      .read<FolderListTileBloc>()
-                      .add(FolderListTileUpdate(id: folder.id));
-                }
+            child: LongPressDraggable<Folder>(
+              data: folder,
+              feedback: FolderDraggableTile(
+                folder: folder,
+              ),
+              onDragEnd: (details) {
+                isHovered = false;
+                context
+                    .read<FolderListTileBloc>()
+                    .add(FolderListTileClearHovers());
               },
-              onLeave: (data) {
-                if (isHovered == true) {
-                  isHovered = false;
-                  context
-                      .read<FolderListTileBloc>()
-                      .add(FolderListTileUpdate(id: folder.id));
-                }
-              },
-              onAccept: (data) {
-                if (data is Folder) {
-                  if (data.parentId == folder.id) return;
-                  context.read<SubjectBloc>().add(
-                        SubjectSetFolderParent(
-                          folder: data,
-                          parentId: folder.id,
-                        ),
-                      );
-                } else if (data is Card) {
-                  if (data.parentId != folder.id) {
-                    if (context.read<SubjectOverviewSelectionBloc>().state
-                        is SubjectOverviewSelectionMultiDragging) {
+              maxSimultaneousDrags:
+                  state is SubjectOverviewSelectionModeOn ? 0 : 1,
+              childWhenDragging: const InactiveListTile(),
+              child: DragTarget(
+                onMove: (details) {
+                  if (isHovered == false) {
+                    isHovered = true;
+                    context
+                        .read<FolderListTileBloc>()
+                        .add(FolderListTileUpdate(id: folder.id));
+                  }
+                },
+                onLeave: (data) {
+                  if (isHovered == true) {
+                    isHovered = false;
+                    context
+                        .read<FolderListTileBloc>()
+                        .add(FolderListTileUpdate(id: folder.id));
+                  }
+                },
+                onAccept: (data) {
+                  if (data is Folder) {
+                    if (data.parentId == folder.id) return;
+                    context.read<SubjectBloc>().add(
+                          SubjectSetFolderParent(
+                            folder: data,
+                            parentId: folder.id,
+                          ),
+                        );
+                  } else if (data is Card) {
+                    if (data.parentId != folder.id) {
+                      if (context.read<SubjectOverviewSelectionBloc>().state
+                          is SubjectOverviewSelectionMultiDragging) {
+                        context.read<SubjectOverviewSelectionBloc>().add(
+                              SubjectOverviewSelectionMoveSelectedCards(
+                                parentId: folder.id,
+                              ),
+                            );
+                      } else {
+                        context.read<SubjectBloc>().add(
+                              SubjectSetCardParent(
+                                card: data,
+                                parentId: folder.id,
+                              ),
+                            );
+                      }
+                    } else if (context
+                        .read<SubjectOverviewSelectionBloc>()
+                        .isInSelectMode) {
                       context.read<SubjectOverviewSelectionBloc>().add(
                             SubjectOverviewSelectionMoveSelectedCards(
                               parentId: folder.id,
                             ),
                           );
                     } else {
-                      context.read<SubjectBloc>().add(
-                            SubjectSetCardParent(
+                      context.read<SubjectOverviewSelectionBloc>().add(
+                            SubjectOverviewSelectionToggleSelectMode(
+                              inSelectMode: true,
+                            ),
+                          );
+                      context.read<SubjectOverviewSelectionBloc>().add(
+                            SubjectOverviewSelectionChange(
                               card: data,
-                              parentId: folder.id,
+                              addCard: true,
                             ),
                           );
                     }
-                  } else if (context
-                      .read<SubjectOverviewSelectionBloc>()
-                      .isInSelectMode) {
-                    context.read<SubjectOverviewSelectionBloc>().add(
-                          SubjectOverviewSelectionMoveSelectedCards(
-                            parentId: folder.id,
-                          ),
-                        );
-                  } else {
-                    context.read<SubjectOverviewSelectionBloc>().add(
-                          SubjectOverviewSelectionToggleSelectMode(
-                            inSelectMode: true,
-                          ),
-                        );
-                    context.read<SubjectOverviewSelectionBloc>().add(
-                          SubjectOverviewSelectionChange(
-                            card: data,
-                            addCard: true,
-                          ),
-                        );
                   }
-                }
-              },
-              builder: (context, candidateData, rejectedData) {
-                return BlocBuilder<FolderListTileBloc, FolderListTileState>(
-                  buildWhen: (previous, current) {
-                    if (current is FolderListTileRetrieveChildren &&
-                        current.senderId == folder.id) {
-                      isHovered = false;
-                      return true;
-                    } else if (current is FolderListTileUpdateOnHover) {
-                      if (current.id == folder.id) return true;
-                    } else if (current is FolderListTileToClearHover) {
-                      if (isHovered == true) {
+                },
+                builder: (context, candidateData, rejectedData) {
+                  return BlocBuilder<FolderListTileBloc, FolderListTileState>(
+                    buildWhen: (previous, current) {
+                      if (current is FolderListTileRetrieveChildren &&
+                          current.senderId == folder.id) {
                         isHovered = false;
                         return true;
-                      }
-                    }
-                    return false;
-                  },
-                  builder: (context, state) {
-                    if (state is FolderListTileRetrieveChildren &&
-                        state.senderId == folder.id) {
-                      childListTiles = {
-                        ...childListTiles,
-                        ...state.childrenStream
-                      };
-                      for (final element in state.removedWidgets) {
-                        if (childListTiles.containsKey(element.id)) {
-                          childListTiles.remove(element.id);
+                      } else if (current is FolderListTileUpdateOnHover) {
+                        if (current.id == folder.id) return true;
+                      } else if (current is FolderListTileToClearHover) {
+                        if (isHovered == true) {
+                          isHovered = false;
+                          return true;
                         }
                       }
-                    }
+                      return false;
+                    },
+                    builder: (context, state) {
+                      if (state is FolderListTileRetrieveChildren &&
+                          state.senderId == folder.id) {
+                        childListTiles = {
+                          ...childListTiles,
+                          ...state.childrenStream
+                        };
+                        for (final element in state.removedWidgets) {
+                          if (childListTiles.containsKey(element.id)) {
+                            childListTiles.remove(element.id);
+                          }
+                        }
+                      }
 
-                    return BlocBuilder<SubjectOverviewSelectionBloc,
-                        SubjectOverviewSelectionState>(
-                      builder: (context, state) {
-                        return FolderListTileView(
-                          isHoverd: isHovered,
-                          inSelectionMode:
-                              state is SubjectOverviewSelectionModeOn,
-                          folder: folder,
-                          childListTiles: childListTiles,
-                        );
-                      },
-                    );
-                  },
-                );
-              },
+                      return BlocBuilder<SubjectOverviewSelectionBloc,
+                          SubjectOverviewSelectionState>(
+                        builder: (context, state) {
+                          return FolderListTileView(
+                            isHoverd: isHovered,
+                            inSelectionMode:
+                                state is SubjectOverviewSelectionModeOn,
+                            folder: folder,
+                            childListTiles: childListTiles,
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
             ),
           );
         },

@@ -1,4 +1,3 @@
-
 import 'package:cards_api/cards_api.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:ui_components/ui_components.dart';
@@ -41,8 +40,10 @@ class CardListTileView extends StatelessWidget {
         key: globalKey,
         decoration: BoxDecoration(
           color: isChildWhenDragging
-              ? Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3)
-              : Theme.of(context).colorScheme.background,
+              ? UIColors.overlay.withOpacity(0.6)
+              : width != null
+                  ? UIColors.background
+                  : Colors.transparent,
           borderRadius: const BorderRadius.all(
             Radius.circular(UIConstants.cornerRadius),
           ),
@@ -58,8 +59,9 @@ class CardListTileView extends StatelessWidget {
               ? [
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: UIConstants.defaultSize * 2,
-                        vertical: UIConstants.defaultSize,),
+                      horizontal: UIConstants.defaultSize * 2,
+                      vertical: UIConstants.defaultSize,
+                    ),
                     child: Row(
                       children: [
                         Icon(

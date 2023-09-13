@@ -2,6 +2,7 @@ import 'package:cards_api/cards_api.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/folder_bloc/folder_list_tile_bloc.dart';
+import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 
 import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
@@ -29,91 +30,25 @@ class FolderListTileView extends StatefulWidget {
 class _FolderListTileViewState extends State<FolderListTileView> {
   @override
   Widget build(BuildContext context) {
+    var isSoftSelected = widget.folder ==
+        context.read<SubjectOverviewSelectionBloc>().folderSoftSelected;
     return UIExpansionTile(
       backgroundColor: widget.isHoverd
-          ? Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.2)
-          : Colors.transparent,
+          ? UIColors.overlay
+          : isSoftSelected
+              ? UIColors.onOverlayCard
+              : Colors.transparent,
       border: Border.all(
         color: widget.isHoverd
             ? Theme.of(context).colorScheme.primary
             : Colors.transparent,
         width: UIConstants.borderWidth,
       ),
-      title: Text(
-        widget.folder.name,
-        overflow: TextOverflow.ellipsis,
-        style: UIText.label
-      ),
+      title: Text(widget.folder.name,
+          overflow: TextOverflow.ellipsis, style: UIText.label),
       iconSpacing: UIConstants.defaultSize,
       titleSpacing: UIConstants.defaultSize,
-      trailing: UILinearProgressIndicator(value: 0.5),/* PopupMenuButton<int>(
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(UIConstants.cornerRadius),
-          ),
-        ),
-        itemBuilder: (context) => [
-          PopupMenuItem(
-            value: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Icon(Icons.delete),
-                Text(
-                  'delete',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
-                ),
-              ],
-            ),
-          ),
-          PopupMenuItem(
-            value: 1,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Icon(Icons.delete),
-                Text(
-                  'spawn 20 cards',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
-                ),
-              ],
-            ),
-          )
-        ],
-        onSelected: (value) async {
-          if (value == 0) {
-            context.read<FolderListTileBloc>().add(
-                  FolderListTileDeleteFolder(
-                    id: widget.folder.id,
-                    parentId: widget.folder.parentId,
-                  ),
-                );
-          } else if (value == 1) {
-            for (var i = 0; i <= 20; i++) {
-              context.read<FolderListTileBloc>().add(
-                    FolderListTileDEBUGAddCard(
-                      card: Card(
-                        back: 'test$i',
-                        front: 'test$i',
-                        askCardsInverted: false,
-                        id: const Uuid().v4(),
-                        dateCreated: '',
-                        parentId: widget.folder.id,
-                        dateToReview: DateTime.now().toIso8601String(),
-                        typeAnswer: false,
-                        tags: const [],
-                      ),
-                    ),
-                  );
-              await Future.delayed(const Duration(milliseconds: 5));
-            }
-          }
-        },
-      ), */
+      trailing: UILinearProgressIndicator(value: 0.5),
       children: [
         Padding(
           padding: const EdgeInsets.only(
@@ -159,13 +94,5 @@ class _FolderListTileViewState extends State<FolderListTileView> {
         ),
       ],
     );
-  }
-
-  Color getBackgroundColor(bool isHoverd, BuildContext context) {
-    if (isHoverd == true) {
-      return Theme.of(context).colorScheme.primary.withOpacity(0.2);
-    } else {
-      return Theme.of(context).colorScheme.background;
-    }
   }
 }

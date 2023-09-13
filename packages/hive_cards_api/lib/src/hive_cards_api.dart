@@ -354,10 +354,13 @@ class HiveCardsApi extends CardsApi {
     }
     var folders = _hiveBox.get(_makePathStorable(path)) as List<String>?;
     var found = false;
+    var indexToChange = -1;
+
     if (folders != null) {
-      for (var element in folders) {
+      for (final element in folders) {
         if (element.substring(7).startsWith(folder.id)) {
-          element = folder.toJson();
+          // element = folder.toJson();
+          indexToChange = folders.indexOf(element);
           found = true;
           break;
         }
@@ -368,6 +371,8 @@ class HiveCardsApi extends CardsApi {
 
     if (!found) {
       folders.add(folder.toJson());
+    }else{
+      folders[indexToChange] = folder.toJson();
     }
     if (_subscribedStreams.containsKey(path)) {
       _subscribedStreams[path]!.add([folder]);
@@ -387,7 +392,7 @@ class HiveCardsApi extends CardsApi {
 
     var cards = _hiveBox.get(_makePathStorable(path)) as List<String>?;
     var found = false;
-    var indexToChange = 0;
+    var indexToChange = -1;
     if (cards != null) {
       for (final element in cards) {
         // contains word
