@@ -31,9 +31,13 @@ class EditSubjectUpdateWeekdays extends EditSubjectState {
 
 class EditSubjectClassTestChanged extends EditSubjectState {
   bool canSave;
+  ClassTest classTest;
   EditSubjectClassTestChanged({
     required this.canSave,
+    required this.classTest
   });
+     @override
+  List<Object?> get props => [classTest];
 }
 
 

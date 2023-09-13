@@ -36,12 +36,12 @@ class EditSubjectCubit extends Cubit<EditSubjectState> {
     }
   }
 
-  Future<void> deleteSubject(String subjectId) async{
-emit(EditSubjectLoading());
+  Future<void> deleteSubject(String subjectId) async {
+    emit(EditSubjectLoading());
 
     // try {
-      await _cardsRepository.deleteSubject(subjectId);
-      subject = null;
+    await _cardsRepository.deleteSubject(subjectId);
+    subject = null;
     // } catch (e) {
     //   emit(
     //     EditSubjectFailure(
@@ -55,7 +55,7 @@ emit(EditSubjectLoading());
     ClassTest classTest,
   ) async {
     classTests = subject!.classTests;
-    if(classTests.isEmpty){
+    if (classTests.isEmpty) {
       classTests.add(classTest);
     }
     for (var i = 0; i < classTests.length; i++) {
@@ -64,28 +64,28 @@ emit(EditSubjectLoading());
         break;
       }
       // if nothing found
-      if(i==classTests.length-1){
+      if (i == classTests.length - 1) {
         classTests.add(classTest);
       }
     }
 
     await saveSubject(subject!.copyWith(classTests: classTests));
-    emit(EditSubjectClassTestChanged(canSave: true));
+    emit(EditSubjectClassTestChanged(canSave: true, classTest: classTest));
   }
 
   Future<void> deleteClassTest(ClassTest classTest) async {
-    if(classTests.contains(classTest)){
+    if (classTests.contains(classTest)) {
       classTests.remove(classTest);
     }
     await saveSubject(subject!.copyWith(classTests: classTests));
-    emit(EditSubjectClassTestChanged(canSave: true));
+    emit(EditSubjectClassTestChanged(canSave: true, classTest: classTest));
   }
 
   void changeClassTest(ClassTest classTest) {
     if (classTest.name != '' && classTest.date != '') {
-      emit(EditSubjectClassTestChanged(canSave: true));
+      emit(EditSubjectClassTestChanged(canSave: true, classTest: classTest));
     } else if (classTest.date != '') {
-      emit(EditSubjectClassTestChanged(canSave: false));
+      emit(EditSubjectClassTestChanged(canSave: false, classTest: classTest));
     }
   }
 
@@ -93,9 +93,5 @@ emit(EditSubjectLoading());
     selectedDays[idToSwitch] = !selectedDays[idToSwitch];
     await saveSubject(subject!.copyWith(daysToGetNotified: selectedDays));
     emit(EditSubjectUpdateWeekdays(selectedDays: selectedDays));
-  }
-
-  void changeCanSave(bool canSave) {
-    emit(EditSubjectClassTestChanged(canSave: canSave));
   }
 }

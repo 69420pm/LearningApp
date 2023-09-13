@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/add_card/view/add_card_settings_bottom_sheet.dart';
 import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 
@@ -20,14 +21,25 @@ class AddCardPage extends StatelessWidget {
 
     // final formKey = GlobalKey<FormState>();
     return UIPage(
-      appBar: UIAppBar(leadingBackButton: true,
-      actions: [UIIconButton(icon: UIIcons.settings, onPressed: (){},)],),
-      body: Stack(
-        children: [
-        
+      appBar: UIAppBar(
+        leadingBackButton: true,
+        actions: [
+          UIIconButton(
+            icon: UIIcons.settings,
+            onPressed: () {
+              UIBottomSheet.showUIBottomSheet(
+                      context: context,
+                      builder: (_) {
+                        return AddCardSettingsBottomSheet();
+                      },
+                    );
+            },
+          )
+        ],
+      ),
+      body: Stack(children: [
         MarkdownWidget(),
         Positioned(bottom: 0, child: KeyboardRow()),
-
       ]),
     );
     // return Scaffold(

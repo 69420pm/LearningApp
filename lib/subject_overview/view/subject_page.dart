@@ -72,12 +72,15 @@ class _SubjectViewState extends State<SubjectView> {
             leadingBackButton: true,
             actions: [
               UIIconButton(
-                icon: UIIcons.search,
-                onPressed: () {
-                  Navigator.of(context)
-                      .pushNamed('/search', arguments: widget.subjectToEdit.id);
-                },
-              ),
+                  icon: UIIcons.settings,
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(
+                        '/subject_overview/edit_subject',
+                        arguments: widget.subjectToEdit);
+                  },
+                  alignment: Alignment.topRight,
+                  animateToWhite: true,
+                ),
             ],
           ),
           body: Column(
@@ -91,6 +94,13 @@ class _SubjectViewState extends State<SubjectView> {
               UILabelRow(
                 labelText: 'Files',
                 actionWidgets: [
+                  UIIconButton(
+                icon: UIIcons.search.copyWith(color: UIColors.smallText),
+                onPressed: () {
+                  Navigator.of(context)
+                      .pushNamed('/search', arguments: widget.subjectToEdit.id);
+                },
+              ),
                   UIIconButton(
                     icon: UIIcons.download.copyWith(color: UIColors.smallText),
                     onPressed: () {},

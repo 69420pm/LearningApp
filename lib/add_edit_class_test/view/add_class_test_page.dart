@@ -113,6 +113,7 @@ class AddClassTestPage extends StatelessWidget {
               Expanded(
                 child: UITextFieldLarge(
                   controller: nameController,
+                  autofocus: true,
                   onChanged: (p0) {
                     classTest = classTest!.copyWith(name: p0);
                     if (!addClassTest) {
@@ -140,10 +141,9 @@ class AddClassTestPage extends StatelessWidget {
               return UIContainer(
                 padding: const EdgeInsets.only(
                   left: UIConstants.cardHorizontalPadding,
-                  right: UIConstants.cardHorizontalPadding-6,
-                  top: UIConstants.cardVerticalPadding-6,
-                  bottom: UIConstants.cardVerticalPadding-6
-
+                  right: UIConstants.cardHorizontalPadding - 6,
+                  top: UIConstants.cardVerticalPadding - 6,
+                  bottom: UIConstants.cardVerticalPadding - 6,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
