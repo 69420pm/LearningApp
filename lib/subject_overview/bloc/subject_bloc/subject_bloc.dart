@@ -98,7 +98,7 @@ class SubjectBloc extends Bloc<SubjectEvent, SubjectState> {
   ) async {
     emit(SubjectLoading());
     final newFolder = Folder(
-      id: Uid().uid(),
+      id: event.folderId ?? Uid().uid(),
       name: event.name,
       dateCreated: DateTime.now().toIso8601String(),
       parentId: event.parentId,

@@ -42,7 +42,7 @@ class SubjectOverviewDraggingChange extends SubjectOverviewSelectionEvent {
 class SubjectOverviewGetSelectedCards extends SubjectOverviewSelectionEvent {}
 
 class SubjectOverviewSetSoftSelectFolder extends SubjectOverviewSelectionEvent {
-  String? folder;
+  Folder? folder;
   SubjectOverviewSetSoftSelectFolder({
     required this.folder,
   });

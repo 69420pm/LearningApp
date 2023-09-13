@@ -150,12 +150,29 @@ class FolderListTileParent extends StatelessWidget {
                     return BlocBuilder<SubjectOverviewSelectionBloc,
                         SubjectOverviewSelectionState>(
                       builder: (context, state) {
-                        return FolderListTileView(
-                          isHoverd: isHovered,
-                          inSelectionMode:
-                              state is SubjectOverviewSelectionModeOn,
-                          folder: folder,
-                          childListTiles: childListTiles,
+                        var isSoftSelected = folder ==
+                            context
+                                .read<SubjectOverviewSelectionBloc>()
+                                .folderSoftSelected;
+                        return GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onLongPress: () => print("long"),
+                          onTap: () {
+                            if (state is! SubjectOverviewSelectionModeOn) {
+                              context.read<SubjectOverviewSelectionBloc>().add(
+                                    SubjectOverviewSetSoftSelectFolder(
+                                      folder: isSoftSelected ? null : folder,
+                                    ),
+                                  );
+                            }
+                          },
+                          child: FolderListTileView(
+                            isHoverd: isHovered,
+                            inSelectionMode:
+                                state is SubjectOverviewSelectionModeOn,
+                            folder: folder,
+                            childListTiles: childListTiles,
+                          ),
                         );
                       },
                     );

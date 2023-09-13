@@ -3,6 +3,7 @@ import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_folder/view/add_folder_bottom_sheet.dart';
+import 'package:learning_app/add_folder/view/edit_folder_bottom_sheet.dart';
 import 'package:learning_app/subject_overview/bloc/folder_bloc/folder_list_tile_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dart';
@@ -66,13 +67,11 @@ class _SubjectViewState extends State<SubjectView> {
 
     return BlocBuilder<SubjectOverviewSelectionBloc,
         SubjectOverviewSelectionState>(
-      builder: (context, blocBuilderState) {
-        var isInSelectionMode =
-            context.read<SubjectOverviewSelectionBloc>().isInSelectMode;
+      builder: (context, state) {
         return UIPage(
           appBar: UIAppBar(
-            leadingBackButton: !isInSelectionMode,
-            leading: isInSelectionMode
+            leadingBackButton: state is! SubjectOverviewSelectionModeOn,
+            leading: state is SubjectOverviewSelectionModeOn
                 ? UIIconButton(
                     icon: UIIcons.close,
                     onPressed: () =>
@@ -82,17 +81,37 @@ class _SubjectViewState extends State<SubjectView> {
                             ),
                   )
                 : null,
-            actions: isInSelectionMode
+            actions: state is SubjectOverviewSelectionModeOn
                 ? []
-                : [
-                    UIIconButton(
-                      icon: UIIcons.search,
-                      onPressed: () {
-                        Navigator.of(context).pushNamed('/search',
-                            arguments: widget.subjectToEdit.id);
-                      },
-                    ),
-                  ],
+                : state is SubjectOverviewSoftSelectionModeOn
+                    ? [
+                        UIIconButton(
+                          icon: UIIcons.edit,
+                          onPressed: () => UIBottomSheet.showUIBottomSheet(
+                            context: context,
+                            builder: (_) {
+                              return BlocProvider.value(
+                                value: context.read<FolderListTileBloc>(),
+                                child: EditFolderBottomSheet(
+                                    folder: context
+                                        .read<SubjectOverviewSelectionBloc>()
+                                        .folderSoftSelected!),
+                              );
+                            },
+                          ),
+                        )
+                      ]
+                    : [
+                        UIIconButton(
+                          icon: UIIcons.search,
+                          onPressed: () {
+                            Navigator.of(context).pushNamed(
+                              '/search',
+                              arguments: widget.subjectToEdit.id,
+                            );
+                          },
+                        ),
+                      ],
           ),
           body: Column(
             children: [

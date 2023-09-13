@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 
@@ -21,7 +22,7 @@ class SubjectOverviewSelectionBloc
 
   final List<Card> cardsSelected = List.empty(growable: true);
   final List<String> foldersSelected = List.empty(growable: true);
-  String? folderSoftSelected = null;
+  Folder? folderSoftSelected = null;
   final CardsRepository _cardsRepository;
   bool isInDragging = false;
   bool isInSelectMode = false;
@@ -107,6 +108,9 @@ class SubjectOverviewSelectionBloc
   FutureOr<void> _setSoftSelectFolder(SubjectOverviewSetSoftSelectFolder event,
       Emitter<SubjectOverviewSelectionState> emit) {
     folderSoftSelected = event.folder;
-    emit(SubjectOverviewSelectionModeOff());
+    if (event.folder != null)
+      emit(SubjectOverviewSoftSelectionModeOn());
+    else
+      emit(SubjectOverviewSelectionModeOff());
   }
 }

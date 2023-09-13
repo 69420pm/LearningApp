@@ -65,3 +65,12 @@ class FolderListTileUpdate extends FolderListTileEvent {
 class FolderListTileClearHovers extends FolderListTileEvent {
   FolderListTileClearHovers();
 }
+
+class FolderListTileChangeFolderName extends FolderListTileEvent {
+  Folder folder;
+  String newName;
+  FolderListTileChangeFolderName({
+    required this.folder,
+    required this.newName,
+  });
+}

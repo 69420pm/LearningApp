@@ -28,150 +28,139 @@ class FolderListTileView extends StatefulWidget {
 }
 
 class _FolderListTileViewState extends State<FolderListTileView> {
-  bool isSoftSelected = false;
   @override
   Widget build(BuildContext context) {
-    isSoftSelected = widget.folder.parentId ==
+    var isSoftSelected = widget.folder ==
         context.read<SubjectOverviewSelectionBloc>().folderSoftSelected;
-    return GestureDetector(
-      onLongPress: () => print("long"),
-      onTap: () {
-        if (!widget.inSelectionMode) {
-          context.read<SubjectOverviewSelectionBloc>().add(
-              SubjectOverviewSetSoftSelectFolder(
-                  folder: isSoftSelected ? null : widget.folder.parentId));
-        }
-      },
-      child: UIExpansionTile(
-        backgroundColor: widget.isHoverd
-            ? Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.2)
-            : isSoftSelected
-                ? Colors.red
-                : Colors.transparent,
-        border: Border.all(
-          color: widget.isHoverd
-              ? Theme.of(context).colorScheme.primary
+    return UIExpansionTile(
+      backgroundColor: widget.isHoverd
+          ? Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.2)
+          : isSoftSelected
+              ? Colors.red
               : Colors.transparent,
-          width: UIConstants.borderWidth,
-        ),
-        title: Text(widget.folder.name,
-            overflow: TextOverflow.ellipsis, style: UIText.label),
-        iconSpacing: UIConstants.defaultSize,
-        titleSpacing: UIConstants.defaultSize,
-        trailing: UILinearProgressIndicator(value: 0.5),
-        /* PopupMenuButton<int>(
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(UIConstants.cornerRadius),
-            ),
+      border: Border.all(
+        color: widget.isHoverd
+            ? Theme.of(context).colorScheme.primary
+            : Colors.transparent,
+        width: UIConstants.borderWidth,
+      ),
+      title: Text(widget.folder.name,
+          overflow: TextOverflow.ellipsis, style: UIText.label),
+      iconSpacing: UIConstants.defaultSize,
+      titleSpacing: UIConstants.defaultSize,
+      trailing: UILinearProgressIndicator(value: 0.5),
+      /* PopupMenuButton<int>(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(UIConstants.cornerRadius),
           ),
-          itemBuilder: (context) => [
-            PopupMenuItem(
-              value: 0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Icon(Icons.delete),
-                  Text(
-                    'delete',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurface,
-                        ),
-                  ),
-                ],
-              ),
-            ),
-            PopupMenuItem(
-              value: 1,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Icon(Icons.delete),
-                  Text(
-                    'spawn 20 cards',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurface,
-                        ),
-                  ),
-                ],
-              ),
-            )
-          ],
-          onSelected: (value) async {
-            if (value == 0) {
-              context.read<FolderListTileBloc>().add(
-                    FolderListTileDeleteFolder(
-                      id: widget.folder.id,
-                      parentId: widget.folder.parentId,
-                    ),
-                  );
-            } else if (value == 1) {
-              for (var i = 0; i <= 20; i++) {
-                context.read<FolderListTileBloc>().add(
-                      FolderListTileDEBUGAddCard(
-                        card: Card(
-                          back: 'test$i',
-                          front: 'test$i',
-                          askCardsInverted: false,
-                          id: const Uuid().v4(),
-                          dateCreated: '',
-                          parentId: widget.folder.id,
-                          dateToReview: DateTime.now().toIso8601String(),
-                          typeAnswer: false,
-                          tags: const [],
-                        ),
-                      ),
-                    );
-                await Future.delayed(const Duration(milliseconds: 5));
-              }
-            }
-          },
-        ), */
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(
-              left: UIConstants.defaultSize * 4,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+        ),
+        itemBuilder: (context) => [
+          PopupMenuItem(
+            value: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                if (widget.childListTiles.values
-                    .whereType<FolderListTileParent>()
-                    .isNotEmpty)
-                  ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: widget.childListTiles.values
-                        .whereType<FolderListTileParent>()
-                        .length,
-                    itemBuilder: (context, index) {
-                      return widget.childListTiles.values
-                          .whereType<FolderListTileParent>()
-                          .elementAt(index);
-                      // ..isHighlight = index.isOdd;
-                    },
-                  ),
-                if (widget.childListTiles.values
-                    .whereType<CardListTile>()
-                    .isNotEmpty)
-                  ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: widget.childListTiles.values
-                        .whereType<CardListTile>()
-                        .length,
-                    itemBuilder: (context, index) {
-                      return widget.childListTiles.values
-                          .whereType<CardListTile>()
-                          .elementAt(index)
-                        ..isInSelectMode = widget.inSelectionMode;
-                    },
-                  ),
+                const Icon(Icons.delete),
+                Text(
+                  'delete',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                ),
               ],
             ),
           ),
+          PopupMenuItem(
+            value: 1,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Icon(Icons.delete),
+                Text(
+                  'spawn 20 cards',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                ),
+              ],
+            ),
+          )
         ],
-      ),
+        onSelected: (value) async {
+          if (value == 0) {
+            context.read<FolderListTileBloc>().add(
+                  FolderListTileDeleteFolder(
+                    id: widget.folder.id,
+                    parentId: widget.folder.parentId,
+                  ),
+                );
+          } else if (value == 1) {
+            for (var i = 0; i <= 20; i++) {
+              context.read<FolderListTileBloc>().add(
+                    FolderListTileDEBUGAddCard(
+                      card: Card(
+                        back: 'test$i',
+                        front: 'test$i',
+                        askCardsInverted: false,
+                        id: const Uuid().v4(),
+                        dateCreated: '',
+                        parentId: widget.folder.id,
+                        dateToReview: DateTime.now().toIso8601String(),
+                        typeAnswer: false,
+                        tags: const [],
+                      ),
+                    ),
+                  );
+              await Future.delayed(const Duration(milliseconds: 5));
+            }
+          }
+        },
+      ), */
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(
+            left: UIConstants.defaultSize * 4,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (widget.childListTiles.values
+                  .whereType<FolderListTileParent>()
+                  .isNotEmpty)
+                ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: widget.childListTiles.values
+                      .whereType<FolderListTileParent>()
+                      .length,
+                  itemBuilder: (context, index) {
+                    return widget.childListTiles.values
+                        .whereType<FolderListTileParent>()
+                        .elementAt(index);
+                    // ..isHighlight = index.isOdd;
+                  },
+                ),
+              if (widget.childListTiles.values
+                  .whereType<CardListTile>()
+                  .isNotEmpty)
+                ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: widget.childListTiles.values
+                      .whereType<CardListTile>()
+                      .length,
+                  itemBuilder: (context, index) {
+                    return widget.childListTiles.values
+                        .whereType<CardListTile>()
+                        .elementAt(index)
+                      ..isInSelectMode = widget.inSelectionMode;
+                  },
+                ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
