@@ -66,16 +66,7 @@ class SubjectCard extends StatelessWidget {
             top: 0,
             child: Row(
               children: [
-                UIIconButton(
-                  icon: UIIcons.settings.copyWith(color: UIColors.overlay),
-                  onPressed: () {
-                    Navigator.of(context).pushNamed(
-                        '/subject_overview/edit_subject',
-                        arguments: subject);
-                  },
-                  alignment: Alignment.topRight,
-                  animateToWhite: true,
-                ),
+                
                 UIIconButton(
                   icon: UIIcons.arrowForwardNormal
                       .copyWith(color: UIColors.overlay),

@@ -70,13 +70,14 @@ class _UIExpansionTileState extends State<UIExpansionTile>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          GestureDetector(
-            onTap: update,
-            child: DecoratedBox(
-              decoration: const BoxDecoration(color: Colors.transparent),
-              child: Row(
-                children: [
-                  AnimatedBuilder(
+          DecoratedBox(
+            decoration: const BoxDecoration(color: Colors.transparent),
+            child: Row(
+              children: [
+                const SizedBox(width: UIConstants.defaultSize),
+                GestureDetector(
+                  onTap: update,
+                  child: AnimatedBuilder(
                     animation: _animation,
                     builder: (context, _) {
                       return Transform.rotate(
@@ -85,12 +86,13 @@ class _UIExpansionTileState extends State<UIExpansionTile>
                       );
                     },
                   ),
-                  SizedBox(width: widget.titleSpacing),
-                  widget.title,
-                  const Spacer(),
-                  widget.trailing,
-                ],
-              ),
+                ),
+                SizedBox(width: widget.titleSpacing),
+                widget.title,
+                const Spacer(),
+                widget.trailing,
+                const SizedBox(width: UIConstants.defaultSize),
+              ],
             ),
           ),
           SizeTransition(

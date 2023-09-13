@@ -31,6 +31,7 @@ class FolderListTileBloc
     on<FolderListTileDEBUGAddCard>(_debugAddCard);
     on<FolderListTileClearHovers>(_clearHovers);
     on<FolderListTileUpdate>(_folderUpdate);
+    on<FolderListTileChangeFolderName>(_changeFolderName);
   }
   // List<String> _subscribedStreamIds = [];
 
@@ -179,5 +180,14 @@ class FolderListTileBloc
   ) {
     isDragging = false;
     emit(FolderListTileToClearHover());
+  }
+
+  FutureOr<void> _changeFolderName(FolderListTileChangeFolderName event,
+      Emitter<FolderListTileState> emit) async {
+    emit(FolderListTileLoading());
+    // try {
+    await _cardsRepository
+        .saveFolder(event.folder.copyWith(name: event.newName));
+    emit(FolderListTileSuccess());
   }
 }

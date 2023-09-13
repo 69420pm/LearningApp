@@ -15,15 +15,6 @@ class MarkdownWidget extends StatelessWidget {
         return Container(
           height: 500,
           child: ListView.builder(
-            // buildDefaultDragHandles: false,
-            // onReorder: (oldIndex, newIndex) {
-            //   context.read<TextEditorBloc>().add(
-            //         TextEditorChangeOrderOfTile(
-            //           oldIndex: oldIndex,
-            //           newIndex: newIndex,
-            //         ),
-            //       );
-            // },
             itemCount: editorTiles.length + 1,
             itemBuilder: (context, index) {
               if (index == editorTiles.length) {
@@ -33,11 +24,6 @@ class MarkdownWidget extends StatelessWidget {
                 );
               }
               return editorTiles[index] as Widget;
-              // return ReorderableDelayedDragStartListener(
-              //   index: index,
-              //   key: ValueKey(DateTime.now()),
-              //   child: editorTiles[index] as Widget,
-              // );
             },
             controller: ScrollController(), // Use a unique ScrollController
           ),
@@ -47,14 +33,6 @@ class MarkdownWidget extends StatelessWidget {
   }
 }
 
-// class _ListTile extends StatelessWidget {
-//   _ListTile({super.key, required this.child});
-//   Widget child;
-//   @override
-//   Widget build(BuildContext context) {
-//     return child;
-//   }
-// }
 
 /// # heading 1
 /// ## heading 2

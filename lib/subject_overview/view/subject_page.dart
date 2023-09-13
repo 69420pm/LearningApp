@@ -3,6 +3,7 @@ import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_folder/view/add_folder_bottom_sheet.dart';
+import 'package:learning_app/add_folder/view/edit_folder_bottom_sheet.dart';
 import 'package:learning_app/subject_overview/bloc/folder_bloc/folder_list_tile_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dart';
@@ -66,19 +67,53 @@ class _SubjectViewState extends State<SubjectView> {
 
     return BlocBuilder<SubjectOverviewSelectionBloc,
         SubjectOverviewSelectionState>(
-      builder: (context, blocBuilderState) {
+      builder: (context, state) {
+        var softSelectedFolder =
+            context.read<SubjectOverviewSelectionBloc>().folderSoftSelected;
         return UIPage(
           appBar: UIAppBar(
-            leadingBackButton: true,
-            actions: [
-              UIIconButton(
-                icon: UIIcons.search,
-                onPressed: () {
-                  Navigator.of(context)
-                      .pushNamed('/search', arguments: widget.subjectToEdit.id);
-                },
-              ),
-            ],
+            leadingBackButton: state is! SubjectOverviewSelectionModeOn,
+            leading: state is SubjectOverviewSelectionModeOn
+                ? UIIconButton(
+                    icon: UIIcons.close,
+                    onPressed: () =>
+                        context.read<SubjectOverviewSelectionBloc>().add(
+                              SubjectOverviewSelectionToggleSelectMode(
+                                  inSelectMode: false),
+                            ),
+                  )
+                : null,
+            actions: state is SubjectOverviewSelectionModeOn
+                ? []
+                : state is SubjectOverviewSoftSelectionModeOn
+                    ? [
+                        UIIconButton(
+                          icon: UIIcons.edit,
+                          onPressed: () => UIBottomSheet.showUIBottomSheet(
+                            context: context,
+                            builder: (_) {
+                              return BlocProvider.value(
+                                value: context.read<FolderListTileBloc>(),
+                                child: EditFolderBottomSheet(
+                                    folder: context
+                                        .read<SubjectOverviewSelectionBloc>()
+                                        .folderSoftSelected!),
+                              );
+                            },
+                          ),
+                        )
+                      ]
+                    : [
+                        UIIconButton(
+                          icon: UIIcons.search,
+                          onPressed: () {
+                            Navigator.of(context).pushNamed(
+                              '/search',
+                              arguments: widget.subjectToEdit.id,
+                            );
+                          },
+                        ),
+                      ],
           ),
           body: Column(
             children: [
@@ -92,8 +127,22 @@ class _SubjectViewState extends State<SubjectView> {
                 labelText: 'Files',
                 actionWidgets: [
                   UIIconButton(
+                icon: UIIcons.search.copyWith(color: UIColors.smallText),
+                onPressed: () {
+                  Navigator.of(context)
+                      .pushNamed('/search', arguments: widget.subjectToEdit.id);
+                },
+              ),
+                  UIIconButton(
                     icon: UIIcons.download.copyWith(color: UIColors.smallText),
-                    onPressed: () {},
+                    onPressed: () {
+                      context.read<SubjectBloc>().add(SubjectAddCard(
+                          front: "test",
+                          back: "test Back",
+                          parentId: softSelectedFolder != null
+                              ? softSelectedFolder.id
+                              : widget.subjectToEdit.id));
+                    },
                   ),
                   UIIconButton(
                     icon: UIIcons.addFolder.copyWith(color: UIColors.smallText),
@@ -104,7 +153,9 @@ class _SubjectViewState extends State<SubjectView> {
                           return BlocProvider.value(
                             value: context.read<SubjectBloc>(),
                             child: AddFolderBottomSheet(
-                              parentId: widget.subjectToEdit.id,
+                              parentId: softSelectedFolder != null
+                                  ? softSelectedFolder.id
+                                  : widget.subjectToEdit.id,
                             ),
                           );
                         },
@@ -115,7 +166,10 @@ class _SubjectViewState extends State<SubjectView> {
                     icon:
                         UIIcons.placeHolder.copyWith(color: UIColors.smallText),
                     onPressed: () {
-                      Navigator.of(context).pushNamed('/add_card', arguments: widget.subjectToEdit.id);
+                      Navigator.of(context).pushNamed('/add_card',
+                          arguments: softSelectedFolder != null
+                              ? softSelectedFolder.id
+                              : widget.subjectToEdit.id);
                     },
                   ),
                 ],

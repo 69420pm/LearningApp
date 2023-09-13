@@ -9,5 +9,8 @@ class SubjectOverviewSelectionModeOn extends SubjectOverviewSelectionState {}
 
 class SubjectOverviewSelectionModeOff extends SubjectOverviewSelectionState {}
 
+class SubjectOverviewSoftSelectionModeOn
+    extends SubjectOverviewSelectionState {}
+
 class SubjectOverviewSelectionMultiDragging
     extends SubjectOverviewSelectionState {}

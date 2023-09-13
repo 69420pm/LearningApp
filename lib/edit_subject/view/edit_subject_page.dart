@@ -116,7 +116,7 @@ class EditSubjectPage extends StatelessWidget {
           UIDescription(
             horizontalPadding: true,
             text:
-                "If disabled subject doesn't get considered for streaks and notifications",
+                "If disabled, subject doesn't get considered for streaks and notifications",
           ),
           const SizedBox(
             height: UIConstants.itemPadding,
@@ -171,8 +171,8 @@ class EditSubjectPage extends StatelessWidget {
                     whatToDelete: 'Subject',
                     onAccepted: () async {
                       await context
-                        .read<EditSubjectCubit>()
-                        .deleteSubject(subject.id);
+                          .read<EditSubjectCubit>()
+                          .deleteSubject(subject.id);
                       await Navigator.of(context).pushNamed('/');
                     },
                   ),

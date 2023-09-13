@@ -25,9 +25,10 @@ class SubjectUpdateFoldersCards extends SubjectEvent {
 // }
 
 class SubjectAddFolder extends SubjectEvent {
-  SubjectAddFolder({required this.name, required this.parentId});
+  SubjectAddFolder({required this.name, required this.parentId, this.folderId});
   String name;
   String parentId;
+  String? folderId;
 }
 
 class SubjectAddCard extends SubjectEvent {

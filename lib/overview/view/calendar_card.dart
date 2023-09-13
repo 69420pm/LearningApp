@@ -30,7 +30,7 @@ class CalendarCard extends StatelessWidget {
                     height: UIConstants.defaultSize,
                   ),
                   Text(
-                    DateFormat('EEEE, MMMM. dd').format(DateTime.now()),
+                    DateFormat('EEEE, MMMM dd').format(DateTime.now()),
                     // "${DateTime.now().day}.${DateTime.now().month}.${DateTime.now().year}",
                     style: UIText.label.copyWith(
                       color: UIColors.textDark,
