@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ui_components/ui_components.dart';
 
-class PlaceholderWhileDragging extends StatelessWidget {
-  const PlaceholderWhileDragging({super.key});
+class InactiveListTile extends StatelessWidget {
+  const InactiveListTile({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class PlaceholderWhileDragging extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius:
               const BorderRadius.all(Radius.circular(UIConstants.cornerRadius)),
-          color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+          color: UIColors.overlay.withOpacity(0.6),
         ),
       ),
     );

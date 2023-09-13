@@ -74,6 +74,7 @@ class _UIExpansionTileState extends State<UIExpansionTile>
             decoration: const BoxDecoration(color: Colors.transparent),
             child: Row(
               children: [
+                const SizedBox(width: UIConstants.defaultSize),
                 GestureDetector(
                   onTap: update,
                   child: AnimatedBuilder(
@@ -90,6 +91,7 @@ class _UIExpansionTileState extends State<UIExpansionTile>
                 widget.title,
                 const Spacer(),
                 widget.trailing,
+                const SizedBox(width: UIConstants.defaultSize),
               ],
             ),
           ),

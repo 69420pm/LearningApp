@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/folder_bloc/folder_list_tile_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/view/card_list_tile_view.dart';
-import 'package:learning_app/subject_overview/view/inactive_folder_list_tile.dart';
+import 'package:learning_app/subject_overview/view/inactive_list_tile.dart';
 import 'package:learning_app/subject_overview/view/multi_drag_indicator.dart';
 
 class CardListTile extends StatefulWidget {
@@ -113,7 +113,7 @@ class _CardListTileState extends State<CardListTile> {
               );
             },
           ),
-          childWhenDragging: const PlaceholderWhileDragging(),
+          childWhenDragging: const InactiveListTile(),
           child: CardListTileView(
             globalKey: globalKey,
             isSelected: widget.isCardSelected &&
