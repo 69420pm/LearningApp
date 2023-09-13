@@ -68,6 +68,8 @@ class _SubjectViewState extends State<SubjectView> {
     return BlocBuilder<SubjectOverviewSelectionBloc,
         SubjectOverviewSelectionState>(
       builder: (context, state) {
+        var softSelectedFolder =
+            context.read<SubjectOverviewSelectionBloc>().folderSoftSelected;
         return UIPage(
           appBar: UIAppBar(
             leadingBackButton: state is! SubjectOverviewSelectionModeOn,
@@ -130,7 +132,9 @@ class _SubjectViewState extends State<SubjectView> {
                       context.read<SubjectBloc>().add(SubjectAddCard(
                           front: "test",
                           back: "test Back",
-                          parentId: widget.subjectToEdit.id));
+                          parentId: softSelectedFolder != null
+                              ? softSelectedFolder.id
+                              : widget.subjectToEdit.id));
                     },
                   ),
                   UIIconButton(
@@ -142,7 +146,9 @@ class _SubjectViewState extends State<SubjectView> {
                           return BlocProvider.value(
                             value: context.read<SubjectBloc>(),
                             child: AddFolderBottomSheet(
-                              parentId: widget.subjectToEdit.id,
+                              parentId: softSelectedFolder != null
+                                  ? softSelectedFolder.id
+                                  : widget.subjectToEdit.id,
                             ),
                           );
                         },
@@ -154,7 +160,9 @@ class _SubjectViewState extends State<SubjectView> {
                         UIIcons.placeHolder.copyWith(color: UIColors.smallText),
                     onPressed: () {
                       Navigator.of(context).pushNamed('/add_card',
-                          arguments: widget.subjectToEdit.id);
+                          arguments: softSelectedFolder != null
+                              ? softSelectedFolder.id
+                              : widget.subjectToEdit.id);
                     },
                   ),
                 ],
