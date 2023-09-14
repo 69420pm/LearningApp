@@ -149,10 +149,10 @@ class KeyboardBothRowsAddTile extends StatelessWidget {
 
     return Row(
       children: [
-        IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.read<KeyboardRowCubit>().expandFavorites(),
-        ),
+        // IconButton(
+        //   icon: const Icon(Icons.arrow_back),
+        //   onPressed: () => context.read<KeyboardRowCubit>().expandFavorites(),
+        // ),
         Expanded(
           child: GridView.extent(
             shrinkWrap: true,

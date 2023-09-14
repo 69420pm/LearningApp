@@ -30,6 +30,14 @@ class UIIcons {
   static UIIcon delete = UIIcon(Icons.delete_rounded, size:26, color: UIColors.delete,);
   static UIIcon info = UIIcon(Icons.info_outline_rounded, size: 20);
   static UIIcon expandMore = UIIcon(Icons.expand_more_rounded, size: 32);
+  static UIIcon done = UIIcon(Icons.done_rounded, size: 32);
+  static UIIcon formatBold = UIIcon(Icons.format_bold_rounded, size: 32);
+  static UIIcon formatItalic = UIIcon(Icons.format_italic_rounded, size: 32);
+  static UIIcon formatUnderline = UIIcon(Icons.format_underline_rounded, size: 32);
+  static UIIcon formatColorFill = UIIcon(Icons.format_color_fill_rounded, size: 32);
+  static UIIcon formatColorText = UIIcon(Icons.format_color_text_rounded, size: 32);
+
+
 }
 
 class UIIcon extends Icon {
