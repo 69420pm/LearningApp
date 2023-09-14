@@ -10,9 +10,9 @@ class FolderDraggableTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: UIColors.onOverlayCard,
-        borderRadius: const BorderRadius.all(
+        borderRadius: BorderRadius.all(
           Radius.circular(UIConstants.cornerRadius),
         ),
       ),
@@ -25,7 +25,7 @@ class FolderDraggableTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
+            const Icon(
               Icons.folder,
               color: UIColors.textLight,
             ),

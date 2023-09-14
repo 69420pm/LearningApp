@@ -40,7 +40,7 @@ class CardListTileView extends StatelessWidget {
         key: globalKey,
         decoration: BoxDecoration(
           color: isChildWhenDragging
-              ? UIColors.overlay.withOpacity(0.6)
+              ? UIColors.overlayDisabled
               : width != null
                   ? UIColors.background
                   : Colors.transparent,

@@ -34,14 +34,12 @@ class _FolderListTileViewState extends State<FolderListTileView> {
         context.read<SubjectOverviewSelectionBloc>().folderSoftSelected;
     return UIExpansionTile(
       backgroundColor: widget.isHoverd
-          ? UIColors.overlay
+          ? UIColors.onOverlayCard
           : isSoftSelected
-              ? UIColors.onOverlayCard
+              ? UIColors.overlay
               : Colors.transparent,
       border: Border.all(
-        color: widget.isHoverd
-            ? Theme.of(context).colorScheme.primary
-            : Colors.transparent,
+        color: widget.isHoverd ? Colors.transparent : Colors.transparent,
         width: UIConstants.borderWidth,
       ),
       title: Text(widget.folder.name,

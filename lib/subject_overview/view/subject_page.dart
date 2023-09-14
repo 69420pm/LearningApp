@@ -127,12 +127,12 @@ class _SubjectViewState extends State<SubjectView> {
                 labelText: 'Files',
                 actionWidgets: [
                   UIIconButton(
-                icon: UIIcons.search.copyWith(color: UIColors.smallText),
-                onPressed: () {
-                  Navigator.of(context)
-                      .pushNamed('/search', arguments: widget.subjectToEdit.id);
-                },
-              ),
+                    icon: UIIcons.search.copyWith(color: UIColors.smallText),
+                    onPressed: () {
+                      Navigator.of(context).pushNamed('/search',
+                          arguments: widget.subjectToEdit.id);
+                    },
+                  ),
                   UIIconButton(
                     icon: UIIcons.download.copyWith(color: UIColors.smallText),
                     onPressed: () {

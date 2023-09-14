@@ -30,7 +30,9 @@ class CardListTileMultiDragIndicator extends StatelessWidget {
               ? 0
               : 1 / 30 * pi * Random().nextDouble() - 1 / 50 * pi,
           alignment: Alignment(
-              Random().nextDouble() * 2 - 1, Random().nextDouble() * 2 - 1,),
+            Random().nextDouble() * 2 - 1,
+            Random().nextDouble() * 2 - 1,
+          ),
           child: CardListTileView(
             card: index == cardAmount - 1
                 ? firstCard
@@ -43,8 +45,9 @@ class CardListTileMultiDragIndicator extends StatelessWidget {
                     id: '',
                     parentId: '',
                     typeAnswer: false,
-                    tags: [],),
-            isSelected: true,
+                    tags: [],
+                  ),
+            isSelected: cardAmount != 1,
             height: height,
             width: width,
           ),
