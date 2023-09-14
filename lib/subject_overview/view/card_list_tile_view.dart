@@ -43,7 +43,9 @@ class CardListTileView extends StatelessWidget {
               ? UIColors.overlayDisabled
               : width != null
                   ? UIColors.background
-                  : Colors.transparent,
+                  : isSelected
+                      ? UIColors.overlay
+                      : Colors.transparent,
           borderRadius: const BorderRadius.all(
             Radius.circular(UIConstants.cornerRadius),
           ),

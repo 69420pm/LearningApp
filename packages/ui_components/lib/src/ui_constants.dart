@@ -1,4 +1,3 @@
-
 class UIConstants {
   static const double defaultSize = 8;
 
@@ -18,7 +17,7 @@ class UIConstants {
   static const double cornerRadius = 24;
   static const double cornerRadiusSmall = 16;
 
-  static const double borderWidth = 2;
+  static const double borderWidth = 3;
 
   static const double iconSize = 32;
   static const double iconSizeSmall = 20;

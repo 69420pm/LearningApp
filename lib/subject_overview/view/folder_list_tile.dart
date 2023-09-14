@@ -5,9 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/folder_bloc/folder_list_tile_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dart';
-import 'package:learning_app/subject_overview/view/folder_draggable_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile_view.dart';
 import 'package:learning_app/subject_overview/view/inactive_list_tile.dart';
+import 'package:learning_app/subject_overview/view/multi_drag_indicator.dart';
 import 'package:ui_components/ui_components.dart';
 
 class FolderListTileParent extends StatelessWidget {
@@ -51,8 +51,9 @@ class FolderListTileParent extends StatelessWidget {
             },
             child: LongPressDraggable<Folder>(
               data: folder,
-              feedback: FolderDraggableTile(
-                folder: folder,
+              feedback: MultiDragIndicator(
+                firstFolderName: [folder.name],
+                folderAmount: 1,
               ),
               onDragEnd: (details) {
                 isHovered = false;

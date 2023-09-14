@@ -101,15 +101,19 @@ class _CardListTileState extends State<CardListTile> {
 
               final size = renderBox?.size;
 
-              return CardListTileMultiDragIndicator(
+              return MultiDragIndicator(
                 cardAmount: context
                     .read<SubjectOverviewSelectionBloc>()
                     .cardsSelected
                     .length
                     .clamp(1, 10),
-                firstCard: widget.card,
-                height: size!.height,
-                width: size.width,
+                firstCardName: (state is SubjectOverviewSelectionModeOn)
+                    ? context
+                        .read<SubjectOverviewSelectionBloc>()
+                        .cardsSelected
+                        .map((e) => e.front)
+                        .toList()
+                    : [widget.card.front],
               );
             },
           ),

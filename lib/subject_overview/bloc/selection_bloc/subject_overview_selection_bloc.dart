@@ -33,6 +33,7 @@ class SubjectOverviewSelectionBloc
   ) {
     if (event.inSelectMode) {
       isInSelectMode = true;
+      folderSoftSelected = null;
       emit(SubjectOverviewSelectionModeOn());
     } else {
       isInSelectMode = false;
