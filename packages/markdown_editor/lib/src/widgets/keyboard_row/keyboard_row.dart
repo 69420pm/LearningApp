@@ -4,6 +4,8 @@ import 'package:markdown_editor/src/cubit/keyboard_row_cubit.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_button.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_row_container.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_toggle.dart';
+import 'package:markdown_editor/src/widgets/keyboard_row/new_rows/keyboard_text_color_row.dart';
+import 'package:markdown_editor/src/widgets/keyboard_row/new_rows/keyboard_text_row.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/rows/keyboard_both_rows_add_tile.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/rows/keyboard_latex_row.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/rows/keyboard_lower_row_text_tile.dart';
@@ -33,45 +35,9 @@ class _KeyboardRowState extends State<KeyboardRow> with WidgetsBindingObserver {
       child: BlocBuilder<KeyboardRowCubit, KeyboardRowState>(
         builder: (context, state) {
           if (state is KeyboardRowText) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const SizedBox(
-                  width: 8,
-                ),
-                KeyboardButton(
-                  icon: UIIcons.add,
-                  onPressed: () {
-                    context.read<KeyboardRowCubit>().addNewTile();
-                  },
-                ),
-                const Expanded(child: _EditTextRow()),
-                KeyboardButton(icon: UIIcons.account, onPressed: () {}),
-                const SizedBox(
-                  width: 8,
-                ),
-              ],
-            );
+            return KeyboardTextRow();
           } else if (state is KeyboardRowTextWithColors) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const SizedBox(
-                  width: 8,
-                ),
-                KeyboardButton(
-                  icon: UIIcons.add,
-                  onPressed: () {
-                    context.read<KeyboardRowCubit>().addNewTile();
-                  },
-                ),
-                const Expanded(child: _EditTextRow()),
-                KeyboardButton(icon: UIIcons.account, onPressed: () {}),
-                const SizedBox(
-                  width: 8,
-                ),
-              ],
-            );
+            return KeyboardTextColorRow();
           } else if (state is KeyboardRowNewTile) {
             return const Column();
           } else {
@@ -104,72 +70,7 @@ class _KeyboardRowState extends State<KeyboardRow> with WidgetsBindingObserver {
   }
 }
 
-class _EditTextRow extends StatefulWidget {
-  const _EditTextRow({super.key});
 
-  @override
-  State<_EditTextRow> createState() => __EditTextRowState();
-}
-
-class __EditTextRowState extends State<_EditTextRow> {
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const SizedBox(
-          width: 4,
-        ),
-        KeyboardRowContainer(
-          child: Row(
-            children: [
-              const SizedBox(
-                width: 2,
-              ),
-              KeyboardToggle(icon: UIIcons.formatBold, onPressed: (value) {}),
-              KeyboardToggle(icon: UIIcons.formatItalic, onPressed: (value) {}),
-              KeyboardToggle(
-                icon: UIIcons.formatUnderline,
-                onPressed: (value) {},
-              ),
-              const SizedBox(
-                width: 2,
-              ),
-            ],
-          ),
-        ),
-        KeyboardRowContainer(
-          child: Row(
-            children: [
-              const SizedBox(
-                width: 2,
-              ),
-              KeyboardToggle(
-                icon: UIIcons.formatColorFill,
-                onPressed: (value) {
-                  context.read<KeyboardRowCubit>().expandColors();
-                },
-              ),
-              KeyboardToggle(
-                icon: UIIcons.formatColorText,
-                onPressed: (value) {
-                  context.read<KeyboardRowCubit>().expandColors();
-
-                },
-              ),
-              const SizedBox(
-                width: 2,
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(
-          width: 4,
-        ),
-      ],
-    );
-  }
-}
 
 
 // import 'package:flutter/material.dart';

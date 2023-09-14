@@ -15,4 +15,12 @@ class UIColors {
   static const smallText = Color(0xFF8E8E8E);
 
   static const delete = Color(0xFFFF4141);
+
+  // predefined colors
+  static const red = Colors.red;
+  static const yellow = Colors.yellow;
+  static const green = Colors.green;
+  static const blue = Colors.blue;
+  static const purple = Colors.purple;
+
 }
