@@ -30,12 +30,24 @@ class UIIcons {
   static UIIcon delete = UIIcon(Icons.delete_rounded, size:26, color: UIColors.delete,);
   static UIIcon info = UIIcon(Icons.info_outline_rounded, size: 20);
   static UIIcon expandMore = UIIcon(Icons.expand_more_rounded, size: 32);
-  static UIIcon done = UIIcon(Icons.done_rounded, size: 32);
+  static UIIcon done = UIIcon(Icons.done_rounded, size: 32,);
   static UIIcon formatBold = UIIcon(Icons.format_bold_rounded, size: 32);
   static UIIcon formatItalic = UIIcon(Icons.format_italic_rounded, size: 32);
   static UIIcon formatUnderline = UIIcon(Icons.format_underline_rounded, size: 32);
-  static UIIcon formatColorFill = UIIcon(Icons.format_color_fill_rounded, size: 32);
+  static UIIcon alternateEmail = UIIcon(Icons.alternate_email_rounded, size: 32);
   static UIIcon formatColorText = UIIcon(Icons.format_color_text_rounded, size: 32);
+  static UIIcon formatColorFill = UIIcon(Icons.format_color_fill_rounded, size: 32);
+  static UIIcon bigTitle = UIIcon(Icons.title_rounded, size: 32);
+  static UIIcon smallTitle = UIIcon(Icons.title_rounded, size: 24);
+  static UIIcon horizontalRule = UIIcon(Icons.horizontal_rule_rounded, size: 32);
+  static UIIcon formatListBulleted = UIIcon(Icons.format_list_bulleted_rounded, size: 32);
+  static UIIcon formatListNumbered = UIIcon(Icons.format_list_numbered_rounded, size: 32);
+  static UIIcon formatQuote = UIIcon(Icons.format_quote_rounded, size: 32);
+  static UIIcon calloutTile = UIIcon(Icons.crop_16_9_rounded, size: 32);
+  static UIIcon functions = UIIcon(Icons.functions_rounded, size: 32);
+  static UIIcon image = UIIcon(Icons.image_rounded, size: 32);
+  static UIIcon audio = UIIcon(Icons.audio_file_rounded, size: 32);
+
 
 
 }

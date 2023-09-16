@@ -23,4 +23,10 @@ class UIColors {
   static const blue = Colors.blue;
   static const purple = Colors.purple;
 
+    static const redTransparent = Color.fromARGB(120, 244, 67, 54);
+  static const yellowTransparent = Color.fromARGB(120, 255, 235, 59);
+  static const greenTransparent = Color.fromARGB(120, 76, 175, 79);
+  static const blueTransparent = Color.fromARGB(120, 33, 149, 243);
+  static const purpleTransparent = Color.fromARGB(120, 155, 39, 176);
+
 }

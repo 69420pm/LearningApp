@@ -10,7 +10,8 @@ class UIIconButton extends StatefulWidget {
     this.alignment = Alignment.center,
     this.animateToWhite = false,
     this.text,
-    this.swapTextWithIcon = false
+    this.swapTextWithIcon = false,
+    this.onDoubleTap
   });
 
   /// displayed icon
@@ -21,6 +22,9 @@ class UIIconButton extends StatefulWidget {
 
   /// callback when button gets pressed
   final void Function() onPressed;
+
+   /// callback when button gets pressed twice
+  final void Function()? onDoubleTap;
 
   /// how icon should be aligned in container
   final Alignment alignment;
@@ -45,11 +49,12 @@ class _UIIconButtonState extends State<UIIconButton> {
     final animateColor = Color.fromARGB(
       128,
       startColor.red,
-      startColor.blue,
       startColor.green,
+      startColor.blue,
     );
     return GestureDetector(
       onTap: widget.onPressed,
+      onDoubleTap: widget.onDoubleTap,
       behavior: HitTestBehavior.opaque,
       onTapDown: (details) {
         setState(() {

@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/src/cubit/keyboard_row_cubit.dart';
-import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_button.dart';
-import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_row_container.dart';
-import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_toggle.dart';
-import 'package:markdown_editor/src/widgets/keyboard_row/new_rows/keyboard_text_color_row.dart';
+import 'package:markdown_editor/src/widgets/keyboard_row/new_rows/color_rows/keyboard_background_color_row.dart';
+import 'package:markdown_editor/src/widgets/keyboard_row/new_rows/color_rows/keyboard_text_color_row.dart';
+import 'package:markdown_editor/src/widgets/keyboard_row/new_rows/keyboard_new_tile_row.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/new_rows/keyboard_text_row.dart';
-import 'package:markdown_editor/src/widgets/keyboard_row/rows/keyboard_both_rows_add_tile.dart';
-import 'package:markdown_editor/src/widgets/keyboard_row/rows/keyboard_latex_row.dart';
-import 'package:markdown_editor/src/widgets/keyboard_row/rows/keyboard_lower_row_text_tile.dart';
-import 'package:markdown_editor/src/widgets/keyboard_row/rows/keyboard_upper_row_extra_format.dart';
-import 'package:ui_components/ui_components.dart';
 
 class KeyboardRow extends StatefulWidget {
   KeyboardRow({super.key});
@@ -36,10 +30,12 @@ class _KeyboardRowState extends State<KeyboardRow> with WidgetsBindingObserver {
         builder: (context, state) {
           if (state is KeyboardRowText) {
             return KeyboardTextRow();
-          } else if (state is KeyboardRowTextWithColors) {
+          } else if (state is KeyboardRowTextColors) {
             return KeyboardTextColorRow();
+          } else if (state is KeyboardRowBackgroundColors) {
+            return KeyboardBackgroundColorRow();
           } else if (state is KeyboardRowNewTile) {
-            return const Column();
+            return KeyboardNewTileRow();
           } else {
             return const Text('error');
           }
