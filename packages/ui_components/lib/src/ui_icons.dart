@@ -18,11 +18,11 @@ class UIIcons {
   static UIIcon account = UIIcon(Icons.account_circle_rounded);
   static UIIcon search = UIIcon(Icons.search_rounded);
   static UIIcon cancel = UIIcon(Icons.cancel_rounded);
-  static UIIcon close = UIIcon(Icons.close, size: 32);
+  static UIIcon close = UIIcon(Icons.close_rounded, size: 32);
   static UIIcon card = UIIcon(Icons.article_outlined, size: 32);
   static UIIcon folder = UIIcon(Icons.folder_outlined);
   static UIIcon placeHolder = UIIcon(Icons.grid_4x4);
-  static UIIcon settings = UIIcon(Icons.settings_rounded, size:32);
+  static UIIcon settings = UIIcon(Icons.settings_outlined, size:32);
   static UIIcon addFolder = UIIcon(Icons.create_new_folder_rounded, size:32);
   static UIIcon share = UIIcon(Icons.share_rounded, size:32);
   static UIIcon classTest = UIIcon(Icons.calendar_month_rounded, size: 32,);
@@ -45,8 +45,8 @@ class UIIcons {
   static UIIcon formatQuote = UIIcon(Icons.format_quote_rounded, size: 32);
   static UIIcon calloutTile = UIIcon(Icons.crop_16_9_rounded, size: 32);
   static UIIcon functions = UIIcon(Icons.functions_rounded, size: 32);
-  static UIIcon image = UIIcon(Icons.image_rounded, size: 32);
-  static UIIcon audio = UIIcon(Icons.audio_file_rounded, size: 32);
+  static UIIcon image = UIIcon(Icons.image_outlined, size: 32);
+  static UIIcon audio = UIIcon(Icons.audio_file_outlined, size: 32);
 
 
 

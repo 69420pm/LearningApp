@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:markdown_editor/markdown_editor.dart';
+import 'package:markdown_editor/src/widgets/editor_tiles/callout_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/divider_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/header_tile.dart';
+import 'package:markdown_editor/src/widgets/editor_tiles/image_tile.dart';
+import 'package:markdown_editor/src/widgets/editor_tiles/latex_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/list_editor_tile.dart';
+import 'package:markdown_editor/src/widgets/editor_tiles/quote_tile.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_button.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_row_container.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_toggle.dart';
@@ -18,47 +22,114 @@ class KeyboardNewTileRow extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 4),
+        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+          KeyboardRowContainer(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 2),
               child: Row(
                 children: [
-                  KeyboardRowContainer(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 2),
-                      child: Row(
-                        children: [
-                          KeyboardButton(
-                            icon: UIIcons.bigTitle,
-                            onPressed: () {
-                              context.read<KeyboardRowCubit>().addNewTile(
-                                    HeaderTile(
-                                      textStyle: UIText.titleBig,
-                                      hintText: 'Heading big',
-                                    ),
-                                    textEditorBloc,
-                                    context,
-                                  );
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
+                  KeyboardButton(
+                    icon: UIIcons.formatQuote,
+                    onPressed: () {
+                      context.read<KeyboardRowCubit>().addNewTile(
+                            QuoteTile(),
+                            textEditorBloc,
+                            context,
+                          );
+                    },
+                  ),
+                  KeyboardButton(
+                    icon: UIIcons.calloutTile,
+                    onPressed: () {
+                      context.read<KeyboardRowCubit>().addNewTile(
+                            CalloutTile(),
+                            textEditorBloc,
+                            context,
+                          );
+                    },
                   ),
                 ],
               ),
             ),
-          ],
+          ),
+          KeyboardRowContainer(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2),
+              child: Row(
+                children: [
+                  KeyboardButton(
+                    icon: UIIcons.alternateEmail,
+                    onPressed: () {
+                      context.read<KeyboardRowCubit>().addNewTile(
+                            LatexTile(),
+                            textEditorBloc,
+                            context,
+                          );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+          KeyboardRowContainer(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2),
+              child: Row(
+                children: [
+                  KeyboardButton(
+                    icon: UIIcons.functions,
+                    onPressed: () {
+                      context.read<KeyboardRowCubit>().addNewTile(
+                            LatexTile(),
+                            textEditorBloc,
+                            context,
+                          );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+          KeyboardRowContainer(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 2),
+              child: Row(
+                children: [
+                  KeyboardButton(
+                    icon: UIIcons.image,
+                    onPressed: () {
+                      context.read<KeyboardRowCubit>().addNewTile(
+                            LatexTile(),
+                            textEditorBloc,
+                            context,
+                          );
+                    },
+                  ),
+                  KeyboardButton(
+                    icon: UIIcons.audio,
+                    onPressed: () {
+                      context.read<KeyboardRowCubit>().addNewTile(
+                            CalloutTile(),
+                            textEditorBloc,
+                            context,
+                          );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ]),
+        const SizedBox(
+          height: 8,
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
+                      padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               KeyboardButton(
-                icon: UIIcons.cancel,
+                icon: UIIcons.close.copyWith(size: 28),
                 onPressed: () {
                   context.read<KeyboardRowCubit>().expandText();
                 },
@@ -67,7 +138,7 @@ class KeyboardNewTileRow extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       KeyboardRowContainer(
                         child: Padding(

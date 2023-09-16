@@ -6,10 +6,13 @@ class KeyboardRowContainer extends StatelessWidget {
   Widget child;
   @override
   Widget build(BuildContext context) {
-    return  Container(
+    return Container(
       height: 48,
-      decoration: BoxDecoration(color: UIColors.overlay,borderRadius: BorderRadius.all(Radius.circular(UIConstants.cornerRadius))),
-        child: child
+      decoration: BoxDecoration(
+          color: UIColors.overlay,
+          borderRadius:
+              BorderRadius.all(Radius.circular(UIConstants.cornerRadius))),
+      child: child,
     );
   }
 }
