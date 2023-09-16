@@ -14,10 +14,12 @@ class CardListTile extends StatefulWidget {
     required this.card,
     required this.isCardSelected,
     required this.isInSelectMode,
+    required this.parentId,
   });
   final Card card;
   bool isCardSelected;
   bool isInSelectMode;
+  final String parentId;
 
   @override
   State<CardListTile> createState() => _CardListTileState();
@@ -28,6 +30,17 @@ class _CardListTileState extends State<CardListTile> {
 
   @override
   Widget build(BuildContext context) {
+    void selectCard(BuildContext context, Card card, bool selected) {
+      context.read<SubjectOverviewSelectionBloc>().add(
+          SubjectOverviewChangeSelectionInFolderTable(
+              folderId: widget.parentId, select: selected));
+      context.read<SubjectOverviewSelectionBloc>().add(
+            SubjectOverviewCardSelectionChange(
+              card: card,
+            ),
+          );
+    }
+
     return BlocConsumer<SubjectOverviewSelectionBloc,
         SubjectOverviewSelectionState>(
       listener: (context, state) {
@@ -41,94 +54,83 @@ class _CardListTileState extends State<CardListTile> {
           });
         }
       },
-      builder: (context, state) => GestureDetector(
-        onTap: () {
-          if (widget.isInSelectMode) {
-            setState(() {
-              widget.isCardSelected = !widget.isCardSelected;
-              context.read<SubjectOverviewSelectionBloc>().add(
-                    SubjectOverviewSelectionChange(
-                      card: widget.card,
-                      addCard: widget.isCardSelected,
-                    ),
-                  );
-            });
-          }
-        },
-        child: LongPressDraggable(
-          data: widget.card,
-          maxSimultaneousDrags:
-              context.read<SubjectOverviewSelectionBloc>().isInSelectMode &&
-                      !widget.isCardSelected
-                  ? 0
-                  : 1,
-          onDragStarted: () {
-            context
-                .read<SubjectOverviewSelectionBloc>()
-                .add(SubjectOverviewDraggingChange(inDragg: true));
-            if (!widget.isInSelectMode || widget.isCardSelected == false) {
+      builder: (context, state) {
+        widget.isCardSelected = context
+            .read<SubjectOverviewSelectionBloc>()
+            .cardsSelected
+            .contains(widget.card);
+        return GestureDetector(
+          onTap: () {
+            if (widget.isInSelectMode) {
               setState(() {
-                widget.isCardSelected = true;
+                widget.isCardSelected = !widget.isCardSelected;
+                selectCard(context, widget.card, widget.isCardSelected);
               });
             }
           },
-          onDragEnd: (details) {
-            context
-                .read<SubjectOverviewSelectionBloc>()
-                .add(SubjectOverviewDraggingChange(inDragg: false));
-
-            context.read<FolderListTileBloc>().add(FolderListTileClearHovers());
-          },
-          onDraggableCanceled: (_, __) {
-            if (!widget.isCardSelected) {
-              context.read<SubjectOverviewSelectionBloc>().add(
-                    SubjectOverviewSelectionToggleSelectMode(
-                      inSelectMode: true,
-                    ),
-                  );
+          child: LongPressDraggable(
+            data: widget.card,
+            maxSimultaneousDrags:
+                context.read<SubjectOverviewSelectionBloc>().isInSelectMode &&
+                        !widget.isCardSelected
+                    ? 0
+                    : 1,
+            onDragStarted: () {
               context
                   .read<SubjectOverviewSelectionBloc>()
-                  .add(SubjectOverviewSelectionChange(
-                    card: widget.card,
-                    addCard: true,
-                  ));
-            }
-          },
-          feedback: Builder(
-            builder: (_) {
-              final renderBox =
-                  globalKey.currentContext?.findRenderObject() as RenderBox?;
-
-              final size = renderBox?.size;
-
-              return MultiDragIndicator(
-                cardAmount: context
-                    .read<SubjectOverviewSelectionBloc>()
-                    .cardsSelected
-                    .length
-                    .clamp(1, 10),
-                firstCardName: (state is SubjectOverviewSelectionModeOn)
-                    ? context
-                        .read<SubjectOverviewSelectionBloc>()
-                        .cardsSelected
-                        .map((e) => e.front)
-                        .toList()
-                    : [widget.card.front],
-              );
+                  .add(SubjectOverviewDraggingChange(inDragg: true));
+              if (!widget.isInSelectMode || widget.isCardSelected == false) {
+                setState(() {
+                  widget.isCardSelected = true;
+                });
+              }
             },
+            onDragEnd: (details) {
+              context
+                  .read<SubjectOverviewSelectionBloc>()
+                  .add(SubjectOverviewDraggingChange(inDragg: false));
+
+              context
+                  .read<FolderListTileBloc>()
+                  .add(FolderListTileClearHovers());
+            },
+            onDraggableCanceled: (_, __) {
+              if (!widget.isCardSelected) {
+                context.read<SubjectOverviewSelectionBloc>().add(
+                      SubjectOverviewSelectionToggleSelectMode(
+                        inSelectMode: true,
+                      ),
+                    );
+                selectCard(context, widget.card, true);
+              }
+            },
+            feedback: MultiDragIndicator(
+              cardAmount: context
+                  .read<SubjectOverviewSelectionBloc>()
+                  .cardsSelected
+                  .length
+                  .clamp(1, 10),
+              firstCardName: (state is SubjectOverviewSelectionModeOn)
+                  ? context
+                      .read<SubjectOverviewSelectionBloc>()
+                      .cardsSelected
+                      .map((e) => e.front)
+                      .toList()
+                  : [widget.card.front],
+            ),
+            childWhenDragging: const InactiveListTile(),
+            child: CardListTileView(
+              globalKey: globalKey,
+              isSelected: widget.isCardSelected &&
+                  state is! SubjectOverviewSelectionMultiDragging,
+              card: widget.card,
+              isChildWhenDragging:
+                  state is SubjectOverviewSelectionMultiDragging &&
+                      widget.isCardSelected,
+            ),
           ),
-          childWhenDragging: const InactiveListTile(),
-          child: CardListTileView(
-            globalKey: globalKey,
-            isSelected: widget.isCardSelected &&
-                state is! SubjectOverviewSelectionMultiDragging,
-            card: widget.card,
-            isChildWhenDragging:
-                state is SubjectOverviewSelectionMultiDragging &&
-                    widget.isCardSelected,
-          ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

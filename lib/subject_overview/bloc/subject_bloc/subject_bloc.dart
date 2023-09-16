@@ -73,6 +73,7 @@ class SubjectBloc extends Bloc<SubjectEvent, SubjectState> {
               card: element,
               isCardSelected: false,
               isInSelectMode: false,
+              parentId: event.id,
             );
           } else if (element is Removed) {
             widgetsToRemove.add(element);
@@ -106,7 +107,6 @@ class SubjectBloc extends Bloc<SubjectEvent, SubjectState> {
     await cardsRepository.saveFolder(newFolder);
     emit(SubjectSuccess());
   }
-
 
   Future<void> _saveCard(
     SubjectAddCard event,

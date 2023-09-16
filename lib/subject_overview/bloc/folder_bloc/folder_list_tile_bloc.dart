@@ -62,6 +62,7 @@ class FolderListTileBloc
               card: element,
               isCardSelected: false,
               isInSelectMode: false,
+              parentId: event.id,
             );
           } else if (element is Removed) {
             widgetsToRemove.add(element);

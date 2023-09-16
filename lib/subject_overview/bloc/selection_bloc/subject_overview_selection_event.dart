@@ -12,12 +12,18 @@ class SubjectOverviewSelectionToggleSelectMode
   });
 }
 
-class SubjectOverviewSelectionChange extends SubjectOverviewSelectionEvent {
+class SubjectOverviewCardSelectionChange extends SubjectOverviewSelectionEvent {
   Card card;
-  bool addCard;
-  SubjectOverviewSelectionChange({
+  SubjectOverviewCardSelectionChange({
     required this.card,
-    required this.addCard,
+  });
+}
+
+class SubjectOverviewFolderSelectionChange
+    extends SubjectOverviewSelectionEvent {
+  Folder folder;
+  SubjectOverviewFolderSelectionChange({
+    required this.folder,
   });
 }
 
@@ -45,5 +51,24 @@ class SubjectOverviewSetSoftSelectFolder extends SubjectOverviewSelectionEvent {
   Folder? folder;
   SubjectOverviewSetSoftSelectFolder({
     required this.folder,
+  });
+}
+
+class SubjectOverviewUpdateFolderTable extends SubjectOverviewSelectionEvent {
+  String folderId;
+  int numberOfChildren;
+  SubjectOverviewUpdateFolderTable({
+    required this.folderId,
+    required this.numberOfChildren,
+  });
+}
+
+class SubjectOverviewChangeSelectionInFolderTable
+    extends SubjectOverviewSelectionEvent {
+  String folderId;
+  bool select;
+  SubjectOverviewChangeSelectionInFolderTable({
+    required this.folderId,
+    required this.select,
   });
 }

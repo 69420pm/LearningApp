@@ -197,6 +197,22 @@ class _SubjectViewState extends State<SubjectView> {
                       }
                     }
                   }
+
+                  void selectCard(BuildContext context, Card card) {
+                    context.read<SubjectOverviewSelectionBloc>().add(
+                          SubjectOverviewCardSelectionChange(
+                            card: card,
+                          ),
+                        );
+                  }
+
+                  void selectFolder(BuildContext context, Folder folder) {
+                    setState(() {
+                      context.read<SubjectOverviewSelectionBloc>().add(
+                          SubjectOverviewFolderSelectionChange(folder: folder));
+                    });
+                  }
+
                   return Expanded(
                     child: Stack(
                       children: [
@@ -251,14 +267,7 @@ class _SubjectViewState extends State<SubjectView> {
                                         inSelectMode: true,
                                       ),
                                     );
-                                context
-                                    .read<SubjectOverviewSelectionBloc>()
-                                    .add(
-                                      SubjectOverviewSelectionChange(
-                                        card: data,
-                                        addCard: true,
-                                      ),
-                                    );
+                                selectCard(context, data);
                               }
                             }
                             // print(data);

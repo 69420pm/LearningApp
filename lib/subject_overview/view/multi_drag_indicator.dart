@@ -30,8 +30,6 @@ class MultiDragIndicator extends StatelessWidget {
     }
     label = label.substring(0, label.length - 2);
 
-    print(label);
-
     return DecoratedBox(
       decoration: BoxDecoration(
           color: UIColors.onOverlayCard,
