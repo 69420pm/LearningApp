@@ -12,21 +12,23 @@ class MarkdownWidget extends StatelessWidget {
           currentState is TextEditorEditorTilesChanged,
       builder: (context, state) {
         final editorTiles = context.read<TextEditorBloc>().editorTiles;
-        return Container(
-          height: 500,
-          child: ListView.builder(
-            itemCount: editorTiles.length + 1,
-            itemBuilder: (context, index) {
-              if (index == editorTiles.length) {
-                return SizedBox(
-                  key: ValueKey(DateTime.now()),
-                  height: 120,
-                );
-              }
-              return editorTiles[index] as Widget;
-            },
-            controller: ScrollController(), // Use a unique ScrollController
+        final listChildren = <Widget>[
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+                (context, index) => editorTiles[index] as Widget,
+                childCount: editorTiles.length),
           ),
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: GestureDetector(
+              onTap: () {
+                context.read<TextEditorBloc>().add(TextEditorFocusLastWidget());
+              },
+            ),
+          )
+        ];
+        return CustomScrollView(
+          slivers: listChildren,
         );
       },
     );

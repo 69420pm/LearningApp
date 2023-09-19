@@ -47,6 +47,7 @@ class UIIcons {
   static UIIcon functions = UIIcon(Icons.functions_rounded, size: 32);
   static UIIcon image = UIIcon(Icons.image_outlined, size: 32);
   static UIIcon audio = UIIcon(Icons.audio_file_outlined, size: 32);
+  static UIIcon circle = UIIcon(Icons.circle, size: 9);
 
 
 
