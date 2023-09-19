@@ -9,6 +9,7 @@ import 'package:markdown_editor/src/models/char_tile.dart';
 import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/models/text_field_constants.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
+import 'package:ui_components/ui_components.dart';
 
 class TextTile extends StatelessWidget implements EditorTile {
   /// constructor
@@ -187,6 +188,7 @@ class TextTile extends StatelessWidget implements EditorTile {
               border: InputBorder.none,
               hintText: hintText,
               isDense: isDense,
+              hintStyle: textStyle.copyWith(color: UIColors.smallTextDark),
               contentPadding: contentPadding,
               labelStyle: TextFieldConstants.zero,
               labelText: '',

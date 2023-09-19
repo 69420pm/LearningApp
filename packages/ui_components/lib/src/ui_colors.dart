@@ -13,6 +13,7 @@ class UIColors {
   static const textLight = Color(0xFFF5F5F5);
   static const textDark = Color(0xFF1F1F1F);
   static const smallText = Color(0xFF8E8E8E);
+  static const smallTextDark = Color.fromARGB(128, 110, 110, 110);
 
   static const delete = Color(0xFFFF4141);
 

@@ -18,6 +18,7 @@ class MarkdownWidget extends StatelessWidget {
                 (context, index) => editorTiles[index] as Widget,
                 childCount: editorTiles.length),
           ),
+          SliverList(delegate: SliverChildListDelegate.fixed([Container(height: 120)]),),
           SliverFillRemaining(
             hasScrollBody: false,
             child: GestureDetector(

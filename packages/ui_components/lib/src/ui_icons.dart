@@ -48,6 +48,7 @@ class UIIcons {
   static UIIcon image = UIIcon(Icons.image_outlined, size: 32);
   static UIIcon audio = UIIcon(Icons.audio_file_outlined, size: 32);
   static UIIcon circle = UIIcon(Icons.circle, size: 9);
+  static UIIcon moreVert = UIIcon(Icons.more_vert_rounded, size:32);
 
 
 

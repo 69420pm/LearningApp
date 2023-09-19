@@ -318,12 +318,14 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
             lastWidget.textFieldController!.text.isNotEmpty) ||
         lastWidget.textFieldController == null ||
         lastWidget.focusNode == null) {
-      editorTiles.add(
+          final newFocusNode = FocusNode();
+        editorTiles.add(
         TextTile(
           textStyle: TextFieldConstants.normal,
-          focusNode: FocusNode(),
+          focusNode: newFocusNode,
         ),
       );
+      newFocusNode.requestFocus();
       emit(TextEditorEditorTilesChanged(tiles: List.of(editorTiles)));
     } else {
       lastWidget.focusNode!.requestFocus();

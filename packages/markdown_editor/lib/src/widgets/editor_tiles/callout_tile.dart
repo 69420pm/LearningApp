@@ -41,89 +41,101 @@ class CalloutTile extends StatelessWidget implements EditorTile {
   @override
   Widget build(BuildContext context) {
     _emojiController.text = iconString;
-final replacingTextTile = TextTile(
+    final replacingTextTile = TextTile(
       textStyle: TextFieldConstants.normal,
     );
-    textTile
-      .onBackspaceDoubleClick = () {
-        textTile.focusNode = FocusNode();
-        final tiles = <CharTile>[];
-        textTile.textFieldController!.charTiles.forEach((key, value) {
-          tiles.add(value);
-        });
-        replacingTextTile.textFieldController!.addText(
-          tiles,
-          context,
-        );
-        context.read<TextEditorBloc>().add(
-              TextEditorReplaceEditorTile(
-                tileToRemove: this,
-                newEditorTile: replacingTextTile,
-                handOverText: true,
-                context: context,
-              ),
-            );
-      };
+    // textTile
+    //   .onBackspaceDoubleClick = () {
+    //     textTile.focusNode = FocusNode();
+    //     final tiles = <CharTile>[];
+    //     textTile.textFieldController!.charTiles.forEach((key, value) {
+    //       tiles.add(value);
+    //     });
+    //     replacingTextTile.textFieldController!.addText(
+    //       tiles,
+    //       context,
+    //     );
+    //     context.read<TextEditorBloc>().add(
+    //           TextEditorReplaceEditorTile(
+    //             tileToRemove: this,
+    //             newEditorTile: replacingTextTile,
+    //             handOverText: true,
+    //             context: context,
+    //           ),
+    //         );
+    //   };
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: tileColor,
-        borderRadius: const BorderRadius.all(Radius.circular(8)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.only(left: 10),
-        child: Row(
-          children: [
-            SizedBox(
-              width: 25,
-              child: GestureDetector(
-                child: Text(
-                  _emojiController.text,
-                  style: TextFieldConstants.calloutStart,
-                ),
-                onTap: () => showModalBottomSheet(
-                  context: context,
-                  builder: (_) => BlocProvider.value(
-                    value: context.read<TextEditorBloc>(),
-                    child: UIEmojiPicker(
-                      onEmojiClicked: (p0) {
-                        _emojiController.text = p0.emoji;
+    return Padding(
+      padding: const EdgeInsets.only(top: 4.0),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: tileColor,
+          borderRadius: const BorderRadius.all(
+              Radius.circular(UIConstants.cornerRadiusSmall)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.only(
+              // right: UIConstants.itemPadding,
+              left: UIConstants.itemPadding,
+              top: UIConstants.itemPadding / 3,
+              bottom: UIConstants.itemPadding / 3),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: SizedBox(
+                  width: 25,
+                  child: GestureDetector(
+                    child: Text(
+                      _emojiController.text,
+                      style: TextFieldConstants.calloutStart,
+                    ),
+                    onTap: () => showModalBottomSheet(
+                      context: context,
+                      builder: (_) => BlocProvider.value(
+                        value: context.read<TextEditorBloc>(),
+                        child: UIEmojiPicker(
+                          onEmojiClicked: (p0) {
+                            _emojiController.text = p0.emoji;
 
-                        final newTile = copyWith(iconString: p0.emoji);
-                        context.read<TextEditorBloc>().add(
-                              TextEditorReplaceEditorTile(
-                                tileToRemove: this,
-                                newEditorTile: newTile,
-                                context: context,
-                                requestFocus: false,
-                              ),
-                            );
+                            final newTile = copyWith(iconString: p0.emoji);
+                            context.read<TextEditorBloc>().add(
+                                  TextEditorReplaceEditorTile(
+                                    tileToRemove: this,
+                                    newEditorTile: newTile,
+                                    context: context,
+                                    requestFocus: false,
+                                  ),
+                                );
 
-                        Navigator.of(context).pop();
-                      },
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(
-              width: 12,
-            ),
-            Expanded(child: textTile),
-            IconButton(
-              icon: const Icon(Icons.more_vert),
-              onPressed: () => showModalBottomSheet(
-                backgroundColor: Colors.transparent,
-                context: context,
-                builder: (_) => BlocProvider.value(
-                  value: context.read<TextEditorBloc>(),
-                  child: MenuBottomSheet(
-                    parentEditorTile: this,
+              const SizedBox(
+                width: 12,
+              ),
+              Expanded(child: textTile),
+              UIIconButton(
+                icon: UIIcons.moreVert.copyWith(size: 28, color: UIColors.smallTextDark),
+                onPressed: () => showModalBottomSheet(
+                  backgroundColor: Colors.transparent,
+                  context: context,
+                  builder: (_) => BlocProvider.value(
+                    value: context.read<TextEditorBloc>(),
+                    child: MenuBottomSheet(
+                      parentEditorTile: this,
+                    ),
                   ),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );

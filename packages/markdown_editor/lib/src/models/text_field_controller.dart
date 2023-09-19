@@ -81,13 +81,9 @@ class TextFieldController extends TextEditingController {
           i < selection.start - shiftSelectionStart) {
         shiftSelectionStart += 1;
       }
-      //! null reference exception problems get created here
       if (i + 1 == selection.start - shiftSelectionEnd) {
         _previousSelectionStart = i + 1;
       }
-      // if (i == selection.start - shiftSelectionEnd) {
-      //   _previousSelectionStart = i;
-      // }
     }
 
     // change selection style
@@ -164,8 +160,11 @@ class TextFieldController extends TextEditingController {
       }
     } else if (text != _previousText) {
       for (var i = 0; i < text.characters.length; i++) {
+        // add new chars
+        //! was previously _previousSelectionStart 
+        //! instead of _previousSelection.start
         if (i < (selection.end - shiftSelectionEnd) &&
-            i >= previousSelectionStart) {
+            i >= _previousSelection.start) {
           // if (text.characters.elementAt(i) == charTiles[i]?.char) {
           //   newCharTiles[i] = charTiles[i]!;
           // } else {
@@ -194,9 +193,13 @@ class TextFieldController extends TextEditingController {
             isUnderlined: isUnderlined,
           );
           // }
-        } else if (i < selection.end - shiftSelectionEnd) {
+        }
+        // add chars before selection
+        else if (i < selection.end - shiftSelectionEnd) {
           newCharTiles[i] = charTiles[i]!;
-        } else {
+        }
+        // add chars after selection
+        else {
           newCharTiles[i] = charTiles[i - textDelta]!;
         }
       }
