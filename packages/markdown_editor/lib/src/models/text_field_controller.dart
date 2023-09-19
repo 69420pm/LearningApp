@@ -69,9 +69,9 @@ class TextFieldController extends TextEditingController {
     final textDelta = text.characters.length - _previousText.characters.length;
     final newCharTiles = <int, CharTile>{};
 
-    int shiftSelectionEnd = 0;
-    int shiftSelectionStart = 0;
-    int previousSelectionStart = _previousSelectionStart;
+    var shiftSelectionEnd = 0;
+    var shiftSelectionStart = 0;
+    final previousSelectionStart = _previousSelectionStart;
     for (var i = 0; i < text.characters.length; i++) {
       if (text.characters.elementAt(i) != text[i + shiftSelectionEnd] &&
           i < selection.end - shiftSelectionEnd) {
@@ -81,9 +81,13 @@ class TextFieldController extends TextEditingController {
           i < selection.start - shiftSelectionStart) {
         shiftSelectionStart += 1;
       }
+      //! null reference exception problems get created here
       if (i + 1 == selection.start - shiftSelectionEnd) {
         _previousSelectionStart = i + 1;
       }
+      // if (i == selection.start - shiftSelectionEnd) {
+      //   _previousSelectionStart = i;
+      // }
     }
 
     // change selection style
@@ -124,6 +128,9 @@ class TextFieldController extends TextEditingController {
         charTiles[i] = CharTile(
           char: text.characters.elementAt(i),
           isDefaultOnBackgroundTextColor: isDefaultColor,
+          isBold: isBold,
+          isItalic: isItalic,
+          isUnderlined: isUnderlined,
           style: !isCode
               ? standardStyle.copyWith(
                   color: defaultColorChange ?? false
@@ -182,6 +189,9 @@ class TextFieldController extends TextEditingController {
                     background: Paint()..color = Colors.transparent,
                   ),
             isDefaultOnBackgroundTextColor: isDefaultColor,
+            isBold: isBold,
+            isItalic: isItalic,
+            isUnderlined: isUnderlined,
           );
           // }
         } else if (i < selection.end - shiftSelectionEnd) {
@@ -194,12 +204,15 @@ class TextFieldController extends TextEditingController {
     }
 
     charTiles.forEach((key, value) {
-      children.add(TextSpan(
+      children.add(
+        TextSpan(
           text: value.char,
           style: value.isDefaultOnBackgroundTextColor
               ? (value.style
                   .copyWith(color: Theme.of(context).colorScheme.onBackground))
-              : value.style));
+              : value.style,
+        ),
+      );
     });
     _previousText = text;
     _previousSelection = selection;
@@ -222,7 +235,29 @@ class TextFieldController extends TextEditingController {
     if (clearCharTiles) charTiles.clear();
     final charTilesStartLength = charTiles.length;
     for (var i = 0; i < newCharTiles.length; i++) {
-      charTiles[i + charTilesStartLength] = newCharTiles[i];
+      final currentCharTile = newCharTiles[i];
+      charTiles[i + charTilesStartLength] = currentCharTile.copyWith(
+        /* style: newCharTiles[i].style.copyWith(
+              fontFamily: standardStyle.fontFamily,
+              fontSize: standardStyle.fontSize,
+              fontWeight: newCharTiles[i].isBold
+                  ? FontWeight.bold
+                  : standardStyle.fontWeight,
+              height: standardStyle.height,
+            ), */
+        style: standardStyle.copyWith(
+          fontWeight: currentCharTile.isBold
+              ? FontWeight.bold
+              : standardStyle.fontWeight,
+          fontStyle: currentCharTile.isItalic ? FontStyle.italic : null,
+          decoration:
+              currentCharTile.isUnderlined ? TextDecoration.underline : null,
+          color: currentCharTile.isDefaultOnBackgroundTextColor
+              ? Theme.of(context).colorScheme.onBackground
+              : currentCharTile.style.color,
+          backgroundColor: currentCharTile.style.backgroundColor,
+        ),
+      );
     }
     buildTextSpan(
       context: context,

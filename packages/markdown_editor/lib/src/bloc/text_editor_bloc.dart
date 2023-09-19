@@ -36,7 +36,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
   List<EditorTile> editorTiles = [
     TextTile(
       textStyle: TextFieldConstants.normal,
-    )
+    ),
   ];
 
   /// whether text should get written in bold or not
@@ -97,8 +97,11 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     // print("update "+FocusManager.instance.primaryFocus.toString());
     // print("update " +focusedTile!.focusNode.toString());
     _addEditorTile(event.newEditorTile, event.context);
-    _addLastTextTileIfNeeded();
+    // _addLastTextTileIfNeeded();
+    if(event.emitState){
+
     emit(TextEditorEditorTilesChanged(tiles: List.of(editorTiles)));
+    }
   }
 
   FutureOr<void> _removeTile(
@@ -106,7 +109,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     Emitter<TextEditorState> emit,
   ) {
     _removeEditorTile(event.tileToRemove, event.context, handOverText: true);
-    _addLastTextTileIfNeeded();
+    // _addLastTextTileIfNeeded();
     emit(TextEditorEditorTilesChanged(tiles: List.of(editorTiles)));
   }
 
@@ -215,6 +218,9 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     bool changeFocus = true,
     bool handOverText = false,
   }) {
+    if(editorTiles[0] == toRemove){
+      return;
+    }
     var highestFocusNodeTile = -1;
     for (var i = 0; i < editorTiles.length; i++) {
       if (editorTiles[i] == toRemove) {

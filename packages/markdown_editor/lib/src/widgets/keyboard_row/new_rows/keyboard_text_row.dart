@@ -42,8 +42,9 @@ class KeyboardTextRow extends StatelessWidget {
                       KeyboardToggle(
                         icon: UIIcons.formatItalic,
                         onPressed: (value) {
-                          textEditorBloc
-                              .add(TextEditorKeyboardRowChange(isItalic: value));
+                          textEditorBloc.add(
+                            TextEditorKeyboardRowChange(isItalic: value),
+                          );
                         },
                       ),
                       KeyboardToggle(
@@ -71,7 +72,8 @@ class KeyboardTextRow extends StatelessWidget {
                           color: textEditorBloc.textBackgroundColor ==
                                   Colors.transparent
                               ? UIColors.textLight
-                              : textEditorBloc.textBackgroundColor.withAlpha(255),
+                              : textEditorBloc.textBackgroundColor
+                                  .withAlpha(255),
                         ),
                         onPressed: () {
                           if (!context
@@ -85,15 +87,20 @@ class KeyboardTextRow extends StatelessWidget {
                           }
                         },
                         onDoubleTap: () {
-                          context.read<KeyboardRowCubit>().changeBackgroundColor(
-                              Colors.transparent, textEditorBloc);
+                          context
+                              .read<KeyboardRowCubit>()
+                              .changeBackgroundColor(
+                                Colors.transparent,
+                                textEditorBloc,
+                              );
                         },
                       ),
                       KeyboardButton(
                         icon: UIIcons.formatColorText.copyWith(
-                            color: textEditorBloc.isDefaultOnBackgroundTextColor
-                                ? UIColors.textLight
-                                : textEditorBloc.textColor),
+                          color: textEditorBloc.isDefaultOnBackgroundTextColor
+                              ? UIColors.textLight
+                              : textEditorBloc.textColor,
+                        ),
                         onPressed: () {
                           if (!context
                               .read<KeyboardRowCubit>()
@@ -115,14 +122,13 @@ class KeyboardTextRow extends StatelessWidget {
                     ],
                   ),
                 ),
-
               ],
             ),
           ),
           KeyboardButton(
-              icon: UIIcons.done.copyWith(color: UIColors.primary),
-              onPressed: () {}),
-    
+            icon: UIIcons.done.copyWith(color: UIColors.primary),
+            onPressed: () {},
+          ),
         ],
       ),
     );

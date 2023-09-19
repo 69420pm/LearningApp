@@ -29,21 +29,31 @@ class AddCardPage extends StatelessWidget {
             icon: UIIcons.settings,
             onPressed: () {
               UIBottomSheet.showUIBottomSheet(
-                      context: context,
-                      builder: (_) {
-                        return AddCardSettingsBottomSheet();
-                      },
-                    );
+                context: context,
+                builder: (_) {
+                  return AddCardSettingsBottomSheet();
+                },
+              );
             },
           )
         ],
       ),
       body: Stack(children: [
-        MarkdownWidget(),
-        Positioned(bottom: 0, right:0, left:0,  child: Padding(
-          padding: const EdgeInsets.all(0),
-          child: KeyboardRow(),
-        )),
+        Padding(
+          padding: const EdgeInsets.only(
+            left: UIConstants.pageHorizontalPadding,
+            right: UIConstants.pageHorizontalPadding,
+          ),
+          child: MarkdownWidget(),
+        ),
+        Positioned(
+            bottom: 0,
+            right: 0,
+            left: 0,
+            child: Padding(
+              padding: const EdgeInsets.all(0),
+              child: KeyboardRow(),
+            )),
       ]),
     );
     // return Scaffold(

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/bloc/text_editor_bloc.dart';
+import 'package:markdown_editor/src/models/char_tile.dart';
 import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/models/text_field_constants.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
@@ -26,7 +27,7 @@ class TextTile extends StatelessWidget implements EditorTile {
     focusNode ??= FocusNode();
     textFieldController = TextFieldController(standardStyle: textStyle);
     if (textStyle == TextFieldConstants.normal) {
-      contentPadding ??= const EdgeInsets.only(top:6, bottom: 6);
+      contentPadding ??= const EdgeInsets.only(top: 6, bottom: 6);
     }
   }
 
@@ -78,8 +79,9 @@ class TextTile extends StatelessWidget implements EditorTile {
           return false;
         }
         if ((textFieldController!.selection.end -
-                textFieldController!.selection.start) >
-            0 && focusNode == FocusManager.instance.primaryFocus) {
+                    textFieldController!.selection.start) >
+                0 &&
+            focusNode == FocusManager.instance.primaryFocus) {
           return true;
         }
         return false;
@@ -92,18 +94,57 @@ class TextTile extends StatelessWidget implements EditorTile {
                 focusNode!.hasFocus &&
                 textFieldController!.selection.start == 0 &&
                 textFieldController!.selection.end == 0) {
+              final textEditorBloc = context.read<TextEditorBloc>();
               if (onBackspaceDoubleClick != null) {
                 onBackspaceDoubleClick!.call();
-              } else {
-                context.read<TextEditorBloc>().add(
-                      TextEditorRemoveEditorTile(
-                        tileToRemove:
-                            parentEditorTile == null ? this : parentEditorTile!,
-                        context: context,
-                        handOverText: true,
-                      ),
-                    );
+              } 
+              // remove heading, callout tile, list tile etc.
+              // tile gets removed and transformed to normal text tile in
+              // same line
+              else if (parentEditorTile != null) {
+                TextTile replacingTextTile = TextTile(
+                  textStyle: TextFieldConstants.normal,
+                );
+                final tiles = <CharTile>[];
+                textFieldController!.charTiles.forEach((key, value) {
+                  tiles.add(value);
+                });
+                replacingTextTile.textFieldController!.addText(tiles, context);
+                textEditorBloc.add(TextEditorReplaceEditorTile(
+                    tileToRemove: parentEditorTile!,
+                    newEditorTile: replacingTextTile,
+                    context: context,
+                    handOverText: true));
+              }else{
+                textEditorBloc.add(
+                  TextEditorRemoveEditorTile(
+                    tileToRemove:
+                        this,
+                    context: context,
+                    handOverText: true,
+                  ),
+                );
               }
+              /* else if (!(textEditorBloc.editorTiles.length == 1 &&
+                  textEditorBloc.editorTiles[0] ==
+                      (parentEditorTile ?? this))) {
+                textEditorBloc.add(
+                  TextEditorRemoveEditorTile(
+                    tileToRemove:
+                        parentEditorTile == null ? this : parentEditorTile!,
+                    context: context,
+                    handOverText: true,
+                  ),
+                );
+              } else if (textEditorBloc.editorTiles.length == 1 &&
+                  textEditorBloc.editorTiles[0] == (parentEditorTile ?? this)) {
+                textEditorBloc.add(TextEditorReplaceEditorTile(
+                    tileToRemove: parentEditorTile ?? this,
+                    newEditorTile:
+                        TextTile(textStyle: TextFieldConstants.normal),
+                    context: context,
+                    handOverText: true));
+              } */
             }
             // if(event.isKeyPressed(LogicalKeyboardKey.enter)){
             //   print("enter");
@@ -139,7 +180,8 @@ class TextTile extends StatelessWidget implements EditorTile {
             keyboardType: TextInputType.multiline,
             style: isDefaultOnBackgroundTextColor
                 ? textStyle.copyWith(
-                    color: Theme.of(context).colorScheme.onBackground)
+                    color: Theme.of(context).colorScheme.onBackground,
+                  )
                 : textStyle,
             decoration: InputDecoration(
               border: InputBorder.none,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:markdown_editor/markdown_editor.dart';
-import 'package:markdown_editor/src/widgets/keyboard_row/rows/keyboard_latex_row.dart';
+import 'package:markdown_editor/src/widgets/keyboard_row/new_rows/keyboard_latex_row.dart';
 import 'package:ui_components/ui_components.dart';
 import 'package:flutter_math_fork/ast.dart';
 import 'package:flutter_math_fork/flutter_math.dart';

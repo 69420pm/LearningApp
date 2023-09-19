@@ -25,9 +25,11 @@ class TextEditorKeyboardRowChange extends TextEditorEvent {
 class TextEditorAddEditorTile extends TextEditorEvent {
   EditorTile newEditorTile;
   BuildContext context;
+  bool emitState;
   TextEditorAddEditorTile({
     required this.newEditorTile,
     required this.context,
+    this.emitState = true
   });
 }
 

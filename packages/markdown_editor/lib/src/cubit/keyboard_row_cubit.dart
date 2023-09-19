@@ -76,8 +76,8 @@ class KeyboardRowCubit extends Cubit<KeyboardRowState> {
         textColor: textEditorBloc.textColor, backgroundColor: color));
   }
 
-  void addNewTile(EditorTile tile, TextEditorBloc textEditorBloc, BuildContext context){
-    textEditorBloc.add(TextEditorAddEditorTile(newEditorTile: tile, context: context));
+  void addNewTile(EditorTile tile, TextEditorBloc textEditorBloc, BuildContext context, {bool emitState=true}){
+    textEditorBloc.add(TextEditorAddEditorTile(newEditorTile: tile, context: context, emitState: emitState));
     expandText();
   }
 

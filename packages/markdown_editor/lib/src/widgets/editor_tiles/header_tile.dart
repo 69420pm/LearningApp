@@ -45,9 +45,6 @@ class HeaderTile extends StatelessWidget implements EditorTile {
               height: 10,
             ),
             _textTile,
-            const SizedBox(
-              height: 10,
-            ),
           ],
         );
       },

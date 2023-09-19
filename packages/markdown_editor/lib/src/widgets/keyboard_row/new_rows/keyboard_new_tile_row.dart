@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:markdown_editor/markdown_editor.dart';
+import 'package:markdown_editor/src/models/text_field_constants.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/callout_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/divider_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/header_tile.dart';
@@ -7,6 +8,7 @@ import 'package:markdown_editor/src/widgets/editor_tiles/image_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/latex_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/list_editor_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/quote_tile.dart';
+import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_button.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_row_container.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_toggle.dart';
@@ -150,7 +152,7 @@ class KeyboardNewTileRow extends StatelessWidget {
                                 onPressed: () {
                                   context.read<KeyboardRowCubit>().addNewTile(
                                         HeaderTile(
-                                          textStyle: UIText.titleBig,
+                                          textStyle: TextFieldConstants.headingBig,
                                           hintText: 'Heading big',
                                         ),
                                         textEditorBloc,
@@ -163,7 +165,7 @@ class KeyboardNewTileRow extends StatelessWidget {
                                 onPressed: () {
                                   context.read<KeyboardRowCubit>().addNewTile(
                                         HeaderTile(
-                                          textStyle: UIText.labelBold,
+                                          textStyle: TextFieldConstants.headingSmall,
                                           hintText: 'Heading small',
                                         ),
                                         textEditorBloc,
@@ -184,10 +186,18 @@ class KeyboardNewTileRow extends StatelessWidget {
                                 icon: UIIcons.horizontalRule,
                                 onPressed: () {
                                   context.read<KeyboardRowCubit>().addNewTile(
+                                        TextTile(textStyle: TextFieldConstants.normal,),
+                                        textEditorBloc,
+                                        context,
+                                        emitState: false
+                                      );
+                                 context.read<KeyboardRowCubit>().addNewTile(
                                         DividerTile(),
                                         textEditorBloc,
                                         context,
+                                        // emitState: false
                                       );
+                                      
                                 },
                               ),
                             ],

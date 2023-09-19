@@ -34,8 +34,8 @@ class TextEditorKeyboardRowChanged extends TextEditorState {
         isUnderlined,
         isCode,
         textColor,
-        textBackgroundColor
-      ];
+        textBackgroundColor,
+        isDefaultOnBackgroundTextColor      ];
 }
 
 class TextEditorEditorTilesChanged extends TextEditorState {

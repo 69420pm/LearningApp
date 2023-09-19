@@ -24,7 +24,7 @@ class _KeyboardRowState extends State<KeyboardRow> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Visibility(
-      // visible: widget.isVisible,
+      visible: widget.isVisible,
       maintainState: true,
       child: BlocBuilder<KeyboardRowCubit, KeyboardRowState>(
         builder: (context, state) {

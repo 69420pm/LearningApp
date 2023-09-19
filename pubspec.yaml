@@ -73,3 +73,23 @@ flutter:
           weight: 200
         - asset: assets/fonts/inter/Inter-Thin.ttf
           weight: 100
+    - family: RobotoSerif
+      fonts:
+        - asset: assets/fonts/Roboto_Serif/static/RobotoSerif-BlackItalic.ttf
+          weight: 900
+        - asset: assets/fonts/Roboto_Serif/static/RobotoSerif-ExtraBoldItalic.ttf
+          weight: 800
+        - asset: assets/fonts/Roboto_Serif/static/RobotoSerif-BoldItalic.ttf
+          weight: 700
+        - asset: assets/fonts/Roboto_Serif/static/RobotoSerif-SemiBoldItalic.ttf
+          weight: 600
+        - asset: assets/fonts/Roboto_Serif/static/RobotoSerif-MediumItalic.ttf
+          weight: 500
+        - asset: assets/fonts/Roboto_Serif/static/RobotoSerif-Italic.ttf
+          weight: 400
+        - asset: assets/fonts/Roboto_Serif/static/RobotoSerif-LightItalic.ttf
+          weight: 300
+        - asset: assets/fonts/Roboto_Serif/static/RobotoSerif-ExtraLightItalic.ttf
+          weight: 200
+        - asset: assets/fonts/Roboto_Serif/static/RobotoSerif-ThinItalic.ttf
+          weight: 100
