@@ -5,7 +5,8 @@ import 'package:markdown_editor/src/models/char_tile.dart';
 import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/models/text_field_constants.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
-import 'package:markdown_editor/src/widgets/editor_tiles/helper/menu_bottom_sheet.dart';
+import 'package:markdown_editor/src/widgets/editor_tiles/bottom_sheets/callout_tile_bottom_sheet.dart';
+import 'package:markdown_editor/src/widgets/editor_tiles/bottom_sheets/menu_bottom_sheet.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
 import 'package:ui_components/ui_components.dart';
 
@@ -13,7 +14,7 @@ class CalloutTile extends StatelessWidget implements EditorTile {
   /// initialize CalloutTile
   CalloutTile({
     super.key,
-    this.tileColor = Colors.white12,
+    this.tileColor = UIColors.smallTextDark,
     TextTile? textTile,
     this.iconString = '🤪',
   }) {
@@ -36,11 +37,11 @@ class CalloutTile extends StatelessWidget implements EditorTile {
 
   @override
   TextFieldController? textFieldController;
-  final TextEditingController _emojiController = TextEditingController();
+  final TextEditingController emojiController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    _emojiController.text = iconString;
+    emojiController.text = iconString;
     final replacingTextTile = TextTile(
       textStyle: TextFieldConstants.normal,
     );
@@ -71,69 +72,67 @@ class CalloutTile extends StatelessWidget implements EditorTile {
         decoration: BoxDecoration(
           color: tileColor,
           borderRadius: const BorderRadius.all(
-              Radius.circular(UIConstants.cornerRadiusSmall)),
+            Radius.circular(UIConstants.cornerRadiusSmall),
+          ),
         ),
         child: Padding(
           padding: const EdgeInsets.only(
-              // right: UIConstants.itemPadding,
-              left: UIConstants.itemPadding,
-              top: UIConstants.itemPadding / 3,
-              bottom: UIConstants.itemPadding / 3),
+            // right: UIConstants.itemPadding,
+            left: UIConstants.itemPadding - 6,
+            top: UIConstants.itemPadding / 3,
+            bottom: UIConstants.itemPadding / 3,
+          ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: SizedBox(
-                  width: 25,
-                  child: GestureDetector(
-                    child: Text(
-                      _emojiController.text,
-                      style: TextFieldConstants.calloutStart,
-                    ),
-                    onTap: () => showModalBottomSheet(
-                      context: context,
-                      builder: (_) => BlocProvider.value(
-                        value: context.read<TextEditorBloc>(),
-                        child: UIEmojiPicker(
-                          onEmojiClicked: (p0) {
-                            _emojiController.text = p0.emoji;
+              Container(
+                width: 44,
+                height: 44,
+                alignment: Alignment.center,
+                child: GestureDetector(
+                  child: Text(
+                    emojiController.text,
+                    style: TextFieldConstants.calloutStart,
+                  ),
+                  onTap: () => showModalBottomSheet(
+                    context: context,
+                    builder: (_) => BlocProvider.value(
+                      value: context.read<TextEditorBloc>(),
+                      child: UIEmojiPicker(
+                        onEmojiClicked: (p0) {
+                          emojiController.text = p0.emoji;
+                          final newTile = copyWith(iconString: p0.emoji);
+                          context.read<TextEditorBloc>().add(
+                                TextEditorReplaceEditorTile(
+                                  tileToRemove: this,
+                                  newEditorTile: newTile,
+                                  context: context,
+                                  requestFocus: false,
+                                ),
+                              );
 
-                            final newTile = copyWith(iconString: p0.emoji);
-                            context.read<TextEditorBloc>().add(
-                                  TextEditorReplaceEditorTile(
-                                    tileToRemove: this,
-                                    newEditorTile: newTile,
-                                    context: context,
-                                    requestFocus: false,
-                                  ),
-                                );
-
-                            Navigator.of(context).pop();
-                          },
-                        ),
+                          Navigator.of(context).pop();
+                        },
                       ),
                     ),
                   ),
                 ),
               ),
               const SizedBox(
-                width: 12,
+                width: 4,
               ),
               Expanded(child: textTile),
               UIIconButton(
-                icon: UIIcons.moreVert.copyWith(size: 28, color: UIColors.smallTextDark),
-                onPressed: () => showModalBottomSheet(
-                  backgroundColor: Colors.transparent,
+                icon: UIIcons.moreVert
+                    .copyWith(size: 28, color: UIColors.smallTextDark),
+                onPressed: () => UIBottomSheet.showUIBottomSheet(
                   context: context,
                   builder: (_) => BlocProvider.value(
                     value: context.read<TextEditorBloc>(),
-                    child: MenuBottomSheet(
-                      parentEditorTile: this,
-                    ),
+                    child: CalloutTileBottomSheet(parentEditorTile: this,),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),

@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
-import 'package:markdown_editor/src/widgets/editor_tiles/helper/image_menu_bottom_sheet.dart';
+import 'package:markdown_editor/src/widgets/editor_tiles/bottom_sheets/image_menu_bottom_sheet.dart';
 
 class ImageTile extends StatefulWidget implements EditorTile {
   /// constructor focusNode gets focusNode of widget and [image] is a File

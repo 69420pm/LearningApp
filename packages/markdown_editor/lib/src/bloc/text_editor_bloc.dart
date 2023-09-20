@@ -108,7 +108,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     TextEditorRemoveEditorTile event,
     Emitter<TextEditorState> emit,
   ) {
-    _removeEditorTile(event.tileToRemove, event.context, handOverText: true);
+    _removeEditorTile(event.tileToRemove, event.context, handOverText: event.handOverText);
     // _addLastTextTileIfNeeded();
     emit(TextEditorEditorTilesChanged(tiles: List.of(editorTiles)));
   }
@@ -217,7 +217,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     bool changeFocus = true,
     bool handOverText = false,
   }) {
-    if (editorTiles[0] == toRemove) {
+    if (editorTiles[0] == toRemove && handOverText==true) {
       return;
     }
     var highestFocusNodeTile = -1;

@@ -49,7 +49,8 @@ class UIIcons {
   static UIIcon audio = UIIcon(Icons.audio_file_outlined, size: 32);
   static UIIcon circle = UIIcon(Icons.circle, size: 9);
   static UIIcon moreVert = UIIcon(Icons.more_vert_rounded, size:32);
-
+  static UIIcon duplicate = UIIcon(Icons.content_copy_rounded, size: 28);
+  static UIIcon emoji = UIIcon(Icons.emoji_emotions_rounded, size: 32);
 
 
 }

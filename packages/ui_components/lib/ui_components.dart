@@ -30,4 +30,5 @@ export 'src/widgets/ui_label_row.dart';
 export 'src/widgets/ui_page.dart';
 export 'src/widgets/ui_switch.dart';
 export 'src/widgets/progress_indicators/ui_linear_progress_indicator.dart';
+export 'src/widgets/ui_icon_row.dart';
 export 'src/widgets/dialogs/ui_deletion_dialog.dart';
