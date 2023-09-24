@@ -94,16 +94,17 @@ class _ImageTileState extends State<ImageTile> {
           selected = !selected;
         });
         if (selected) {
-          FocusScope.of(context).requestFocus(widget.noFocus);
+                   FocusScope.of(context).requestFocus(widget.noFocus);
+
         }
         // print(selected);
       },
-      onDoubleTap: () {
+      onDoubleTap: (){
         showDialog(
-          context: context,
-          builder: (_) => ImageFullScreen(image: widget.image),
-          barrierDismissible: true,
-        );
+                context: context,
+                builder: (_) => ImageFullScreen(image: widget.image),
+                barrierDismissible: true,
+              );
       },
       child: Stack(
         children: [

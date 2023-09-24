@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/helper/image_helper.dart';
 import 'package:markdown_editor/src/models/text_field_constants.dart';
+import 'package:markdown_editor/src/widgets/editor_tiles/bottom_sheets/add_audio_bottom_sheet.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/bottom_sheets/add_image_bottom_sheet.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/callout_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/divider_tile.dart';
@@ -26,105 +27,115 @@ class KeyboardNewTileRow extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          KeyboardRowContainer(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 2),
-              child: Row(
-                children: [
-                  KeyboardButton(
-                    icon: UIIcons.formatQuote,
-                    onPressed: () {
-                      context.read<KeyboardRowCubit>().addNewTile(
-                            QuoteTile(),
-                            textEditorBloc,
-                            context,
-                          );
-                    },
-                  ),
-                  KeyboardButton(
-                    icon: UIIcons.calloutTile,
-                    onPressed: () {
-                      context.read<KeyboardRowCubit>().addNewTile(
-                            CalloutTile(),
-                            textEditorBloc,
-                            context,
-                          );
-                    },
-                  ),
-                ],
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            KeyboardRowContainer(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 2),
+                child: Row(
+                  children: [
+                    KeyboardButton(
+                      icon: UIIcons.formatQuote,
+                      onPressed: () {
+                        context.read<KeyboardRowCubit>().addNewTile(
+                              QuoteTile(),
+                              textEditorBloc,
+                              context,
+                            );
+                      },
+                    ),
+                    KeyboardButton(
+                      icon: UIIcons.calloutTile,
+                      onPressed: () {
+                        context.read<KeyboardRowCubit>().addNewTile(
+                              CalloutTile(),
+                              textEditorBloc,
+                              context,
+                            );
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          KeyboardRowContainer(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2),
-              child: Row(
-                children: [
-                  KeyboardButton(
-                    icon: UIIcons.alternateEmail,
-                    onPressed: () {
-                      context.read<KeyboardRowCubit>().addNewTile(
-                            LatexTile(),
-                            textEditorBloc,
-                            context,
-                          );
-                    },
-                  ),
-                ],
+            KeyboardRowContainer(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2),
+                child: Row(
+                  children: [
+                    KeyboardButton(
+                      icon: UIIcons.alternateEmail,
+                      onPressed: () {
+                        context.read<KeyboardRowCubit>().addNewTile(
+                              LatexTile(),
+                              textEditorBloc,
+                              context,
+                            );
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          KeyboardRowContainer(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2),
-              child: Row(
-                children: [
-                  KeyboardButton(
-                    icon: UIIcons.functions,
-                    onPressed: () {
-                      context.read<KeyboardRowCubit>().addNewTile(
-                            LatexTile(),
-                            textEditorBloc,
-                            context,
-                          );
-                    },
-                  ),
-                ],
+            KeyboardRowContainer(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2),
+                child: Row(
+                  children: [
+                    KeyboardButton(
+                      icon: UIIcons.functions,
+                      onPressed: () {
+                        context.read<KeyboardRowCubit>().addNewTile(
+                              LatexTile(),
+                              textEditorBloc,
+                              context,
+                            );
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          KeyboardRowContainer(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 2),
-              child: Row(
-                children: [
-                  KeyboardButton(
-                    icon: UIIcons.image,
-                    onPressed: () {
-                      UIBottomSheet.showUIBottomSheet(
+            KeyboardRowContainer(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 2),
+                child: Row(
+                  children: [
+                    KeyboardButton(
+                      icon: UIIcons.image,
+                      onPressed: () {
+                        UIBottomSheet.showUIBottomSheet(
                           context: context,
                           builder: (_) => BlocProvider.value(
-                                value: context.read<TextEditorBloc>(),
-                                child: AddImageBottomSheet(),
-                              ));
-                    },
-                  ),
-                  KeyboardButton(
-                    icon: UIIcons.audio,
-                    onPressed: () {
-                      context.read<KeyboardRowCubit>().addNewTile(
-                            CalloutTile(),
-                            textEditorBloc,
-                            context,
-                          );
-                    },
-                  ),
-                ],
+                            value: context.read<TextEditorBloc>(),
+                            child: AddImageBottomSheet(),
+                          ),
+                        ).whenComplete(
+                          () => context.read<KeyboardRowCubit>().expandText(),
+                        );
+                      },
+                    ),
+                    KeyboardButton(
+                      icon: UIIcons.audio,
+                      onPressed: () {
+                        UIBottomSheet.showUIBottomSheet(
+                          context: context,
+                          builder: (_) => BlocProvider.value(
+                            value: context.read<TextEditorBloc>(),
+                            child: AddAudioBottomSheet(),
+                          ),
+                        ).whenComplete(
+                          () => context.read<KeyboardRowCubit>().expandText(),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ]),
+          ],
+        ),
         const SizedBox(
           height: 8,
         ),
@@ -190,12 +201,13 @@ class KeyboardNewTileRow extends StatelessWidget {
                                 icon: UIIcons.horizontalRule,
                                 onPressed: () {
                                   context.read<KeyboardRowCubit>().addNewTile(
-                                      TextTile(
-                                        textStyle: TextFieldConstants.normal,
-                                      ),
-                                      textEditorBloc,
-                                      context,
-                                      emitState: false);
+                                        TextTile(
+                                          textStyle: TextFieldConstants.normal,
+                                        ),
+                                        textEditorBloc,
+                                        context,
+                                        emitState: false,
+                                      );
                                   context.read<KeyboardRowCubit>().addNewTile(
                                         DividerTile(),
                                         textEditorBloc,
