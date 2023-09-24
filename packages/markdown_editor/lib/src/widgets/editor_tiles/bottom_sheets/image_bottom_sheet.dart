@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/image_tile.dart';
+import 'package:markdown_editor/src/widgets/image_widgets/image_full_screen.dart';
 import 'package:ui_components/ui_components.dart';
 
 class ImageBottomSheet extends StatelessWidget {
@@ -23,21 +24,9 @@ class ImageBottomSheet extends StatelessWidget {
             onPressed: () {
               showDialog(
                 context: context,
-                builder: (_) => InteractiveViewer(
-                  maxScale: 4,
-                  minScale: 0.3,
-                  panEnabled: false,
-                  child: GestureDetector(
-                    onVerticalDragStart: (details) => Navigator.of(context).pop(),
-                    onTap: () => Navigator.of(context).pop(),
-                    child: Padding(
-                      padding: const EdgeInsets.all(UIConstants.itemPadding),
-                      child: Image.file(parentEditorTile.image),
-                    ),
-                  ),
-                ),
+                builder: (_) => ImageFullScreen(image: parentEditorTile.image),
                 barrierDismissible: true,
-              );
+              ).whenComplete(() => Navigator.of(context).pop());
             },
           ),
           const SizedBox(

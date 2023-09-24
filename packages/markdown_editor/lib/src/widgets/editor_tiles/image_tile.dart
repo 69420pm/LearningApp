@@ -8,6 +8,7 @@ import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/bottom_sheets/add_image_bottom_sheet.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/bottom_sheets/image_bottom_sheet.dart';
+import 'package:markdown_editor/src/widgets/image_widgets/image_full_screen.dart';
 import 'package:ui_components/ui_components.dart';
 
 class ImageTile extends StatefulWidget implements EditorTile {
@@ -34,6 +35,8 @@ class ImageTile extends StatefulWidget implements EditorTile {
 
   @override
   FocusNode? focusNode;
+
+  FocusNode noFocus = FocusNode();
 
   @override
   State<ImageTile> createState() => _ImageTileState();
@@ -74,7 +77,7 @@ class _ImageTileState extends State<ImageTile> {
   }
 
   void focusChanged() {
-    if (selected) {
+    if (selected && FocusManager.instance.primaryFocus! != widget.noFocus) {
       setState(() {
         selected = false;
       });
@@ -86,12 +89,22 @@ class _ImageTileState extends State<ImageTile> {
     final handleScale = widget.scaleToHandleScale(widget.scale);
 
     return GestureDetector(
-      onTap: () => setState(() {
-        selected = !selected;
+      onTap: () {
+        setState(() {
+          selected = !selected;
+        });
         if (selected) {
-          FocusManager.instance.primaryFocus?.unfocus();
+          FocusScope.of(context).requestFocus(widget.noFocus);
         }
-      }),
+        // print(selected);
+      },
+      onDoubleTap: () {
+        showDialog(
+          context: context,
+          builder: (_) => ImageFullScreen(image: widget.image),
+          barrierDismissible: true,
+        );
+      },
       child: Stack(
         children: [
           Container(

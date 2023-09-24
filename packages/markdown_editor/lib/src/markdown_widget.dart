@@ -21,6 +21,7 @@ class MarkdownWidget extends StatelessWidget {
           SliverList(
             delegate: SliverChildListDelegate.fixed(
                 [GestureDetector(
+                  behavior: HitTestBehavior.opaque,
               onTap: () => context.read<TextEditorBloc>().add(TextEditorFocusLastWidget()),
                   
                   child: Container(height: 120))]),
