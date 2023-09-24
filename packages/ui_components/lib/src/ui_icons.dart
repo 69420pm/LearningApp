@@ -48,11 +48,13 @@ class UIIcons {
   static UIIcon image = UIIcon(Icons.image_outlined, size: 32);
   static UIIcon audio = UIIcon(Icons.audio_file_outlined, size: 32);
   static UIIcon circle = UIIcon(Icons.circle, size: 9);
-  static UIIcon moreVert = UIIcon(Icons.more_vert_rounded, size:32);
+  static UIIcon moreHoriz = UIIcon(Icons.more_horiz_rounded, size:26);
   static UIIcon duplicate = UIIcon(Icons.content_copy_rounded, size: 28);
   static UIIcon emoji = UIIcon(Icons.emoji_emotions_rounded, size: 32);
-
-
+  static UIIcon camera = UIIcon(Icons.photo_camera_rounded, size:32);
+  static UIIcon photoLibrary = UIIcon(Icons.photo_library_rounded, size:32);
+  static UIIcon zoomIn = UIIcon(Icons.zoom_in_rounded, size: 32);
+  static UIIcon alignment = UIIcon(Icons.format_align_center_rounded, size:32);
 }
 
 class UIIcon extends Icon {

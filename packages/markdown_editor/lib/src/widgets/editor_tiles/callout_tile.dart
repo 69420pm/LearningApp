@@ -24,6 +24,7 @@ class CalloutTile extends StatelessWidget implements EditorTile {
           textStyle: TextFieldConstants.normal,
           parentEditorTile: this,
         );
+    this.textTile.padding = false;
     textFieldController = this.textTile.textFieldController;
   }
 
@@ -67,7 +68,7 @@ class CalloutTile extends StatelessWidget implements EditorTile {
     //   };
 
     return Padding(
-      padding: const EdgeInsets.only(top: 4.0),
+      padding: const EdgeInsets.only(top: 4.0, left: UIConstants.pageHorizontalPadding, right: UIConstants.pageHorizontalPadding),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: tileColor,
@@ -123,7 +124,7 @@ class CalloutTile extends StatelessWidget implements EditorTile {
               ),
               Expanded(child: textTile),
               UIIconButton(
-                icon: UIIcons.moreVert
+                icon: UIIcons.moreHoriz
                     .copyWith(size: 28, color: UIColors.smallTextDark),
                 onPressed: () => UIBottomSheet.showUIBottomSheet(
                   context: context,

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:markdown_editor/markdown_editor.dart';
+import 'package:markdown_editor/src/helper/image_helper.dart';
 import 'package:markdown_editor/src/models/text_field_constants.dart';
+import 'package:markdown_editor/src/widgets/editor_tiles/bottom_sheets/add_image_bottom_sheet.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/callout_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/divider_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/header_tile.dart';
@@ -100,11 +102,12 @@ class KeyboardNewTileRow extends StatelessWidget {
                   KeyboardButton(
                     icon: UIIcons.image,
                     onPressed: () {
-                      context.read<KeyboardRowCubit>().addNewTile(
-                            LatexTile(),
-                            textEditorBloc,
-                            context,
-                          );
+                      UIBottomSheet.showUIBottomSheet(
+                          context: context,
+                          builder: (_) => BlocProvider.value(
+                                value: context.read<TextEditorBloc>(),
+                                child: AddImageBottomSheet(),
+                              ));
                     },
                   ),
                   KeyboardButton(
@@ -126,8 +129,7 @@ class KeyboardNewTileRow extends StatelessWidget {
           height: 8,
         ),
         Padding(
-                      padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-
+          padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
           child: Row(
             children: <Widget>[
               KeyboardButton(
@@ -152,7 +154,8 @@ class KeyboardNewTileRow extends StatelessWidget {
                                 onPressed: () {
                                   context.read<KeyboardRowCubit>().addNewTile(
                                         HeaderTile(
-                                          textStyle: TextFieldConstants.headingBig,
+                                          textStyle:
+                                              TextFieldConstants.headingBig,
                                           hintText: 'Heading big',
                                         ),
                                         textEditorBloc,
@@ -165,7 +168,8 @@ class KeyboardNewTileRow extends StatelessWidget {
                                 onPressed: () {
                                   context.read<KeyboardRowCubit>().addNewTile(
                                         HeaderTile(
-                                          textStyle: TextFieldConstants.headingSmall,
+                                          textStyle:
+                                              TextFieldConstants.headingSmall,
                                           hintText: 'Heading small',
                                         ),
                                         textEditorBloc,
@@ -186,18 +190,18 @@ class KeyboardNewTileRow extends StatelessWidget {
                                 icon: UIIcons.horizontalRule,
                                 onPressed: () {
                                   context.read<KeyboardRowCubit>().addNewTile(
-                                        TextTile(textStyle: TextFieldConstants.normal,),
-                                        textEditorBloc,
-                                        context,
-                                        emitState: false
-                                      );
-                                 context.read<KeyboardRowCubit>().addNewTile(
+                                      TextTile(
+                                        textStyle: TextFieldConstants.normal,
+                                      ),
+                                      textEditorBloc,
+                                      context,
+                                      emitState: false);
+                                  context.read<KeyboardRowCubit>().addNewTile(
                                         DividerTile(),
                                         textEditorBloc,
                                         context,
                                         // emitState: false
                                       );
-                                      
                                 },
                               ),
                             ],

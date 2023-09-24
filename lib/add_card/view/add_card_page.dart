@@ -39,13 +39,7 @@ class AddCardPage extends StatelessWidget {
         ],
       ),
       body: Stack(children: [
-        Padding(
-          padding: const EdgeInsets.only(
-            left: UIConstants.pageHorizontalPadding,
-            right: UIConstants.pageHorizontalPadding,
-          ),
-          child: MarkdownWidget(),
-        ),
+        MarkdownWidget(),
         Positioned(
             bottom: 0,
             right: 0,

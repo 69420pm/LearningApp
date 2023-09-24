@@ -108,7 +108,8 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     TextEditorRemoveEditorTile event,
     Emitter<TextEditorState> emit,
   ) {
-    _removeEditorTile(event.tileToRemove, event.context, handOverText: event.handOverText);
+    _removeEditorTile(event.tileToRemove, event.context,
+        handOverText: event.handOverText);
     // _addLastTextTileIfNeeded();
     emit(TextEditorEditorTilesChanged(tiles: List.of(editorTiles)));
   }
@@ -217,7 +218,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     bool changeFocus = true,
     bool handOverText = false,
   }) {
-    if (editorTiles[0] == toRemove && handOverText==true) {
+    if (editorTiles[0] == toRemove && handOverText == true) {
       return;
     }
     var highestFocusNodeTile = -1;
@@ -318,8 +319,8 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
             lastWidget.textFieldController!.text.isNotEmpty) ||
         lastWidget.textFieldController == null ||
         lastWidget.focusNode == null) {
-          final newFocusNode = FocusNode();
-        editorTiles.add(
+      final newFocusNode = FocusNode();
+      editorTiles.add(
         TextTile(
           textStyle: TextFieldConstants.normal,
           focusNode: newFocusNode,
@@ -331,4 +332,5 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
       lastWidget.focusNode!.requestFocus();
     }
   }
+
 }

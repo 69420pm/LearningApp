@@ -32,3 +32,4 @@ export 'src/widgets/ui_switch.dart';
 export 'src/widgets/progress_indicators/ui_linear_progress_indicator.dart';
 export 'src/widgets/ui_icon_row.dart';
 export 'src/widgets/dialogs/ui_deletion_dialog.dart';
+export 'src/widgets/bottom_sheet/ui_selection_bottom_sheet.dart';

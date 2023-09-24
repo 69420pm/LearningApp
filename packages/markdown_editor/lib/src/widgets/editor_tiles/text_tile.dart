@@ -16,6 +16,7 @@ class TextTile extends StatelessWidget implements EditorTile {
   TextTile({
     super.key,
     required this.textStyle,
+    this.padding = true,
     this.parentEditorTile,
     this.hintText = 'write anything',
     this.isDense = true,
@@ -35,6 +36,8 @@ class TextTile extends StatelessWidget implements EditorTile {
   /// TextStyle of textfield and hint text
   final TextStyle textStyle;
 
+  
+
   ///if true, textColor will be set to colorsScheme.onBackground and
   ///will be updated
   final bool isDefaultOnBackgroundTextColor;
@@ -48,6 +51,9 @@ class TextTile extends StatelessWidget implements EditorTile {
 
   /// whether the textfield should get condensed
   final bool? isDense;
+
+/// whether textfield should have horizontal padding
+  bool padding;
 
   /// contentPadding o [TextField]
   EdgeInsetsGeometry? contentPadding;
@@ -98,7 +104,7 @@ class TextTile extends StatelessWidget implements EditorTile {
               final textEditorBloc = context.read<TextEditorBloc>();
               if (onBackspaceDoubleClick != null) {
                 onBackspaceDoubleClick!.call();
-              } 
+              }
               // remove heading, callout tile, list tile etc.
               // tile gets removed and transformed to normal text tile in
               // same line
@@ -116,11 +122,10 @@ class TextTile extends StatelessWidget implements EditorTile {
                     newEditorTile: replacingTextTile,
                     context: context,
                     handOverText: true));
-              }else{
+              } else {
                 textEditorBloc.add(
                   TextEditorRemoveEditorTile(
-                    tileToRemove:
-                        this,
+                    tileToRemove: this,
                     context: context,
                     handOverText: true,
                   ),
@@ -151,47 +156,51 @@ class TextTile extends StatelessWidget implements EditorTile {
             //   print("enter");
             // }
           },
-          child: TextField(
-            autofocus: true,
-            controller: textFieldController,
-            focusNode: focusNode,
-            textInputAction: TextInputAction.done,
-            // textfield gets pushed 80 above keyboard, that textfield
-            // doesn't get hided by keyboard row, standard is 20
-            scrollPadding: const EdgeInsets.all(50),
-            onSubmitted: (value) {
-              if (onSubmit != null) {
-                onSubmit?.call();
-              } else {
-                context.read<TextEditorBloc>().add(
-                      TextEditorAddEditorTile(
-                        newEditorTile: TextTile(
-                          key: ValueKey(DateTime.now()),
-                          isDefaultOnBackgroundTextColor:
-                              isDefaultOnBackgroundTextColor,
-                          textStyle: TextFieldConstants.normal,
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: padding ? UIConstants.pageHorizontalPadding : 0),
+            child: TextField(
+              autofocus: true,
+              controller: textFieldController,
+              focusNode: focusNode,
+              textInputAction: TextInputAction.done,
+              // textfield gets pushed 80 above keyboard, that textfield
+              // doesn't get hided by keyboard row, standard is 20
+              scrollPadding: const EdgeInsets.all(50),
+              onSubmitted: (value) {
+                if (onSubmit != null) {
+                  onSubmit?.call();
+                } else {
+                  context.read<TextEditorBloc>().add(
+                        TextEditorAddEditorTile(
+                          newEditorTile: TextTile(
+                            key: ValueKey(DateTime.now()),
+                            isDefaultOnBackgroundTextColor:
+                                isDefaultOnBackgroundTextColor,
+                            textStyle: TextFieldConstants.normal,
+                          ),
+                          context: context,
                         ),
-                        context: context,
-                      ),
-                    );
-              }
-            },
-            onEditingComplete: () {},
-            maxLines: null,
-            keyboardType: TextInputType.multiline,
-            style: isDefaultOnBackgroundTextColor
-                ? textStyle.copyWith(
-                    color: Theme.of(context).colorScheme.onBackground,
-                  )
-                : textStyle,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: hintText,
-              isDense: isDense,
-              hintStyle: textStyle.copyWith(color: UIColors.smallTextDark),
-              contentPadding: contentPadding,
-              labelStyle: TextFieldConstants.zero,
-              labelText: '',
+                      );
+                }
+              },
+              onEditingComplete: () {},
+              maxLines: null,
+              keyboardType: TextInputType.multiline,
+              style: isDefaultOnBackgroundTextColor
+                  ? textStyle.copyWith(
+                      color: Theme.of(context).colorScheme.onBackground,
+                    )
+                  : textStyle,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                hintText: hintText,
+                isDense: isDense,
+                hintStyle: textStyle.copyWith(color: UIColors.smallTextDark),
+                contentPadding: contentPadding,
+                labelStyle: TextFieldConstants.zero,
+                labelText: '',
+              ),
             ),
           ),
         );

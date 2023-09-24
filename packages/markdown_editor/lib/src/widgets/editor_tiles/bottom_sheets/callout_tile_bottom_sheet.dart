@@ -13,13 +13,13 @@ class CalloutTileBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return UIBottomSheet(
-      title: Text(
+      title: const Text(
         'Callout Tile Settings',
         style: UIText.label,
       ),
       child: Column(
         children: [
-          UILabelRow(labelText: 'Color'),
+          const UILabelRow(labelText: 'Color'),
           const SizedBox(
             height: UIConstants.itemPaddingSmall,
           ),
@@ -55,7 +55,7 @@ class CalloutTileBottomSheet extends StatelessWidget {
                     },
                   ),
                 ),
-              );
+              ).whenComplete(() => Navigator.of(context).pop());
             },
           ),
           const SizedBox(
@@ -64,8 +64,13 @@ class CalloutTileBottomSheet extends StatelessWidget {
           UIDeletionRow(
             deletionText: 'Delete Callout Tile',
             onPressed: () {
-              context.read<TextEditorBloc>().add(TextEditorRemoveEditorTile(
-                  tileToRemove: parentEditorTile, handOverText: false, context: context));
+              context.read<TextEditorBloc>().add(
+                    TextEditorRemoveEditorTile(
+                      tileToRemove: parentEditorTile,
+                      handOverText: false,
+                      context: context,
+                    ),
+                  );
               Navigator.of(context).pop();
             },
           ),

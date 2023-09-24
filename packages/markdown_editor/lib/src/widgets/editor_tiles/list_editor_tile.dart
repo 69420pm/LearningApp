@@ -18,6 +18,7 @@ class ListEditorTile extends StatelessWidget implements EditorTile {
           focusNode: focusNode,
           parentEditorTile: this,
         );
+    _textTile.padding = false;
     focusNode = _textTile.focusNode;
     textFieldController = _textTile.textFieldController;
   }
@@ -70,25 +71,28 @@ class ListEditorTile extends StatelessWidget implements EditorTile {
               ),
             );
       };
-    return Row(
-      children: [
-        const SizedBox(
-          width: 8,
-        ),
-        Padding(
-          padding: EdgeInsets.only(top: 6),
-          child: orderNumber == 0
-              ? UIIcons.circle
-              : Text(
-                  '$orderNumber.',
-                  style: TextFieldConstants.orderedListIndex,
-                ),
-        ),
-        const SizedBox(
-          width: 12,
-        ),
-        Expanded(child: _textTile)
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: UIConstants.pageHorizontalPadding),
+      child: Row(
+        children: [
+          const SizedBox(
+            width: 8,
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 6),
+            child: orderNumber == 0
+                ? UIIcons.circle
+                : Text(
+                    '$orderNumber.',
+                    style: TextFieldConstants.orderedListIndex,
+                  ),
+          ),
+          const SizedBox(
+            width: 12,
+          ),
+          Expanded(child: _textTile)
+        ],
+      ),
     );
   }
 

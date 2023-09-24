@@ -18,13 +18,18 @@ class MarkdownWidget extends StatelessWidget {
                 (context, index) => editorTiles[index] as Widget,
                 childCount: editorTiles.length),
           ),
-          SliverList(delegate: SliverChildListDelegate.fixed([Container(height: 120)]),),
+          SliverList(
+            delegate: SliverChildListDelegate.fixed(
+                [GestureDetector(
+              onTap: () => context.read<TextEditorBloc>().add(TextEditorFocusLastWidget()),
+                  
+                  child: Container(height: 120))]),
+          ),
           SliverFillRemaining(
             hasScrollBody: false,
             child: GestureDetector(
-              onTap: () {
-                context.read<TextEditorBloc>().add(TextEditorFocusLastWidget());
-              },
+              onTap: () => context.read<TextEditorBloc>().add(TextEditorFocusLastWidget()),
+              // child: Container(height: 120),
             ),
           )
         ];
