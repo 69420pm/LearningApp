@@ -73,7 +73,7 @@ class SubjectBloc extends Bloc<SubjectEvent, SubjectState> {
               card: element,
               isCardSelected: false,
               isInSelectMode: false,
-              parentId: event.id,
+              parentFolder: null,
             );
           } else if (element is Removed) {
             widgetsToRemove.add(element);

@@ -201,8 +201,7 @@ class _SubjectViewState extends State<SubjectView> {
                   void selectCard(BuildContext context, Card card) {
                     context.read<SubjectOverviewSelectionBloc>().add(
                           SubjectOverviewCardSelectionChange(
-                            card: card,
-                          ),
+                              card: card, parentFolder: null),
                         );
                   }
 

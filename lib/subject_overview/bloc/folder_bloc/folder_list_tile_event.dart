@@ -3,10 +3,10 @@ part of 'folder_list_tile_bloc.dart';
 
 abstract class FolderListTileEvent {}
 
-class FolderListTileGetChildrenById extends FolderListTileEvent {
-  String id;
-  FolderListTileGetChildrenById({
-    required this.id,
+class FolderListTileGetChildren extends FolderListTileEvent {
+  Folder folder;
+  FolderListTileGetChildren({
+    required this.folder,
   });
 }
 

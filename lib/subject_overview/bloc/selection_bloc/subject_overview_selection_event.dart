@@ -14,8 +14,10 @@ class SubjectOverviewSelectionToggleSelectMode
 
 class SubjectOverviewCardSelectionChange extends SubjectOverviewSelectionEvent {
   Card card;
+  Folder? parentFolder;
   SubjectOverviewCardSelectionChange({
     required this.card,
+    required this.parentFolder,
   });
 }
 
@@ -56,19 +58,11 @@ class SubjectOverviewSetSoftSelectFolder extends SubjectOverviewSelectionEvent {
 
 class SubjectOverviewUpdateFolderTable extends SubjectOverviewSelectionEvent {
   String folderId;
-  int numberOfChildren;
+  Map<Folder, bool> folder;
+  Map<Card, bool> cards;
   SubjectOverviewUpdateFolderTable({
     required this.folderId,
-    required this.numberOfChildren,
-  });
-}
-
-class SubjectOverviewChangeSelectionInFolderTable
-    extends SubjectOverviewSelectionEvent {
-  String folderId;
-  bool select;
-  SubjectOverviewChangeSelectionInFolderTable({
-    required this.folderId,
-    required this.select,
+    required this.folder,
+    required this.cards,
   });
 }

@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,12 +15,12 @@ class CardListTile extends StatefulWidget {
     required this.card,
     required this.isCardSelected,
     required this.isInSelectMode,
-    required this.parentId,
+    required this.parentFolder,
   });
   final Card card;
   bool isCardSelected;
   bool isInSelectMode;
-  final String parentId;
+  final Folder? parentFolder;
 
   @override
   State<CardListTile> createState() => _CardListTileState();
@@ -32,11 +33,9 @@ class _CardListTileState extends State<CardListTile> {
   Widget build(BuildContext context) {
     void selectCard(BuildContext context, Card card, bool selected) {
       context.read<SubjectOverviewSelectionBloc>().add(
-          SubjectOverviewChangeSelectionInFolderTable(
-              folderId: widget.parentId, select: selected));
-      context.read<SubjectOverviewSelectionBloc>().add(
             SubjectOverviewCardSelectionChange(
               card: card,
+              parentFolder: widget.parentFolder,
             ),
           );
     }

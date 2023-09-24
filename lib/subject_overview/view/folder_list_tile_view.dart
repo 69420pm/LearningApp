@@ -52,10 +52,14 @@ class _FolderListTileViewState extends State<FolderListTileView> {
           : isSoftSelected
               ? UIColors.overlay
               : isSelected
-                  ? Colors.green
+                  ? UIColors.overlay
                   : Colors.transparent,
       border: Border.all(
-        color: widget.isHoverd ? Colors.transparent : Colors.transparent,
+        color: widget.isHoverd
+            ? Colors.transparent
+            : isSelected
+                ? UIColors.primary
+                : Colors.transparent,
         width: UIConstants.borderWidth,
       ),
       title: Text(widget.folder.name + " " + numChilds.toString(),

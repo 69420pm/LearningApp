@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/folder_bloc/folder_list_tile_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dart';
+import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile_view.dart';
 import 'package:learning_app/subject_overview/view/inactive_list_tile.dart';
 import 'package:learning_app/subject_overview/view/multi_drag_indicator.dart';
@@ -33,29 +34,7 @@ class _FolderListTileParentState extends State<FolderListTileParent> {
   Widget build(BuildContext context) {
     context
         .read<FolderListTileBloc>()
-        .add(FolderListTileGetChildrenById(id: widget.folder.id));
-
-    void selectCard(BuildContext context, Card card, bool selected) {
-      context.read<SubjectOverviewSelectionBloc>().add(
-          SubjectOverviewChangeSelectionInFolderTable(
-              folderId: widget.folder.id, select: selected));
-      context.read<SubjectOverviewSelectionBloc>().add(
-            SubjectOverviewCardSelectionChange(
-              card: card,
-            ),
-          );
-    }
-
-    void selectFolder(BuildContext context, Folder folder, bool selected) {
-      context.read<SubjectOverviewSelectionBloc>().add(
-          SubjectOverviewChangeSelectionInFolderTable(
-              folderId: folder.parentId, select: selected));
-      setState(() {
-        context
-            .read<SubjectOverviewSelectionBloc>()
-            .add(SubjectOverviewFolderSelectionChange(folder: folder));
-      });
-    }
+        .add(FolderListTileGetChildren(folder: widget.folder));
 
     return Padding(
       padding: const EdgeInsets.only(
@@ -77,13 +56,12 @@ class _FolderListTileParentState extends State<FolderListTileParent> {
                       ),
                     );
               } else {
-                selectFolder(
-                    context,
-                    widget.folder,
-                    !context
-                        .read<SubjectOverviewSelectionBloc>()
-                        .foldersSelected
-                        .contains(widget.folder));
+                setState(() {
+                  context.read<SubjectOverviewSelectionBloc>().add(
+                        SubjectOverviewFolderSelectionChange(
+                            folder: widget.folder),
+                      );
+                });
               }
             },
             child: LongPressDraggable<Folder>(
@@ -104,14 +82,12 @@ class _FolderListTileParentState extends State<FolderListTileParent> {
                         inSelectMode: true,
                       ),
                     );
-                selectFolder(
-                  context,
-                  widget.folder,
-                  context
-                      .read<SubjectOverviewSelectionBloc>()
-                      .foldersSelected
-                      .contains(widget.folder),
-                );
+                setState(() {
+                  context.read<SubjectOverviewSelectionBloc>().add(
+                        SubjectOverviewFolderSelectionChange(
+                            folder: widget.folder),
+                      );
+                });
               },
               maxSimultaneousDrags:
                   state is SubjectOverviewSelectionModeOn ? 0 : 1,
@@ -120,9 +96,9 @@ class _FolderListTileParentState extends State<FolderListTileParent> {
                 onMove: (details) {
                   if (isHovered == false) {
                     isHovered = true;
-                    context
-                        .read<FolderListTileBloc>()
-                        .add(FolderListTileUpdate(id: widget.folder.id));
+                    context.read<FolderListTileBloc>().add(
+                          FolderListTileUpdate(id: widget.folder.id),
+                        );
                   }
                 },
                 onLeave: (data) {
@@ -144,11 +120,12 @@ class _FolderListTileParentState extends State<FolderListTileParent> {
                                 inSelectMode: true,
                               ),
                             );
-                        selectFolder(
-                          context,
-                          data,
-                          true,
-                        );
+                        setState(() {
+                          context.read<SubjectOverviewSelectionBloc>().add(
+                                SubjectOverviewFolderSelectionChange(
+                                    folder: data),
+                              );
+                        });
                       }
                     } else {
                       context.read<SubjectBloc>().add(
@@ -189,7 +166,12 @@ class _FolderListTileParentState extends State<FolderListTileParent> {
                               inSelectMode: true,
                             ),
                           );
-                      selectCard(context, data, true);
+                      context.read<SubjectOverviewSelectionBloc>().add(
+                            SubjectOverviewCardSelectionChange(
+                              card: data,
+                              parentFolder: widget.folder,
+                            ),
+                          );
                     }
                   }
                 },
@@ -223,10 +205,23 @@ class _FolderListTileParentState extends State<FolderListTileParent> {
                             childListTiles.remove(element.id);
                           }
                         }
+                        Map<Card, bool> cards = {};
+                        Map<Folder, bool> folders = {};
+
+                        childListTiles.forEach((key, value) {
+                          if (value is CardListTile) {
+                            cards.addAll({value.card: false});
+                          } else if (value is FolderListTileParent) {
+                            folders.addAll({value.folder: false});
+                          }
+                        });
+
                         context.read<SubjectOverviewSelectionBloc>().add(
-                            SubjectOverviewUpdateFolderTable(
-                                folderId: widget.folder.id,
-                                numberOfChildren: childListTiles.length));
+                              SubjectOverviewUpdateFolderTable(
+                                  folderId: widget.folder.id,
+                                  cards: cards,
+                                  folder: folders),
+                            );
                       }
 
                       return BlocBuilder<SubjectOverviewSelectionBloc,
