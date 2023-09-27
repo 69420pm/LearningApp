@@ -29,7 +29,7 @@ class UIIconRow extends StatelessWidget {
             horizontal:
                 horizontalPadding ? UIConstants.cardHorizontalPadding : 0),
         child: UIIconButton(
-          icon: icon.copyWith(size: 26, color: UIColors.primary),
+          icon: icon.copyWith(size: 28, color: UIColors.primary),
           onPressed: onPressed,
           text: text,
           textColor: UIColors.textLight,

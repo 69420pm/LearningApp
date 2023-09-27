@@ -1,17 +1,11 @@
-import 'dart:io';
-
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
-import 'package:markdown_editor/src/helper/image_helper.dart';
-import 'package:markdown_editor/src/models/editor_tile.dart';
-import 'package:markdown_editor/src/widgets/editor_tiles/audio_tile.dart';
-import 'package:markdown_editor/src/widgets/editor_tiles/image_tile.dart';
+import 'package:markdown_editor/src/widgets/editor_tiles/bottom_sheets/recorder_bottom_sheet.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/new_audio_tile.dart';
 import 'package:ui_components/ui_components.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:file_picker/file_picker.dart';
 
 class AddAudioBottomSheet extends StatelessWidget {
   AddAudioBottomSheet({super.key});
@@ -26,42 +20,44 @@ class AddAudioBottomSheet extends StatelessWidget {
       child: Column(
         children: [
           UIIconRow(
-            icon: UIIcons.camera,
+            icon: UIIcons.mic,
             text: 'Upload Audio',
             onPressed: () async {
-              final audio =
-                  await FilePicker.platform.pickFiles(type: FileType.audio);
-
-              if (audio != null && audio!.files.single.path != null) {
-                context.read<TextEditorBloc>().add(
-                      TextEditorAddEditorTile(
-                        newEditorTile: NewAudioTile(
-                          filePath: audio.files.single.path!,
-                        ),
-                        context: context,
-                      ),
-                    );
-              }
-              Navigator.of(context).pop();
+              await UIBottomSheet.showUIBottomSheet(
+                context: context,
+                builder: (_) => BlocProvider.value(
+                  value: context.read<TextEditorBloc>(),
+                  child: RecorderBottomSheet(),
+                ),
+              ).whenComplete(() => Navigator.of(context).pop());
             },
           ),
           const SizedBox(
             height: UIConstants.itemPaddingLarge,
           ),
           UIIconRow(
-            icon: UIIcons.photoLibrary,
-            text: 'From Gallery',
+            icon: UIIcons.folderFilled,
+            text: 'Upload File',
             onPressed: () async {
-              final image = await ImageHelper.pickImageGallery();
-              if (image != null) {
-                context.read<TextEditorBloc>().add(
-                      TextEditorAddEditorTile(
-                        newEditorTile: ImageTile(image: image),
-                        context: context,
-                      ),
-                    );
+              final audio =
+                  await FilePicker.platform.pickFiles(type: FileType.audio);
+
+              if (audio != null && audio.files.single.path != null) {
+                // avoid context async gaps
+                if (context.mounted) {
+                  context.read<TextEditorBloc>().add(
+                        TextEditorAddEditorTile(
+                          newEditorTile: NewAudioTile(
+                            filePath: audio.files.single.path!,
+                          ),
+                          context: context,
+                        ),
+                      );
+                }
               }
-              Navigator.of(context).pop();
+              if (context.mounted) {
+                Navigator.of(context).pop();
+              }
             },
           ),
         ],

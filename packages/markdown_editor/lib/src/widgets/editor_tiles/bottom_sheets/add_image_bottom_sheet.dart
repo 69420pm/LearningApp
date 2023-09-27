@@ -28,14 +28,19 @@ class AddImageBottomSheet extends StatelessWidget {
             onPressed: () async {
               final image = await ImageHelper.pickImageCamera();
               if (image != null) {
-                context.read<TextEditorBloc>().add(
+                if(context.mounted){
+context.read<TextEditorBloc>().add(
                       TextEditorAddEditorTile(
                         newEditorTile: ImageTile(image: image),
                         context: context,
                       ),
                     );
+                }
+                
               }
-              Navigator.of(context).pop();
+              if(context.mounted) {
+                Navigator.of(context).pop();
+              }
             },
           ),
           const SizedBox(
@@ -47,14 +52,19 @@ class AddImageBottomSheet extends StatelessWidget {
             onPressed: () async {
               final image = await ImageHelper.pickImageGallery();
               if (image != null) {
-                context.read<TextEditorBloc>().add(
+                if(context.mounted){
+context.read<TextEditorBloc>().add(
                       TextEditorAddEditorTile(
                         newEditorTile: ImageTile(image: image),
                         context: context,
                       ),
                     );
+                }
+                
               }
-              Navigator.of(context).pop();
+              if(context.mounted) {
+                Navigator.of(context).pop();
+              }
             },
           ),
         ],

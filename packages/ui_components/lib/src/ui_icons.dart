@@ -21,6 +21,7 @@ class UIIcons {
   static UIIcon close = UIIcon(Icons.close_rounded, size: 32);
   static UIIcon card = UIIcon(Icons.article_outlined, size: 32);
   static UIIcon folder = UIIcon(Icons.folder_outlined);
+  static UIIcon folderFilled = UIIcon(Icons.folder_rounded, size: 32);
   static UIIcon placeHolder = UIIcon(Icons.grid_4x4);
   static UIIcon settings = UIIcon(Icons.settings_outlined, size:32);
   static UIIcon addFolder = UIIcon(Icons.create_new_folder_rounded, size:32);
@@ -55,6 +56,7 @@ class UIIcons {
   static UIIcon photoLibrary = UIIcon(Icons.photo_library_rounded, size:32);
   static UIIcon zoomIn = UIIcon(Icons.zoom_in_rounded, size: 32);
   static UIIcon alignment = UIIcon(Icons.format_align_center_rounded, size:32);
+  static UIIcon mic = UIIcon(Icons.mic_rounded, size: 32);
 }
 
 class UIIcon extends Icon {

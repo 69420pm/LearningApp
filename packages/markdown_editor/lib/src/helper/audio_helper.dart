@@ -12,8 +12,13 @@ abstract class AudioHelper {
     if (_audioRecorder != null) return false;
     _audioRecorder = FlutterSoundRecorder();
     final status = await Permission.microphone.request();
+    final storageStatus = await Permission.storage.request();
     if (status != PermissionStatus.granted) {
       throw RecordingPermissionException('Microphone permission denied');
+    }
+    if(storageStatus != PermissionStatus.granted){
+      throw RecordingPermissionException('Storage permission denied');
+
     }
     await _audioRecorder!.openAudioSession();
     _isRecorderInitialized = true;
