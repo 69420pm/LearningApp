@@ -21,7 +21,7 @@ class AddAudioBottomSheet extends StatelessWidget {
         children: [
           UIIconRow(
             icon: UIIcons.mic,
-            text: 'Upload Audio',
+            text: 'Record Audio',
             onPressed: () async {
               await UIBottomSheet.showUIBottomSheet(
                 context: context,

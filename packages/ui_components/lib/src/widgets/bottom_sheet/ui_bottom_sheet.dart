@@ -49,7 +49,8 @@ class UIBottomSheet extends StatelessWidget {
           const SizedBox(
             height: UIConstants.itemPaddingLarge,
           ),
-          child
+          child,
+          
         ],
       ),
     );

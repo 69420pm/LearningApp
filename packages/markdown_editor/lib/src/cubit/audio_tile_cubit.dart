@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:markdown_editor/src/helper/audio_helper.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:file_picker/file_picker.dart';
@@ -43,24 +42,24 @@ class AudioTileCubit extends Cubit<AudioTileState> {
 
   /// switch to recording page to record audio
   Future<void> switchToRecordingPage() async {
-    if (await AudioHelper.initRecorder()) {
-      _directory ??= await getApplicationDocumentsDirectory();
-      _filePath = _directory!.path + '/' + _fileName!;
-      _isRecording = false;
-      emit(
-        AudioTileRecordAudio(
-          isRecording: _isRecording,
-          stoppedRightNow: false,
-        ),
-      );
-    }
+    // if (await AudioHelper.initRecorder()) {
+    //   _directory ??= await getApplicationDocumentsDirectory();
+    //   _filePath = _directory!.path + '/' + _fileName!;
+    //   _isRecording = false;
+    //   emit(
+    //     AudioTileRecordAudio(
+    //       isRecording: _isRecording,
+    //       stoppedRightNow: false,
+    //     ),
+    //   );
+    // }
   }
 
   /// toggle recording on or off
   void toggleRecording() async {
-    _isRecording = await AudioHelper.toggleRecording(_filePath!);
+    // _isRecording = await AudioHelper.toggleRecording(_filePath!);
     final stoppedRightNow = !_isRecording;
-    if (stoppedRightNow) AudioHelper.disposeRecorder();
+    // if (stoppedRightNow) AudioHelper.disposeRecorder();
     emit(
       AudioTileRecordAudio(
         isRecording: _isRecording,
@@ -84,7 +83,7 @@ class AudioTileCubit extends Cubit<AudioTileState> {
 
     await _audioPlayer.setSourceUrl(_filePath!);
     _duration = await _audioPlayer.getDuration();
-    AudioHelper.disposeRecorder();
+    // AudioHelper.disposeRecorder();
     emit(
       AudioTilePlayAudio(
         isPlaying: _isPlaying,

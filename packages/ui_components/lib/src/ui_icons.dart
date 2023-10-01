@@ -57,6 +57,7 @@ class UIIcons {
   static UIIcon zoomIn = UIIcon(Icons.zoom_in_rounded, size: 32);
   static UIIcon alignment = UIIcon(Icons.format_align_center_rounded, size:32);
   static UIIcon mic = UIIcon(Icons.mic_rounded, size: 32);
+  static UIIcon stopCircle = UIIcon(Icons.stop_circle, size:32);
 }
 
 class UIIcon extends Icon {
