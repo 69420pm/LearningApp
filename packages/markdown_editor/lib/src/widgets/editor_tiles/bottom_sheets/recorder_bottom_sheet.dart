@@ -26,18 +26,55 @@ class _RecorderBottomSheetState extends State<RecorderBottomSheet> {
   @override
   void initState() {
     super.initState();
-    _asyncInit();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      print("call");
+      await _asyncInit();
+    });
   }
 
   Future<void> _asyncInit() async {
     final status = await Permission.microphone.request();
     if (status != PermissionStatus.granted) {
-      _microphonePermissionGranted = false;
-      return;
+      setState(() {
+        _microphonePermissionGranted = false;
+      });
+      if (context.mounted) {
+        await showDialog(
+          context: context,
+          builder: (_) => UIDialog(
+            title: 'Microphone permission denied',
+            body: 'denied',
+            actions: [
+              UIButton(
+                child: Text(
+                  'Cancel',
+                  style: UIText.label.copyWith(color: UIColors.primary),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              UIButton(
+                onPressed: () {
+                  openAppSettings();
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  'Grant Permission',
+                  style: UIText.labelBold.copyWith(color: UIColors.primary),
+                ),
+              ),
+            ],
+          ),
+        ).whenComplete(() => Navigator.of(context).pop());
+      }
+    } else {
+      setState(() {
+        _microphonePermissionGranted = true;
+      });
+      _startRecording();
+      await _recorder.openRecorder();
     }
-    _microphonePermissionGranted = true;
-
-    await _recorder.openRecorder();
   }
 
   Future<void> _stopRecording(BuildContext context) async {
@@ -83,43 +120,6 @@ class _RecorderBottomSheetState extends State<RecorderBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(
-      Duration.zero,
-      () {
-        if (_microphonePermissionGranted != null &&
-            !_microphonePermissionGranted!) {
-          showDialog(
-            context: context,
-            builder: (_) => UIDialog(
-              title: 'Microphone permission denied',
-              body: 'denied',
-              actions: [
-                UIButton(
-                  child: Text(
-                    'Cancel',
-                    style: UIText.label.copyWith(color: UIColors.primary),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                UIButton(
-                  onPressed: _asyncInit,
-                  child: Text(
-                    'Grant Permission',
-                    style: UIText.labelBold.copyWith(color: UIColors.primary),
-                  ),
-                ),
-              ],
-            ),
-          );
-        } else {
-          _startRecording();
-        }
-      },
-    );
-
-    _startRecording();
     return UIBottomSheet(
       title: const Text(
         'Record Audio',
@@ -141,9 +141,20 @@ class _RecorderBottomSheetState extends State<RecorderBottomSheet> {
       // ),
       child: Column(
         children: [
-          Text(
-            formatDuration(_elapsedTime),
-            style: UIText.label.copyWith(color: UIColors.smallText),
+          Builder(
+            builder: (context) {
+              if (_microphonePermissionGranted != null &&
+                  _microphonePermissionGranted!) {
+                // _startRecording();
+                return Text(
+                  formatDuration(_elapsedTime),
+                  style: UIText.label.copyWith(color: UIColors.smallText),
+                );
+              } else {
+                return Text('00:00:00',
+                    style: UIText.label.copyWith(color: UIColors.smallText));
+              }
+            },
           ),
           const SizedBox(
             height: UIConstants.itemPaddingLarge,

@@ -5,6 +5,7 @@ import 'package:markdown_editor/src/models/text_field_controller.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:ui_components/ui_components.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 class NewAudioTile extends StatefulWidget implements EditorTile {
   NewAudioTile({super.key, required this.filePath});
@@ -41,7 +42,9 @@ class _NewAudioTileState extends State<NewAudioTile>
   }
 
   Future<void> togglePlaying() async {
-    _isPlaying = !_isPlaying;
+    setState(() {
+      _isPlaying = !_isPlaying;
+    });
     if (_isPlaying) {
       await _audioPlayer.play(
         DeviceFileSource(widget.filePath),
@@ -75,16 +78,28 @@ class _NewAudioTileState extends State<NewAudioTile>
     );
   }
 
+  String formatDuration(Duration duration) {
+    final minutes = duration.inMinutes % 60;
+    final seconds = duration.inSeconds % 60;
+
+    // Use the DateFormat class to format the time components
+    final formattedDuration = DateFormat('mm:ss').format(
+      DateTime(0, 0, 0, 0, minutes, seconds),
+    );
+
+    return formattedDuration;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(
           horizontal: UIConstants.pageHorizontalPadding),
-      child: Container(
+      child: DecoratedBox(
         decoration: BoxDecoration(
             color: UIColors.overlay, borderRadius: BorderRadius.circular(100)),
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8),
           child: Row(
             children: [
               GestureDetector(
@@ -108,44 +123,52 @@ class _NewAudioTileState extends State<NewAudioTile>
                 ),
               ),
               Expanded(
-                child: Column(
-                  children: [
-                    SliderTheme(
-                      data: SliderThemeData(
-                        
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: SliderTheme(
+                          data: SliderThemeData(
+                              overlayShape: SliderComponentShape.noOverlay),
+                          child: Slider(
+                            max: _duration.inMilliseconds.toDouble(),
+                            value: _position.inMilliseconds.toDouble(),
+                            onChanged: (value) {
+                              // jump to
+                              setState(() {
+                                _position =
+                                    Duration(milliseconds: value.toInt());
+                                _audioPlayer.seek(_position);
+                              });
+                            },
+                          ),
+                        ),
                       ),
-                      child: Slider(
-                        max: _duration.inMilliseconds.toDouble(),
-                        value: _position.inMilliseconds.toDouble(),
-                        onChanged: (value) {
-                          // jump to
-                          setState(() {
-                            _position = Duration(milliseconds: value.toInt());
-                            _audioPlayer.seek(_position);
-                          });
-                        },
-                      ),
-                    ),
-                  ],
+                      Container(
+                          width: 49,
+                          child: Text(formatDuration(_position),
+                              style: UIText.label.copyWith(
+                                  color: _isPlaying
+                                      ? UIColors.primary
+                                      : UIColors.smallText)))
+                    ],
+                  ),
                 ),
               ),
-              SizedBox(
-                // width: 48,
-                child: UIIconButton(
-                  
-                    icon: UIIcons.cancel
-                        .copyWith(color: UIColors.background, size: 28),
-                        animateToWhite: true,
-                    onPressed: () {
-                       context.read<TextEditorBloc>().add(
-                      TextEditorRemoveEditorTile(
-                        tileToRemove: widget,
-                        handOverText: false,
-                        context: context,
-                      ),
-                    );
-                    }),
-              )
+              UIIconButton(
+                  icon: UIIcons.cancel
+                      .copyWith(color: UIColors.background, size: 28),
+                  animateToWhite: true,
+                  onPressed: () {
+                    context.read<TextEditorBloc>().add(
+                          TextEditorRemoveEditorTile(
+                            tileToRemove: widget,
+                            handOverText: false,
+                            context: context,
+                          ),
+                        );
+                  })
             ],
           ),
         ),
