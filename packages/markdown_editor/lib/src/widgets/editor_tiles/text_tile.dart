@@ -5,15 +5,18 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/bloc/text_editor_bloc.dart';
+import 'package:markdown_editor/src/models/char_tile.dart';
 import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/models/text_field_constants.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
+import 'package:ui_components/ui_components.dart';
 
 class TextTile extends StatelessWidget implements EditorTile {
   /// constructor
   TextTile({
     super.key,
     required this.textStyle,
+    this.padding = true,
     this.parentEditorTile,
     this.hintText = 'write anything',
     this.isDense = true,
@@ -26,12 +29,14 @@ class TextTile extends StatelessWidget implements EditorTile {
     focusNode ??= FocusNode();
     textFieldController = TextFieldController(standardStyle: textStyle);
     if (textStyle == TextFieldConstants.normal) {
-      contentPadding ??= const EdgeInsets.only(top:6, bottom: 6);
+      contentPadding ??= const EdgeInsets.only(top: 6, bottom: 6);
     }
   }
 
   /// TextStyle of textfield and hint text
   final TextStyle textStyle;
+
+  
 
   ///if true, textColor will be set to colorsScheme.onBackground and
   ///will be updated
@@ -46,6 +51,9 @@ class TextTile extends StatelessWidget implements EditorTile {
 
   /// whether the textfield should get condensed
   final bool? isDense;
+
+/// whether textfield should have horizontal padding
+  bool padding;
 
   /// contentPadding o [TextField]
   EdgeInsetsGeometry? contentPadding;
@@ -78,8 +86,9 @@ class TextTile extends StatelessWidget implements EditorTile {
           return false;
         }
         if ((textFieldController!.selection.end -
-                textFieldController!.selection.start) >
-            0 && focusNode == FocusManager.instance.primaryFocus) {
+                    textFieldController!.selection.start) >
+                0 &&
+            focusNode == FocusManager.instance.primaryFocus) {
           return true;
         }
         return false;
@@ -92,62 +101,106 @@ class TextTile extends StatelessWidget implements EditorTile {
                 focusNode!.hasFocus &&
                 textFieldController!.selection.start == 0 &&
                 textFieldController!.selection.end == 0) {
+              final textEditorBloc = context.read<TextEditorBloc>();
               if (onBackspaceDoubleClick != null) {
                 onBackspaceDoubleClick!.call();
-              } else {
-                context.read<TextEditorBloc>().add(
-                      TextEditorRemoveEditorTile(
-                        tileToRemove:
-                            parentEditorTile == null ? this : parentEditorTile!,
-                        context: context,
-                        handOverText: true,
-                      ),
-                    );
               }
+              // remove heading, callout tile, list tile etc.
+              // tile gets removed and transformed to normal text tile in
+              // same line
+              else if (parentEditorTile != null) {
+                TextTile replacingTextTile = TextTile(
+                  textStyle: TextFieldConstants.normal,
+                );
+                final tiles = <CharTile>[];
+                textFieldController!.charTiles.forEach((key, value) {
+                  tiles.add(value);
+                });
+                replacingTextTile.textFieldController!.addText(tiles, context);
+                textEditorBloc.add(TextEditorReplaceEditorTile(
+                    tileToRemove: parentEditorTile!,
+                    newEditorTile: replacingTextTile,
+                    context: context,
+                    handOverText: true));
+              } else {
+                textEditorBloc.add(
+                  TextEditorRemoveEditorTile(
+                    tileToRemove: this,
+                    context: context,
+                    handOverText: true,
+                  ),
+                );
+              }
+              /* else if (!(textEditorBloc.editorTiles.length == 1 &&
+                  textEditorBloc.editorTiles[0] ==
+                      (parentEditorTile ?? this))) {
+                textEditorBloc.add(
+                  TextEditorRemoveEditorTile(
+                    tileToRemove:
+                        parentEditorTile == null ? this : parentEditorTile!,
+                    context: context,
+                    handOverText: true,
+                  ),
+                );
+              } else if (textEditorBloc.editorTiles.length == 1 &&
+                  textEditorBloc.editorTiles[0] == (parentEditorTile ?? this)) {
+                textEditorBloc.add(TextEditorReplaceEditorTile(
+                    tileToRemove: parentEditorTile ?? this,
+                    newEditorTile:
+                        TextTile(textStyle: TextFieldConstants.normal),
+                    context: context,
+                    handOverText: true));
+              } */
             }
             // if(event.isKeyPressed(LogicalKeyboardKey.enter)){
             //   print("enter");
             // }
           },
-          child: TextField(
-            autofocus: true,
-            controller: textFieldController,
-            focusNode: focusNode,
-            textInputAction: TextInputAction.done,
-            // textfield gets pushed 80 above keyboard, that textfield
-            // doesn't get hided by keyboard row, standard is 20
-            scrollPadding: const EdgeInsets.all(50),
-            onSubmitted: (value) {
-              if (onSubmit != null) {
-                onSubmit?.call();
-              } else {
-                context.read<TextEditorBloc>().add(
-                      TextEditorAddEditorTile(
-                        newEditorTile: TextTile(
-                          key: ValueKey(DateTime.now()),
-                          isDefaultOnBackgroundTextColor:
-                              isDefaultOnBackgroundTextColor,
-                          textStyle: TextFieldConstants.normal,
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: padding ? UIConstants.pageHorizontalPadding : 0),
+            child: TextField(
+              autofocus: true,
+              controller: textFieldController,
+              focusNode: focusNode,
+              textInputAction: TextInputAction.done,
+              // textfield gets pushed 80 above keyboard, that textfield
+              // doesn't get hided by keyboard row, standard is 20
+              scrollPadding: const EdgeInsets.all(50),
+              onSubmitted: (value) {
+                if (onSubmit != null) {
+                  onSubmit?.call();
+                } else {
+                  context.read<TextEditorBloc>().add(
+                        TextEditorAddEditorTile(
+                          newEditorTile: TextTile(
+                            key: ValueKey(DateTime.now()),
+                            isDefaultOnBackgroundTextColor:
+                                isDefaultOnBackgroundTextColor,
+                            textStyle: TextFieldConstants.normal,
+                          ),
+                          context: context,
                         ),
-                        context: context,
-                      ),
-                    );
-              }
-            },
-            onEditingComplete: () {},
-            maxLines: null,
-            keyboardType: TextInputType.multiline,
-            style: isDefaultOnBackgroundTextColor
-                ? textStyle.copyWith(
-                    color: Theme.of(context).colorScheme.onBackground)
-                : textStyle,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: hintText,
-              isDense: isDense,
-              contentPadding: contentPadding,
-              labelStyle: TextFieldConstants.zero,
-              labelText: '',
+                      );
+                }
+              },
+              onEditingComplete: () {},
+              maxLines: null,
+              keyboardType: TextInputType.multiline,
+              style: isDefaultOnBackgroundTextColor
+                  ? textStyle.copyWith(
+                      color: Theme.of(context).colorScheme.onBackground,
+                    )
+                  : textStyle,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                hintText: hintText,
+                isDense: isDense,
+                hintStyle: textStyle.copyWith(color: UIColors.smallTextDark),
+                contentPadding: contentPadding,
+                labelStyle: TextFieldConstants.zero,
+                labelText: '',
+              ),
             ),
           ),
         );

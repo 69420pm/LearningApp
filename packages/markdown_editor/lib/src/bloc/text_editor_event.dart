@@ -25,10 +25,11 @@ class TextEditorKeyboardRowChange extends TextEditorEvent {
 class TextEditorAddEditorTile extends TextEditorEvent {
   EditorTile newEditorTile;
   BuildContext context;
-  TextEditorAddEditorTile({
-    required this.newEditorTile,
-    required this.context,
-  });
+  bool emitState;
+  TextEditorAddEditorTile(
+      {required this.newEditorTile,
+      required this.context,
+      this.emitState = true});
 }
 
 class TextEditorRemoveEditorTile extends TextEditorEvent {
@@ -73,6 +74,6 @@ class TextEditorChangeOrderOfTile extends TextEditorEvent {
     required this.oldIndex,
     required this.newIndex,
   });
-
-
 }
+
+class TextEditorFocusLastWidget extends TextEditorEvent {}

@@ -10,6 +10,7 @@ class UIBottomSheet extends StatelessWidget {
     this.actionLeft,
     this.title,
     this.actionRight,
+    this.addPadding=false
   });
   final Widget child;
 
@@ -22,14 +23,18 @@ class UIBottomSheet extends StatelessWidget {
   /// preferably icon on the right
   final Widget? actionRight;
 
+  /// whether a standard horizontal padding should get applied
+  final bool addPadding;
+
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).viewInsets.bottom +
-        UIConstants.cardVerticalPadding;
+        (addPadding?0.0: UIConstants.cardVerticalPadding);
     return Padding(
       padding: EdgeInsets.only(
-        left: UIConstants.pageHorizontalPadding,
-        right: UIConstants.pageHorizontalPadding,
+        left: addPadding? 0:UIConstants.pageHorizontalPadding,
+        right: addPadding?0:UIConstants.pageHorizontalPadding,
         // bottom is static height, if bottomsheet should move with keyboard
         // use MediaQuery.of(context).viewInsets.bottom,
         // however the animation is a bit leggy and not smooth
@@ -49,16 +54,16 @@ class UIBottomSheet extends StatelessWidget {
           const SizedBox(
             height: UIConstants.itemPaddingLarge,
           ),
-          child
+          child,
         ],
       ),
     );
   }
 
-  static Future<UIBottomSheet?> showUIBottomSheet({
-    required BuildContext context,
-    required WidgetBuilder builder,
-  }) {
+  static Future<UIBottomSheet?> showUIBottomSheet(
+      {required BuildContext context,
+      required WidgetBuilder builder,
+      bool transparentBarrier = false}) {
     final navigator = Navigator.of(context);
     final localizations = MaterialLocalizations.of(context);
 
@@ -72,7 +77,9 @@ class UIBottomSheet extends StatelessWidget {
           localizations.scrimOnTapHint(localizations.bottomSheetLabel),
       backgroundColor: UIColors.overlay,
       elevation: 0,
-      modalBarrierColor: Theme.of(context).bottomSheetTheme.modalBarrierColor,
+      modalBarrierColor: transparentBarrier
+          ? Colors.transparent
+          : Theme.of(context).bottomSheetTheme.modalBarrierColor,
       showDragHandle: true,
     ));
   }

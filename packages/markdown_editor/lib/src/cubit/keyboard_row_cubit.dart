@@ -1,36 +1,89 @@
+import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
 import 'package:bloc/bloc.dart';
+import 'package:markdown_editor/markdown_editor.dart';
+import 'package:markdown_editor/src/models/editor_tile.dart';
+import 'package:markdown_editor/src/widgets/keyboard_row/new_rows/color_rows/keyboard_text_color_row.dart';
 import 'package:meta/meta.dart';
 
 part 'keyboard_row_state.dart';
 
 class KeyboardRowCubit extends Cubit<KeyboardRowState> {
-  KeyboardRowCubit() : super(KeyboardRowFavorites());
+  KeyboardRowCubit() : super(KeyboardRowText());
 
-  bool _textColors = false;
-  bool _extraFormat = false;
+  bool expandedTextColors = false;
+  bool expandedBackgroundColors = false;
+
+  // bool _textColors = false;
+  // bool _extraFormat = false;
+
+  // void expandTextColors() {
+  //   _extraFormat = false;
+  //   _textColors = !_textColors;
+  //   _textColors ? emit(KeyboardRowTextColors()) : emit(KeyboardRowFavorites());
+  // }
+
+  // void expandExtraFormat() {
+  //   _textColors = false;
+  //   _extraFormat = !_extraFormat;
+  //   _extraFormat
+  //       ? emit(KeyboardRowExtraFormat())
+  //       : emit(KeyboardRowFavorites());
+  // }
+  void expandText() {
+    emit(KeyboardRowText());
+    expandedTextColors = false;
+    expandedBackgroundColors = false;
+  }
 
   void expandTextColors() {
-    _extraFormat = false;
-    _textColors = !_textColors;
-    _textColors ? emit(KeyboardRowTextColors()) : emit(KeyboardRowFavorites());
+    expandedTextColors = true;
+    expandedBackgroundColors = false;
+    emit(KeyboardRowTextColors());
   }
 
-  void expandExtraFormat() {
-    _textColors = false;
-    _extraFormat = !_extraFormat;
-    _extraFormat
-        ? emit(KeyboardRowExtraFormat())
-        : emit(KeyboardRowFavorites());
+  void expandBackgroundColors() {
+    expandedBackgroundColors = true;
+    expandedTextColors = false;
+    emit(KeyboardRowBackgroundColors());
   }
 
-  void expandAddNewTextTile() {
-    _textColors = false;
-    _extraFormat = false;
-    emit(KeyboardRowNewTextTile());
+  void expandAddNewTile() {
+    emit(KeyboardRowNewTile());
+    expandedTextColors = false;
+    expandedBackgroundColors = false;
   }
 
-  void expandFavorites() {
-    emit(KeyboardRowFavorites());
+  void changeTextColor(Color color, TextEditorBloc textEditorBloc) {
+    textEditorBloc.add(TextEditorKeyboardRowChange(
+        textColor: color, isDefaultOnBackgroundTextColor: false));
+    emit(KeyboardRowText(
+        textColor: color, backgroundColor: textEditorBloc.textBackgroundColor));
   }
+
+  void defaultTextColor(TextEditorBloc textEditorBloc) {
+    textEditorBloc
+        .add(TextEditorKeyboardRowChange(isDefaultOnBackgroundTextColor: true));
+    emit(KeyboardRowText(
+        textColor: Colors.white,
+        backgroundColor: textEditorBloc.textBackgroundColor));
+  }
+
+  void changeBackgroundColor(Color color, TextEditorBloc textEditorBloc) {
+    textEditorBloc.add(TextEditorKeyboardRowChange(textBackgroundColor: color));
+    emit(KeyboardRowText(
+        textColor: textEditorBloc.textColor, backgroundColor: color));
+  }
+
+  void addNewTile(EditorTile tile, TextEditorBloc textEditorBloc, BuildContext context, {bool emitState=true}){
+    textEditorBloc.add(TextEditorAddEditorTile(newEditorTile: tile, context: context, emitState: emitState));
+    expandText();
+  }
+
+  // void expandAddNewTextTile() {
+  //   _textColors = false;
+  //   _extraFormat = false;
+  //   emit(KeyboardRowNewTextTile());
+  // }
 }

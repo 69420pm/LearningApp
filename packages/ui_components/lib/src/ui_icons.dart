@@ -18,11 +18,12 @@ class UIIcons {
   static UIIcon account = UIIcon(Icons.account_circle_rounded);
   static UIIcon search = UIIcon(Icons.search_rounded);
   static UIIcon cancel = UIIcon(Icons.cancel_rounded);
-  static UIIcon close = UIIcon(Icons.close, size: 32);
+  static UIIcon close = UIIcon(Icons.close_rounded, size: 32);
   static UIIcon card = UIIcon(Icons.article_outlined, size: 32);
   static UIIcon folder = UIIcon(Icons.folder_outlined);
+  static UIIcon folderFilled = UIIcon(Icons.folder_rounded, size: 32);
   static UIIcon placeHolder = UIIcon(Icons.grid_4x4);
-  static UIIcon settings = UIIcon(Icons.settings_rounded, size:32);
+  static UIIcon settings = UIIcon(Icons.settings_outlined, size:32);
   static UIIcon addFolder = UIIcon(Icons.create_new_folder_rounded, size:32);
   static UIIcon share = UIIcon(Icons.share_rounded, size:32);
   static UIIcon classTest = UIIcon(Icons.calendar_month_rounded, size: 32,);
@@ -30,6 +31,41 @@ class UIIcons {
   static UIIcon delete = UIIcon(Icons.delete_rounded, size:26, color: UIColors.delete,);
   static UIIcon info = UIIcon(Icons.info_outline_rounded, size: 20);
   static UIIcon expandMore = UIIcon(Icons.expand_more_rounded, size: 32);
+  static UIIcon done = UIIcon(Icons.done_rounded, size: 32,);
+  static UIIcon formatBold = UIIcon(Icons.format_bold_rounded, size: 32);
+  static UIIcon formatItalic = UIIcon(Icons.format_italic_rounded, size: 32);
+  static UIIcon formatUnderline = UIIcon(Icons.format_underline_rounded, size: 32);
+  static UIIcon alternateEmail = UIIcon(Icons.alternate_email_rounded, size: 32);
+  static UIIcon formatColorText = UIIcon(Icons.format_color_text_rounded, size: 32);
+  static UIIcon formatColorFill = UIIcon(Icons.format_color_fill_rounded, size: 32);
+  static UIIcon bigTitle = UIIcon(Icons.title_rounded, size: 32);
+  static UIIcon smallTitle = UIIcon(Icons.title_rounded, size: 24);
+  static UIIcon horizontalRule = UIIcon(Icons.horizontal_rule_rounded, size: 32);
+  static UIIcon formatListBulleted = UIIcon(Icons.format_list_bulleted_rounded, size: 32);
+  static UIIcon formatListNumbered = UIIcon(Icons.format_list_numbered_rounded, size: 32);
+  static UIIcon formatQuote = UIIcon(Icons.format_quote_rounded, size: 32);
+  static UIIcon calloutTile = UIIcon(Icons.crop_16_9_rounded, size: 32);
+  static UIIcon functions = UIIcon(Icons.functions_rounded, size: 32);
+  static UIIcon image = UIIcon(Icons.image_outlined, size: 32);
+  static UIIcon audio = UIIcon(Icons.audio_file_outlined, size: 32);
+  static UIIcon circle = UIIcon(Icons.circle, size: 9);
+  static UIIcon moreHoriz = UIIcon(Icons.more_horiz_rounded, size:26);
+  static UIIcon duplicate = UIIcon(Icons.content_copy_rounded, size: 28);
+  static UIIcon emoji = UIIcon(Icons.emoji_emotions_rounded, size: 32);
+  static UIIcon camera = UIIcon(Icons.photo_camera_rounded, size:32);
+  static UIIcon photoLibrary = UIIcon(Icons.photo_library_rounded, size:32);
+  static UIIcon zoomIn = UIIcon(Icons.zoom_in_rounded, size: 32);
+  static UIIcon alignment = UIIcon(Icons.format_align_center_rounded, size:32);
+  static UIIcon mic = UIIcon(Icons.mic_rounded, size: 32);
+  static UIIcon stopCircle = UIIcon(Icons.stop_circle, size:32);
+  static UIIcon curlyBraces = UIIcon(Icons.data_object_rounded, size:32);
+  static UIIcon arrowRight = UIIcon(Icons.arrow_right_alt_rounded, size:32);
+  static UIIcon superscript = UIIcon(Icons.superscript_rounded, size:28);
+  static UIIcon subscript = UIIcon(Icons.subscript_rounded, size:28);
+  static UIIcon spaceBar = UIIcon(Icons.space_bar_rounded, size:32);
+  static UIIcon chevronRight = UIIcon(Icons.chevron_right_outlined, size:36);
+  static UIIcon chevronLeft = UIIcon(Icons.chevron_left_outlined, size:36);
+
 }
 
 class UIIcon extends Icon {

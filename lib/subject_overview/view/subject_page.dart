@@ -105,11 +105,11 @@ class _SubjectViewState extends State<SubjectView> {
                       ]
                     : [
                         UIIconButton(
-                          icon: UIIcons.search,
+                          icon: UIIcons.settings,
                           onPressed: () {
                             Navigator.of(context).pushNamed(
-                              '/search',
-                              arguments: widget.subjectToEdit.id,
+                              '/subject_overview/edit_subject',
+                              arguments: widget.subjectToEdit,
                             );
                           },
                         ),

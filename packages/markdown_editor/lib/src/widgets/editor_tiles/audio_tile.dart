@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:markdown_editor/src/cubit/audio_tile_cubit.dart';
-import 'package:markdown_editor/src/helper/audio_helper.dart';
 import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
 import 'package:ui_components/ui_components.dart';
@@ -72,7 +71,7 @@ class _AudioTileState extends State<AudioTile> {
 
   @override
   void dispose() {
-    AudioHelper.disposeRecorder();
+    // AudioHelper.disposeRecorder();
     super.dispose();
   }
 }

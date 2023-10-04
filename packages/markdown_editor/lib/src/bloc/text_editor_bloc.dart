@@ -30,13 +30,14 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     on<TextEditorRemoveEditorTile>(_removeTile);
     on<TextEditorReplaceEditorTile>(_replaceTile);
     on<TextEditorChangeOrderOfTile>(_changeOrderOfTile);
+    on<TextEditorFocusLastWidget>(_focusLastWidget);
   }
 
   /// list of all editorTiles (textWidgets, Images, etc.) of text editor
   List<EditorTile> editorTiles = [
     TextTile(
       textStyle: TextFieldConstants.normal,
-    )
+    ),
   ];
 
   /// whether text should get written in bold or not
@@ -97,16 +98,19 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     // print("update "+FocusManager.instance.primaryFocus.toString());
     // print("update " +focusedTile!.focusNode.toString());
     _addEditorTile(event.newEditorTile, event.context);
-    _addLastTextTileIfNeeded();
-    emit(TextEditorEditorTilesChanged(tiles: List.of(editorTiles)));
+    // _addLastTextTileIfNeeded();
+    if (event.emitState) {
+      emit(TextEditorEditorTilesChanged(tiles: List.of(editorTiles)));
+    }
   }
 
   FutureOr<void> _removeTile(
     TextEditorRemoveEditorTile event,
     Emitter<TextEditorState> emit,
   ) {
-    _removeEditorTile(event.tileToRemove, event.context, handOverText: true);
-    _addLastTextTileIfNeeded();
+    _removeEditorTile(event.tileToRemove, event.context,
+        handOverText: event.handOverText);
+    // _addLastTextTileIfNeeded();
     emit(TextEditorEditorTilesChanged(tiles: List.of(editorTiles)));
   }
 
@@ -124,7 +128,6 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
       }
     }
     updateOrderedListTile();
-    _addLastTextTileIfNeeded();
 
     emit(TextEditorEditorTilesChanged(tiles: List.of(editorTiles)));
   }
@@ -215,6 +218,9 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     bool changeFocus = true,
     bool handOverText = false,
   }) {
+    if (editorTiles[0] == toRemove && handOverText == true) {
+      return;
+    }
     var highestFocusNodeTile = -1;
     for (var i = 0; i < editorTiles.length; i++) {
       if (editorTiles[i] == toRemove) {
@@ -287,21 +293,44 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     }
   }
 
-  void _addLastTextTileIfNeeded() {
-    if ((editorTiles[editorTiles.length - 1].textFieldController != null &&
-            editorTiles[editorTiles.length - 1].textFieldController!.text !=
-                '') ||
-        editorTiles[editorTiles.length - 1].focusNode == null) {
-      editorTiles.add(
-        TextTile(
-          textStyle: TextFieldConstants.normal,
-        ),
-      );
-    }
-  }
+  // void _addLastTextTileIfNeeded() {
+  //   if ((editorTiles[editorTiles.length - 1].textFieldController != null &&
+  //           editorTiles[editorTiles.length - 1].textFieldController!.text !=
+  //               '') ||
+  //       editorTiles[editorTiles.length - 1].focusNode == null) {
+  //     editorTiles.add(
+  //       TextTile(
+  //         textStyle: TextFieldConstants.normal,
+  //       ),
+  //     );
+  //   }
+  // }
 
-  void _changeOrderOfTile(TextEditorChangeOrderOfTile event, Emitter<TextEditorState> emit) {
+  void _changeOrderOfTile(
+      TextEditorChangeOrderOfTile event, Emitter<TextEditorState> emit) {
     editorTiles.insert(event.newIndex, editorTiles[event.oldIndex]);
     editorTiles.removeAt(event.oldIndex);
   }
+
+  FutureOr<void> _focusLastWidget(
+      TextEditorFocusLastWidget event, Emitter<TextEditorState> emit) {
+    final lastWidget = editorTiles[editorTiles.length - 1];
+    if ((lastWidget.textFieldController != null &&
+            lastWidget.textFieldController!.text.isNotEmpty) ||
+        lastWidget.textFieldController == null ||
+        lastWidget.focusNode == null) {
+      final newFocusNode = FocusNode();
+      editorTiles.add(
+        TextTile(
+          textStyle: TextFieldConstants.normal,
+          focusNode: newFocusNode,
+        ),
+      );
+      newFocusNode.requestFocus();
+      emit(TextEditorEditorTilesChanged(tiles: List.of(editorTiles)));
+    } else {
+      lastWidget.focusNode!.requestFocus();
+    }
+  }
+
 }

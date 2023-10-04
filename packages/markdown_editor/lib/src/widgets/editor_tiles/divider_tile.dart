@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
+import 'package:ui_components/ui_components.dart';
 
 class DividerTile extends StatelessWidget implements EditorTile {
   DividerTile({super.key});
@@ -10,7 +11,10 @@ class DividerTile extends StatelessWidget implements EditorTile {
 
   @override
   Widget build(BuildContext context) {
-    return const Divider();
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: UIConstants.pageHorizontalPadding),
+      child: const Divider(color: UIColors.smallTextDark, thickness: 2,),
+    );
   }
 
   @override

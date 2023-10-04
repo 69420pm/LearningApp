@@ -10,7 +10,9 @@ class UIIconButton extends StatefulWidget {
     this.alignment = Alignment.center,
     this.animateToWhite = false,
     this.text,
-    this.swapTextWithIcon = false
+    this.textColor,
+    this.swapTextWithIcon = false,
+    this.onDoubleTap,
   });
 
   /// displayed icon
@@ -19,8 +21,14 @@ class UIIconButton extends StatefulWidget {
   /// text next to icon
   final String? text;
 
+  /// specific color for text, when color of text shouldn't be icon color
+  final Color? textColor;
+
   /// callback when button gets pressed
   final void Function() onPressed;
+
+  /// callback when button gets pressed twice
+  final void Function()? onDoubleTap;
 
   /// how icon should be aligned in container
   final Alignment alignment;
@@ -28,7 +36,7 @@ class UIIconButton extends StatefulWidget {
   /// whether the icon should lighten up or darken
   final bool animateToWhite;
 
-  /// whether when text is given, 
+  /// whether when text is given,
   /// the text should get displayed first or the icon
   final bool swapTextWithIcon;
 
@@ -45,11 +53,22 @@ class _UIIconButtonState extends State<UIIconButton> {
     final animateColor = Color.fromARGB(
       128,
       startColor.red,
-      startColor.blue,
       startColor.green,
+      startColor.blue,
     );
+
+    final startColorText = widget.textColor;
+    final animateTextColor = startColorText == null
+        ? null
+        : Color.fromARGB(
+            128,
+            startColorText.red,
+            startColorText.green,
+            startColorText.blue,
+          );
     return GestureDetector(
       onTap: widget.onPressed,
+      onDoubleTap: widget.onDoubleTap,
       behavior: HitTestBehavior.opaque,
       onTapDown: (details) {
         setState(() {
@@ -87,33 +106,40 @@ class _UIIconButtonState extends State<UIIconButton> {
                   ),
                 );
               } else {
-                if(widget.swapTextWithIcon){
+                if (widget.swapTextWithIcon) {
                   return Row(
-                  children: [
-                     Container(
-                      height: 44,
-                      width: 44,
-                      alignment: widget.alignment,
-                      child: widget.icon.copyWith(
-                        color: Color.lerp(startColor, animateColor, value),
+                    children: [
+                      Container(
+                        height: 44,
+                        width: 44,
+                        alignment: widget.alignment,
+                        child: widget.icon.copyWith(
+                          color: Color.lerp(startColor, animateColor, value),
+                        ),
                       ),
-                    ),
-                    Text(
-                      widget.text!,
-                      style: UIText.label.copyWith(
-                        color: Color.lerp(startColor, animateColor, value),
+                      Text(
+                        widget.text!,
+                        style: UIText.label.copyWith(
+                          color: Color.lerp(
+                          startColorText ?? startColor,
+                          animateTextColor ?? animateColor,
+                          value,
+                        ),
+                        ),
                       ),
-                    ),
-                   
-                  ],
-                );
+                    ],
+                  );
                 }
                 return Row(
                   children: [
                     Text(
                       widget.text!,
                       style: UIText.label.copyWith(
-                        color: Color.lerp(startColor, animateColor, value),
+                        color: Color.lerp(
+                          startColorText ?? startColor,
+                          animateTextColor ?? animateColor,
+                          value,
+                        ),
                       ),
                     ),
                     Container(
@@ -123,7 +149,7 @@ class _UIIconButtonState extends State<UIIconButton> {
                       child: widget.icon.copyWith(
                         color: Color.lerp(startColor, animateColor, value),
                       ),
-                    )
+                    ),
                   ],
                 );
               }

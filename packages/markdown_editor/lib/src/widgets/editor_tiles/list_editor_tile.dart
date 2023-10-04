@@ -5,6 +5,7 @@ import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/models/text_field_constants.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
+import 'package:ui_components/ui_components.dart';
 
 import '../../models/char_tile.dart';
 
@@ -14,11 +15,10 @@ class ListEditorTile extends StatelessWidget implements EditorTile {
     _textTile = textTile ??
         TextTile(
           textStyle: TextFieldConstants.normal,
-          isDense: true,
-          contentPadding: const EdgeInsets.all(4),
           focusNode: focusNode,
           parentEditorTile: this,
         );
+    _textTile.padding = false;
     focusNode = _textTile.focusNode;
     textFieldController = _textTile.textFieldController;
   }
@@ -71,20 +71,28 @@ class ListEditorTile extends StatelessWidget implements EditorTile {
               ),
             );
       };
-    return Row(
-      children: [
-        if (orderNumber == 0)
-          const Icon(Icons.circle, size: 10)
-        else
-          Text(
-            orderNumber.toString(),
-            style: TextFieldConstants.orderedListIndex,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: UIConstants.pageHorizontalPadding),
+      child: Row(
+        children: [
+          const SizedBox(
+            width: 8,
           ),
-        const SizedBox(
-          width: 10,
-        ),
-        Expanded(child: _textTile)
-      ],
+          Padding(
+            padding: EdgeInsets.only(top: 6),
+            child: orderNumber == 0
+                ? UIIcons.circle
+                : Text(
+                    '$orderNumber.',
+                    style: TextFieldConstants.orderedListIndex,
+                  ),
+          ),
+          const SizedBox(
+            width: 12,
+          ),
+          Expanded(child: _textTile)
+        ],
+      ),
     );
   }
 

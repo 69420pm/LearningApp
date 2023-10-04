@@ -34,8 +34,8 @@ class TextEditorKeyboardRowChanged extends TextEditorState {
         isUnderlined,
         isCode,
         textColor,
-        textBackgroundColor
-      ];
+        textBackgroundColor,
+        isDefaultOnBackgroundTextColor      ];
 }
 
 class TextEditorEditorTilesChanged extends TextEditorState {
@@ -48,26 +48,6 @@ class TextEditorEditorTilesChanged extends TextEditorState {
     return [tiles];
   }
 
-  // @override
-  // bool operator ==(Object other) {
-  //   // if (identical(this, other)) {
-  //   //   return true;
-  //   // }
-  //   if (other is TextEditorEditorTilesChanged) {
-  //     if (other.tiles.length == tiles.length) {
-  //       for (var i = 0; i < tiles.length; i++) {
-  //         if (other.tiles[i] != tiles[i]) {
-  //           return false;
-  //         }
-  //       }
-  //       return true;
-  //     } else {
-  //       return false;
-  //     }
-  //   } else {
-  //     return false;
-  //   }
-  // }
 
   @override
   int get hashCode => tiles.hashCode;

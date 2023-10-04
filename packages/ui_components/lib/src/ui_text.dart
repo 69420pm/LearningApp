@@ -24,7 +24,7 @@ class UIText {
     fontFamily: 'Inter',
     fontSize: 16,
     fontWeight: FontWeight.w600,
-    height: 20.8 / 18,
+    height: 20.8 / 16,
   );
 
   /// normal bold font for small but important text
@@ -57,5 +57,51 @@ class UIText {
     fontSize: 12,
     fontWeight: FontWeight.w500,
     height: 14 / 12,
+  );
+
+  /*
+    Font styles for editor
+  */
+
+  /// font not used in app only used for text editor as heading small
+  static const titleSmall = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 24,
+    fontWeight: FontWeight.w700,
+    letterSpacing: -24 * 0.02,
+    // not correct
+    height: 26/24,
+  );
+
+  /// standard editor font
+  static const normalEditor = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+    height: 20.8 / 16,
+  );
+
+  /// serif font for quotes
+  static const quote = TextStyle(
+    fontFamily: 'RobotoSerif',
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+    height: 20.8 / 16,
+  );
+
+  /// code font for latex editor
+  static const code = TextStyle(
+    fontFamily: 'RobotoMono',
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+    height: 20.8 / 16,
+  );
+
+  /// code font for latex editor
+  static const codeLarge = TextStyle(
+    fontFamily: 'RobotoMono',
+    fontSize: 24,
+    fontWeight: FontWeight.w700,
+    height: 26 / 24,
   );
 }

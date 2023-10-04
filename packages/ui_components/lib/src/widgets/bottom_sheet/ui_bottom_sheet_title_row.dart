@@ -19,6 +19,12 @@ class UIBottomSheetTitleRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (actionLeft == null && actionRight == null && title != null) {
+      return Container(
+        child: title!,
+        alignment: Alignment.center,
+      );
+    }
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
