@@ -58,6 +58,14 @@ class UIIcons {
   static UIIcon alignment = UIIcon(Icons.format_align_center_rounded, size:32);
   static UIIcon mic = UIIcon(Icons.mic_rounded, size: 32);
   static UIIcon stopCircle = UIIcon(Icons.stop_circle, size:32);
+  static UIIcon curlyBraces = UIIcon(Icons.data_object_rounded, size:32);
+  static UIIcon arrowRight = UIIcon(Icons.arrow_right_alt_rounded, size:32);
+  static UIIcon superscript = UIIcon(Icons.superscript_rounded, size:28);
+  static UIIcon subscript = UIIcon(Icons.subscript_rounded, size:28);
+  static UIIcon spaceBar = UIIcon(Icons.space_bar_rounded, size:32);
+  static UIIcon chevronRight = UIIcon(Icons.chevron_right_outlined, size:36);
+  static UIIcon chevronLeft = UIIcon(Icons.chevron_left_outlined, size:36);
+
 }
 
 class UIIcon extends Icon {

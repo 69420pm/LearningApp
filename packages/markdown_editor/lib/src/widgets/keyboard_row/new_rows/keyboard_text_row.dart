@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:markdown_editor/markdown_editor.dart';
-import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_button.dart';
+import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_buttons.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_row_container.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_toggle.dart';
 import 'package:ui_components/ui_components.dart';

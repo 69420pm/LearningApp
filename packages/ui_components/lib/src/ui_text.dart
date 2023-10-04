@@ -88,4 +88,20 @@ class UIText {
     fontWeight: FontWeight.w500,
     height: 20.8 / 16,
   );
+
+  /// code font for latex editor
+  static const code = TextStyle(
+    fontFamily: 'RobotoMono',
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+    height: 20.8 / 16,
+  );
+
+  /// code font for latex editor
+  static const codeLarge = TextStyle(
+    fontFamily: 'RobotoMono',
+    fontSize: 24,
+    fontWeight: FontWeight.w700,
+    height: 26 / 24,
+  );
 }

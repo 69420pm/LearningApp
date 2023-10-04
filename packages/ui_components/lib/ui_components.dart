@@ -24,6 +24,7 @@ export 'src/widgets/gradient_text.dart';
 export 'src/widgets/progress_indicators/ui_circular_progress_indicator.dart';
 export 'src/widgets/progress_indicators/ui_linear_progress_indicator.dart';
 export 'src/widgets/text_fields/ui_text_field_large.dart';
+export 'src/widgets/text_fields/ui_text_field.dart';
 export 'src/widgets/text_form_field.dart';
 export 'src/widgets/ui_appbar.dart';
 export 'src/widgets/ui_card.dart';

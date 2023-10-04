@@ -12,7 +12,7 @@ import 'package:markdown_editor/src/widgets/editor_tiles/latex_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/list_editor_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/quote_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
-import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_button.dart';
+import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_buttons.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_row_container.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_toggle.dart';
 import 'package:ui_components/ui_components.dart';
