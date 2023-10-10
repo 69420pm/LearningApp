@@ -23,6 +23,7 @@ dev_dependencies:
   audioplayers: ^5.0.0
   path_provider: ^2.0.14
   flutter_math_fork: ^0.7.1
+  url_launcher: ^6.1.14
 
 dependencies:
   equatable: ^2.0.5

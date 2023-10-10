@@ -6,8 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
-import 'package:markdown_editor/src/widgets/editor_tiles/bottom_sheets/add_image_bottom_sheet.dart';
-import 'package:markdown_editor/src/widgets/editor_tiles/bottom_sheets/image_bottom_sheet.dart';
+import 'package:markdown_editor/src/widgets/bottom_sheets/image_bottom_sheet.dart';
 import 'package:markdown_editor/src/widgets/image_widgets/image_full_screen.dart';
 import 'package:ui_components/ui_components.dart';
 

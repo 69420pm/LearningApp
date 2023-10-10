@@ -4,7 +4,7 @@ import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/models/latex_text_field_controller.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
-import 'package:markdown_editor/src/widgets/editor_tiles/bottom_sheets/latex_bottom_sheet.dart';
+import 'package:markdown_editor/src/widgets/bottom_sheets/latex_bottom_sheet.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ui_components/ui_components.dart';
@@ -47,11 +47,17 @@ class LatexTile extends StatefulWidget implements EditorTile, Equatable {
 
 class _LatexTileState extends State<LatexTile> {
   TextEditingController textEditingController = LatexTextFieldController();
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => showLatexBottomSheet());
+    if (_scaffoldKey.currentState == null ) {
+      {
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => showLatexBottomSheet());
+      }
+    }
   }
 
   void showLatexBottomSheet() {
@@ -64,10 +70,11 @@ class _LatexTileState extends State<LatexTile> {
             child: LatexBottomSheet(
               textEditingController: textEditingController,
               latexText: widget.latexText,
-              focusNode: widget.focusNode??=FocusNode(),
-              onChanged: (text) => setState(() {
-                widget.latexText = text;
-              },
+              focusNode: widget.focusNode ??= FocusNode(),
+              onChanged: (text) => setState(
+                () {
+                  widget.latexText = text;
+                },
               ),
             ),
           ),

@@ -10,6 +10,7 @@ import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/models/text_field_constants.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
 import 'package:ui_components/ui_components.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TextTile extends StatelessWidget implements EditorTile {
   /// constructor
@@ -36,8 +37,6 @@ class TextTile extends StatelessWidget implements EditorTile {
   /// TextStyle of textfield and hint text
   final TextStyle textStyle;
 
-  
-
   ///if true, textColor will be set to colorsScheme.onBackground and
   ///will be updated
   final bool isDefaultOnBackgroundTextColor;
@@ -52,7 +51,7 @@ class TextTile extends StatelessWidget implements EditorTile {
   /// whether the textfield should get condensed
   final bool? isDense;
 
-/// whether textfield should have horizontal padding
+  /// whether textfield should have horizontal padding
   bool padding;
 
   /// contentPadding o [TextField]
@@ -117,11 +116,14 @@ class TextTile extends StatelessWidget implements EditorTile {
                   tiles.add(value);
                 });
                 replacingTextTile.textFieldController!.addText(tiles, context);
-                textEditorBloc.add(TextEditorReplaceEditorTile(
+                textEditorBloc.add(
+                  TextEditorReplaceEditorTile(
                     tileToRemove: parentEditorTile!,
                     newEditorTile: replacingTextTile,
                     context: context,
-                    handOverText: true));
+                    handOverText: true,
+                  ),
+                );
               } else {
                 textEditorBloc.add(
                   TextEditorRemoveEditorTile(
@@ -158,12 +160,13 @@ class TextTile extends StatelessWidget implements EditorTile {
           },
           child: Padding(
             padding: EdgeInsets.symmetric(
-                horizontal: padding ? UIConstants.pageHorizontalPadding : 0),
+              horizontal: padding ? UIConstants.pageHorizontalPadding : 0,
+            ),
             child: TextField(
               autofocus: true,
               controller: textFieldController,
               focusNode: focusNode,
-              textInputAction: TextInputAction.done,
+              textInputAction: TextInputAction.next,
               // textfield gets pushed 80 above keyboard, that textfield
               // doesn't get hided by keyboard row, standard is 20
               scrollPadding: const EdgeInsets.all(50),
@@ -182,6 +185,34 @@ class TextTile extends StatelessWidget implements EditorTile {
                           context: context,
                         ),
                       );
+                }
+              },
+              onTap: () async {
+                if (textFieldController == null ||
+                    textFieldController!.hyperLinks.isEmpty) {
+                  return;
+                }
+                 final entry =  HyperLinkEntry.checkHyperLink(textFieldController!.selection.start, textFieldController!.hyperLinks);
+                if (textFieldController!.selection.end -
+                            textFieldController!.selection.start ==
+                        0 && entry != null && entry.start != textFieldController!.selection.start
+                  ) {
+                  var url = textFieldController!.text.substring(
+                    entry.start,
+                    entry.end + 1
+                  );
+                  if(!(url.contains('https') || url.contains('www'))){
+                    url = 'https://www.' + url;
+                  }
+                  else if (url[0] != "h") {
+                    url = 'https://' + url;
+                  }
+                  // final Uri uri = Uri(scheme: "https", host:'www.youtube.com');
+                  final uri = Uri.parse(url);
+                  if (!await launchUrl(uri,
+                      mode: LaunchMode.externalApplication)) {
+                    throw Exception('Could not launch url');
+                  }
                 }
               },
               onEditingComplete: () {},

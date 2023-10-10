@@ -7,7 +7,7 @@ class UIColors {
 
   static const background = Color(0xFF040C02);
 
-  static const overlay = Color(0xFF242627);
+  static const overlay = Color.fromARGB(255, 35, 35, 35);
   static const onOverlayCard = Color(0xFF3D3E44);
 
   static const textLight = Color(0xFFF5F5F5);
