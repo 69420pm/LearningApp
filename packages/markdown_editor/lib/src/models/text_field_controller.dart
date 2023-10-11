@@ -213,7 +213,7 @@ class TextFieldController extends TextEditingController {
     }
     // check for hyperlink
     final regex = RegExp(
-      r'(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|(www\.)?[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})',
+      r'[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)',
     ); // Match one or more digits
     for (final Match match in regex.allMatches(text)) {
       hyperLinks.add(HyperLinkEntry(start: match.start, end: match.end - 1));
