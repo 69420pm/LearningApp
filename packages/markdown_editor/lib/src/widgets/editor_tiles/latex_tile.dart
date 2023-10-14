@@ -32,6 +32,7 @@ class LatexTile extends StatefulWidget implements EditorTile, Equatable {
   @override
   TextFieldController? textFieldController;
 
+  TextEditingController textEditingController = LatexTextFieldController();
   @override
   State<LatexTile> createState() => _LatexTileState();
 
@@ -46,19 +47,18 @@ class LatexTile extends StatefulWidget implements EditorTile, Equatable {
 }
 
 class _LatexTileState extends State<LatexTile> {
-  TextEditingController textEditingController = LatexTextFieldController();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  @override
-  void initState() {
-    super.initState();
-    if (_scaffoldKey.currentState == null ) {
-      {
-        WidgetsBinding.instance
-            .addPostFrameCallback((_) => showLatexBottomSheet());
-      }
-    }
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   if (_scaffoldKey.currentState == null ) {
+  //     {
+  //       WidgetsBinding.instance
+  //           .addPostFrameCallback((_) => showLatexBottomSheet());
+  //     }
+  //   }
+  // }
 
   void showLatexBottomSheet() {
     UIBottomSheet.showUIBottomSheet(
@@ -68,7 +68,7 @@ class _LatexTileState extends State<LatexTile> {
           BlocProvider.value(
             value: context.read<TextEditorBloc>(),
             child: LatexBottomSheet(
-              textEditingController: textEditingController,
+              textEditingController: widget.textEditingController,
               latexText: widget.latexText,
               focusNode: widget.focusNode ??= FocusNode(),
               onChanged: (text) => setState(
@@ -86,7 +86,7 @@ class _LatexTileState extends State<LatexTile> {
               TextEditorReplaceEditorTile(
                 tileToRemove: widget,
                 newEditorTile:
-                    widget.copyWith(latexText: textEditingController.text),
+                    widget.copyWith(latexText: widget.textEditingController.text),
                 context: context,
               ),
             );
@@ -103,10 +103,11 @@ class _LatexTileState extends State<LatexTile> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: showLatexBottomSheet,
-      child: Center(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: UIConstants.pageHorizontalPadding, vertical: UIConstants.itemPadding),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: showLatexBottomSheet,
         child: Math.tex(
           widget.latexText,
           textStyle: TextStyle(
