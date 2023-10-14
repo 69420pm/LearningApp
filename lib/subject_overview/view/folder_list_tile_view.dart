@@ -62,7 +62,7 @@ class _FolderListTileViewState extends State<FolderListTileView> {
                 : Colors.transparent,
         width: UIConstants.borderWidth,
       ),
-      title: Text(widget.folder.name + " " + numChilds.toString(),
+      title: Text(widget.folder.name,
           overflow: TextOverflow.ellipsis, style: UIText.label),
       iconSpacing: UIConstants.defaultSize,
       titleSpacing: UIConstants.defaultSize,
