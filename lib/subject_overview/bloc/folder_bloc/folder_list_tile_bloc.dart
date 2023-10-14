@@ -14,7 +14,7 @@ part 'folder_list_tile_state.dart';
 class FolderListTileBloc
     extends Bloc<FolderListTileEvent, FolderListTileState> {
   FolderListTileBloc(this._cardsRepository) : super(FolderListTileInitial()) {
-    on<FolderListTileGetChildrenById>((event, emit) async {
+    on<FolderListTileGetChildren>((event, emit) async {
       await _getChildren(event, emit);
     });
     on<FolderListTileAddFolder>(
@@ -40,14 +40,14 @@ class FolderListTileBloc
 
   String? streamId;
   Future<void> _getChildren(
-    FolderListTileGetChildrenById event,
+    FolderListTileGetChildren event,
     Emitter<FolderListTileState> emit,
   ) async {
     // emit(FolderListTileLoading());
     // await _cardsRepository.closeStreamById(streamId!);
 
     await emit.forEach(
-      _cardsRepository.getChildrenById(event.id),
+      _cardsRepository.getChildrenById(event.folder.id),
       onData: (data) {
         final childListTiles = <String, Widget>{};
         final widgetsToRemove = <Removed>[];
@@ -62,6 +62,7 @@ class FolderListTileBloc
               card: element,
               isCardSelected: false,
               isInSelectMode: false,
+              parentFolder: event.folder,
             );
           } else if (element is Removed) {
             widgetsToRemove.add(element);
@@ -69,7 +70,7 @@ class FolderListTileBloc
         }
         // if (childListTiles.isNotEmpty || widgetsToRemove.isNotEmpty) {
         return FolderListTileRetrieveChildren(
-          senderId: event.id,
+          senderId: event.folder.id,
           childrenStream: childListTiles,
           removedWidgets: widgetsToRemove,
         );

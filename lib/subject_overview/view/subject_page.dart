@@ -127,12 +127,12 @@ class _SubjectViewState extends State<SubjectView> {
                 labelText: 'Files',
                 actionWidgets: [
                   UIIconButton(
-                icon: UIIcons.search.copyWith(color: UIColors.smallText),
-                onPressed: () {
-                  Navigator.of(context)
-                      .pushNamed('/search', arguments: widget.subjectToEdit.id);
-                },
-              ),
+                    icon: UIIcons.search.copyWith(color: UIColors.smallText),
+                    onPressed: () {
+                      Navigator.of(context).pushNamed('/search',
+                          arguments: widget.subjectToEdit.id);
+                    },
+                  ),
                   UIIconButton(
                     icon: UIIcons.download.copyWith(color: UIColors.smallText),
                     onPressed: () {
@@ -197,6 +197,21 @@ class _SubjectViewState extends State<SubjectView> {
                       }
                     }
                   }
+
+                  void selectCard(BuildContext context, Card card) {
+                    context.read<SubjectOverviewSelectionBloc>().add(
+                          SubjectOverviewCardSelectionChange(
+                              card: card, parentFolder: null),
+                        );
+                  }
+
+                  void selectFolder(BuildContext context, Folder folder) {
+                    setState(() {
+                      context.read<SubjectOverviewSelectionBloc>().add(
+                          SubjectOverviewFolderSelectionChange(folder: folder));
+                    });
+                  }
+
                   return Expanded(
                     child: Stack(
                       children: [
@@ -251,14 +266,7 @@ class _SubjectViewState extends State<SubjectView> {
                                         inSelectMode: true,
                                       ),
                                     );
-                                context
-                                    .read<SubjectOverviewSelectionBloc>()
-                                    .add(
-                                      SubjectOverviewSelectionChange(
-                                        card: data,
-                                        addCard: true,
-                                      ),
-                                    );
+                                selectCard(context, data);
                               }
                             }
                             // print(data);

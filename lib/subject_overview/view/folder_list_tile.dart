@@ -5,12 +5,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/folder_bloc/folder_list_tile_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dart';
-import 'package:learning_app/subject_overview/view/folder_draggable_tile.dart';
+import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile_view.dart';
 import 'package:learning_app/subject_overview/view/inactive_list_tile.dart';
+import 'package:learning_app/subject_overview/view/multi_drag_indicator.dart';
 import 'package:ui_components/ui_components.dart';
 
-class FolderListTileParent extends StatelessWidget {
+class FolderListTileParent extends StatefulWidget {
   FolderListTileParent({
     super.key,
     required this.folder,
@@ -18,16 +19,22 @@ class FolderListTileParent extends StatelessWidget {
   });
 
   final Folder folder;
-  // final CardsRepository cardsRepository;
 
+  @override
+  State<FolderListTileParent> createState() => _FolderListTileParentState();
+}
+
+class _FolderListTileParentState extends State<FolderListTileParent> {
+  // final CardsRepository cardsRepository;
   bool isHovered = false;
 
   Map<String, Widget> childListTiles = <String, Widget>{};
+
   @override
   Widget build(BuildContext context) {
     context
         .read<FolderListTileBloc>()
-        .add(FolderListTileGetChildrenById(id: folder.id));
+        .add(FolderListTileGetChildren(folder: widget.folder));
 
     return Padding(
       padding: const EdgeInsets.only(
@@ -36,29 +43,51 @@ class FolderListTileParent extends StatelessWidget {
       child: BlocBuilder<SubjectOverviewSelectionBloc,
           SubjectOverviewSelectionState>(
         builder: (context, state) {
-          var isSoftSelected = folder ==
+          final isSoftSelected = widget.folder ==
               context.read<SubjectOverviewSelectionBloc>().folderSoftSelected;
+
           return GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: () {
               if (state is! SubjectOverviewSelectionModeOn) {
                 context.read<SubjectOverviewSelectionBloc>().add(
                       SubjectOverviewSetSoftSelectFolder(
-                        folder: isSoftSelected ? null : folder,
+                        folder: isSoftSelected ? null : widget.folder,
                       ),
                     );
+              } else {
+                setState(() {
+                  context.read<SubjectOverviewSelectionBloc>().add(
+                        SubjectOverviewFolderSelectionChange(
+                            folder: widget.folder),
+                      );
+                });
               }
             },
             child: LongPressDraggable<Folder>(
-              data: folder,
-              feedback: FolderDraggableTile(
-                folder: folder,
+              data: widget.folder,
+              feedback: MultiDragIndicator(
+                firstFolderName: [widget.folder.name],
+                folderAmount: 1,
               ),
               onDragEnd: (details) {
                 isHovered = false;
                 context
                     .read<FolderListTileBloc>()
                     .add(FolderListTileClearHovers());
+              },
+              onDraggableCanceled: (_, __) {
+                context.read<SubjectOverviewSelectionBloc>().add(
+                      SubjectOverviewSelectionToggleSelectMode(
+                        inSelectMode: true,
+                      ),
+                    );
+                setState(() {
+                  context.read<SubjectOverviewSelectionBloc>().add(
+                        SubjectOverviewFolderSelectionChange(
+                            folder: widget.folder),
+                      );
+                });
               },
               maxSimultaneousDrags:
                   state is SubjectOverviewSelectionModeOn ? 0 : 1,
@@ -67,9 +96,9 @@ class FolderListTileParent extends StatelessWidget {
                 onMove: (details) {
                   if (isHovered == false) {
                     isHovered = true;
-                    context
-                        .read<FolderListTileBloc>()
-                        .add(FolderListTileUpdate(id: folder.id));
+                    context.read<FolderListTileBloc>().add(
+                          FolderListTileUpdate(id: widget.folder.id),
+                        );
                   }
                 },
                 onLeave: (data) {
@@ -77,32 +106,49 @@ class FolderListTileParent extends StatelessWidget {
                     isHovered = false;
                     context
                         .read<FolderListTileBloc>()
-                        .add(FolderListTileUpdate(id: folder.id));
+                        .add(FolderListTileUpdate(id: widget.folder.id));
                   }
                 },
                 onAccept: (data) {
                   if (data is Folder) {
-                    if (data.parentId == folder.id) return;
-                    context.read<SubjectBloc>().add(
-                          SubjectSetFolderParent(
-                            folder: data,
-                            parentId: folder.id,
-                          ),
-                        );
+                    if (data.parentId == widget.folder.id) {
+                      if (!context
+                          .read<SubjectOverviewSelectionBloc>()
+                          .isInSelectMode) {
+                        context.read<SubjectOverviewSelectionBloc>().add(
+                              SubjectOverviewSelectionToggleSelectMode(
+                                inSelectMode: true,
+                              ),
+                            );
+                        setState(() {
+                          context.read<SubjectOverviewSelectionBloc>().add(
+                                SubjectOverviewFolderSelectionChange(
+                                    folder: data),
+                              );
+                        });
+                      }
+                    } else {
+                      context.read<SubjectBloc>().add(
+                            SubjectSetFolderParent(
+                              folder: data,
+                              parentId: widget.folder.id,
+                            ),
+                          );
+                    }
                   } else if (data is Card) {
-                    if (data.parentId != folder.id) {
+                    if (data.parentId != widget.folder.id) {
                       if (context.read<SubjectOverviewSelectionBloc>().state
                           is SubjectOverviewSelectionMultiDragging) {
                         context.read<SubjectOverviewSelectionBloc>().add(
                               SubjectOverviewSelectionMoveSelectedCards(
-                                parentId: folder.id,
+                                parentId: widget.folder.id,
                               ),
                             );
                       } else {
                         context.read<SubjectBloc>().add(
                               SubjectSetCardParent(
                                 card: data,
-                                parentId: folder.id,
+                                parentId: widget.folder.id,
                               ),
                             );
                       }
@@ -111,7 +157,7 @@ class FolderListTileParent extends StatelessWidget {
                         .isInSelectMode) {
                       context.read<SubjectOverviewSelectionBloc>().add(
                             SubjectOverviewSelectionMoveSelectedCards(
-                              parentId: folder.id,
+                              parentId: widget.folder.id,
                             ),
                           );
                     } else {
@@ -121,9 +167,9 @@ class FolderListTileParent extends StatelessWidget {
                             ),
                           );
                       context.read<SubjectOverviewSelectionBloc>().add(
-                            SubjectOverviewSelectionChange(
+                            SubjectOverviewCardSelectionChange(
                               card: data,
-                              addCard: true,
+                              parentFolder: widget.folder,
                             ),
                           );
                     }
@@ -133,11 +179,12 @@ class FolderListTileParent extends StatelessWidget {
                   return BlocBuilder<FolderListTileBloc, FolderListTileState>(
                     buildWhen: (previous, current) {
                       if (current is FolderListTileRetrieveChildren &&
-                          current.senderId == folder.id) {
+                          current.senderId == widget.folder.id) {
                         isHovered = false;
+
                         return true;
                       } else if (current is FolderListTileUpdateOnHover) {
-                        if (current.id == folder.id) return true;
+                        if (current.id == widget.folder.id) return true;
                       } else if (current is FolderListTileToClearHover) {
                         if (isHovered == true) {
                           isHovered = false;
@@ -148,7 +195,7 @@ class FolderListTileParent extends StatelessWidget {
                     },
                     builder: (context, state) {
                       if (state is FolderListTileRetrieveChildren &&
-                          state.senderId == folder.id) {
+                          state.senderId == widget.folder.id) {
                         childListTiles = {
                           ...childListTiles,
                           ...state.childrenStream
@@ -158,6 +205,23 @@ class FolderListTileParent extends StatelessWidget {
                             childListTiles.remove(element.id);
                           }
                         }
+                        Map<Card, bool> cards = {};
+                        Map<Folder, bool> folders = {};
+
+                        childListTiles.forEach((key, value) {
+                          if (value is CardListTile) {
+                            cards.addAll({value.card: false});
+                          } else if (value is FolderListTileParent) {
+                            folders.addAll({value.folder: false});
+                          }
+                        });
+
+                        context.read<SubjectOverviewSelectionBloc>().add(
+                              SubjectOverviewUpdateFolderTable(
+                                  folderId: widget.folder.id,
+                                  cards: cards,
+                                  folder: folders),
+                            );
                       }
 
                       return BlocBuilder<SubjectOverviewSelectionBloc,
@@ -167,7 +231,7 @@ class FolderListTileParent extends StatelessWidget {
                             isHoverd: isHovered,
                             inSelectionMode:
                                 state is SubjectOverviewSelectionModeOn,
-                            folder: folder,
+                            folder: widget.folder,
                             childListTiles: childListTiles,
                           );
                         },

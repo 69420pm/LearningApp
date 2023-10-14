@@ -13,19 +13,37 @@ class SubjectOverviewSelectionBloc
   SubjectOverviewSelectionBloc(this._cardsRepository)
       : super(SubjectOverviewSelectionInitial()) {
     on<SubjectOverviewSelectionToggleSelectMode>(_toggleSelectMode);
-    on<SubjectOverviewSelectionChange>(_change);
+    on<SubjectOverviewCardSelectionChange>(_changeCardSelection);
+    on<SubjectOverviewFolderSelectionChange>(_changeFolderSelection);
     on<SubjectOverviewSelectionDeleteSelectedCards>(_deleteCards);
     on<SubjectOverviewSelectionMoveSelectedCards>(_moveSelectedCards);
     on<SubjectOverviewDraggingChange>(_toggleDragging);
     on<SubjectOverviewSetSoftSelectFolder>(_setSoftSelectFolder);
+    on<SubjectOverviewUpdateFolderTable>(_updateFolderTable);
   }
-
-  final List<Card> cardsSelected = List.empty(growable: true);
-  final List<String> foldersSelected = List.empty(growable: true);
-  Folder? folderSoftSelected = null;
   final CardsRepository _cardsRepository;
+  final List<Card> cardsSelected = List.empty(growable: true);
+  final List<Folder> foldersSelected = List.empty(growable: true);
+
+  Folder? folderSoftSelected;
   bool isInDragging = false;
   bool isInSelectMode = false;
+
+  //folderId: [Map<folder,isSelected>, Map<card,isSelected>]
+  final Map<String, List<Map<dynamic, bool>>> selectedInFolder = {};
+
+  void _clearSelectionVariables() {
+    cardsSelected.clear();
+    foldersSelected.clear();
+    selectedInFolder.forEach((key, value) {
+      value[0].forEach((key, value) {
+        value = false;
+      });
+      value[1].forEach((key, value) {
+        value = false;
+      });
+    });
+  }
 
   FutureOr<void> _toggleSelectMode(
     SubjectOverviewSelectionToggleSelectMode event,
@@ -33,26 +51,139 @@ class SubjectOverviewSelectionBloc
   ) {
     if (event.inSelectMode) {
       isInSelectMode = true;
+      folderSoftSelected = null;
       emit(SubjectOverviewSelectionModeOn());
     } else {
       isInSelectMode = false;
-      cardsSelected.clear();
+      _clearSelectionVariables();
       emit(SubjectOverviewSelectionModeOff());
     }
   }
 
-  FutureOr<void> _change(
-    SubjectOverviewSelectionChange event,
+  FutureOr<void> _changeCardSelection(
+    SubjectOverviewCardSelectionChange event,
     Emitter<SubjectOverviewSelectionState> emit,
   ) {
-    if (event.addCard && !cardsSelected.contains(event.card)) {
-      // new card selected
+    if (!cardsSelected.contains(event.card)) {
+      // new Card selected
       cardsSelected.add(event.card);
-    } else if (!event.addCard) {
-      // card removed from selection
-      cardsSelected.remove(event.card);
+      if (event.parentFolder != null) {
+        //change list
+        (selectedInFolder[event.parentFolder!.id]![1]
+            as Map<Card, bool>)[event.card] = true;
 
-      if (cardsSelected.isEmpty && state is SubjectOverviewSelectionModeOn) {
+        //check if all are selected
+        if (!selectedInFolder[event.parentFolder!.id]![0]
+                .containsValue(false) &&
+            !selectedInFolder[event.parentFolder!.id]![1]
+                .containsValue(false)) {
+          //add folder to selectedfolders
+          foldersSelected.add(event.parentFolder!);
+          (selectedInFolder[event.parentFolder!.id]![0]
+              as Map<Folder, bool>)[event.parentFolder!] = true;
+
+          //deselect all childs
+          (selectedInFolder[event.parentFolder!.id]![0] as Map<Folder, bool>)
+              .forEach((key, value) {
+            foldersSelected.remove(key);
+            value = false;
+          });
+          (selectedInFolder[event.parentFolder!.id]![1] as Map<Card, bool>)
+              .forEach((key, value) {
+            cardsSelected.remove(key);
+            value = false;
+          });
+          print("parent selected");
+          emit(SubjectOverviewSelectionModeOn());
+        } else {
+          print("not all selected");
+        }
+      } else {
+        print("root");
+      }
+    } else {
+      // removed from selection
+
+      if (event.parentFolder != null) {
+        //check if parentFolder is Selected
+        if (foldersSelected.contains(event.parentFolder)) {
+          //deselect parentfolder
+          foldersSelected.remove(event.parentFolder);
+          (selectedInFolder[event.parentFolder!.parentId]![0]
+              as Map<Folder, bool>)[event.parentFolder!] = false;
+          //select all childs
+          (selectedInFolder[event.parentFolder!.id]![0] as Map<Folder, bool>)
+              .forEach((key, value) {
+            foldersSelected.add(key);
+            value = true;
+          });
+          (selectedInFolder[event.parentFolder!.id]![1] as Map<Card, bool>)
+              .forEach((key, value) {
+            cardsSelected.add(key);
+            value = true;
+          });
+          print("parent deselected");
+          emit(SubjectOverviewSelectionModeOn());
+        }
+        //deselect card
+        cardsSelected.remove(event.card);
+        (selectedInFolder[event.parentFolder!.parentId]![1]
+            as Map<Card, bool>)[event.card] = false;
+      } else {
+        print("root");
+      }
+      if (cardsSelected.isEmpty &&
+          foldersSelected.isEmpty &&
+          state is SubjectOverviewSelectionModeOn) {
+        // if last card removed from selection, selection mode off
+        isInSelectMode = false;
+        emit(SubjectOverviewSelectionModeOff());
+      }
+    }
+  }
+
+  FutureOr<void> _changeFolderSelection(
+    SubjectOverviewFolderSelectionChange event,
+    Emitter<SubjectOverviewSelectionState> emit,
+  ) {
+    if (!foldersSelected.contains(event.folder)) {
+      // new selected
+      foldersSelected.add(event.folder);
+      (selectedInFolder[event.folder.parentId]![0]
+          as Map<Folder, bool>)[event.folder] = true;
+      //check if all are selected
+      // if (!selectedInFolder[event.folder.parentId]![0].containsValue(false) &&
+      //     !selectedInFolder[event.folder.parentId]![1].containsValue(false)) {
+      //   //add folder to selectedfolders
+      //   foldersSelected.add(event.folder.parentId);
+      //   (selectedInFolder[event.parentFolder!.id]![0]
+      //       as Map<Folder, bool>)[event.parentFolder!] = true;
+
+      //   //deselect all childs
+      //   (selectedInFolder[event.parentFolder!.id]![0] as Map<Folder, bool>)
+      //       .forEach((key, value) {
+      //     foldersSelected.remove(key);
+      //     value = false;
+      //   });
+      //   (selectedInFolder[event.parentFolder!.id]![1] as Map<Card, bool>)
+      //       .forEach((key, value) {
+      //     cardsSelected.remove(key);
+      //     value = false;
+      //   });
+      //   print("parent selected");
+      //   emit(SubjectOverviewSelectionModeOn());
+      // } else {
+      //   print("not all selected");
+      // }
+      //deselect all children
+    } else {
+      // removed from selection
+      foldersSelected.remove(event.folder);
+      (selectedInFolder[event.folder.parentId]![0]
+          as Map<Folder, bool>)[event.folder] = false;
+      if (cardsSelected.isEmpty &&
+          foldersSelected.isEmpty &&
+          state is SubjectOverviewSelectionModeOn) {
         // if last card removed from selection, selection mode off
         isInSelectMode = false;
         emit(SubjectOverviewSelectionModeOff());
@@ -71,9 +202,8 @@ class SubjectOverviewSelectionBloc
       parentIds.add(cardsSelected[i].parentId);
     }
     await _cardsRepository.deleteCards(ids, parentIds);
-
     isInSelectMode = false;
-    cardsSelected.clear();
+    _clearSelectionVariables();
     emit(SubjectOverviewSelectionModeOff());
   }
 
@@ -84,6 +214,7 @@ class SubjectOverviewSelectionBloc
     cardsSelected.removeWhere((element) => element.parentId == event.parentId);
     await _cardsRepository.moveCards(cardsSelected, event.parentId);
     cardsSelected.clear();
+    foldersSelected.clear();
     isInSelectMode = false;
     emit(SubjectOverviewSelectionModeOff());
   }
@@ -112,5 +243,15 @@ class SubjectOverviewSelectionBloc
       emit(SubjectOverviewSoftSelectionModeOn());
     else
       emit(SubjectOverviewSelectionModeOff());
+  }
+
+  FutureOr<void> _updateFolderTable(SubjectOverviewUpdateFolderTable event,
+      Emitter<SubjectOverviewSelectionState> emit) {
+    if (selectedInFolder.containsKey(event.folderId)) {
+      selectedInFolder[event.folderId] = [event.folder, event.cards];
+    } else {
+      selectedInFolder[event.folderId] = [event.folder, event.cards];
+      emit(SubjectOverviewSelectionModeOff());
+    }
   }
 }
