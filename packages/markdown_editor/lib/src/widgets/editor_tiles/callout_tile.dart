@@ -5,8 +5,7 @@ import 'package:markdown_editor/src/models/char_tile.dart';
 import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/models/text_field_constants.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
-import 'package:markdown_editor/src/widgets/editor_tiles/bottom_sheets/callout_tile_bottom_sheet.dart';
-import 'package:markdown_editor/src/widgets/editor_tiles/bottom_sheets/menu_bottom_sheet.dart';
+import 'package:markdown_editor/src/widgets/bottom_sheets/callout_tile_bottom_sheet.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
 import 'package:ui_components/ui_components.dart';
 
@@ -43,9 +42,6 @@ class CalloutTile extends StatelessWidget implements EditorTile {
   @override
   Widget build(BuildContext context) {
     emojiController.text = iconString;
-    final replacingTextTile = TextTile(
-      textStyle: TextFieldConstants.normal,
-    );
     // textTile
     //   .onBackspaceDoubleClick = () {
     //     textTile.focusNode = FocusNode();
@@ -79,7 +75,7 @@ class CalloutTile extends StatelessWidget implements EditorTile {
         child: Padding(
           padding: const EdgeInsets.only(
             // right: UIConstants.itemPadding,
-            left: UIConstants.itemPadding - 6,
+            left: 4,
             top: UIConstants.itemPadding / 3,
             bottom: UIConstants.itemPadding / 3,
           ),
@@ -120,7 +116,7 @@ class CalloutTile extends StatelessWidget implements EditorTile {
                 ),
               ),
               const SizedBox(
-                width: 4,
+                width: 0,
               ),
               Expanded(child: textTile),
               UIIconButton(
@@ -134,6 +130,7 @@ class CalloutTile extends StatelessWidget implements EditorTile {
                   ),
                 ),
               ),
+              const SizedBox(width: 4,)
             ],
           ),
         ),

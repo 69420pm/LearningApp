@@ -8,7 +8,8 @@ class CharTile extends Equatable {
       required this.isDefaultOnBackgroundTextColor,
       required this.isBold,
       required this.isItalic,
-      required this.isUnderlined});
+      required this.isUnderlined,
+      this.isHyperlink = false});
 
   /// single char
   String char;
@@ -19,6 +20,7 @@ class CharTile extends Equatable {
   bool isBold;
   bool isItalic;
   bool isUnderlined;
+  bool isHyperlink;
 
   @override
   List<Object?> get props => [char, style, isDefaultOnBackgroundTextColor];
@@ -29,7 +31,8 @@ class CharTile extends Equatable {
       bool? isDefaultOnBackgroundTextColor,
       bool? isBold,
       bool? isItalic,
-      bool? isUnderlined}) {
+      bool? isUnderlined,
+      bool? isHyperlink}) {
     return CharTile(
         char: char ?? this.char,
         style: style ?? this.style,
@@ -37,6 +40,7 @@ class CharTile extends Equatable {
             this.isDefaultOnBackgroundTextColor,
         isBold: isBold ?? this.isBold,
         isItalic: isItalic ?? this.isItalic,
-        isUnderlined: isUnderlined ?? this.isUnderlined);
+        isUnderlined: isUnderlined ?? this.isUnderlined,
+        isHyperlink: isHyperlink ?? this.isHyperlink);
   }
 }

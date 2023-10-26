@@ -1,10 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/bloc/text_editor_bloc.dart';
 import 'package:markdown_editor/src/models/char_tile.dart';
+import 'package:ui_components/ui_components.dart';
 
 // https://medium.com/dartlang/dart-string-manipulation-done-right-5abd0668ba3e
 
@@ -30,6 +30,7 @@ class TextFieldController extends TextEditingController {
   Color _previousTextColor = Colors.white;
   Color _previousTextBackgroundColor = Colors.transparent;
   int _previousSelectionStart = 0;
+  List<HyperLinkEntry> hyperLinks = [];
 
   @override
   TextSpan buildTextSpan({
@@ -39,6 +40,7 @@ class TextFieldController extends TextEditingController {
     bool onlyUpdateCharTiles = false,
   }) {
     super.buildTextSpan(context: context, withComposing: withComposing);
+    hyperLinks = [];
     // text = String.fromCharCodes(text.codeUnits);
     // Runes runes = text.runes;
     // text = String.fromCharCodes(runes);
@@ -149,6 +151,7 @@ class TextFieldController extends TextEditingController {
                           ? TextDecoration.underline
                           : standardStyle.decoration
                       : charTiles[i]!.style.decoration,
+                  // decorationColor: underlinedToChange != null ? underlinedToChange?charTiles[i].,
                   background: standardStyle.background,
                 )
               : standardStyle.copyWith(
@@ -158,13 +161,14 @@ class TextFieldController extends TextEditingController {
                 ),
         );
       }
+      // if text has changed
     } else if (text != _previousText) {
       for (var i = 0; i < text.characters.length; i++) {
         // add new chars
-        //! was previously _previousSelectionStart 
+        //! was previously _previousSelectionStart
         //! instead of _previousSelection.start
         if (i < (selection.end - shiftSelectionEnd) &&
-            i >= _previousSelection.start) {
+            i >= _previousSelection.start - shiftSelectionStart) {
           // if (text.characters.elementAt(i) == charTiles[i]?.char) {
           //   newCharTiles[i] = charTiles[i]!;
           // } else {
@@ -196,6 +200,7 @@ class TextFieldController extends TextEditingController {
         }
         // add chars before selection
         else if (i < selection.end - shiftSelectionEnd) {
+          //! error with emojis occurring
           newCharTiles[i] = charTiles[i]!;
         }
         // add chars after selection
@@ -203,18 +208,49 @@ class TextFieldController extends TextEditingController {
           newCharTiles[i] = charTiles[i - textDelta]!;
         }
       }
+
       charTiles = newCharTiles;
     }
-
+    // check for hyperlink
+    final regex = RegExp(
+      r'[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)',
+    ); // Match one or more digits
+    for (final Match match in regex.allMatches(text)) {
+      hyperLinks.add(HyperLinkEntry(start: match.start, end: match.end - 1));
+      // for (var i = match.start; i < match.end; i++) {
+      //   hyperLinkIndices.add(i);
+      //   // final currentStyle = newCharTiles[i]!.style;
+      //   // newCharTiles[i] = newCharTiles[i]!.copyWith(
+      //   //   isDefaultOnBackgroundTextColor: false,
+      //   //   // isHyperlink: true,
+      //   //   style: currentStyle.copyWith(
+      //   //     color: UIColors.focused,
+      //   //     decoration: TextDecoration.underline,
+      //   //     decorationColor: UIColors.focused,
+      //   //   ),
+      //   // );
+      // }
+      // hyperLinkIndices.add(-1);
+    }
     charTiles.forEach((key, value) {
       children.add(
-        TextSpan(
-          text: value.char,
-          style: value.isDefaultOnBackgroundTextColor
-              ? (value.style
-                  .copyWith(color: Theme.of(context).colorScheme.onBackground))
-              : value.style,
-        ),
+        HyperLinkEntry.checkHyperLink(key, hyperLinks) != null
+            ? TextSpan(
+                text: value.char,
+                style: value.style.copyWith(
+                  color: UIColors.focused,
+                  decoration: TextDecoration.underline,
+                  decorationColor: UIColors.focused,
+                ),
+              )
+            : TextSpan(
+                text: value.char,
+                style: value.isDefaultOnBackgroundTextColor
+                    ? (value.style.copyWith(
+                        color: Theme.of(context).colorScheme.onBackground,
+                      ))
+                    : value.style,
+              ),
       );
     });
     _previousText = text;
@@ -267,5 +303,26 @@ class TextFieldController extends TextEditingController {
       withComposing: true,
       onlyUpdateCharTiles: true,
     );
+  }
+}
+
+class HyperLinkEntry {
+  int start;
+  int end;
+  HyperLinkEntry({
+    required this.start,
+    required this.end,
+  });
+
+  static HyperLinkEntry? checkHyperLink(
+    int key,
+    List<HyperLinkEntry> hyperLinks,
+  ) {
+    for (final element in hyperLinks) {
+      if (key >= element.start && key <= element.end) {
+        return element;
+      }
+    }
+    return null;
   }
 }

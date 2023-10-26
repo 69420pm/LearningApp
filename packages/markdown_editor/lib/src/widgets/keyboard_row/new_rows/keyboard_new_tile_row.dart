@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:markdown_editor/markdown_editor.dart';
-import 'package:markdown_editor/src/helper/image_helper.dart';
 import 'package:markdown_editor/src/models/text_field_constants.dart';
-import 'package:markdown_editor/src/widgets/editor_tiles/bottom_sheets/add_audio_bottom_sheet.dart';
-import 'package:markdown_editor/src/widgets/editor_tiles/bottom_sheets/add_image_bottom_sheet.dart';
+import 'package:markdown_editor/src/widgets/bottom_sheets/add_audio_bottom_sheet.dart';
+import 'package:markdown_editor/src/widgets/bottom_sheets/add_image_bottom_sheet.dart';
+import 'package:markdown_editor/src/widgets/bottom_sheets/latex_bottom_sheet.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/callout_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/divider_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/header_tile.dart';
-import 'package:markdown_editor/src/widgets/editor_tiles/image_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/latex_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/list_editor_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/quote_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
-import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_buttons.dart';
+import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_button.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_row_container.dart';
-import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_toggle.dart';
 import 'package:ui_components/ui_components.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -66,13 +64,7 @@ class KeyboardNewTileRow extends StatelessWidget {
                   children: [
                     KeyboardButton(
                       icon: UIIcons.alternateEmail,
-                      onPressed: () {
-                        context.read<KeyboardRowCubit>().addNewTile(
-                              LatexTile(),
-                              textEditorBloc,
-                              context,
-                            );
-                      },
+                      onPressed: () {},
                     ),
                   ],
                 ),
@@ -86,11 +78,52 @@ class KeyboardNewTileRow extends StatelessWidget {
                     KeyboardButton(
                       icon: UIIcons.functions,
                       onPressed: () {
-                        context.read<KeyboardRowCubit>().addNewTile(
-                              LatexTile(),
-                              textEditorBloc,
-                              context,
-                            );
+                        final newLatexTile = LatexTile();
+                        String latexText = "";
+                        UIBottomSheet.showUIBottomSheet(
+                          context: context,
+                          builder: (_) => Wrap(
+                            children: [
+                              BlocProvider.value(
+                                value: context.read<TextEditorBloc>(),
+                                child: LatexBottomSheet(
+                                  textEditingController:
+                                      newLatexTile.textEditingController,
+                                  latexText: newLatexTile.latexText,
+                                  focusNode: newLatexTile.focusNode ??=
+                                      FocusNode(),
+                                  onChanged: (text) =>
+                                      latexText = text,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ).whenComplete(() {
+                          print(FocusManager.instance.primaryFocus.hashCode);
+                          if (latexText.isNotEmpty) {
+                            context.read<KeyboardRowCubit>().addNewTile(
+                                  newLatexTile.copyWith(latexText: latexText),
+                                  textEditorBloc,
+                                  context,
+                                );
+                            // context.read<TextEditorBloc>().add(
+                            //       TextEditorReplaceEditorTile(
+                            //         tileToRemove: newLatexTile,
+                            //         newEditorTile: newLatexTile.copyWith(
+                            //             latexText: newLatexTile
+                            //                 .textEditingController.text),
+                            //         context: context,
+                            //       ),
+                            //     );
+                          } else {
+                            context.read<TextEditorBloc>().add(
+                                  TextEditorRemoveEditorTile(
+                                    tileToRemove: newLatexTile,
+                                    context: context,
+                                  ),
+                                );
+                          }
+                        });
                       },
                     ),
                   ],

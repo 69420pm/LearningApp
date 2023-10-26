@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:markdown_editor/markdown_editor.dart';
-import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_buttons.dart';
+import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_button.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_row_container.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_toggle.dart';
 import 'package:ui_components/ui_components.dart';
@@ -34,6 +34,7 @@ class KeyboardTextRow extends StatelessWidget {
                       ),
                       KeyboardToggle(
                         icon: UIIcons.formatBold,
+                        initialState: textEditorBloc.isBold,
                         onPressed: (value) {
                           textEditorBloc
                               .add(TextEditorKeyboardRowChange(isBold: value));
@@ -41,6 +42,7 @@ class KeyboardTextRow extends StatelessWidget {
                       ),
                       KeyboardToggle(
                         icon: UIIcons.formatItalic,
+                        initialState: textEditorBloc.isItalic,
                         onPressed: (value) {
                           textEditorBloc.add(
                             TextEditorKeyboardRowChange(isItalic: value),
@@ -49,6 +51,7 @@ class KeyboardTextRow extends StatelessWidget {
                       ),
                       KeyboardToggle(
                         icon: UIIcons.formatUnderline,
+                        initialState: textEditorBloc.isUnderlined,
                         onPressed: (value) {
                           textEditorBloc.add(
                             TextEditorKeyboardRowChange(isUnderlined: value),
