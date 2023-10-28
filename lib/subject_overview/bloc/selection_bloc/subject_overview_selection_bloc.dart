@@ -110,7 +110,7 @@ class SubjectOverviewSelectionBloc
           //deselect parentfolder
           foldersSelected.remove(event.parentFolder);
           // (selectedInFolder[event.parentFolder!.parentId]![0]
-              // as Map<Folder, bool>)[event.parentFolder!] = false;
+          // as Map<Folder, bool>)[event.parentFolder!] = false;
           //select all childs
           (selectedInFolder[event.parentFolder!.uid]![0] as Map<Folder, bool>)
               .forEach((key, value) {

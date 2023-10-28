@@ -350,7 +350,7 @@ packages:
       sha256: d3547240c20cabf205c7c7f01a50ecdbc413755814d6677f3cb366f04abcead0
       url: "https://pub.dev"
     source: hosted
-    version: "0.9.3"
+    version: "0.9.3+1"
   fixnum:
     dependency: transitive
     description:
