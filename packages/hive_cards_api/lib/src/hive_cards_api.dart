@@ -176,13 +176,13 @@ class HiveCardsApi extends CardsApi {
   Future<void> moveFolders(List<Folder> folders, String newParentId) async {
     var newRelationEntry = _relationsBox.get(newParentId);
     newRelationEntry ??= <String>[];
-    
+
     final newNotifier = _notifiers[newParentId];
     var notifierChildren = <File>[];
     if (newNotifier != null) {
       notifierChildren = newNotifier.value;
     }
-    
+
     for (final folder in folders) {
       // --- STORAGE CHANGES ---
       final folderParentId = _getParentIdFromChildId(folder.uid);
@@ -204,8 +204,8 @@ class HiveCardsApi extends CardsApi {
       }
       notifierChildren.add(folder);
     }
-   
-    if(newNotifier != null){
+
+    if (newNotifier != null) {
       newNotifier.value = List.from(notifierChildren);
     }
     await _relationsBox.put(newParentId, newRelationEntry);
@@ -215,13 +215,13 @@ class HiveCardsApi extends CardsApi {
   Future<void> moveCards(List<Card> cards, String newParentId) async {
     var newRelationEntry = _relationsBox.get(newParentId);
     newRelationEntry ??= <String>[];
-    
+
     final newNotifier = _notifiers[newParentId];
     var notifierChildren = <File>[];
     if (newNotifier != null) {
       notifierChildren = newNotifier.value;
     }
-    
+
     for (final card in cards) {
       // --- STORAGE CHANGES ---
       final cardParentId = _getParentIdFromChildId(card.uid);
@@ -243,8 +243,8 @@ class HiveCardsApi extends CardsApi {
       }
       notifierChildren.add(card);
     }
-   
-    if(newNotifier != null){
+
+    if (newNotifier != null) {
       newNotifier.value = List.from(notifierChildren);
     }
     await _relationsBox.put(newParentId, newRelationEntry);
@@ -265,16 +265,40 @@ class HiveCardsApi extends CardsApi {
 
   @override
   List<SearchResult> searchFolder(String searchRequest, String? id) {
-    List<SearchResult> foundFolders = [];
-    if (id != null) {
-      final folderIds = _getChildrenList(id);
-      for (var id in folderIds) {
-        final folder = _folderBox.get(id);
-        if (folder != null &&
-            folder.name.toLowerCase().contains(searchRequest.toLowerCase())) {
-          // foundFolders.add(SearchResult(
-          //     searchedObject: folder, parentObjects: parentObjects));
+    final foundFolders = <SearchResult>[];
+    final folderIds = id != null ? _getChildrenList(id) : _folderBox.keys;
+    for (final id in folderIds) {
+      final folder = _folderBox.get(id);
+      if (folder != null &&
+          folder.name.toLowerCase().contains(searchRequest.toLowerCase())) {
+        final parentObjects = <Object>[];
+        var currentId = folder.uid;
+        while (true) {
+          try {
+            final parentId = _getParentIdFromChildId(currentId);
+            final potentialFolder = _folderBox.get(parentId);
+            if (potentialFolder != null) {
+              parentObjects.add(potentialFolder);
+              currentId = potentialFolder.uid;
+            } else {
+              final potentialSubject = _subjectBox.get(parentId);
+              if (potentialSubject != null) {
+                parentObjects.add(potentialSubject);
+                currentId = potentialSubject.uid;
+              } else {
+                break;
+              }
+            }
+          } catch (e) {
+            break;
+          }
         }
+        foundFolders.add(
+          SearchResult(
+            searchedObject: folder,
+            parentObjects: parentObjects,
+          ),
+        );
       }
     }
     return foundFolders;
