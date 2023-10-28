@@ -1,113 +1,73 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
-
+import 'package:cards_api/src/models/file.dart';
 import 'package:equatable/equatable.dart';
+import 'package:hive/hive.dart';
 
-class Card extends Equatable {
+part 'card.g.dart';
+
+@HiveType(typeId:4)
+class Card extends File implements Equatable {
   /// unique never changing id
-  final String id;
-
-  /// front of card
-  final String front;
-
-  /// back of card, which user should learn
-  final String back;
+  @HiveField(0)
+  @override
+  final String uid;
 
   /// to String formatted creation date
-  final String dateCreated;
-
-  /// id of parent subject/group to order subjects
-  final String parentId;
+  @HiveField(1)
+  final DateTime dateCreated;
 
   /// possibility to get asked when showing the back and hiding the front
   /// (helpful for vocab)
+  @HiveField(2)
   final bool askCardsInverted;
 
   /// possibility to type answer with keyboard and for learning spelling
   /// of a word
+  @HiveField(3)
   final bool typeAnswer;
 
   /// overall score of recall for this card, the higher the better
   /// ranges from 0 (really new) to 6 (really secure with this card)
+  @HiveField(4)
   final int recallScore;
 
-  final List<String> tags;
+  /// date when the card should get learned again
+  @HiveField(5)
+  final DateTime dateToReview;
 
-  /// date when the card should get reviewed
-  final String dateToReview;
-  const Card({
-    required this.id,
-    required this.front,
-    required this.back,
+  // a list of all parent strings in order from closest to most far away parent
+  @override
+  @HiveField(6)
+  final List<String> parents;
+  Card({
+    required this.uid,
     required this.dateCreated,
-    required this.parentId,
     required this.askCardsInverted,
     required this.typeAnswer,
-    this.recallScore = 0,
-    required this.tags,
+    required this.recallScore,
     required this.dateToReview,
-  });
+    required this.parents,
+  }) : super(uid: uid, parents: parents);
 
   Card copyWith({
-    String? front,
-    String? back,
-    String? dateCreated,
-    String? parentId,
+    String? uid,
+    DateTime? dateCreated,
     bool? askCardsInverted,
     bool? typeAnswer,
     int? recallScore,
-    List<String>? tags,
-    String? dateToReview,
+    DateTime? dateToReview,
+    List<String>? parents,
   }) {
     return Card(
-      id: id,
-      front: front ?? this.front,
-      back: back ?? this.back,
+      uid: uid ?? this.uid,
       dateCreated: dateCreated ?? this.dateCreated,
-      parentId: parentId ?? this.parentId,
       askCardsInverted: askCardsInverted ?? this.askCardsInverted,
       typeAnswer: typeAnswer ?? this.typeAnswer,
       recallScore: recallScore ?? this.recallScore,
-      tags: tags ?? this.tags,
       dateToReview: dateToReview ?? this.dateToReview,
+      parents: parents ?? this.parents,
     );
   }
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'id': id,
-      'front': front,
-      'back': back,
-      'dateCreated': dateCreated,
-      'parentId': parentId,
-      'askCardsInverted': askCardsInverted,
-      'typeAnswer': typeAnswer,
-      'recallScore': recallScore,
-      'tags': tags,
-      'dateToReview': dateToReview,
-    };
-  }
-
-  factory Card.fromMap(Map<String, dynamic> map) {
-    return Card(
-      id: map['id'] as String,
-      front: map['front'] as String,
-      back: map['back'] as String,
-      dateCreated: map['dateCreated'] as String,
-      parentId: map['parentId'] as String,
-      askCardsInverted: map['askCardsInverted'] as bool,
-      typeAnswer: map['typeAnswer'] as bool,
-      recallScore: map['recallScore'] as int,
-      tags: const [],
-      /*List<String>.from(map['tags'] as List<String>)*/ //map.entries.map((e) => e.toString()).toList(),
-      dateToReview: map['dateToReview'] as String,
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory Card.fromJson(String source) =>
-      Card.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   bool get stringify => true;
@@ -115,16 +75,13 @@ class Card extends Equatable {
   @override
   List<Object> get props {
     return [
-      id,
-      front,
-      back,
+      uid,
       dateCreated,
-      parentId,
       askCardsInverted,
       typeAnswer,
       recallScore,
-      tags,
       dateToReview,
+      parents
     ];
   }
 }

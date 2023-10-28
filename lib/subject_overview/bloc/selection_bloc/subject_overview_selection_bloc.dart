@@ -67,10 +67,10 @@ class SubjectOverviewSelectionBloc
     final ids = <String>[];
     final parentIds = <String>[];
     for (var i = 0; i < cardsSelected.length; i++) {
-      ids.add(cardsSelected[i].id);
-      parentIds.add(cardsSelected[i].parentId);
+      ids.add(cardsSelected[i].uid);
+      // parentIds.add(cardsSelected[i].parentId);
     }
-    await _cardsRepository.deleteCards(ids, parentIds);
+    // await _cardsRepository.deleteCards(ids, parentIds);
 
     isInSelectMode = false;
     cardsSelected.clear();
@@ -81,7 +81,7 @@ class SubjectOverviewSelectionBloc
     SubjectOverviewSelectionMoveSelectedCards event,
     Emitter<SubjectOverviewSelectionState> emit,
   ) async {
-    cardsSelected.removeWhere((element) => element.parentId == event.parentId);
+    // cardsSelected.removeWhere((element) => element.parentId == event.parentId);
     await _cardsRepository.moveCards(cardsSelected, event.parentId);
     cardsSelected.clear();
     isInSelectMode = false;

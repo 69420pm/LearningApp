@@ -44,7 +44,7 @@ class _AddSubjectBottomSheetState extends State<AddSubjectBottomSheet> {
           if (canSave) {
             context.read<AddSubjectCubit>().saveSubject(
                   nameController.text,
-                  'TODO',
+                  -1,
                   context.read<AddSubjectCubit>().selectedDays,
                 );
             Navigator.pop(context);

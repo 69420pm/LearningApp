@@ -10,15 +10,15 @@ class AddSubjectCubit extends Cubit<AddSubjectState> {
   final CardsRepository _cardsRepository;
   List<bool> selectedDays = [false, false, false, false, false, false, false];
 
-  Future<void> saveSubject(String name, String icon, List<bool> daysToGetNotified) async {
+  Future<void> saveSubject(String name, int icon, List<bool> daysToGetNotified) async {
     emit(AddSubjectLoading());
     final newSubject = Subject(
-      id: Uid().uid(),
+      uid: Uid().uid(),
       name: name,
-      dateCreated: DateTime.now().toIso8601String(),
-      prefixIcon: icon,
+      dateCreated: DateTime.now(),
+      icon: icon,
       classTests: [],
-      daysToGetNotified: daysToGetNotified,
+      scheduledDays: daysToGetNotified,
       streakRelevant: true,
       disabled: false
     );

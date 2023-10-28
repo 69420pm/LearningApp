@@ -30,8 +30,8 @@ class AppRouter {
   late final SubjectBloc _editSubjectBloc =
       SubjectBloc(_cardsRepository);
   late final AddCardCubit _addCardCubit = AddCardCubit(_cardsRepository);
-  late final OverviewBloc _overviewBloc = OverviewBloc(_cardsRepository)
-    ..add(OverviewSubjectSubscriptionRequested());
+  late final OverviewBloc _overviewBloc = OverviewBloc(_cardsRepository);
+    // ..add(OverviewSubjectSubscriptionRequested());
   late final EditSubjectCubit _editSubjectCubit =
       EditSubjectCubit(_cardsRepository);
   late final LearnCubit _learnCubit = LearnCubit(_cardsRepository);

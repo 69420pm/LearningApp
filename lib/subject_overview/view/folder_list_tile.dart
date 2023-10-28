@@ -27,7 +27,7 @@ class FolderListTileParent extends StatelessWidget {
   Widget build(BuildContext context) {
     context
         .read<FolderListTileBloc>()
-        .add(FolderListTileGetChildrenById(id: folder.id));
+        .add(FolderListTileGetChildrenById(id: folder.uid));
 
     return Padding(
       padding: const EdgeInsets.only(
@@ -69,7 +69,7 @@ class FolderListTileParent extends StatelessWidget {
                     isHovered = true;
                     context
                         .read<FolderListTileBloc>()
-                        .add(FolderListTileUpdate(id: folder.id));
+                        .add(FolderListTileUpdate(id: folder.uid));
                   }
                 },
                 onLeave: (data) {
@@ -77,67 +77,67 @@ class FolderListTileParent extends StatelessWidget {
                     isHovered = false;
                     context
                         .read<FolderListTileBloc>()
-                        .add(FolderListTileUpdate(id: folder.id));
+                        .add(FolderListTileUpdate(id: folder.uid));
                   }
                 },
                 onAccept: (data) {
                   if (data is Folder) {
-                    if (data.parentId == folder.id) return;
-                    context.read<SubjectBloc>().add(
-                          SubjectSetFolderParent(
-                            folder: data,
-                            parentId: folder.id,
-                          ),
-                        );
+                    // if (data.parentId == folder.id) return;
+                    // context.read<SubjectBloc>().add(
+                    //       SubjectSetFolderParent(
+                    //         folder: data,
+                    //         parentId: folder.uid,
+                    //       ),
+                    //     );
                   } else if (data is Card) {
-                    if (data.parentId != folder.id) {
-                      if (context.read<SubjectOverviewSelectionBloc>().state
-                          is SubjectOverviewSelectionMultiDragging) {
-                        context.read<SubjectOverviewSelectionBloc>().add(
-                              SubjectOverviewSelectionMoveSelectedCards(
-                                parentId: folder.id,
-                              ),
-                            );
-                      } else {
-                        context.read<SubjectBloc>().add(
-                              SubjectSetCardParent(
-                                card: data,
-                                parentId: folder.id,
-                              ),
-                            );
-                      }
-                    } else if (context
-                        .read<SubjectOverviewSelectionBloc>()
-                        .isInSelectMode) {
-                      context.read<SubjectOverviewSelectionBloc>().add(
-                            SubjectOverviewSelectionMoveSelectedCards(
-                              parentId: folder.id,
-                            ),
-                          );
-                    } else {
-                      context.read<SubjectOverviewSelectionBloc>().add(
-                            SubjectOverviewSelectionToggleSelectMode(
-                              inSelectMode: true,
-                            ),
-                          );
-                      context.read<SubjectOverviewSelectionBloc>().add(
-                            SubjectOverviewSelectionChange(
-                              card: data,
-                              addCard: true,
-                            ),
-                          );
-                    }
+                    // if (data.parentId != folder.uid) {
+                    //   if (context.read<SubjectOverviewSelectionBloc>().state
+                    //       is SubjectOverviewSelectionMultiDragging) {
+                    //     context.read<SubjectOverviewSelectionBloc>().add(
+                    //           SubjectOverviewSelectionMoveSelectedCards(
+                    //             parentId: folder.uid,
+                    //           ),
+                    //         );
+                    //   } else {
+                    //     context.read<SubjectBloc>().add(
+                    //           SubjectSetCardParent(
+                    //             card: data,
+                    //             parentId: folder.uid,
+                    //           ),
+                    //         );
+                    //   }
+                    // } else if (context
+                    //     .read<SubjectOverviewSelectionBloc>()
+                    //     .isInSelectMode) {
+                    //   context.read<SubjectOverviewSelectionBloc>().add(
+                    //         SubjectOverviewSelectionMoveSelectedCards(
+                    //           parentId: folder.uid,
+                    //         ),
+                    //       );
+                    // } else {
+                    //   context.read<SubjectOverviewSelectionBloc>().add(
+                    //         SubjectOverviewSelectionToggleSelectMode(
+                    //           inSelectMode: true,
+                    //         ),
+                    //       );
+                    //   context.read<SubjectOverviewSelectionBloc>().add(
+                    //         SubjectOverviewSelectionChange(
+                    //           card: data,
+                    //           addCard: true,
+                    //         ),
+                    //       );
+                    // }
                   }
                 },
                 builder: (context, candidateData, rejectedData) {
                   return BlocBuilder<FolderListTileBloc, FolderListTileState>(
                     buildWhen: (previous, current) {
                       if (current is FolderListTileRetrieveChildren &&
-                          current.senderId == folder.id) {
+                          current.senderId == folder.uid) {
                         isHovered = false;
                         return true;
                       } else if (current is FolderListTileUpdateOnHover) {
-                        if (current.id == folder.id) return true;
+                        if (current.id == folder.uid) return true;
                       } else if (current is FolderListTileToClearHover) {
                         if (isHovered == true) {
                           isHovered = false;
@@ -148,7 +148,7 @@ class FolderListTileParent extends StatelessWidget {
                     },
                     builder: (context, state) {
                       if (state is FolderListTileRetrieveChildren &&
-                          state.senderId == folder.id) {
+                          state.senderId == folder.uid) {
                         childListTiles = {
                           ...childListTiles,
                           ...state.childrenStream

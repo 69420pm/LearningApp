@@ -24,11 +24,16 @@ class _AddFolderBottomSheetState extends State<AddFolderBottomSheet> {
   bool canSave = false;
   final nameController = TextEditingController();
 
-  void trySaveFolder(){
-if (canSave) {
-            context.read<SubjectBloc>().add(SubjectAddFolder(name: nameController.text, parentId: widget.parentId));
-            Navigator.pop(context);
-          }
+  void trySaveFolder() {
+    if (canSave) {
+      context.read<SubjectBloc>().add(
+            SubjectAddFolder(
+              name: nameController.text,
+              parentId: widget.parentId,
+            ),
+          );
+      Navigator.pop(context);
+    }
   }
 
   @override
@@ -42,13 +47,13 @@ if (canSave) {
       ),
       title: const Text('Add Folder', style: UIText.label),
       actionRight: UIButton(
+        onPressed: trySaveFolder,
         child: Text(
           'Save',
           style: UIText.labelBold.copyWith(
             color: canSave ? UIColors.primary : UIColors.primaryDisabled,
           ),
         ),
-        onPressed: trySaveFolder,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -86,7 +91,7 @@ if (canSave) {
               ),
             ],
           ),
-          const SizedBox(height: UIConstants.itemPaddingLarge)
+          const SizedBox(height: UIConstants.itemPaddingLarge),
         ],
       ),
     );

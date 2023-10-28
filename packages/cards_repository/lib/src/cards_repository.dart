@@ -6,7 +6,8 @@
 // https://opensource.org/licenses/MIT.
 
 import 'package:cards_api/cards_api.dart';
-
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:flutter/foundation.dart';
 /// {@template cards_repository}
 /// A Repository that handles everything related to cards, subjects and groups
 /// {@endtemplate}
@@ -17,7 +18,7 @@ class CardsRepository {
   final CardsApi _cardsApi;
 
   /// provide a [Stream] of all subjects
-  Stream<List<Subject>> getSubjects() => _cardsApi.getSubjects();
+  ValueListenable<Box<Subject>> getSubjects() => _cardsApi.getSubjects();
 
   /// return all cards to learn
   List<Card> learnAllCards() => _cardsApi.learnAllCards();
@@ -39,12 +40,8 @@ class CardsRepository {
       _cardsApi.searchFolder(searchRequest, id);
 
   /// return all children for a given parentId in a stream
-  Stream<List<Object>> getChildrenById(String id) =>
+  ValueNotifier<List<File>> getChildrenById(String id) =>
       _cardsApi.getChildrenById(id);
-
-  /// Close stream for a given parentId to avoid stream leaks
-  Future<void> closeStreamById(String id, {bool deleteChildren = false}) =>
-      _cardsApi.closeStreamById(id, deleteChildren: deleteChildren);
 
   /// Saves a [card]
   /// If a [card] with same id already exists, it will be replaced
@@ -56,16 +53,13 @@ class CardsRepository {
 
   /// Saves a [folder]
   /// If a [folder] with same id already exists it will get replaced
-  Future<void> saveFolder(Folder folder) => _cardsApi.saveFolder(folder);
+  Future<void> saveFolder(Folder folder, String? parentId) => _cardsApi.saveFolder(folder, parentId);
 
   /// Deletes card with given id
   /// If no card with given id exists, a [CardNotFoundException] error is
   /// thrown
-  Future<void> deleteCard(String id, String parentId) =>
-      _cardsApi.deleteCard(id, parentId);
-
-  Future<void> deleteCards(List<String> ids, List<String> parentIds) =>
-      _cardsApi.deleteCards(ids, parentIds);
+  Future<void> deleteCards(List<String> id) =>
+      _cardsApi.deleteCards(id);
 
   /// Deletes subject and every children with given id
   /// If no card with given id exists, a [SubjectNotFoundException] error is
@@ -73,12 +67,12 @@ class CardsRepository {
   Future<void> deleteSubject(String id) => _cardsApi.deleteSubject(id);
 
   /// Delete subject and every children inheriting from it
-  Future<void> deleteFolder(String id, String parentId) =>
-      _cardsApi.deleteFolder(id, parentId);
+  Future<void> deleteFolders(List<String> id) =>
+      _cardsApi.deleteFolders(id);
 
   /// Move folder and every children to [newParentId]
-  Future<void> moveFolder(Folder folder, String newParentId) =>
-      _cardsApi.moveFolder(folder, newParentId);
+  Future<void> moveFolders(List<Folder> folder, String newParentId) =>
+      _cardsApi.moveFolders(folder, newParentId);
 
   Future<void> moveCards(List<Card> cards, String newParentId) =>
       _cardsApi.moveCards(cards, newParentId);

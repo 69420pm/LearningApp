@@ -14,7 +14,7 @@ class EditSubjectCubit extends Cubit<EditSubjectState> {
   Subject? subject;
 
   void init(Subject subject) {
-    selectedDays = subject.daysToGetNotified;
+    selectedDays = subject.scheduledDays;
     classTests = subject.classTests;
     this.subject = subject;
     emit(EditSubjectUpdateWeekdays(selectedDays: selectedDays));
@@ -59,7 +59,7 @@ class EditSubjectCubit extends Cubit<EditSubjectState> {
       classTests.add(classTest);
     }
     for (var i = 0; i < classTests.length; i++) {
-      if (classTests[i].id == classTest.id) {
+      if (classTests[i].uid == classTest.uid) {
         classTests[i] = classTest;
         break;
       }
@@ -91,7 +91,7 @@ class EditSubjectCubit extends Cubit<EditSubjectState> {
 
   Future<void> updateWeekdays(int idToSwitch) async {
     selectedDays[idToSwitch] = !selectedDays[idToSwitch];
-    await saveSubject(subject!.copyWith(daysToGetNotified: selectedDays));
+    await saveSubject(subject!.copyWith(scheduledDays: selectedDays));
     emit(EditSubjectUpdateWeekdays(selectedDays: selectedDays));
   }
 }

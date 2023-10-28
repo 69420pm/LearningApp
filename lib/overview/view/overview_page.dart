@@ -74,9 +74,9 @@ class OverviewPage extends StatelessWidget {
             const SizedBox(
               height: UIConstants.itemPaddingLarge,
             ),
-            SubjectList(
-              showDisabled: true,
-            ),
+            // SubjectList(
+            //   showDisabled: true,
+            // ),
           ],
         ),
       ),

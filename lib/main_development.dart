@@ -5,8 +5,9 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
+import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Card;
 import 'package:hive/hive.dart';
 import 'package:hive_cards_api/hive_cards_api.dart';
 import 'package:learning_app/app/app.dart';
@@ -19,8 +20,18 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final appDocumentDirectory =
       await path_provider.getApplicationDocumentsDirectory();
-  Hive.init(appDocumentDirectory.path);
-  final cardsApi = HiveCardsApi(await Hive.openBox('hive_cards'));
+  Hive
+    ..init(appDocumentDirectory.path)
+    ..registerAdapter(SubjectAdapter())
+    ..registerAdapter(CardAdapter())
+    ..registerAdapter(FolderAdapter())
+    ..registerAdapter(ClassTestAdapter());
+
+  final cardsApi = HiveCardsApi(
+      await Hive.openBox<Subject>('subjects'),
+      await Hive.openBox<Folder>('folders'),
+      await Hive.openBox<Card>('cards'),
+      await Hive.openBox<List<String>>('relations'));
   final cardsRepository = CardsRepository(cardsApi: cardsApi);
 
   final uiApi = HiveUIApi(await Hive.openBox('hive_ui'));

@@ -30,7 +30,7 @@ class SubjectPage extends StatelessWidget {
         builder: (context) {
           context
               .read<SubjectBloc>()
-              .add(SubjectGetChildrenById(id: subjectToEdit.id));
+              .add(SubjectGetChildrenById(id: subjectToEdit.uid));
           return SubjectView(
             subjectToEdit: subjectToEdit,
             editSubjectBloc: editSubjectBloc,
@@ -68,7 +68,7 @@ class _SubjectViewState extends State<SubjectView> {
     return BlocBuilder<SubjectOverviewSelectionBloc,
         SubjectOverviewSelectionState>(
       builder: (context, state) {
-        var softSelectedFolder =
+        final softSelectedFolder =
             context.read<SubjectOverviewSelectionBloc>().folderSoftSelected;
         return UIPage(
           appBar: UIAppBar(
@@ -79,7 +79,8 @@ class _SubjectViewState extends State<SubjectView> {
                     onPressed: () =>
                         context.read<SubjectOverviewSelectionBloc>().add(
                               SubjectOverviewSelectionToggleSelectMode(
-                                  inSelectMode: false),
+                                inSelectMode: false,
+                              ),
                             ),
                   )
                 : null,
@@ -95,13 +96,14 @@ class _SubjectViewState extends State<SubjectView> {
                               return BlocProvider.value(
                                 value: context.read<FolderListTileBloc>(),
                                 child: EditFolderBottomSheet(
-                                    folder: context
-                                        .read<SubjectOverviewSelectionBloc>()
-                                        .folderSoftSelected!),
+                                  folder: context
+                                      .read<SubjectOverviewSelectionBloc>()
+                                      .folderSoftSelected!,
+                                ),
                               );
                             },
                           ),
-                        )
+                        ),
                       ]
                     : [
                         UIIconButton(
@@ -127,21 +129,26 @@ class _SubjectViewState extends State<SubjectView> {
                 labelText: 'Files',
                 actionWidgets: [
                   UIIconButton(
-                icon: UIIcons.search.copyWith(color: UIColors.smallText),
-                onPressed: () {
-                  Navigator.of(context)
-                      .pushNamed('/search', arguments: widget.subjectToEdit.id);
-                },
-              ),
+                    icon: UIIcons.search.copyWith(color: UIColors.smallText),
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(
+                        '/search',
+                        arguments: widget.subjectToEdit.uid,
+                      );
+                    },
+                  ),
                   UIIconButton(
                     icon: UIIcons.download.copyWith(color: UIColors.smallText),
                     onPressed: () {
-                      context.read<SubjectBloc>().add(SubjectAddCard(
-                          front: "test",
-                          back: "test Back",
-                          parentId: softSelectedFolder != null
-                              ? softSelectedFolder.id
-                              : widget.subjectToEdit.id));
+                      context.read<SubjectBloc>().add(
+                            SubjectAddCard(
+                              front: "test",
+                              back: "test Back",
+                              parentId: softSelectedFolder != null
+                                  ? softSelectedFolder.uid
+                                  : widget.subjectToEdit.uid,
+                            ),
+                          );
                     },
                   ),
                   UIIconButton(
@@ -154,8 +161,8 @@ class _SubjectViewState extends State<SubjectView> {
                             value: context.read<SubjectBloc>(),
                             child: AddFolderBottomSheet(
                               parentId: softSelectedFolder != null
-                                  ? softSelectedFolder.id
-                                  : widget.subjectToEdit.id,
+                                  ? softSelectedFolder.uid
+                                  : widget.subjectToEdit.uid,
                             ),
                           );
                         },
@@ -166,10 +173,12 @@ class _SubjectViewState extends State<SubjectView> {
                     icon:
                         UIIcons.placeHolder.copyWith(color: UIColors.smallText),
                     onPressed: () {
-                      Navigator.of(context).pushNamed('/add_card',
-                          arguments: softSelectedFolder != null
-                              ? softSelectedFolder.id
-                              : widget.subjectToEdit.id);
+                      Navigator.of(context).pushNamed(
+                        '/add_card',
+                        arguments: softSelectedFolder != null
+                            ? softSelectedFolder.uid
+                            : widget.subjectToEdit.uid,
+                      );
                     },
                   ),
                 ],
@@ -177,182 +186,205 @@ class _SubjectViewState extends State<SubjectView> {
               const SizedBox(
                 height: UIConstants.itemPaddingLarge,
               ),
-              BlocBuilder<SubjectBloc, SubjectState>(
-                buildWhen: (previous, current) {
-                  if (current is SubjectRetrieveChildren) {
-                    return true;
-                  }
-                  return false;
-                },
-                builder: (context, editSubjectState) {
-                  if (editSubjectState is SubjectRetrieveChildren) {
-                    childListTiles = {
-                      ...childListTiles,
-                      ...editSubjectState.childrenStream,
-                    };
-
-                    for (final element in editSubjectState.removedWidgets) {
-                      if (childListTiles.containsKey(element.id)) {
-                        childListTiles.remove(element.id);
-                      }
-                    }
-                  }
-                  return Expanded(
-                    child: Stack(
-                      children: [
-                        DragTarget(
-                          onAccept: (data) {
-                            if (data is Folder) {
-                              if (data.parentId == widget.subjectToEdit.id) {
-                                return;
-                              }
-                              context.read<SubjectBloc>().add(
-                                    SubjectSetFolderParent(
-                                      folder: data,
-                                      parentId: widget.subjectToEdit.id,
-                                    ),
-                                  );
-                            } else if (data is Card) {
-                              if (data.parentId != widget.subjectToEdit.id) {
-                                if (context
-                                        .read<SubjectOverviewSelectionBloc>()
-                                        .state
-                                    is SubjectOverviewSelectionMultiDragging) {
-                                  context
-                                      .read<SubjectOverviewSelectionBloc>()
-                                      .add(
-                                        SubjectOverviewSelectionMoveSelectedCards(
-                                          parentId: widget.subjectToEdit.id,
-                                        ),
-                                      );
-                                } else {
-                                  context.read<SubjectBloc>().add(
-                                        SubjectSetCardParent(
-                                          card: data,
-                                          parentId: widget.subjectToEdit.id,
-                                        ),
-                                      );
-                                }
-                              } else if (context
-                                  .read<SubjectOverviewSelectionBloc>()
-                                  .isInSelectMode) {
-                                context
-                                    .read<SubjectOverviewSelectionBloc>()
-                                    .add(
-                                      SubjectOverviewSelectionMoveSelectedCards(
-                                        parentId: widget.subjectToEdit.id,
-                                      ),
-                                    );
-                              } else {
-                                context
-                                    .read<SubjectOverviewSelectionBloc>()
-                                    .add(
-                                      SubjectOverviewSelectionToggleSelectMode(
-                                        inSelectMode: true,
-                                      ),
-                                    );
-                                context
-                                    .read<SubjectOverviewSelectionBloc>()
-                                    .add(
-                                      SubjectOverviewSelectionChange(
-                                        card: data,
-                                        addCard: true,
-                                      ),
-                                    );
-                              }
-                            }
-                            // print(data);
-                            // folder.childFolders.add(data);
-                          },
-                          builder: (context, candidateData, rejectedData) {
-                            return Listener(
-                              onPointerMove: (event) {
-                                if (context
-                                        .read<SubjectOverviewSelectionBloc>()
-                                        .isInDragging ||
-                                    context
-                                        .read<FolderListTileBloc>()
-                                        .isDragging) {
-                                  final render = globalKey.currentContext
-                                      ?.findRenderObject() as RenderBox?;
-                                  final top =
-                                      render?.localToGlobal(Offset.zero).dy ??
-                                          0;
-                                  final bottom =
-                                      MediaQuery.of(context).size.height;
-
-                                  final relPos =
-                                      (event.localPosition.dy / (bottom - top))
-                                          .clamp(0, 1);
-
-                                  const space = 0.3;
-
-                                  if (relPos < space && isMovingUp == false) {
-                                    isMovingUp = true;
-                                    isMovingDown = false;
-
-                                    scrollController.animateTo(
-                                      0,
-                                      duration: const Duration(seconds: 1),
-                                      curve: Curves.easeIn,
-                                    );
-                                  } else if (relPos > 1 - space &&
-                                      isMovingDown == false) {
-                                    isMovingDown = true;
-                                    isMovingUp = false;
-                                    scrollController.animateTo(
-                                      scrollController.position.maxScrollExtent,
-                                      duration: const Duration(seconds: 1),
-                                      curve: Curves.easeIn,
-                                    );
-                                  } else if (relPos > space &&
-                                      relPos < 1 - space) {
-                                    if (isMovingUp || isMovingDown) {
-                                      scrollController.jumpTo(
-                                        scrollController.offset,
-                                      );
-                                    }
-                                    isMovingDown = false;
-                                    isMovingUp = false;
-                                  }
-                                }
-                              },
-                              child: CustomScrollView(
-                                key: globalKey,
-                                controller: scrollController,
-                                slivers: [
-                                  SliverList(
-                                    delegate: SliverChildBuilderDelegate(
-                                      (context, index) => childListTiles.values
-                                          .whereType<FolderListTileParent>()
-                                          .elementAt(index),
-                                      // ..isHighlight = index.isOdd,
-                                      childCount: childListTiles.values
-                                          .whereType<FolderListTileParent>()
-                                          .length,
-                                    ),
-                                  ),
-                                  SliverList(
-                                    delegate: SliverChildBuilderDelegate(
-                                      (context, index) => childListTiles.values
-                                          .whereType<CardListTile>()
-                                          .elementAt(index),
-                                      childCount: childListTiles.values
-                                          .whereType<CardListTile>()
-                                          .length,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                    // SingleChildScrollView(child: FolderListTile(folder: Folder(dateCreated: "",id: "root",), cardsRepository: ,),)
+              ValueListenableBuilder(
+                valueListenable: context
+                    .read<SubjectBloc>()
+                    .cardsRepository
+                    .getChildrenById(widget.subjectToEdit.uid),
+                builder: (context, value, child) {
+                  final list = value;
+                  return CustomScrollView(
+                    shrinkWrap: true,
+                    slivers: [
+                      SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                            childCount: list.length, (context, index) {
+                          return FolderListTileParent(
+                            folder: list[index] as Folder,
+                          );
+                        }),
+                      ),
+                    ],
                   );
                 },
-              ),
+              )
+              // BlocBuilder<SubjectBloc, SubjectState>(
+              //   buildWhen: (previous, current) {
+              //     if (current is SubjectRetrieveChildren) {
+              //       return true;
+              //     }
+              //     return false;
+              //   },
+              //   builder: (context, editSubjectState) {
+              //     if (editSubjectState is SubjectRetrieveChildren) {
+              //       childListTiles = {
+              //         ...childListTiles,
+              //         ...editSubjectState.childrenStream,
+              //       };
+
+              //       for (final element in editSubjectState.removedWidgets) {
+              //         if (childListTiles.containsKey(element.id)) {
+              //           childListTiles.remove(element.id);
+              //         }
+              //       }
+              //     }
+              //     return Expanded(
+              //       child: Stack(
+              //         children: [
+              //           DragTarget(
+              //             onAccept: (data) {
+              //               if (data is Folder) {
+              //                 // if (data.parentId == widget.subjectToEdit.uid) {
+              //                 //   return;
+              //                 // }
+              //                 context.read<SubjectBloc>().add(
+              //                       SubjectSetFolderParent(
+              //                         folder: data,
+              //                         parentId: widget.subjectToEdit.uid,
+              //                       ),
+              //                     );
+              //               } else if (data is Card) {
+              //                 /* if (data.parentId != widget.subjectToEdit.uid) {
+              //                   if (context
+              //                           .read<SubjectOverviewSelectionBloc>()
+              //                           .state
+              //                       is SubjectOverviewSelectionMultiDragging) {
+              //                     context
+              //                         .read<SubjectOverviewSelectionBloc>()
+              //                         .add(
+              //                           SubjectOverviewSelectionMoveSelectedCards(
+              //                             parentId: widget.subjectToEdit.uid,
+              //                           ),
+              //                         );
+              //                   } else {
+              //                     context.read<SubjectBloc>().add(
+              //                           SubjectSetCardParent(
+              //                             card: data,
+              //                             parentId: widget.subjectToEdit.uid,
+              //                           ),
+              //                         );
+              //                   }
+              //                 } else  */
+              //                 if (context
+              //                     .read<SubjectOverviewSelectionBloc>()
+              //                     .isInSelectMode) {
+              //                   context
+              //                       .read<SubjectOverviewSelectionBloc>()
+              //                       .add(
+              //                         SubjectOverviewSelectionMoveSelectedCards(
+              //                           parentId: widget.subjectToEdit.uid,
+              //                         ),
+              //                       );
+              //                 } else {
+              //                   context
+              //                       .read<SubjectOverviewSelectionBloc>()
+              //                       .add(
+              //                         SubjectOverviewSelectionToggleSelectMode(
+              //                           inSelectMode: true,
+              //                         ),
+              //                       );
+              //                   context
+              //                       .read<SubjectOverviewSelectionBloc>()
+              //                       .add(
+              //                         SubjectOverviewSelectionChange(
+              //                           card: data,
+              //                           addCard: true,
+              //                         ),
+              //                       );
+              //                 }
+              //               }
+              //               // print(data);
+              //               // folder.childFolders.add(data);
+              //             },
+              //             builder: (context, candidateData, rejectedData) {
+              //               return Listener(
+              //                 onPointerMove: (event) {
+              //                   if (context
+              //                           .read<SubjectOverviewSelectionBloc>()
+              //                           .isInDragging ||
+              //                       context
+              //                           .read<FolderListTileBloc>()
+              //                           .isDragging) {
+              //                     final render = globalKey.currentContext
+              //                         ?.findRenderObject() as RenderBox?;
+              //                     final top =
+              //                         render?.localToGlobal(Offset.zero).dy ??
+              //                             0;
+              //                     final bottom =
+              //                         MediaQuery.of(context).size.height;
+
+              //                     final relPos =
+              //                         (event.localPosition.dy / (bottom - top))
+              //                             .clamp(0, 1);
+
+              //                     const space = 0.3;
+
+              //                     if (relPos < space && isMovingUp == false) {
+              //                       isMovingUp = true;
+              //                       isMovingDown = false;
+
+              //                       scrollController.animateTo(
+              //                         0,
+              //                         duration: const Duration(seconds: 1),
+              //                         curve: Curves.easeIn,
+              //                       );
+              //                     } else if (relPos > 1 - space &&
+              //                         isMovingDown == false) {
+              //                       isMovingDown = true;
+              //                       isMovingUp = false;
+              //                       scrollController.animateTo(
+              //                         scrollController.position.maxScrollExtent,
+              //                         duration: const Duration(seconds: 1),
+              //                         curve: Curves.easeIn,
+              //                       );
+              //                     } else if (relPos > space &&
+              //                         relPos < 1 - space) {
+              //                       if (isMovingUp || isMovingDown) {
+              //                         scrollController.jumpTo(
+              //                           scrollController.offset,
+              //                         );
+              //                       }
+              //                       isMovingDown = false;
+              //                       isMovingUp = false;
+              //                     }
+              //                   }
+              //                 },
+              //                 child: CustomScrollView(
+              //                   key: globalKey,
+              //                   controller: scrollController,
+              //                   slivers: [
+              //                     SliverList(
+              //                       delegate: SliverChildBuilderDelegate(
+              //                         (context, index) => childListTiles.values
+              //                             .whereType<FolderListTileParent>()
+              //                             .elementAt(index),
+              //                         // ..isHighlight = index.isOdd,
+              //                         childCount: childListTiles.values
+              //                             .whereType<FolderListTileParent>()
+              //                             .length,
+              //                       ),
+              //                     ),
+              //                     SliverList(
+              //                       delegate: SliverChildBuilderDelegate(
+              //                         (context, index) => childListTiles.values
+              //                             .whereType<CardListTile>()
+              //                             .elementAt(index),
+              //                         childCount: childListTiles.values
+              //                             .whereType<CardListTile>()
+              //                             .length,
+              //                       ),
+              //                     ),
+              //                   ],
+              //                 ),
+              //               );
+              //             },
+              //           ),
+              //         ],
+              //       ),
+              //       // SingleChildScrollView(child: FolderListTile(folder: Folder(dateCreated: "",id: "root",), cardsRepository: ,),)
+              //     );
+              //   },
+              // ),
             ],
           ),
         );
@@ -360,41 +392,41 @@ class _SubjectViewState extends State<SubjectView> {
     );
   }
 
-  bool nothingChanged(String name, String icon, Subject currentSubject) {
-    if (name != currentSubject.name ||
-        // location != currentSubject.parentId ||
-        icon != currentSubject.prefixIcon) {
-      return false;
-    }
-    return true;
-  }
+  // bool nothingChanged(String name, String icon, Subject currentSubject) {
+  //   if (name != currentSubject.name ||
+  //       // location != currentSubject.parentId ||
+  //       ) {
+  //     return false;
+  //   }
+  //   return true;
+  // }
 
-  Future<void> save(
-    GlobalKey<FormState> formKey,
-    String nameInput,
-    String iconInput,
-    BuildContext context,
-  ) async {
-    if (formKey.currentState!.validate()) {
-      if (!nothingChanged(
-        nameInput.trim(),
-        iconInput.trim(),
-        widget.subjectToEdit,
-      )) {
-        context.read<SubjectBloc>().add(
-              SubjectSaveSubject(
-                widget.subjectToEdit
-                    .copyWith(name: nameInput, prefixIcon: iconInput),
-              ),
-            );
-      }
-    }
-  }
+  // Future<void> save(
+  //   GlobalKey<FormState> formKey,
+  //   String nameInput,
+  //   String iconInput,
+  //   BuildContext context,
+  // ) async {
+  //   if (formKey.currentState!.validate()) {
+  //     if (!nothingChanged(
+  //       nameInput.trim(),
+  //       iconInput.trim(),
+  //       widget.subjectToEdit,
+  //     )) {
+  //       context.read<SubjectBloc>().add(
+  //             SubjectSaveSubject(
+  //               widget.subjectToEdit
+  //                   .copyWith(name: nameInput, prefixIcon: iconInput),
+  //             ),
+  //           );
+  //     }
+  //   }
+  // }
 
   @override
   void dispose() {
     widget.editSubjectBloc
-        .add(SubjectCloseStreamById(id: widget.subjectToEdit.id));
+        .add(SubjectCloseStreamById(id: widget.subjectToEdit.uid));
     super.dispose();
   }
 }

@@ -46,40 +46,40 @@ class FolderListTileBloc
     // emit(FolderListTileLoading());
     // await _cardsRepository.closeStreamById(streamId!);
 
-    await emit.forEach(
-      _cardsRepository.getChildrenById(event.id),
-      onData: (data) {
-        final childListTiles = <String, Widget>{};
-        final widgetsToRemove = <Removed>[];
-        for (final element in data) {
-          if (element is Folder) {
-            childListTiles[element.id] = FolderListTileParent(
-              folder: element,
-              // cardsRepository: _cardsRepository,
-            );
-          } else if (element is Card) {
-            childListTiles[element.id] = CardListTile(
-              card: element,
-              isCardSelected: false,
-              isInSelectMode: false,
-            );
-          } else if (element is Removed) {
-            widgetsToRemove.add(element);
-          }
-        }
-        // if (childListTiles.isNotEmpty || widgetsToRemove.isNotEmpty) {
-        return FolderListTileRetrieveChildren(
-          senderId: event.id,
-          childrenStream: childListTiles,
-          removedWidgets: widgetsToRemove,
-        );
-        // }
+    // await emit.forEach(
+    //   _cardsRepository.getChildrenById(event.id),
+    //   onData: (data) {
+    //     final childListTiles = <String, Widget>{};
+    //     final widgetsToRemove = <Removed>[];
+    //     for (final element in data) {
+    //       if (element is Folder) {
+    //         childListTiles[element.id] = FolderListTileParent(
+    //           folder: element,
+    //           // cardsRepository: _cardsRepository,
+    //         );
+    //       } else if (element is Card) {
+    //         childListTiles[element.id] = CardListTile(
+    //           card: element,
+    //           isCardSelected: false,
+    //           isInSelectMode: false,
+    //         );
+    //       } else if (element is Removed) {
+    //         widgetsToRemove.add(element);
+    //       }
+    //     }
+    //     // if (childListTiles.isNotEmpty || widgetsToRemove.isNotEmpty) {
+    //     return FolderListTileRetrieveChildren(
+    //       senderId: event.id,
+    //       childrenStream: childListTiles,
+    //       removedWidgets: widgetsToRemove,
+    //     );
+    //     // }
 
-        // return FolderListTileSuccess();
-      },
-      onError: (error, stackTrace) =>
-          FolderListTileError(errorMessage: 'backend broken'),
-    );
+    //     // return FolderListTileSuccess();
+    //   },
+    //   onError: (error, stackTrace) =>
+    //       FolderListTileError(errorMessage: 'backend broken'),
+    // );
   }
 
   Future<void> _addFolder(
@@ -88,9 +88,8 @@ class FolderListTileBloc
   ) async {
     emit(FolderListTileLoading());
     // try {
-    final newFolder = event.folder.copyWith(parentId: event.newParentId);
-    await _cardsRepository.saveFolder(newFolder);
-    await _cardsRepository.deleteFolder(event.folder.id, event.folder.parentId);
+    await _cardsRepository.saveFolder(event.folder, event.newParentId);
+    await _cardsRepository.deleteFolders([event.folder.uid]);
     emit(FolderListTileSuccess());
     // } catch (e) {
     //   emit(FolderListTileError(errorMessage: 'folder adding failed'));
@@ -103,9 +102,8 @@ class FolderListTileBloc
   ) async {
     emit(FolderListTileLoading());
     // try {
-    final newCard = event.card.copyWith(parentId: event.newParentId);
-    await _cardsRepository.deleteCard(event.card.id, event.card.parentId);
-    await _cardsRepository.saveCard(newCard);
+    await _cardsRepository.deleteCards([event.card.uid]);
+    await _cardsRepository.saveCard(event.card);
     emit(FolderListTileSuccess());
     // } catch (e) {
     //   emit(FolderListTileError(errorMessage: 'card adding failed'));
@@ -118,7 +116,7 @@ class FolderListTileBloc
   ) async {
     emit(FolderListTileLoading());
     // try{
-    await _cardsRepository.deleteFolder(event.id, event.parentId);
+    await _cardsRepository.deleteFolders([event.id]);
     emit(FolderListTileSuccess());
     // }catch(e){
     //   emit(FolderListTileError(errorMessage: 'folder deleting failed'));
@@ -131,7 +129,7 @@ class FolderListTileBloc
   ) async {
     emit(FolderListTileLoading());
     // try {
-    await _cardsRepository.moveFolder(event.folder, event.newParentId);
+    await _cardsRepository.moveFolders([event.folder], event.newParentId);
     emit(FolderListTileSuccess());
     // } catch (e) {
     //   emit(FolderListTileError(errorMessage: "folder moving failed"));
@@ -186,8 +184,8 @@ class FolderListTileBloc
       Emitter<FolderListTileState> emit) async {
     emit(FolderListTileLoading());
     // try {
-    await _cardsRepository
-        .saveFolder(event.folder.copyWith(name: event.newName));
+    await _cardsRepository.saveFolder(
+        event.folder.copyWith(name: event.newName), null);
     emit(FolderListTileSuccess());
   }
 }

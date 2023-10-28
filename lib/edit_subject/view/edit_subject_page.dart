@@ -39,7 +39,8 @@ class EditSubjectPage extends StatelessWidget {
                 child: UITextFieldLarge(
                   controller: nameController,
                   onChanged: (p0) {
-                    subject = subject.copyWith(name: p0);
+                    if(p0==null|| p0.isEmpty) return;
+                    subject.name = p0;
                     context.read<EditSubjectCubit>().saveSubject(subject);
                   },
                   onFieldSubmitted: (_) {},
@@ -96,13 +97,13 @@ class EditSubjectPage extends StatelessWidget {
                       subject = state.subject;
                     }
                     if (subject.disabled) {
-                      subject = subject.copyWith(streakRelevant: false);
+                      subject.streakRelevant = false;
                     }
                     return UISwitch(
                       disabled: subject.disabled,
                       startValue: subject.streakRelevant,
                       onChanged: (value) {
-                        this.subject = subject.copyWith(streakRelevant: value);
+                        subject.streakRelevant = value; 
                         context
                             .read<EditSubjectCubit>()
                             .saveSubject(this.subject);
@@ -140,10 +141,10 @@ class EditSubjectPage extends StatelessWidget {
                     return UISwitch(
                       startValue: subject.disabled,
                       onChanged: (value) {
-                        this.subject = subject.copyWith(disabled: value);
+                        subject.disabled = value;
                         context
                             .read<EditSubjectCubit>()
-                            .saveSubject(this.subject);
+                            .saveSubject(subject);
                       },
                     );
                   },
@@ -172,7 +173,7 @@ class EditSubjectPage extends StatelessWidget {
                     onAccepted: () async {
                       await context
                           .read<EditSubjectCubit>()
-                          .deleteSubject(subject.id);
+                          .deleteSubject(subject.uid);
                       await Navigator.of(context).pushNamed('/');
                     },
                   ),

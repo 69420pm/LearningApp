@@ -70,7 +70,7 @@ class CardListTileView extends StatelessWidget {
                         ),
                         const SizedBox(width: UIConstants.defaultSize * 2),
                         Text(
-                          card.front,
+                          "FRONT SHOULD BE HERE",// card.front,
                           overflow: TextOverflow.ellipsis,
                           style:
                               Theme.of(context).textTheme.bodyMedium?.copyWith(

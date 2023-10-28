@@ -8,7 +8,7 @@ class SubjectHelper {
     for (final element in subject.classTests) {
       DateTime? classTestDate;
       try {
-        classTestDate = DateTime.tryParse(element.date);
+        classTestDate = (element.date);
       } catch (e) {
         continue;
       }

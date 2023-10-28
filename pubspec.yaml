@@ -39,6 +39,7 @@ dependencies:
   flutter_math_fork: ^0.7.1
   flutter_sound: ^9.2.13
   url_launcher: ^6.1.14
+  
 
 dev_dependencies:
   bloc_test: ^9.1.1
@@ -46,6 +47,8 @@ dev_dependencies:
     sdk: flutter
   mocktail: ^1.0.0
   very_good_analysis: ^5.0.0+1
+  hive_generator: ^2.0.1
+  build_runner: ^2.4.6
 
 flutter:
   uses-material-design: true

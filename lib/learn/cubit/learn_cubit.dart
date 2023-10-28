@@ -35,7 +35,7 @@ class LearnCubit extends Cubit<LearnState> {
       if (nextRecallScore < 2) {
         final newCard = card.copyWith(
           recallScore: nextRecallScore,
-          dateToReview: nextTimeToReview.toIso8601String(),
+          dateToReview: nextTimeToReview,
         );
         cardsToLearn.add(newCard);
       }
@@ -47,13 +47,13 @@ class LearnCubit extends Cubit<LearnState> {
       nextTimeToReview = DateTime.now();
       final newCard = card.copyWith(
         recallScore: nextRecallScore,
-        dateToReview: nextTimeToReview.toIso8601String(),
+        dateToReview: nextTimeToReview,
       );
       cardsToLearn.add(newCard);
     }
     final newCard = card.copyWith(
       recallScore: nextRecallScore,
-      dateToReview: nextTimeToReview.toIso8601String(),
+      dateToReview: nextTimeToReview,
     );
     print('card alla');
     print(nextRecallScore);
@@ -66,8 +66,8 @@ class LearnCubit extends Cubit<LearnState> {
     cardsToLearn = _cardsRepository.learnAllCards();
 
     cardsToLearn.sort(
-      (a, b) => DateTime.parse(a.dateToReview)
-          .compareTo(DateTime.parse(b.dateToReview)),
+      (a, b) => a.dateToReview
+          .compareTo(b.dateToReview),
     );
   }
 

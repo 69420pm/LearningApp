@@ -1,67 +1,56 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
-
+import 'package:cards_api/src/models/file.dart';
 import 'package:equatable/equatable.dart';
+import 'package:hive/hive.dart';
 
-class Folder extends Equatable {
+part 'folder.g.dart';
+
+@HiveType(typeId:1)
+class Folder extends File implements Equatable {
   /// unique never changing id
-  final String id;
+  @HiveField(0)
+  @override
+  final String uid;
 
   /// possibly changing name
+  @HiveField(1)
   final String name;
 
   /// to String formatted creation date
-  final String dateCreated;
+  @HiveField(2)
+  final DateTime dateCreated;
 
   /// id of parent subject to order cards
-  final String parentId;
-  const Folder({
-    required this.id,
+  @HiveField(3)
+  @override
+  final List<String> parents;
+  Folder({
+    required this.uid,
     required this.name,
     required this.dateCreated,
-    required this.parentId,
-  });
+    required this.parents,
+  }) : super(uid: uid, parents: parents);
 
   Folder copyWith({
-    String? id,
+    String? uid,
     String? name,
-    String? dateCreated,
-    String? parentId,
+    DateTime? dateCreated,
+    List<String>? parents,
   }) {
     return Folder(
-      id: id ?? this.id,
+      uid: uid ?? this.uid,
       name: name ?? this.name,
       dateCreated: dateCreated ?? this.dateCreated,
-      parentId: parentId ?? this.parentId,
+      parents: parents ?? this.parents,
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'id': id,
-      'name': name,
-      'dateCreated': dateCreated,
-      'parentId': parentId,
-    };
-  }
-
-  factory Folder.fromMap(Map<String, dynamic> map) {
-    return Folder(
-      id: map['id'] as String,
-      name: map['name'] as String,
-      dateCreated: map['dateCreated'] as String,
-      parentId: map['parentId'] as String,
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory Folder.fromJson(String source) =>
-      Folder.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   bool get stringify => true;
 
   @override
-  List<Object> get props => [id, name, dateCreated, parentId];
+  List<Object> get props {
+    return [uid, name, dateCreated, parents];
+  }
 }

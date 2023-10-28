@@ -92,7 +92,8 @@ class _CardListTileSearch extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(card.front, style: UIText.labelBold),
+                  // card.front was there before
+                  Text(card.uid, style: UIText.labelBold),
                   const SizedBox(
                     height: UIConstants.itemPadding / 4,
                   ),

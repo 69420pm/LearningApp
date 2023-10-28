@@ -19,15 +19,13 @@ class AddCardCubit extends Cubit<AddCardState> {
   ) async {
     emit(AddCardLoading());
     final newCard = Card(
-      id: Uid().uid(),
-      front: front,
-      back: back,
-      dateCreated: DateTime.now().toIso8601String(),
-      parentId: parentSubject.id,
+      uid: Uid().uid(),
+      dateCreated: DateTime.now(),
       askCardsInverted: false,
       typeAnswer: true,
-      dateToReview: DateTime.now().toIso8601String(),
-      tags: const [],
+      dateToReview: DateTime.now(),
+      parents: [],
+      recallScore: 0
     );
     try {
       // parentSubject.childCards.add(newCard);

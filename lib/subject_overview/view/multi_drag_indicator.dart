@@ -34,16 +34,14 @@ class CardListTileMultiDragIndicator extends StatelessWidget {
           child: CardListTileView(
             card: index == cardAmount - 1
                 ? firstCard
-                : const Card(
+                :  Card(
                     askCardsInverted: false,
-                    back: '',
-                    dateCreated: '',
-                    dateToReview: '',
-                    front: '',
-                    id: '',
-                    parentId: '',
+                    dateCreated: DateTime.now(),
+                    dateToReview: DateTime.now(),
+                    uid: '',
                     typeAnswer: false,
-                    tags: [],),
+                    parents: [],
+                    recallScore: 0),
             isSelected: true,
             height: height,
             width: width,

@@ -6,7 +6,8 @@
 // https://opensource.org/licenses/MIT.
 
 import 'package:cards_api/cards_api.dart';
-
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:flutter/foundation.dart';
 /// {@template cards_api}
 /// The interface and models for an API providing access to cards.
 /// {@endtemplate}
@@ -15,7 +16,7 @@ abstract class CardsApi {
   const CardsApi();
 
   /// provide a [Stream] of all subjects
-  Stream<List<Subject>> getSubjects();
+  ValueListenable<Box<Subject>> getSubjects();
 
   /// return all cards which should get learned
   List<Card> learnAllCards();
@@ -39,17 +40,12 @@ abstract class CardsApi {
 
   /// Saves a [folder]
   /// If a [folder] with same id already exists, it will be replaced
-  Future<void> saveFolder(Folder folder);
-
-  /// Deletes card with given id
-  /// If no card with given id exists, a [CardNotFoundException] error is
-  /// thrown
-  Future<void> deleteCard(String id, String parentId);
+  Future<void> saveFolder(Folder folder, String? parentId);
 
 /// Deletes cards with given id
   /// If no cards with given id exists, a [CardNotFoundException] error is
   /// thrown
-  Future<void> deleteCards(List<String> id, List<String> parentId);
+  Future<void> deleteCards(List<String> ids);
 
   /// Deletes subject and every children with given id
   /// If no card with given id exists, a [SubjectNotFoundException] error is
@@ -59,19 +55,16 @@ abstract class CardsApi {
   /// Deletes folder and every children with given id
   /// If no card with given id exists, a [FolderNotFoundException] error is
   /// thrown
-  Future<void> deleteFolder(String id, String parentId);
+  Future<void> deleteFolders(List<String> ids);
 
   /// Move folder and every children to [newParentId]
-  Future<void> moveFolder(Folder folder, String newParentId);
+  Future<void> moveFolders(List<Folder> folders, String newParentId);
 
   /// Move multiple cards to [newParentId]
   Future<void> moveCards(List<Card> cards, String newParentId);
 
   /// return all children in stream to a given parentId
-  Stream<List<Object>> getChildrenById(String id);
-
-  /// close stream for given parentId to avoid stream leaks
-  Future<void> closeStreamById(String id, {bool deleteChildren = false});
+  ValueNotifier<List<File>> getChildrenById(String id);
 }
 
 /// Error when a [Card] with given id is not found

@@ -13,7 +13,8 @@ class AddClassTestPage extends StatelessWidget {
       nameController.text = classTest!.name;
       canSave = true;
     } else {
-      classTest = ClassTest(id: Uid().uid(), name: '', date: '', folderIds: []);
+      classTest = ClassTest(
+          uid: Uid().uid(), name: '', date: DateTime.now(), folderIds: []);
     }
   }
 
@@ -46,7 +47,7 @@ class AddClassTestPage extends StatelessWidget {
       },
     ).then((value) {
       if (value == null) return;
-      classTest = classTest!.copyWith(date: value.toIso8601String());
+      classTest = classTest!.copyWith(date: value);
       if (!addClassTest) {
         context.read<EditSubjectCubit>().saveClassTest(classTest!);
       } else {
@@ -170,7 +171,7 @@ class AddClassTestPage extends StatelessWidget {
                               _showDatePicker(context);
                             },
                             text: DateFormat('MM/dd/yyyy')
-                                .format(DateTime.parse(classTest!.date)),
+                                .format(classTest!.date),
                           ),
                           // Text(
                           //   DateFormat('MM/dd')
