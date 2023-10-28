@@ -107,7 +107,6 @@ class SubjectBloc extends Bloc<SubjectEvent, SubjectState> {
     emit(SubjectSuccess());
   }
 
-
   Future<void> _saveCard(
     SubjectAddCard event,
     Emitter<SubjectState> emit,

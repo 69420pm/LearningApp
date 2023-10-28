@@ -132,6 +132,7 @@ class HiveCardsApi extends CardsApi {
       relations!.add(card.uid);
       await _relationsBox.put(parentId, relations);
     }
+    //! broken
     // update notifiers
     final currentNotifier = _notifiers[parentId];
     if (currentNotifier != null) {

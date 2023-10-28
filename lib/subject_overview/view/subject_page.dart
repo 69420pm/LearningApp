@@ -192,15 +192,14 @@ class _SubjectViewState extends State<SubjectView> {
                     .cardsRepository
                     .getChildrenById(widget.subjectToEdit.uid),
                 builder: (context, value, child) {
-                  final list = value;
                   return CustomScrollView(
                     shrinkWrap: true,
                     slivers: [
                       SliverList(
                         delegate: SliverChildBuilderDelegate(
-                            childCount: list.length, (context, index) {
+                            childCount: value.length, (context, index) {
                           return FolderListTileParent(
-                            folder: list[index] as Folder,
+                            folder: value[index] as Folder,
                           );
                         }),
                       ),
