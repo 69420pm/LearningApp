@@ -8,6 +8,6 @@ abstract class File {
 
   const File({
     required this.uid,
-    required this.parents
+    required this.parents,
   });
 }

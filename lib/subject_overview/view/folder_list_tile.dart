@@ -130,6 +130,46 @@ class FolderListTileParent extends StatelessWidget {
                   }
                 },
                 builder: (context, candidateData, rejectedData) {
+                  // return ValueListenableBuilder(
+                  //     valueListenable: context
+                  //         .read<FolderListTileBloc>()
+                  //         .cardsRepository
+                  //         .getChildrenById(folder.uid),
+                  //     builder: ((context, value, child) {
+                  //       final children = value;
+                  //       final folders = <Folder>[];
+                  //       final cards = <Card>[];
+                  //       value.forEach(
+                  //         (element) {
+                  //           if (element is Folder) {
+                  //             folders.add(element);
+                  //           } else if (element is Card) {
+                  //             cards.add(element);
+                  //           }
+                  //         },
+                  //       );
+                  //       return CustomScrollView(
+                  //         shrinkWrap: true,
+                  //         slivers: [
+                  //           SliverList(
+                  //             delegate: SliverChildBuilderDelegate(
+                  //                 childCount: folders.length,
+                  //                 (context, index) {
+                  //               // return FolderListTileView(
+                  //               //     folder: folders[index]);
+                  //             }),
+                  //           ),
+                  //           SliverList(
+                  //             delegate: SliverChildBuilderDelegate(
+                  //                 childCount: cards.length,
+                  //                 (context, index) {
+                  //               // return SubjectListTile(
+                  //               //    subject: subjects[index]); 
+                  //             }),
+                  //           ),
+                  //         ],
+                  //       );
+                  //     }));
                   return BlocBuilder<FolderListTileBloc, FolderListTileState>(
                     buildWhen: (previous, current) {
                       if (current is FolderListTileRetrieveChildren &&

@@ -29,7 +29,7 @@ class AddCardCubit extends Cubit<AddCardState> {
     );
     try {
       // parentSubject.childCards.add(newCard);
-      await _cardsRepository.saveCard(newCard);
+      await _cardsRepository.saveCard(newCard, parentSubject.uid);
       emit(AddCardSuccess());
     } catch (e) {
       emit(

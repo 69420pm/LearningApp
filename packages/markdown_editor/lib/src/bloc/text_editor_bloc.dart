@@ -7,6 +7,7 @@ import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/models/text_field_constants.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/list_editor_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
+import 'package:ui_components/ui_components.dart';
 
 import '../models/char_tile.dart';
 
@@ -20,9 +21,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     this.isBold = false,
     this.isItalic = false,
     this.isUnderlined = false,
-    this.isCode = false,
-    this.textColor = Colors.red,
-    this.isDefaultOnBackgroundTextColor = true,
+    this.textColor = UIColors.textLight,
     this.textBackgroundColor = Colors.transparent,
   }) : super(TextEditorInitial()) {
     on<TextEditorKeyboardRowChange>(_keyboardRowChange);
@@ -49,14 +48,10 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
   /// whether text should get written underlined or not
   bool isUnderlined;
 
-  /// whether text should get formatted as code
-  bool isCode;
+
 
   /// color of text
   Color textColor;
-
-  /// if should render as colorScheme.onBackground
-  bool isDefaultOnBackgroundTextColor;
 
   /// background color of text
   Color textBackgroundColor;
@@ -69,22 +64,16 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     isItalic = event.isItalic != null ? event.isItalic! : isItalic;
     isUnderlined =
         event.isUnderlined != null ? event.isUnderlined! : isUnderlined;
-    isCode = event.isCode != null ? event.isCode! : isCode;
     textColor = event.textColor != null ? event.textColor! : textColor;
     textBackgroundColor = event.textBackgroundColor != null
         ? event.textBackgroundColor!
         : textBackgroundColor;
-    isDefaultOnBackgroundTextColor =
-        event.isDefaultOnBackgroundTextColor != null
-            ? event.isDefaultOnBackgroundTextColor!
-            : isDefaultOnBackgroundTextColor;
+
     emit(
       TextEditorKeyboardRowChanged(
         isBold: isBold,
         isItalic: isItalic,
         isUnderlined: isUnderlined,
-        isCode: isCode,
-        isDefaultOnBackgroundTextColor: isDefaultOnBackgroundTextColor,
         textColor: textColor,
         textBackgroundColor: textBackgroundColor,
       ),

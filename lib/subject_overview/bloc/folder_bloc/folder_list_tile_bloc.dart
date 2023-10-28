@@ -13,7 +13,7 @@ part 'folder_list_tile_state.dart';
 
 class FolderListTileBloc
     extends Bloc<FolderListTileEvent, FolderListTileState> {
-  FolderListTileBloc(this._cardsRepository) : super(FolderListTileInitial()) {
+  FolderListTileBloc(this.cardsRepository) : super(FolderListTileInitial()) {
     on<FolderListTileGetChildrenById>((event, emit) async {
       await _getChildren(event, emit);
     });
@@ -35,7 +35,7 @@ class FolderListTileBloc
   }
   // List<String> _subscribedStreamIds = [];
 
-  final CardsRepository _cardsRepository;
+  final CardsRepository cardsRepository;
   bool isDragging = false;
 
   String? streamId;
@@ -88,8 +88,8 @@ class FolderListTileBloc
   ) async {
     emit(FolderListTileLoading());
     // try {
-    await _cardsRepository.saveFolder(event.folder, event.newParentId);
-    await _cardsRepository.deleteFolders([event.folder.uid]);
+    await cardsRepository.saveFolder(event.folder, event.newParentId);
+    await cardsRepository.deleteFolders([event.folder.uid]);
     emit(FolderListTileSuccess());
     // } catch (e) {
     //   emit(FolderListTileError(errorMessage: 'folder adding failed'));
@@ -102,8 +102,8 @@ class FolderListTileBloc
   ) async {
     emit(FolderListTileLoading());
     // try {
-    await _cardsRepository.deleteCards([event.card.uid]);
-    await _cardsRepository.saveCard(event.card);
+    await cardsRepository.deleteCards([event.card.uid]);
+    await cardsRepository.saveCard(event.card, event.newParentId);
     emit(FolderListTileSuccess());
     // } catch (e) {
     //   emit(FolderListTileError(errorMessage: 'card adding failed'));
@@ -116,7 +116,7 @@ class FolderListTileBloc
   ) async {
     emit(FolderListTileLoading());
     // try{
-    await _cardsRepository.deleteFolders([event.id]);
+    await cardsRepository.deleteFolders([event.id]);
     emit(FolderListTileSuccess());
     // }catch(e){
     //   emit(FolderListTileError(errorMessage: 'folder deleting failed'));
@@ -129,7 +129,7 @@ class FolderListTileBloc
   ) async {
     emit(FolderListTileLoading());
     // try {
-    await _cardsRepository.moveFolders([event.folder], event.newParentId);
+    await cardsRepository.moveFolders([event.folder], event.newParentId);
     emit(FolderListTileSuccess());
     // } catch (e) {
     //   emit(FolderListTileError(errorMessage: "folder moving failed"));
@@ -140,7 +140,7 @@ class FolderListTileBloc
     FolderListTileDEBUGAddCard event,
     Emitter<FolderListTileState> emit,
   ) async {
-    await _cardsRepository.saveCard(event.card);
+    // await cardsRepository.saveCard(event.card);
   }
 
   // FutureOr<void> _closeStream(FolderListTileCloseStreamById event, Emitter<FolderListTileState> emit) {
@@ -156,7 +156,7 @@ class FolderListTileBloc
 
   Widget folderWidget(Folder element) {
     return BlocProvider(
-      create: (context) => FolderListTileBloc(_cardsRepository),
+      create: (context) => FolderListTileBloc(cardsRepository),
       child: FolderListTileParent(
         folder: element,
         // cardsRepository: _cardsRepository,
@@ -184,7 +184,7 @@ class FolderListTileBloc
       Emitter<FolderListTileState> emit) async {
     emit(FolderListTileLoading());
     // try {
-    await _cardsRepository.saveFolder(
+    await cardsRepository.saveFolder(
         event.folder.copyWith(name: event.newName), null);
     emit(FolderListTileSuccess());
   }

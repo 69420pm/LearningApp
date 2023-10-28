@@ -58,7 +58,7 @@ class LearnCubit extends Cubit<LearnState> {
     print('card alla');
     print(nextRecallScore);
     print(nextTimeToReview);
-    _cardsRepository.saveCard(newCard);
+    _cardsRepository.saveCard(newCard, null);
     emit(FrontState());
   }
 

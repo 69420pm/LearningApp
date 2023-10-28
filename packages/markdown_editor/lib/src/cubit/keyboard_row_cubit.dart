@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/new_rows/color_rows/keyboard_text_color_row.dart';
+import 'package:ui_components/ui_components.dart';
 import 'package:meta/meta.dart';
 
 part 'keyboard_row_state.dart';
@@ -56,28 +57,47 @@ class KeyboardRowCubit extends Cubit<KeyboardRowState> {
   }
 
   void changeTextColor(Color color, TextEditorBloc textEditorBloc) {
-    textEditorBloc.add(TextEditorKeyboardRowChange(
-        textColor: color, isDefaultOnBackgroundTextColor: false));
-    emit(KeyboardRowText(
-        textColor: color, backgroundColor: textEditorBloc.textBackgroundColor));
+    textEditorBloc.add(TextEditorKeyboardRowChange(textColor: color));
+    emit(
+      KeyboardRowText(
+        textColor: color,
+        backgroundColor: textEditorBloc.textBackgroundColor,
+      ),
+    );
   }
 
   void defaultTextColor(TextEditorBloc textEditorBloc) {
-    textEditorBloc
-        .add(TextEditorKeyboardRowChange(isDefaultOnBackgroundTextColor: true));
-    emit(KeyboardRowText(
-        textColor: Colors.white,
-        backgroundColor: textEditorBloc.textBackgroundColor));
+    emit(
+      KeyboardRowText(
+        textColor: UIColors.textLight,
+        backgroundColor: textEditorBloc.textBackgroundColor,
+      ),
+    );
   }
 
   void changeBackgroundColor(Color color, TextEditorBloc textEditorBloc) {
     textEditorBloc.add(TextEditorKeyboardRowChange(textBackgroundColor: color));
-    emit(KeyboardRowText(
-        textColor: textEditorBloc.textColor, backgroundColor: color));
+    emit(
+      KeyboardRowText(
+        textColor: textEditorBloc.textColor,
+        backgroundColor: color,
+      ),
+    );
   }
 
-  void addNewTile(EditorTile tile, TextEditorBloc textEditorBloc, BuildContext context, {bool emitState=true}){
-    textEditorBloc.add(TextEditorAddEditorTile(newEditorTile: tile, context: context, emitState: emitState));
+  void addNewTile(
+    EditorTile tile,
+    TextEditorBloc textEditorBloc,
+    BuildContext context, {
+    bool emitState = true,
+  }) {
+    textEditorBloc.add(
+      TextEditorAddEditorTile(
+        newEditorTile: tile,
+        context: context,
+        emitState: emitState,
+      ),
+    );
     expandText();
   }
 

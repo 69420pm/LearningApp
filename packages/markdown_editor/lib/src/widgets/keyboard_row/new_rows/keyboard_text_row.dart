@@ -100,9 +100,7 @@ class KeyboardTextRow extends StatelessWidget {
                       ),
                       KeyboardButton(
                         icon: UIIcons.formatColorText.copyWith(
-                          color: textEditorBloc.isDefaultOnBackgroundTextColor
-                              ? UIColors.textLight
-                              : textEditorBloc.textColor,
+                          color: textEditorBloc.textColor,
                         ),
                         onPressed: () {
                           if (!context
@@ -114,6 +112,9 @@ class KeyboardTextRow extends StatelessWidget {
                           }
                         },
                         onDoubleTap: () {
+                          context.read<KeyboardRowCubit>().changeTextColor(
+                              UIColors.textLight,
+                              context.read<TextEditorBloc>());
                           context
                               .read<KeyboardRowCubit>()
                               .defaultTextColor(textEditorBloc);

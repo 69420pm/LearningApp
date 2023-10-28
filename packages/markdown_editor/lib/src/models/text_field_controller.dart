@@ -61,9 +61,6 @@ class TextFieldController extends TextEditingController {
     final isBold = context.read<TextEditorBloc>().isBold;
     final isItalic = context.read<TextEditorBloc>().isItalic;
     final isUnderlined = context.read<TextEditorBloc>().isUnderlined;
-    final isCode = context.read<TextEditorBloc>().isCode;
-    final isDefaultColor =
-        context.read<TextEditorBloc>().isDefaultOnBackgroundTextColor;
     final textColor = context.read<TextEditorBloc>().textColor;
     final textBackgroundColor =
         context.read<TextEditorBloc>().textBackgroundColor;
@@ -96,7 +93,6 @@ class TextFieldController extends TextEditingController {
       bool? italicToChange;
       bool? underlinedToChange;
       bool? codeToChange;
-      bool? defaultColorChange;
       Color? textColorToChange;
       Color? textBackgroundColorToChange;
       if (isBold != _previousBold) {
@@ -108,15 +104,11 @@ class TextFieldController extends TextEditingController {
       if (isUnderlined != _previousUnderlined) {
         underlinedToChange = isUnderlined;
       }
-      if (isDefaultColor != _previousDefaultColor) {
-        defaultColorChange = isDefaultColor;
-      }
+
       if (textColor != _previousTextColor) {
         textColorToChange = textColor;
       }
-      if (codeToChange != _previousCode) {
-        codeToChange = isCode;
-      }
+
       if (textBackgroundColor != _previousTextBackgroundColor) {
         textBackgroundColorToChange = textBackgroundColor;
       }
@@ -124,42 +116,33 @@ class TextFieldController extends TextEditingController {
           i < selection.end - shiftSelectionEnd;
           i++) {
         charTiles[i] = CharTile(
-          char: text.characters.elementAt(i),
-          isDefaultOnBackgroundTextColor: isDefaultColor,
-          isBold: isBold,
-          isItalic: isItalic,
-          isUnderlined: isUnderlined,
-          style: !isCode
-              ? standardStyle.copyWith(
-                  color: defaultColorChange ?? false
-                      ? Theme.of(context).colorScheme.onBackground
-                      : textColorToChange ?? charTiles[i]!.style.color,
-                  backgroundColor: textBackgroundColorToChange ??
-                      charTiles[i]!.style.backgroundColor,
-                  fontWeight: boldToChange != null
-                      ? boldToChange
-                          ? FontWeight.bold
-                          : standardStyle.fontWeight
-                      : charTiles[i]!.style.fontWeight,
-                  fontStyle: italicToChange != null
-                      ? italicToChange
-                          ? FontStyle.italic
-                          : standardStyle.fontStyle
-                      : charTiles[i]!.style.fontStyle,
-                  decoration: underlinedToChange != null
-                      ? underlinedToChange
-                          ? TextDecoration.underline
-                          : standardStyle.decoration
-                      : charTiles[i]!.style.decoration,
-                  // decorationColor: underlinedToChange != null ? underlinedToChange?charTiles[i].,
-                  background: standardStyle.background,
-                )
-              : standardStyle.copyWith(
-                  // TODO colors not theme specific
-                  color: Theme.of(context).colorScheme.onBackground,
-                  background: Paint()..color = Colors.transparent,
-                ),
-        );
+            char: text.characters.elementAt(i),
+            isBold: isBold,
+            isItalic: isItalic,
+            isUnderlined: isUnderlined,
+            style: standardStyle.copyWith(
+              color: textColorToChange ?? charTiles[i]!.style.color,
+              decorationColor: textColorToChange ?? charTiles[i]!.style.color,
+              backgroundColor: textBackgroundColorToChange ??
+                  charTiles[i]!.style.backgroundColor,
+              fontWeight: boldToChange != null
+                  ? boldToChange
+                      ? FontWeight.bold
+                      : standardStyle.fontWeight
+                  : charTiles[i]!.style.fontWeight,
+              fontStyle: italicToChange != null
+                  ? italicToChange
+                      ? FontStyle.italic
+                      : standardStyle.fontStyle
+                  : charTiles[i]!.style.fontStyle,
+              decoration: underlinedToChange != null
+                  ? underlinedToChange
+                      ? TextDecoration.underline
+                      : standardStyle.decoration
+                  : charTiles[i]!.style.decoration,
+              // decorationColor: underlinedToChange != null ? underlinedToChange?charTiles[i].,
+              background: standardStyle.background,
+            ));
       }
       // if text has changed
     } else if (text != _previousText) {
@@ -174,24 +157,17 @@ class TextFieldController extends TextEditingController {
           // } else {
           newCharTiles[i] = CharTile(
             char: text.characters.elementAt(i),
-            style: !isCode
-                ? standardStyle.copyWith(
-                    color: textColor,
-                    backgroundColor: textBackgroundColor,
-                    fontWeight:
-                        isBold ? FontWeight.bold : standardStyle.fontWeight,
-                    fontStyle:
-                        isItalic ? FontStyle.italic : standardStyle.fontStyle,
-                    decoration: isUnderlined
-                        ? TextDecoration.underline
-                        : standardStyle.decoration,
-                    background: standardStyle.background,
-                  )
-                : standardStyle.copyWith(
-                    color: Theme.of(context).colorScheme.onBackground,
-                    background: Paint()..color = Colors.transparent,
-                  ),
-            isDefaultOnBackgroundTextColor: isDefaultColor,
+            style: standardStyle.copyWith(
+              color: textColor,
+              decorationColor: textColor,
+              backgroundColor: textBackgroundColor,
+              fontWeight: isBold ? FontWeight.bold : standardStyle.fontWeight,
+              fontStyle: isItalic ? FontStyle.italic : standardStyle.fontStyle,
+              decoration: isUnderlined
+                  ? TextDecoration.underline
+                  : standardStyle.decoration,
+              background: standardStyle.background,
+            ),
             isBold: isBold,
             isItalic: isItalic,
             isUnderlined: isUnderlined,
@@ -245,11 +221,7 @@ class TextFieldController extends TextEditingController {
               )
             : TextSpan(
                 text: value.char,
-                style: value.isDefaultOnBackgroundTextColor
-                    ? (value.style.copyWith(
-                        color: Theme.of(context).colorScheme.onBackground,
-                      ))
-                    : value.style,
+                style: value.style,
               ),
       );
     });
@@ -258,8 +230,6 @@ class TextFieldController extends TextEditingController {
     _previousBold = isBold;
     _previousItalic = isItalic;
     _previousUnderlined = isUnderlined;
-    _previousCode = isCode;
-    _previousDefaultColor = isDefaultColor;
     _previousTextColor = textColor;
     _previousTextBackgroundColor = textBackgroundColor;
 
@@ -291,9 +261,8 @@ class TextFieldController extends TextEditingController {
           fontStyle: currentCharTile.isItalic ? FontStyle.italic : null,
           decoration:
               currentCharTile.isUnderlined ? TextDecoration.underline : null,
-          color: currentCharTile.isDefaultOnBackgroundTextColor
-              ? Theme.of(context).colorScheme.onBackground
-              : currentCharTile.style.color,
+          color: currentCharTile.style.color,
+          decorationColor: currentCharTile.style.color,
           backgroundColor: currentCharTile.style.backgroundColor,
         ),
       );

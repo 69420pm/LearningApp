@@ -4,11 +4,8 @@ import 'package:equatable/equatable.dart';
 
 abstract class EditorTileDC extends Equatable {
   /// unique never changing id
-  final String id;
+  final String uid;
   const EditorTileDC({
-    required this.id,
+    required this.uid,
   });
-
-  @override
-  String toString() => 'EditorTileDC(id: $id)';
 }

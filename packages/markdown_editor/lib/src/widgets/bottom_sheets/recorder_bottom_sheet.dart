@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:markdown_editor/markdown_editor.dart';
-import 'package:markdown_editor/src/widgets/editor_tiles/new_audio_tile.dart';
+import 'package:markdown_editor/src/widgets/editor_tiles/audio_tile.dart';
 import 'package:ui_components/ui_components.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -83,7 +83,7 @@ class _RecorderBottomSheetState extends State<RecorderBottomSheet> {
     if (context.mounted) {
       context.read<TextEditorBloc>().add(
             TextEditorAddEditorTile(
-              newEditorTile: NewAudioTile(
+              newEditorTile: AudioTile(
                 filePath: filePath!,
               ),
               context: context,

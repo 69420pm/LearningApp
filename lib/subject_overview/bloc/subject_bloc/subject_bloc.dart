@@ -126,7 +126,7 @@ class SubjectBloc extends Bloc<SubjectEvent, SubjectState> {
       dateToReview: DateTime.now(),
       // tags: const [],
     );
-    await cardsRepository.saveCard(newCard);
+    await cardsRepository.saveCard(newCard, event.parentId);
     emit(SubjectSuccess());
   }
 

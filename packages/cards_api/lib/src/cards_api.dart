@@ -32,7 +32,7 @@ abstract class CardsApi {
 
   /// Saves a [card]
   /// If a [card] with same id already exists, it will be replaced
-  Future<void> saveCard(Card card);
+  Future<void> saveCard(Card card, String? parentId);
 
   /// Saves a [subject]
   /// If a [subject] with same id already exists, it will be replaced

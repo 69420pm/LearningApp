@@ -8,7 +8,6 @@ class TextEditorKeyboardRowChange extends TextEditorEvent {
   bool? isItalic;
   bool? isUnderlined;
   bool? isCode;
-  bool? isDefaultOnBackgroundTextColor;
   Color? textColor;
   Color? textBackgroundColor;
   TextEditorKeyboardRowChange({
@@ -16,7 +15,6 @@ class TextEditorKeyboardRowChange extends TextEditorEvent {
     this.isItalic,
     this.isUnderlined,
     this.isCode,
-    this.isDefaultOnBackgroundTextColor,
     this.textColor,
     this.textBackgroundColor,
   });

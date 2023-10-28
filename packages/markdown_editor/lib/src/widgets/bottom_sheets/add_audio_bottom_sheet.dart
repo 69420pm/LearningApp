@@ -4,7 +4,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/widgets/bottom_sheets/recorder_bottom_sheet.dart';
-import 'package:markdown_editor/src/widgets/editor_tiles/new_audio_tile.dart';
+import 'package:markdown_editor/src/widgets/editor_tiles/audio_tile.dart';
 import 'package:ui_components/ui_components.dart';
 
 class AddAudioBottomSheet extends StatelessWidget {
@@ -47,7 +47,7 @@ class AddAudioBottomSheet extends StatelessWidget {
                 if (context.mounted) {
                   context.read<TextEditorBloc>().add(
                         TextEditorAddEditorTile(
-                          newEditorTile: NewAudioTile(
+                          newEditorTile: AudioTile(
                             filePath: audio.files.single.path!,
                           ),
                           context: context,

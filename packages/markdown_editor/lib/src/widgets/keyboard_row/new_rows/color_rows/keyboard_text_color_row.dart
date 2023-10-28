@@ -78,7 +78,9 @@ class _DefaultTextColorSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.read<KeyboardRowCubit>().defaultTextColor(context.read<TextEditorBloc>());
+        context
+                    .read<KeyboardRowCubit>()
+                    .changeTextColor(UIColors.textLight, context.read<TextEditorBloc>());
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
