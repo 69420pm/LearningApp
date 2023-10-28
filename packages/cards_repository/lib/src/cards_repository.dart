@@ -74,6 +74,13 @@ class CardsRepository {
   Future<void> moveFolders(List<Folder> folder, String newParentId) =>
       _cardsApi.moveFolders(folder, newParentId);
 
+  // Move cards
   Future<void> moveCards(List<Card> cards, String newParentId) =>
       _cardsApi.moveCards(cards, newParentId);
+
+  // get list of every children for a given parentId
+  List<String> getChildrenlist(String parentId) => _cardsApi.getChildrenList(parentId);
+
+  // get parent id to a given child id
+  String getParentIdFromChildId(String id) => _cardsApi.getParentIdFromChildId(id);
 }

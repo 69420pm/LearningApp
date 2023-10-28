@@ -65,6 +65,12 @@ abstract class CardsApi {
 
   /// return all children in stream to a given parentId
   ValueNotifier<List<File>> getChildrenById(String id);
+
+  // get list of every children for a given [parentId]
+  List<String> _getChildrenList(String parentId) ;
+
+  // get parent id to a given child id
+    String _getParentIdFromChildId(String id);
 }
 
 /// Error when a [Card] with given id is not found

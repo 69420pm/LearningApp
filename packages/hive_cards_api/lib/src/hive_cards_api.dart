@@ -98,7 +98,7 @@ class HiveCardsApi extends CardsApi {
 
   @override
   Future<void> saveFolder(Folder folder, String? parentId_) async {
-    final parentId = parentId_ ?? _getParentIdFromChildId(folder.uid);
+    final parentId = parentId_ ?? getParentIdFromChildId(folder.uid);
     // add folder to _folderBox
     await _folderBox.put(folder.uid, folder);
     // add folder to relations
@@ -109,7 +109,7 @@ class HiveCardsApi extends CardsApi {
       relations.add(folder.uid);
       await _relationsBox.put(parentId, relations);
     }
-
+    //! broke
     // update notifiers
     final currentNotifier = _notifiers[parentId];
     if (currentNotifier != null) {
@@ -120,7 +120,7 @@ class HiveCardsApi extends CardsApi {
 
   @override
   Future<void> saveCard(Card card, String? parentId_) async {
-    final parentId = parentId_ ?? _getParentIdFromChildId(card.uid);
+    final parentId = parentId_ ?? getParentIdFromChildId(card.uid);
     // add card to _cardBox
     await _cardBox.put(card.uid, card);
 
@@ -144,7 +144,7 @@ class HiveCardsApi extends CardsApi {
   @override
   Future<void> deleteSubject(String id) async {
     await _subjectBox.delete(id);
-    final children = _getChildrenList(id);
+    final children = getChildrenList(id);
     await _deleteFolders(children, false);
   }
 
@@ -156,7 +156,7 @@ class HiveCardsApi extends CardsApi {
   @override
   Future<void> deleteCards(List<String> ids) async {
     for (final id in ids) {
-      final parentId = _getParentIdFromChildId(id);
+      final parentId = getParentIdFromChildId(id);
       await _cardBox.delete(id);
       // remove card from parent relation entry
       final currentRelationEntry = _relationsBox.get(parentId);
@@ -186,7 +186,7 @@ class HiveCardsApi extends CardsApi {
 
     for (final folder in folders) {
       // --- STORAGE CHANGES ---
-      final folderParentId = _getParentIdFromChildId(folder.uid);
+      final folderParentId = getParentIdFromChildId(folder.uid);
       // remove old folder relation to parent
       final relationEntry = _relationsBox.get(folderParentId);
       if (relationEntry != null) {
@@ -225,7 +225,7 @@ class HiveCardsApi extends CardsApi {
 
     for (final card in cards) {
       // --- STORAGE CHANGES ---
-      final cardParentId = _getParentIdFromChildId(card.uid);
+      final cardParentId = getParentIdFromChildId(card.uid);
       // remove old folder relation to parent
       final relationEntry = _relationsBox.get(cardParentId);
       if (relationEntry != null) {
@@ -267,7 +267,7 @@ class HiveCardsApi extends CardsApi {
   @override
   List<SearchResult> searchFolder(String searchRequest, String? id) {
     final foundFolders = <SearchResult>[];
-    final folderIds = id != null ? _getChildrenList(id) : _folderBox.keys;
+    final folderIds = id != null ? getChildrenList(id) : _folderBox.keys;
     for (final id in folderIds) {
       final folder = _folderBox.get(id);
       if (folder != null &&
@@ -276,7 +276,7 @@ class HiveCardsApi extends CardsApi {
         var currentId = folder.uid;
         while (true) {
           try {
-            final parentId = _getParentIdFromChildId(currentId);
+            final parentId = getParentIdFromChildId(currentId);
             final potentialFolder = _folderBox.get(parentId);
             if (potentialFolder != null) {
               parentObjects.add(potentialFolder);
@@ -313,9 +313,9 @@ class HiveCardsApi extends CardsApi {
   Future<void> _deleteFolders(List<String> ids, bool updateNotifier) async {
     for (var i = 0; i < ids.length; i++) {
       final folderId = ids[i];
-      final parentId = _getParentIdFromChildId(ids[i]);
+      final parentId = getParentIdFromChildId(ids[i]);
       // get all ids of children
-      final childrenIds = _getChildrenList(folderId);
+      final childrenIds = getChildrenList(folderId);
       // iterate over all children of folder
       for (final childrenId in childrenIds) {
         // dispose subscribed notifiers
@@ -360,7 +360,8 @@ class HiveCardsApi extends CardsApi {
     _notifiers.remove(id);
   }
 
-  String _getParentIdFromChildId(String id) {
+  @override
+  String getParentIdFromChildId(String id) {
     final values = _relationsBox.values.toList();
     for (var i = 0; i < values.length; i++) {
       final childrenIds = values[i];
@@ -373,7 +374,8 @@ class HiveCardsApi extends CardsApi {
     throw ParentNotFoundException();
   }
 
-  List<String> _getChildrenList(String parentId) {
+  @override
+  List<String> getChildrenList(String parentId) {
     final childrenIds = _recursive(parentId, []);
     return childrenIds;
   }
