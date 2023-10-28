@@ -22,27 +22,14 @@ class SubjectOverviewSelectionBloc
     on<SubjectOverviewUpdateFolderTable>(_updateFolderTable);
   }
   final CardsRepository _cardsRepository;
-  final List<Card> cardsSelected = List.empty(growable: true);
-  final List<Folder> foldersSelected = List.empty(growable: true);
+  final List<String> selectedFiles = List.empty(growable: true);
 
   Folder? folderSoftSelected;
   bool isInDragging = false;
   bool isInSelectMode = false;
 
-  //folderId: [Map<folder,isSelected>, Map<card,isSelected>]
-  final Map<String, List<Map<dynamic, bool>>> selectedInFolder = {};
-
   void _clearSelectionVariables() {
-    cardsSelected.clear();
-    foldersSelected.clear();
-    selectedInFolder.forEach((key, value) {
-      value[0].forEach((key, value) {
-        value = false;
-      });
-      value[1].forEach((key, value) {
-        value = false;
-      });
-    });
+    selectedFiles.clear();
   }
 
   FutureOr<void> _toggleSelectMode(
@@ -64,10 +51,10 @@ class SubjectOverviewSelectionBloc
     SubjectOverviewCardSelectionChange event,
     Emitter<SubjectOverviewSelectionState> emit,
   ) {
-    if (!cardsSelected.contains(event.card)) {
+    if (!selectedFiles.contains(event.cardUID)) {
       // new Card selected
-      cardsSelected.add(event.card);
-      if (event.parentFolder != null) {
+      selectedFiles.add(event.cardUID);
+      if () {
         //change list
         (selectedInFolder[event.parentFolder!.uid]![1]
             as Map<Card, bool>)[event.card] = true;

@@ -13,19 +13,17 @@ class SubjectOverviewSelectionToggleSelectMode
 }
 
 class SubjectOverviewCardSelectionChange extends SubjectOverviewSelectionEvent {
-  Card card;
-  Folder? parentFolder;
+  String cardUID;
   SubjectOverviewCardSelectionChange({
-    required this.card,
-    required this.parentFolder,
+    required this.cardUID,
   });
 }
 
 class SubjectOverviewFolderSelectionChange
     extends SubjectOverviewSelectionEvent {
-  Folder folder;
+  String folderUID;
   SubjectOverviewFolderSelectionChange({
-    required this.folder,
+    required this.folderUID,
   });
 }
 
