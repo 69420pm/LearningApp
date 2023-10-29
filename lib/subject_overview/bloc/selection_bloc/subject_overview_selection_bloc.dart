@@ -54,8 +54,10 @@ class SubjectOverviewSelectionBloc
     if (!selectedFiles.contains(event.cardUID)) {
       // new Card selected
       selectedFiles.add(event.cardUID);
-      if () {
+      if (_cardsRepository.getParentIdFromChildId(event.cardUID) == subjectid) {
+        //! insert backendmethod
         //change list
+        //@
         (selectedInFolder[event.parentFolder!.uid]![1]
             as Map<Card, bool>)[event.card] = true;
 
