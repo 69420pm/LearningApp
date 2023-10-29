@@ -67,8 +67,6 @@ class _SubjectViewState extends State<SubjectView> {
     var isMovingDown = false;
     var isMovingUp = false;
 
-    var childListTiles = <String, Widget>{};
-
     return BlocBuilder<SubjectOverviewSelectionBloc,
         SubjectOverviewSelectionState>(
       builder: (context, state) {
@@ -194,10 +192,8 @@ class _SubjectViewState extends State<SubjectView> {
                     .cardsRepository
                     .getChildrenById(widget.subjectToEdit.uid),
                 builder: (context, value, child) {
-                  final _folders =
-                      value.where((element) => element is Folder).toList();
-                  final _cards =
-                      value.where((element) => element is Card).toList();
+                  final _folders = value.whereType<Folder>().toList();
+                  final _cards = value.whereType<Card>().toList();
 
                   return Expanded(
                     child: Stack(
@@ -301,23 +297,18 @@ class _SubjectViewState extends State<SubjectView> {
                                 slivers: [
                                   SliverList(
                                     delegate: SliverChildBuilderDelegate(
-                                      (context, index) => childListTiles.values
-                                          .whereType<FolderListTileParent>()
-                                          .elementAt(index),
+                                      (context, index) => FolderListTileParent(
+                                        folder: _folders[index],
+                                      ),
                                       // ..isHighlight = index.isOdd,
-                                      childCount: childListTiles.values
-                                          .whereType<FolderListTileParent>()
-                                          .length,
+                                      childCount: _folders.length,
                                     ),
                                   ),
                                   SliverList(
                                     delegate: SliverChildBuilderDelegate(
-                                      (context, index) => childListTiles.values
-                                          .whereType<CardListTile>()
-                                          .elementAt(index),
-                                      childCount: childListTiles.values
-                                          .whereType<CardListTile>()
-                                          .length,
+                                      (context, index) =>
+                                          CardListTile(card: _cards[index]),
+                                      childCount: _cards.length,
                                     ),
                                   ),
                                 ],
