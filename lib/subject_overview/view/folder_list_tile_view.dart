@@ -21,7 +21,7 @@ class FolderListTileView extends StatelessWidget {
   final bool isHovered;
 
   final Folder folder;
-  final Map<String, Widget> childListTiles;
+  final List<Widget> childListTiles;
 
   Widget build(BuildContext context) {
     var isSoftSelected = folder.uid ==
@@ -58,30 +58,26 @@ class FolderListTileView extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (childListTiles.values
-                  .whereType<FolderListTileParent>()
-                  .isNotEmpty)
+              if (childListTiles.whereType<FolderListTileParent>().isNotEmpty)
                 ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  itemCount: childListTiles.values
-                      .whereType<FolderListTileParent>()
-                      .length,
+                  itemCount:
+                      childListTiles.whereType<FolderListTileParent>().length,
                   itemBuilder: (context, index) {
-                    return childListTiles.values
+                    return childListTiles
                         .whereType<FolderListTileParent>()
                         .elementAt(index);
                     // ..isHighlight = index.isOdd;
                   },
                 ),
-              if (childListTiles.values.whereType<CardListTile>().isNotEmpty)
+              if (childListTiles.whereType<CardListTile>().isNotEmpty)
                 ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  itemCount:
-                      childListTiles.values.whereType<CardListTile>().length,
+                  itemCount: childListTiles.whereType<CardListTile>().length,
                   itemBuilder: (context, index) {
-                    return childListTiles.values
+                    return childListTiles
                         .whereType<CardListTile>()
                         .elementAt(index);
                   },

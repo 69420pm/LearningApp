@@ -204,8 +204,8 @@ class _SubjectViewState extends State<SubjectView> {
                             onAccept: (data) {
                               if (data is Folder) {
                                 context.read<SubjectBloc>().add(
-                                      SubjectSetFolderParent(
-                                        folder: data,
+                                      SubjectSetFileParent(
+                                        fileUID: data.uid,
                                         parentId: widget.subjectToEdit.uid,
                                       ),
                                     );
@@ -303,6 +303,8 @@ class _SubjectViewState extends State<SubjectView> {
                                         (context, index) =>
                                             FolderListTileParent(
                                           folder: _folders[index],
+                                          cardsRepository:
+                                              widget.cardsRepository,
                                         ),
                                         // ..isHighlight = index.isOdd,
                                         childCount: _folders.length,

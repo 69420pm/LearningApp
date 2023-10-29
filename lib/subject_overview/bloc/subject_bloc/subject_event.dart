@@ -56,22 +56,12 @@ class SubjectCloseStreamById extends SubjectEvent {
   });
 }
 
-class SubjectSetFolderParent extends SubjectEvent {
+class SubjectSetFileParent extends SubjectEvent {
   String parentId;
-  Folder folder;
+  String fileUID;
 
-  SubjectSetFolderParent({
+  SubjectSetFileParent({
     required this.parentId,
-    required this.folder,
-  });
-}
-
-class SubjectSetCardParent extends SubjectEvent {
-  String parentId;
-  Card card;
-
-  SubjectSetCardParent({
-    required this.parentId,
-    required this.card,
+    required this.fileUID,
   });
 }

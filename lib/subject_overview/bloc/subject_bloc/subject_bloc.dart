@@ -29,8 +29,7 @@ class SubjectBloc extends Bloc<SubjectEvent, SubjectState> {
     on<SubjectCloseStreamById>(
       _closeStream,
     );
-    on<SubjectSetFolderParent>(_setParent);
-    on<SubjectSetCardParent>(_setParentCard);
+    on<SubjectSetFileParent>(_setParent);
   }
 
   final CardsRepository cardsRepository;
@@ -213,20 +212,10 @@ class SubjectBloc extends Bloc<SubjectEvent, SubjectState> {
   // }
 
   Future<FutureOr<void>> _setParent(
-    SubjectSetFolderParent event,
+    SubjectSetFileParent event,
     Emitter<SubjectState> emit,
   ) async {
-    // await cardsRepository.moveFolders([event.folder], event.parentId);
-    emit(SubjectSuccess());
-  }
-
-  Future<FutureOr<void>> _setParentCard(
-    SubjectSetCardParent event,
-    Emitter<SubjectState> emit,
-  ) async {
-    await cardsRepository.deleteCards([event.card.uid]);
-    // await cardsRepository
-        // .saveCard(event.card.copyWith(parentId: event.parentId));
+    await cardsRepository.moveFiles([event.fileUID], event.parentId);
     emit(SubjectSuccess());
   }
 }
