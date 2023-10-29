@@ -92,6 +92,11 @@ class HiveCardsApi extends CardsApi {
   }
 
   @override
+  Folder? getFolderById(String folderUID) {
+    return _folderBox.get(folderUID);
+  }
+
+  @override
   Future<void> saveSubject(Subject subject) async {
     await _subjectBox.put(subject.uid, subject);
   }
@@ -413,15 +418,15 @@ class HiveCardsApi extends CardsApi {
   Object? objectFromId(String id) {
     final potentialCard = _cardBox.get(id);
     if (potentialCard != null) {
-      return potentialCard;
+      return Card;
     }
     final potentialFolder = _folderBox.get(id);
     if (potentialFolder != null) {
-      return potentialFolder;
+      return Folder;
     }
     final potentialSubject = _cardBox.get(id);
     if (potentialSubject != null) {
-      return potentialSubject;
+      return Subject;
     }
     return null;
   }
