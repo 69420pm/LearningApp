@@ -196,7 +196,7 @@ class HiveCardsApi extends CardsApi {
   }
 
   @override
-  Future<void> moveFolders(List<Folder> folders, String newParentId) async {
+  Future<void> moveFiles(List<String> fileIds, String newParentId) async {
     var newRelationEntry = _relationsBox.get(newParentId);
     newRelationEntry ??= <String>[];
 
@@ -206,26 +206,29 @@ class HiveCardsApi extends CardsApi {
       notifierChildren = newNotifier.value;
     }
 
-    for (final folder in folders) {
-      // --- STORAGE CHANGES ---
-      final folderParentId = getParentIdFromChildId(folder.uid);
-      // remove old folder relation to parent
-      final relationEntry = _relationsBox.get(folderParentId);
-      if (relationEntry != null) {
-        relationEntry.remove(folder.uid);
-        await _relationsBox.put(folderParentId, relationEntry);
-      }
-      // add folder to new relation entry
-      newRelationEntry.add(folder.uid);
+    for (final fileId in fileIds) {
+      final file = objectFromId(fileId);
+      if (file != null && file is File) {
+        // --- STORAGE CHANGES ---
+        final fileParentId = getParentIdFromChildId(fileId);
+        // remove old folder relation to parent
+        final relationEntry = _relationsBox.get(fileParentId);
+        if (relationEntry != null) {
+          relationEntry.remove(fileId);
+          await _relationsBox.put(fileParentId, relationEntry);
+        }
+        // add folder to new relation entry
+        newRelationEntry.add(fileId);
 
-      // --- FRONTEND UPDATE CHANGES ---
-      // remove from old notifier
-      final oldNotifier = _notifiers[folderParentId];
-      if (oldNotifier != null) {
-        final children = oldNotifier.value..remove(folder);
-        oldNotifier.value = List.from(children);
+        // --- FRONTEND UPDATE CHANGES ---
+        // remove from old notifier
+        final oldNotifier = _notifiers[fileParentId];
+        if (oldNotifier != null) {
+          final children = oldNotifier.value..remove(file);
+          oldNotifier.value = List.from(children);
+        }
+        notifierChildren.add(file);
       }
-      notifierChildren.add(folder);
     }
 
     if (newNotifier != null) {
@@ -234,44 +237,44 @@ class HiveCardsApi extends CardsApi {
     await _relationsBox.put(newParentId, newRelationEntry);
   }
 
-  @override
-  Future<void> moveCards(List<Card> cards, String newParentId) async {
-    var newRelationEntry = _relationsBox.get(newParentId);
-    newRelationEntry ??= <String>[];
+  // @override
+  // Future<void> moveCards(List<Card> cards, String newParentId) async {
+  //   var newRelationEntry = _relationsBox.get(newParentId);
+  //   newRelationEntry ??= <String>[];
 
-    final newNotifier = _notifiers[newParentId];
-    var notifierChildren = <File>[];
-    if (newNotifier != null) {
-      notifierChildren = newNotifier.value;
-    }
+  //   final newNotifier = _notifiers[newParentId];
+  //   var notifierChildren = <File>[];
+  //   if (newNotifier != null) {
+  //     notifierChildren = newNotifier.value;
+  //   }
 
-    for (final card in cards) {
-      // --- STORAGE CHANGES ---
-      final cardParentId = getParentIdFromChildId(card.uid);
-      // remove old folder relation to parent
-      final relationEntry = _relationsBox.get(cardParentId);
-      if (relationEntry != null) {
-        relationEntry.remove(card.uid);
-        await _relationsBox.put(cardParentId, relationEntry);
-      }
-      // add folder to new relation entry
-      newRelationEntry.add(card.uid);
+  //   for (final card in cards) {
+  //     // --- STORAGE CHANGES ---
+  //     final cardParentId = getParentIdFromChildId(card.uid);
+  //     // remove old folder relation to parent
+  //     final relationEntry = _relationsBox.get(cardParentId);
+  //     if (relationEntry != null) {
+  //       relationEntry.remove(card.uid);
+  //       await _relationsBox.put(cardParentId, relationEntry);
+  //     }
+  //     // add folder to new relation entry
+  //     newRelationEntry.add(card.uid);
 
-      // --- FRONTEND UPDATE CHANGES ---
-      // remove from old notifier
-      final oldNotifier = _notifiers[cardParentId];
-      if (oldNotifier != null) {
-        final children = oldNotifier.value..remove(card);
-        oldNotifier.value = List.from(children);
-      }
-      notifierChildren.add(card);
-    }
+  //     // --- FRONTEND UPDATE CHANGES ---
+  //     // remove from old notifier
+  //     final oldNotifier = _notifiers[cardParentId];
+  //     if (oldNotifier != null) {
+  //       final children = oldNotifier.value..remove(card);
+  //       oldNotifier.value = List.from(children);
+  //     }
+  //     notifierChildren.add(card);
+  //   }
 
-    if (newNotifier != null) {
-      newNotifier.value = List.from(notifierChildren);
-    }
-    await _relationsBox.put(newParentId, newRelationEntry);
-  }
+  //   if (newNotifier != null) {
+  //     newNotifier.value = List.from(notifierChildren);
+  //   }
+  //   await _relationsBox.put(newParentId, newRelationEntry);
+  // }
 
   @override
   List<Subject> searchSubject(String searchRequest) {
@@ -418,15 +421,15 @@ class HiveCardsApi extends CardsApi {
   Object? objectFromId(String id) {
     final potentialCard = _cardBox.get(id);
     if (potentialCard != null) {
-      return Card;
+      return potentialCard;
     }
     final potentialFolder = _folderBox.get(id);
     if (potentialFolder != null) {
-      return Folder;
+      return potentialFolder;
     }
     final potentialSubject = _cardBox.get(id);
     if (potentialSubject != null) {
-      return Subject;
+      return potentialSubject;
     }
     return null;
   }

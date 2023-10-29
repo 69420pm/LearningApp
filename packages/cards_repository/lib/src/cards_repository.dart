@@ -75,12 +75,8 @@ class CardsRepository {
   Future<void> deleteFolders(List<String> id) => _cardsApi.deleteFolders(id);
 
   /// Move folder and every children to [newParentId]
-  Future<void> moveFolders(List<Folder> folder, String newParentId) =>
-      _cardsApi.moveFolders(folder, newParentId);
-
-  /// Move cards
-  Future<void> moveCards(List<Card> cards, String newParentId) =>
-      _cardsApi.moveCards(cards, newParentId);
+  Future<void> moveFiles(List<String> fileIds, String newParentId) =>
+      _cardsApi.moveFiles(fileIds, newParentId);
 
   /// get list of every children for a given parentId
   List<String> getChildrenList(String parentId) =>

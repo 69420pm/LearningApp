@@ -59,10 +59,7 @@ abstract class CardsApi {
   Future<void> deleteFolders(List<String> ids);
 
   /// Move folder and every children to [newParentId]
-  Future<void> moveFolders(List<Folder> folders, String newParentId);
-
-  /// Move multiple cards to [newParentId]
-  Future<void> moveCards(List<Card> cards, String newParentId);
+  Future<void> moveFiles(List<String> fileIds, String newParentId);
 
   /// return all children in stream to a given parentId
   ValueNotifier<List<File>> getChildrenById(String id);

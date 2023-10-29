@@ -216,7 +216,7 @@ class SubjectBloc extends Bloc<SubjectEvent, SubjectState> {
     SubjectSetFolderParent event,
     Emitter<SubjectState> emit,
   ) async {
-    await cardsRepository.moveFolders([event.folder], event.parentId);
+    // await cardsRepository.moveFolders([event.folder], event.parentId);
     emit(SubjectSuccess());
   }
 
