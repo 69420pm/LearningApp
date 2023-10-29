@@ -52,7 +52,7 @@ class FolderListTileBloc
       create: (context) => FolderListTileBloc(cardsRepository),
       child: FolderListTileParent(
         folder: element,
-        // cardsRepository: _cardsRepository,
+        cardsRepository: cardsRepository,
       ),
     );
   }

@@ -45,15 +45,17 @@ class SubjectOverviewSelectionBloc
     _selectedFilesNotifier.value.clear();
   }
 
-  _checkIfNothingSelected() {
+  void _checkIfNothingSelected() {
     if (_selectedFilesNotifier.value.isEmpty &&
         state is SubjectOverviewSelectionModeOn) {
       _isInSelectMode = false;
       emit(SubjectOverviewSelectionModeOff());
+    } else {
+      emit(SubjectOverviewSelectionModeOn());
     }
   }
 
-  _checkIfParentWasSelected(String parentUID) {
+  void _checkIfParentWasSelected(String parentUID) {
     if (_selectedFilesNotifier.value.contains(parentUID)) {
       //deselect parentFolder
       _deselectFolder(
@@ -68,7 +70,7 @@ class SubjectOverviewSelectionBloc
     }
   }
 
-  _checkForLastSelectedInFolder(String parentUID) {
+  void _checkForLastSelectedInFolder(String parentUID) {
     if (_cardsRepository
         .getChildrenDirectlyBelow(parentUID)
         .every(_selectedFilesNotifier.value.contains)) {
@@ -85,7 +87,7 @@ class SubjectOverviewSelectionBloc
     }
   }
 
-  _selectFolder(String parentUID, String folderUID) {
+  void _selectFolder(String parentUID, String folderUID) {
     //select folder
     _selectedFilesNotifier.value.add(folderUID);
     //deselect all childern
@@ -96,9 +98,10 @@ class SubjectOverviewSelectionBloc
     _checkForLastSelectedInFolder(parentUID);
   }
 
-  _deselectFolder(String parentUID, String folderUID) {
+  void _deselectFolder(String parentUID, String folderUID) {
     _checkIfParentWasSelected(parentUID);
     _selectedFilesNotifier.value.remove(folderUID);
+    _checkIfNothingSelected();
   }
 
   bool _isRootFile(String parentUID, String fileUID) {
@@ -106,8 +109,10 @@ class SubjectOverviewSelectionBloc
       //just select or deselect file
       if (_selectedFilesNotifier.value.contains(fileUID)) {
         _selectedFilesNotifier.value.remove(fileUID);
+        _checkIfNothingSelected();
       } else {
         _selectedFilesNotifier.value.add(fileUID);
+        emit(SubjectOverviewSelectionModeOn());
 
         //deselect all childern
         if (_cardsRepository.objectFromId(fileUID) is Folder) {
@@ -134,6 +139,7 @@ class SubjectOverviewSelectionBloc
 
         //check if all are selected
         _checkForLastSelectedInFolder(parentUID);
+        emit(SubjectOverviewSelectionModeOn());
       } else {
         //check if parentFolder is Selected
         _checkIfParentWasSelected(parentUID);
@@ -152,9 +158,12 @@ class SubjectOverviewSelectionBloc
   ) {
     final parentUID = _cardsRepository.getParentIdFromChildId(event.folderUID);
     if (!_isRootFile(parentUID, event.folderUID)) {
-      _selectedFilesNotifier.value.contains(event.folderUID)
-          ? _deselectFolder(parentUID, event.folderUID)
-          : _selectFolder(parentUID, event.folderUID);
+      if (_selectedFilesNotifier.value.contains(event.folderUID)) {
+        _deselectFolder(parentUID, event.folderUID);
+      } else {
+        _selectFolder(parentUID, event.folderUID);
+        emit(SubjectOverviewSelectionModeOn());
+      }
     }
   }
 
@@ -218,9 +227,10 @@ class SubjectOverviewSelectionBloc
   FutureOr<void> _setSoftSelectFolder(SubjectOverviewSetSoftSelectFolder event,
       Emitter<SubjectOverviewSelectionState> emit) {
     _folderUIDSoftSelected = event.folderUID;
-    if (event.folderUID != '')
+    if (event.folderUID != '') {
       emit(SubjectOverviewSoftSelectionModeOn());
-    else
+    } else {
       emit(SubjectOverviewSelectionModeOff());
+    }
   }
 }
