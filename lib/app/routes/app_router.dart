@@ -11,7 +11,7 @@ import 'package:learning_app/edit_subject/cubit/edit_subject_cubit.dart';
 import 'package:learning_app/edit_subject/view/edit_subject_page.dart';
 import 'package:learning_app/learn/cubit/learn_cubit.dart';
 import 'package:learning_app/learn/view/learning_screen.dart';
-import 'package:learning_app/overview/bloc/overview_bloc.dart';
+import 'package:learning_app/overview/cubit/overview_cubit.dart';
 import 'package:learning_app/overview/view/overview_page.dart';
 import 'package:learning_app/search/bloc/search_bloc.dart';
 import 'package:learning_app/search/view/search_page.dart';
@@ -25,12 +25,12 @@ import 'package:markdown_editor/markdown_editor.dart';
 class AppRouter {
   AppRouter(this._cardsRepository);
 
-  final CardsRepository _cardsRepository;
+  final  CardsRepository _cardsRepository;
 
   late final SubjectBloc _editSubjectBloc =
       SubjectBloc(_cardsRepository);
   late final AddCardCubit _addCardCubit = AddCardCubit(_cardsRepository);
-  late final OverviewBloc _overviewBloc = OverviewBloc(_cardsRepository);
+  late final OverviewCubit _overviewCubit = OverviewCubit(_cardsRepository);
     // ..add(OverviewSubjectSubscriptionRequested());
   late final EditSubjectCubit _editSubjectCubit =
       EditSubjectCubit(_cardsRepository);
@@ -49,7 +49,7 @@ class AppRouter {
           builder: (_) => MultiBlocProvider(
             providers: [
               BlocProvider.value(
-                value: _overviewBloc,
+                value: _overviewCubit,
               ),
               BlocProvider(
                 create: (context) => AddSubjectCubit(_cardsRepository),

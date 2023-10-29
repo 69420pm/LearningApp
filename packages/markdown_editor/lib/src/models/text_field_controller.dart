@@ -25,8 +25,6 @@ class TextFieldController extends TextEditingController {
   bool _previousBold = false;
   bool _previousItalic = false;
   bool _previousUnderlined = false;
-  bool _previousCode = false;
-  bool _previousDefaultColor = true;
   Color _previousTextColor = Colors.white;
   Color _previousTextBackgroundColor = Colors.transparent;
   int _previousSelectionStart = 0;
@@ -50,8 +48,8 @@ class TextFieldController extends TextEditingController {
     if (onlyUpdateCharTiles) {
       text = '';
       charTiles.forEach((key, value) {
-        children.add(TextSpan(text: value.char, style: value.style));
-        text += value.char;
+        children.add(TextSpan(text: value.text, style: value.style));
+        text += value.text;
       });
       _previousText = text;
       selection = _previousSelection;
@@ -70,7 +68,7 @@ class TextFieldController extends TextEditingController {
 
     var shiftSelectionEnd = 0;
     var shiftSelectionStart = 0;
-    final previousSelectionStart = _previousSelectionStart;
+    // final previousSelectionStart = _previousSelectionStart;
     for (var i = 0; i < text.characters.length; i++) {
       if (text.characters.elementAt(i) != text[i + shiftSelectionEnd] &&
           i < selection.end - shiftSelectionEnd) {
@@ -92,7 +90,6 @@ class TextFieldController extends TextEditingController {
       bool? boldToChange;
       bool? italicToChange;
       bool? underlinedToChange;
-      bool? codeToChange;
       Color? textColorToChange;
       Color? textBackgroundColorToChange;
       if (isBold != _previousBold) {
@@ -116,33 +113,34 @@ class TextFieldController extends TextEditingController {
           i < selection.end - shiftSelectionEnd;
           i++) {
         charTiles[i] = CharTile(
-            char: text.characters.elementAt(i),
-            isBold: isBold,
-            isItalic: isItalic,
-            isUnderlined: isUnderlined,
-            style: standardStyle.copyWith(
-              color: textColorToChange ?? charTiles[i]!.style.color,
-              decorationColor: textColorToChange ?? charTiles[i]!.style.color,
-              backgroundColor: textBackgroundColorToChange ??
-                  charTiles[i]!.style.backgroundColor,
-              fontWeight: boldToChange != null
-                  ? boldToChange
-                      ? FontWeight.bold
-                      : standardStyle.fontWeight
-                  : charTiles[i]!.style.fontWeight,
-              fontStyle: italicToChange != null
-                  ? italicToChange
-                      ? FontStyle.italic
-                      : standardStyle.fontStyle
-                  : charTiles[i]!.style.fontStyle,
-              decoration: underlinedToChange != null
-                  ? underlinedToChange
-                      ? TextDecoration.underline
-                      : standardStyle.decoration
-                  : charTiles[i]!.style.decoration,
-              // decorationColor: underlinedToChange != null ? underlinedToChange?charTiles[i].,
-              background: standardStyle.background,
-            ));
+          text: text.characters.elementAt(i),
+          isBold: isBold,
+          isItalic: isItalic,
+          isUnderlined: isUnderlined,
+          style: standardStyle.copyWith(
+            color: textColorToChange ?? charTiles[i]!.style.color,
+            decorationColor: textColorToChange ?? charTiles[i]!.style.color,
+            backgroundColor: textBackgroundColorToChange ??
+                charTiles[i]!.style.backgroundColor,
+            fontWeight: boldToChange != null
+                ? boldToChange
+                    ? FontWeight.bold
+                    : standardStyle.fontWeight
+                : charTiles[i]!.style.fontWeight,
+            fontStyle: italicToChange != null
+                ? italicToChange
+                    ? FontStyle.italic
+                    : standardStyle.fontStyle
+                : charTiles[i]!.style.fontStyle,
+            decoration: underlinedToChange != null
+                ? underlinedToChange
+                    ? TextDecoration.underline
+                    : standardStyle.decoration
+                : charTiles[i]!.style.decoration,
+            // decorationColor: underlinedToChange != null ? underlinedToChange?charTiles[i].,
+            background: standardStyle.background,
+          ),
+        );
       }
       // if text has changed
     } else if (text != _previousText) {
@@ -156,7 +154,7 @@ class TextFieldController extends TextEditingController {
           //   newCharTiles[i] = charTiles[i]!;
           // } else {
           newCharTiles[i] = CharTile(
-            char: text.characters.elementAt(i),
+            text: text.characters.elementAt(i),
             style: standardStyle.copyWith(
               color: textColor,
               decorationColor: textColor,
@@ -212,7 +210,7 @@ class TextFieldController extends TextEditingController {
       children.add(
         HyperLinkEntry.checkHyperLink(key, hyperLinks) != null
             ? TextSpan(
-                text: value.char,
+                text: value.text,
                 style: value.style.copyWith(
                   color: UIColors.focused,
                   decoration: TextDecoration.underline,
@@ -220,7 +218,7 @@ class TextFieldController extends TextEditingController {
                 ),
               )
             : TextSpan(
-                text: value.char,
+                text: value.text,
                 style: value.style,
               ),
       );

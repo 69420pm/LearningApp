@@ -109,11 +109,19 @@ class HiveCardsApi extends CardsApi {
       relations.add(folder.uid);
       await _relationsBox.put(parentId, relations);
     }
-    //! broke
     // update notifiers
     final currentNotifier = _notifiers[parentId];
     if (currentNotifier != null) {
-      final children = currentNotifier.value..add(folder);
+      final children = currentNotifier.value;
+      for (var i = 0; i < children.length; i++) {
+        final child = children[i];
+        if (child.uid == folder.uid) {
+          children[i] = folder;
+          currentNotifier.value = List.from(children);
+          return;
+        }
+      }
+      children.add(folder);
       currentNotifier.value = List.from(children);
     }
   }
@@ -132,11 +140,20 @@ class HiveCardsApi extends CardsApi {
       relations!.add(card.uid);
       await _relationsBox.put(parentId, relations);
     }
-    //! broken
+
     // update notifiers
     final currentNotifier = _notifiers[parentId];
     if (currentNotifier != null) {
-      final children = currentNotifier.value..add(card);
+      final children = currentNotifier.value;
+      for (var i = 0; i < children.length; i++) {
+        final child = children[i];
+        if (child.uid == card.uid) {
+          children[i] = card;
+          currentNotifier.value = List.from(children);
+          return;
+        }
+      }
+      children.add(card);
       currentNotifier.value = List.from(children);
     }
   }
@@ -319,7 +336,7 @@ class HiveCardsApi extends CardsApi {
       // iterate over all children of folder
       for (final childrenId in childrenIds) {
         // dispose subscribed notifiers
-        _disposeNotifier(childrenId);
+        disposeNotifier(childrenId);
         // delete children in card or folder box
         if (_cardBox.get(childrenId) != null) {
           await _cardBox.delete(childrenId);
@@ -352,12 +369,16 @@ class HiveCardsApi extends CardsApi {
     }
   }
 
-  void _disposeNotifier(String id) {
-    if (_notifiers[id] == null) {
-      return;
+  @override
+  void disposeNotifier(String id) {
+    // dispose all children of id and id itself
+    final childrenList = getChildrenList(id)..add(id);
+    for (final childId in childrenList) {
+      if (_notifiers[childId] != null) {
+        _notifiers[childId]!.dispose();
+        _notifiers.remove(childId);
+      }
     }
-    _notifiers[id]!.dispose();
-    _notifiers.remove(id);
   }
 
   @override
@@ -378,6 +399,31 @@ class HiveCardsApi extends CardsApi {
   List<String> getChildrenList(String parentId) {
     final childrenIds = _recursive(parentId, []);
     return childrenIds;
+  }
+
+  // get direct children below
+  @override
+  List<String> getChildrenDirectlyBelow(String parentId) {
+    final list = _relationsBox.get(parentId);
+    return list ?? [];
+  }
+
+  // folder, subject or card from id
+  @override
+  Object? objectFromId(String id) {
+    final potentialCard = _cardBox.get(id);
+    if (potentialCard != null) {
+      return potentialCard;
+    }
+    final potentialFolder = _folderBox.get(id);
+    if (potentialFolder != null) {
+      return potentialFolder;
+    }
+    final potentialSubject = _cardBox.get(id);
+    if (potentialSubject != null) {
+      return potentialSubject;
+    }
+    return null;
   }
 
   List<String> _recursive(String parentId, List<String> childrenIds) {

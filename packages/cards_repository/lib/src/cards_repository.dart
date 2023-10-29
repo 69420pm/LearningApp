@@ -8,6 +8,7 @@
 import 'package:cards_api/cards_api.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/foundation.dart';
+
 /// {@template cards_repository}
 /// A Repository that handles everything related to cards, subjects and groups
 /// {@endtemplate}
@@ -23,8 +24,8 @@ class CardsRepository {
   /// return all cards to learn
   List<Card> learnAllCards() => _cardsApi.learnAllCards();
 
-  /// search request to search in all cards, give parent[id] only search 
-  /// everything saved in this id or below, e.g. when only searched all 
+  /// search request to search in all cards, give parent[id] only search
+  /// everything saved in this id or below, e.g. when only searched all
   /// subject contents, give subject id
   List<SearchResult> searchCard(String searchRequest, String? id) =>
       _cardsApi.searchCard(searchRequest, id);
@@ -33,8 +34,8 @@ class CardsRepository {
   List<Subject> searchSubject(String searchRequest) =>
       _cardsApi.searchSubject(searchRequest);
 
-  /// search request to search in all folders, give parent[id] only search 
-  /// everything saved in this id or below, e.g. when only searched all 
+  /// search request to search in all folders, give parent[id] only search
+  /// everything saved in this id or below, e.g. when only searched all
   /// subject contents, give subject id
   List<SearchResult> searchFolder(String searchRequest, String? id) =>
       _cardsApi.searchFolder(searchRequest, id);
@@ -45,7 +46,8 @@ class CardsRepository {
 
   /// Saves a [card]
   /// If a [card] with same id already exists, it will be replaced
-  Future<void> saveCard(Card card, String? parentId) => _cardsApi.saveCard(card, parentId);
+  Future<void> saveCard(Card card, String? parentId) =>
+      _cardsApi.saveCard(card, parentId);
 
   /// Saves a [subject]
   /// If a [subject] with same id already exists, it will be replaced
@@ -53,13 +55,13 @@ class CardsRepository {
 
   /// Saves a [folder]
   /// If a [folder] with same id already exists it will get replaced
-  Future<void> saveFolder(Folder folder, String? parentId) => _cardsApi.saveFolder(folder, parentId);
+  Future<void> saveFolder(Folder folder, String? parentId) =>
+      _cardsApi.saveFolder(folder, parentId);
 
   /// Deletes card with given id
   /// If no card with given id exists, a [CardNotFoundException] error is
   /// thrown
-  Future<void> deleteCards(List<String> id) =>
-      _cardsApi.deleteCards(id);
+  Future<void> deleteCards(List<String> id) => _cardsApi.deleteCards(id);
 
   /// Deletes subject and every children with given id
   /// If no card with given id exists, a [SubjectNotFoundException] error is
@@ -67,20 +69,31 @@ class CardsRepository {
   Future<void> deleteSubject(String id) => _cardsApi.deleteSubject(id);
 
   /// Delete subject and every children inheriting from it
-  Future<void> deleteFolders(List<String> id) =>
-      _cardsApi.deleteFolders(id);
+  Future<void> deleteFolders(List<String> id) => _cardsApi.deleteFolders(id);
 
   /// Move folder and every children to [newParentId]
   Future<void> moveFolders(List<Folder> folder, String newParentId) =>
       _cardsApi.moveFolders(folder, newParentId);
 
-  // Move cards
+  /// Move cards
   Future<void> moveCards(List<Card> cards, String newParentId) =>
       _cardsApi.moveCards(cards, newParentId);
 
-  // get list of every children for a given parentId
-  List<String> getChildrenlist(String parentId) => _cardsApi.getChildrenList(parentId);
+  /// get list of every children for a given parentId
+  List<String> getChildrenList(String parentId) =>
+      _cardsApi.getChildrenList(parentId);
 
-  // get parent id to a given child id
-  String getParentIdFromChildId(String id) => _cardsApi.getParentIdFromChildId(id);
+  /// get list of children ids one level below
+  List<String> getChildrenDirectlyBelow(String parentId) =>
+      _cardsApi.getChildrenDirectlyBelow(parentId);
+
+  /// get parent id to a given child id
+  String getParentIdFromChildId(String id) =>
+      _cardsApi.getParentIdFromChildId(id);
+
+  /// folder subject or card form id
+  Object? objectFromId(String id) => _cardsApi.objectFromId(id);
+
+  /// dispose notifier to free up memory
+  void disposeNotifier(String id) => _cardsApi.disposeNotifier(id);
 }

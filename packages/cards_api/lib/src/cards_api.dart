@@ -8,6 +8,7 @@
 import 'package:cards_api/cards_api.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/foundation.dart';
+
 /// {@template cards_api}
 /// The interface and models for an API providing access to cards.
 /// {@endtemplate}
@@ -21,13 +22,13 @@ abstract class CardsApi {
   /// return all cards which should get learned
   List<Card> learnAllCards();
 
-  /// search for cards 
+  /// search for cards
   List<SearchResult> searchCard(String searchRequest, String? id);
 
-  /// search for cards 
+  /// search for cards
   List<SearchResult> searchFolder(String searchRequest, String? id);
 
-  /// search for cards 
+  /// search for cards
   List<Subject> searchSubject(String searchRequest);
 
   /// Saves a [card]
@@ -42,7 +43,7 @@ abstract class CardsApi {
   /// If a [folder] with same id already exists, it will be replaced
   Future<void> saveFolder(Folder folder, String? parentId);
 
-/// Deletes cards with given id
+  /// Deletes cards with given id
   /// If no cards with given id exists, a [CardNotFoundException] error is
   /// thrown
   Future<void> deleteCards(List<String> ids);
@@ -66,11 +67,20 @@ abstract class CardsApi {
   /// return all children in stream to a given parentId
   ValueNotifier<List<File>> getChildrenById(String id);
 
-  // get list of every children for a given [parentId]
-  List<String> _getChildrenList(String parentId) ;
+  /// get list of every children for a given [parentId]
+  List<String> getChildrenList(String parentId);
 
-  // get parent id to a given child id
-    String _getParentIdFromChildId(String id);
+  /// get list of children ids one level below
+  List<String> getChildrenDirectlyBelow(String parentId);
+
+  /// get parent id to a given child id
+  String getParentIdFromChildId(String id);
+
+  /// folder, subject or card from id
+  Object? objectFromId(String id);
+
+  /// dispose notifier to free up memory
+  void disposeNotifier(String id);
 }
 
 /// Error when a [Card] with given id is not found
@@ -89,4 +99,4 @@ class ParentNotFoundException implements Exception {}
 class StreamNotFoundException implements Exception {}
 
 /// when given input doesn't work
-class WrongInput implements Exception{}
+class WrongInput implements Exception {}

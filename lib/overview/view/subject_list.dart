@@ -1,7 +1,7 @@
 import 'package:cards_api/cards_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:learning_app/overview/bloc/overview_bloc.dart';
+import 'package:learning_app/overview/cubit/overview_cubit.dart';
 import 'package:learning_app/overview/view/subject_list_tile.dart';
 import 'package:ui_components/ui_components.dart';
 
@@ -48,14 +48,15 @@ class SubjectList extends StatelessWidget {
     // );
     return ValueListenableBuilder(
       valueListenable:
-          context.read<OverviewBloc>().cardsRepository.getSubjects(),
+          context.read<OverviewCubit>().cardsRepository.getSubjects(),
       builder: (context, box, _) {
         final subjects = box.values.toList().cast<Subject>();
         return CustomScrollView(
           shrinkWrap: true,
           slivers: [
             SliverList(
-              delegate: SliverChildBuilderDelegate(childCount: subjects.length,(context, index) {
+              delegate: SliverChildBuilderDelegate(childCount: subjects.length,
+                  (context, index) {
                 return SubjectListTile(subject: subjects[index]);
               }),
             ),
