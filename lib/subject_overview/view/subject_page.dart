@@ -66,135 +66,141 @@ class _SubjectViewState extends State<SubjectView> {
 
     var isMovingDown = false;
     var isMovingUp = false;
+    print("rebuilt");
+    final softSelectedFolder = widget.cardsRepository.getFolderById(
+        context.read<SubjectOverviewSelectionBloc>().folderUIDSoftSelected);
 
-    return BlocBuilder<SubjectOverviewSelectionBloc,
-        SubjectOverviewSelectionState>(
-      builder: (context, state) {
-        final softSelectedFolder = widget.cardsRepository.getFolderById(
-            context.read<SubjectOverviewSelectionBloc>().folderUIDSoftSelected);
-        return UIPage(
-          appBar: UIAppBar(
-            leadingBackButton: state is! SubjectOverviewSelectionModeOn,
-            leading: state is SubjectOverviewSelectionModeOn
-                ? UIIconButton(
-                    icon: UIIcons.close,
-                    onPressed: () =>
-                        context.read<SubjectOverviewSelectionBloc>().add(
-                              SubjectOverviewSelectionToggleSelectMode(
-                                inSelectMode: false,
-                              ),
-                            ),
-                  )
-                : null,
-            actions: state is SubjectOverviewSelectionModeOn
-                ? []
-                : state is SubjectOverviewSoftSelectionModeOn
-                    ? [
-                        UIIconButton(
-                          icon: UIIcons.edit,
-                          onPressed: () => UIBottomSheet.showUIBottomSheet(
-                            context: context,
-                            builder: (_) {
-                              return BlocProvider.value(
-                                value: context.read<FolderListTileBloc>(),
-                                child: EditFolderBottomSheet(
-                                  folder: softSelectedFolder!,
-                                ),
-                              );
-                            },
+    return UIPage(
+      appBar: UIAppBar(
+        leadingBackButton:
+            context.read<SubjectOverviewSelectionBloc>().isInSelectMode,
+        leading: context.read<SubjectOverviewSelectionBloc>().isInSelectMode
+            ? UIIconButton(
+                icon: UIIcons.close,
+                onPressed: () =>
+                    context.read<SubjectOverviewSelectionBloc>().add(
+                          SubjectOverviewSelectionToggleSelectMode(
+                            inSelectMode: false,
                           ),
                         ),
-                      ]
-                    : [
-                        UIIconButton(
-                          icon: UIIcons.settings,
-                          onPressed: () {
-                            Navigator.of(context).pushNamed(
-                              '/subject_overview/edit_subject',
-                              arguments: widget.subjectToEdit,
-                            );
-                          },
-                        ),
-                      ],
-          ),
-          body: Column(
-            children: [
-              SubjectCard(
-                subject: widget.subjectToEdit,
-              ),
-              const SizedBox(
-                height: UIConstants.itemPaddingLarge,
-              ),
-              UILabelRow(
-                labelText: 'Files',
-                actionWidgets: [
-                  UIIconButton(
-                    icon: UIIcons.search.copyWith(color: UIColors.smallText),
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(
-                        '/search',
-                        arguments: widget.subjectToEdit.uid,
-                      );
-                    },
-                  ),
-                  UIIconButton(
-                    icon: UIIcons.download.copyWith(color: UIColors.smallText),
-                    onPressed: () {
-                      context.read<SubjectBloc>().add(
-                            SubjectAddCard(
-                              front: "test",
-                              back: "test Back",
-                              parentId: softSelectedFolder != null
-                                  ? softSelectedFolder.uid
-                                  : widget.subjectToEdit.uid,
-                            ),
-                          );
-                    },
-                  ),
-                  UIIconButton(
-                    icon: UIIcons.addFolder.copyWith(color: UIColors.smallText),
-                    onPressed: () {
-                      UIBottomSheet.showUIBottomSheet(
+              )
+            : null,
+        actions: context.read<SubjectOverviewSelectionBloc>().isInSelectMode
+            ? []
+            : context.read<SubjectOverviewSelectionBloc>().isInSelectMode
+                ? [
+                    UIIconButton(
+                      icon: UIIcons.edit,
+                      onPressed: () => UIBottomSheet.showUIBottomSheet(
                         context: context,
                         builder: (_) {
                           return BlocProvider.value(
-                            value: context.read<SubjectBloc>(),
-                            child: AddFolderBottomSheet(
-                              parentId: softSelectedFolder != null
-                                  ? softSelectedFolder.uid
-                                  : widget.subjectToEdit.uid,
+                            value: context.read<FolderListTileBloc>(),
+                            child: EditFolderBottomSheet(
+                              folder: softSelectedFolder!,
                             ),
                           );
                         },
+                      ),
+                    ),
+                  ]
+                : [
+                    UIIconButton(
+                      icon: UIIcons.settings,
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(
+                          '/subject_overview/edit_subject',
+                          arguments: widget.subjectToEdit,
+                        );
+                      },
+                    ),
+                  ],
+      ),
+      body: Column(
+        children: [
+          SubjectCard(
+            subject: widget.subjectToEdit,
+          ),
+          const SizedBox(
+            height: UIConstants.itemPaddingLarge,
+          ),
+          UILabelRow(
+            labelText: 'Files',
+            actionWidgets: [
+              UIIconButton(
+                icon: UIIcons.search.copyWith(color: UIColors.smallText),
+                onPressed: () {
+                  Navigator.of(context).pushNamed(
+                    '/search',
+                    arguments: widget.subjectToEdit.uid,
+                  );
+                },
+              ),
+              UIIconButton(
+                icon: UIIcons.download.copyWith(color: UIColors.smallText),
+                onPressed: () {
+                  context.read<SubjectBloc>().add(
+                        SubjectAddCard(
+                          front: "test",
+                          back: "test Back",
+                          parentId: softSelectedFolder != null
+                              ? softSelectedFolder.uid
+                              : widget.subjectToEdit.uid,
+                        ),
+                      );
+                },
+              ),
+              UIIconButton(
+                icon: UIIcons.addFolder.copyWith(color: UIColors.smallText),
+                onPressed: () {
+                  UIBottomSheet.showUIBottomSheet(
+                    context: context,
+                    builder: (_) {
+                      return BlocProvider.value(
+                        value: context.read<SubjectBloc>(),
+                        child: AddFolderBottomSheet(
+                          parentId: softSelectedFolder != null
+                              ? softSelectedFolder.uid
+                              : widget.subjectToEdit.uid,
+                        ),
                       );
                     },
-                  ),
-                  UIIconButton(
-                    icon:
-                        UIIcons.placeHolder.copyWith(color: UIColors.smallText),
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(
-                        '/add_card',
-                        arguments: softSelectedFolder != null
-                            ? softSelectedFolder.uid
-                            : widget.subjectToEdit.uid,
-                      );
-                    },
-                  ),
-                ],
+                  );
+                },
               ),
-              const SizedBox(
-                height: UIConstants.itemPaddingLarge,
+              UIIconButton(
+                icon: UIIcons.placeHolder.copyWith(color: UIColors.smallText),
+                onPressed: () {
+                  Navigator.of(context).pushNamed(
+                    '/add_card',
+                    arguments: softSelectedFolder != null
+                        ? softSelectedFolder.uid
+                        : widget.subjectToEdit.uid,
+                  );
+                },
               ),
-              ValueListenableBuilder(
-                valueListenable: context
-                    .read<SubjectBloc>()
-                    .cardsRepository
-                    .getChildrenById(widget.subjectToEdit.uid),
-                builder: (context, value, child) {
-                  final _folders = value.whereType<Folder>().toList();
-                  final _cards = value.whereType<Card>().toList();
+            ],
+          ),
+          const SizedBox(
+            height: UIConstants.itemPaddingLarge,
+          ),
+          ValueListenableBuilder(
+            valueListenable: context
+                .read<SubjectBloc>()
+                .cardsRepository
+                .getChildrenById(widget.subjectToEdit.uid),
+            builder: (context, value, child) {
+              final _folders = value.whereType<Folder>().toList();
+              final _cards = value.whereType<Card>().toList();
 
+              print('rebuilt cardrebository');
+
+              return ValueListenableBuilder(
+                valueListenable: context
+                    .read<SubjectOverviewSelectionBloc>()
+                    .selectedFilesNotifier,
+                builder: (context, _, __) {
+                  print('rebuilt selection');
                   return Expanded(
                     child: Stack(
                       children: [
@@ -214,7 +220,7 @@ class _SubjectViewState extends State<SubjectView> {
                                 context
                                     .read<SubjectOverviewSelectionBloc>()
                                     .add(
-                                      SubjectOverviewSelectionMoveSelectedCards(
+                                      SubjectOverviewSelectionMoveSelection(
                                         parentId: widget.subjectToEdit.uid,
                                       ),
                                     );
@@ -321,11 +327,11 @@ class _SubjectViewState extends State<SubjectView> {
                     // SingleChildScrollView(child: FolderListTile(folder: Folder(dateCreated: "",id: "root",), cardsRepository: ,),)
                   );
                 },
-              ),
-            ],
+              );
+            },
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 

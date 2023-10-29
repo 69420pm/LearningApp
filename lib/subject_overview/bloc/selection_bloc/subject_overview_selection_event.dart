@@ -30,10 +30,10 @@ class SubjectOverviewFolderSelectionChange
 class SubjectOverviewSelectionDeleteSelectedFiles
     extends SubjectOverviewSelectionEvent {}
 
-class SubjectOverviewSelectionMoveSelectedCards
+class SubjectOverviewSelectionMoveSelection
     extends SubjectOverviewSelectionEvent {
   String parentId;
-  SubjectOverviewSelectionMoveSelectedCards({
+  SubjectOverviewSelectionMoveSelection({
     required this.parentId,
   });
 }

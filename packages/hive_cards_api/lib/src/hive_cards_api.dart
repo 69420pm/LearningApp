@@ -393,11 +393,9 @@ class HiveCardsApi extends CardsApi {
   String getParentIdFromChildId(String id) {
     final values = _relationsBox.values.toList();
     for (var i = 0; i < values.length; i++) {
-      final childrenIds = values[i];
-      for (final childrenId in childrenIds) {
-        if (childrenId == id) {
-          return _relationsBox.keyAt(i) as String;
-        }
+      if (values[i].contains(id)) {
+        //print(_relationsBox.keys.elementAt(i).toString());
+        return _relationsBox.keys.elementAt(i).toString();
       }
     }
     throw ParentNotFoundException();
@@ -427,7 +425,7 @@ class HiveCardsApi extends CardsApi {
     if (potentialFolder != null) {
       return potentialFolder;
     }
-    final potentialSubject = _cardBox.get(id);
+    final potentialSubject = _subjectBox.get(id);
     if (potentialSubject != null) {
       return potentialSubject;
     }

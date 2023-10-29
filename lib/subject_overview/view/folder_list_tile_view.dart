@@ -14,13 +14,12 @@ class FolderListTileView extends StatelessWidget {
   const FolderListTileView({
     Key? key,
     required this.isHovered,
-    required this.inSelectionMode,
     required this.folder,
     required this.childListTiles,
   }) : super(key: key);
 
   final bool isHovered;
-  final bool inSelectionMode;
+
   final Folder folder;
   final Map<String, Widget> childListTiles;
 
@@ -46,7 +45,7 @@ class FolderListTileView extends StatelessWidget {
                 : Colors.transparent,
         width: UIConstants.borderWidth,
       ),
-      title: Text(folder.name,
+      title: Text(folder.uid.substring(0, 20),
           overflow: TextOverflow.ellipsis, style: UIText.label),
       iconSpacing: UIConstants.defaultSize,
       titleSpacing: UIConstants.defaultSize,

@@ -16,14 +16,17 @@ class SubjectOverviewSelectionBloc
     on<SubjectOverviewCardSelectionChange>(_changeCardSelection);
     on<SubjectOverviewFolderSelectionChange>(_changeFolderSelection);
     on<SubjectOverviewSelectionDeleteSelectedFiles>(_deleteSelectedFiles);
-    on<SubjectOverviewSelectionMoveSelectedCards>(_moveSelectedCards);
+    on<SubjectOverviewSelectionMoveSelection>(_moveSelection);
     on<SubjectOverviewDraggingChange>(_toggleDragging);
     on<SubjectOverviewSetSoftSelectFolder>(_setSoftSelectFolder);
   }
   final CardsRepository _cardsRepository;
 
-  final List<String> _selectedFiles = List.empty(growable: true);
-  List<String> get selectedFiles => _selectedFiles;
+  final ValueNotifier<List<String>> _selectedFilesNotifier = ValueNotifier([]);
+
+  List<String> get selectedFiles => _selectedFilesNotifier.value;
+  ValueNotifier<List<String>> get selectedFilesNotifier =>
+      _selectedFilesNotifier;
 
   String _folderUIDSoftSelected = '';
   String get folderUIDSoftSelected => _folderUIDSoftSelected;
@@ -35,22 +38,23 @@ class SubjectOverviewSelectionBloc
   bool get isInSelectMode => _isInSelectMode;
 
   bool isFileSelected(String fileUID) {
-    return _selectedFiles.contains(fileUID);
+    return _selectedFilesNotifier.value.contains(fileUID);
   }
 
   void _clearSelectionVariables() {
-    _selectedFiles.clear();
+    _selectedFilesNotifier.value.clear();
   }
 
   _checkIfNothingSelected() {
-    if (_selectedFiles.isEmpty && state is SubjectOverviewSelectionModeOn) {
+    if (_selectedFilesNotifier.value.isEmpty &&
+        state is SubjectOverviewSelectionModeOn) {
       _isInSelectMode = false;
       emit(SubjectOverviewSelectionModeOff());
     }
   }
 
   _checkIfParentWasSelected(String parentUID) {
-    if (_selectedFiles.contains(parentUID)) {
+    if (_selectedFilesNotifier.value.contains(parentUID)) {
       //deselect parentFolder
       _deselectFolder(
           _cardsRepository.getParentIdFromChildId(parentUID), parentUID);
@@ -58,7 +62,7 @@ class SubjectOverviewSelectionBloc
       //select all children
       _cardsRepository
           .getChildrenDirectlyBelow(parentUID)
-          .forEach(_selectedFiles.add);
+          .forEach(_selectedFilesNotifier.value.add);
 
       print('parent deselected');
     }
@@ -67,7 +71,7 @@ class SubjectOverviewSelectionBloc
   _checkForLastSelectedInFolder(String parentUID) {
     if (_cardsRepository
         .getChildrenDirectlyBelow(parentUID)
-        .every(_selectedFiles.contains)) {
+        .every(_selectedFilesNotifier.value.contains)) {
       //select parentFolder
       _selectFolder(
           _cardsRepository.getParentIdFromChildId(parentUID), parentUID);
@@ -75,7 +79,7 @@ class SubjectOverviewSelectionBloc
       //deselect all children
       _cardsRepository
           .getChildrenDirectlyBelow(parentUID)
-          .forEach(_selectedFiles.remove);
+          .forEach(_selectedFilesNotifier.value.remove);
 
       print('parent selected');
     }
@@ -83,23 +87,34 @@ class SubjectOverviewSelectionBloc
 
   _selectFolder(String parentUID, String folderUID) {
     //select folder
-    _selectedFiles.add(folderUID);
+    _selectedFilesNotifier.value.add(folderUID);
     //deselect all childern
-    _cardsRepository.getChildrenList(folderUID).forEach(_selectedFiles.remove);
+    _cardsRepository
+        .getChildrenList(folderUID)
+        .forEach(_selectedFilesNotifier.value.remove);
     //check if lastSelectedInParentFolder
     _checkForLastSelectedInFolder(parentUID);
   }
 
   _deselectFolder(String parentUID, String folderUID) {
     _checkIfParentWasSelected(parentUID);
-    _selectedFiles.remove(folderUID);
+    _selectedFilesNotifier.value.remove(folderUID);
   }
 
   bool _isRootFile(String parentUID, String fileUID) {
     if (_cardsRepository.objectFromId(parentUID) is Subject) {
       //just select or deselect file
-      if (_selectedFiles.remove(fileUID) == false) {
-        _selectedFiles.add(fileUID);
+      if (_selectedFilesNotifier.value.contains(fileUID)) {
+        _selectedFilesNotifier.value.remove(fileUID);
+      } else {
+        _selectedFilesNotifier.value.add(fileUID);
+
+        //deselect all childern
+        if (_cardsRepository.objectFromId(fileUID) is Folder) {
+          _cardsRepository
+              .getChildrenList(fileUID)
+              .forEach(_selectedFilesNotifier.value.remove);
+        }
       }
       return true;
     }
@@ -113,9 +128,9 @@ class SubjectOverviewSelectionBloc
     final parentUID = _cardsRepository.getParentIdFromChildId(event.cardUID);
 
     if (!_isRootFile(parentUID, event.cardUID)) {
-      if (!_selectedFiles.contains(event.cardUID)) {
+      if (!_selectedFilesNotifier.value.contains(event.cardUID)) {
         // new Card selected
-        _selectedFiles.add(event.cardUID);
+        _selectedFilesNotifier.value.add(event.cardUID);
 
         //check if all are selected
         _checkForLastSelectedInFolder(parentUID);
@@ -124,7 +139,7 @@ class SubjectOverviewSelectionBloc
         _checkIfParentWasSelected(parentUID);
 
         //deselect card
-        _selectedFiles.remove(event.cardUID);
+        _selectedFilesNotifier.value.remove(event.cardUID);
 
         _checkIfNothingSelected();
       }
@@ -137,7 +152,7 @@ class SubjectOverviewSelectionBloc
   ) {
     final parentUID = _cardsRepository.getParentIdFromChildId(event.folderUID);
     if (!_isRootFile(parentUID, event.folderUID)) {
-      _selectedFiles.contains(event.folderUID)
+      _selectedFilesNotifier.value.contains(event.folderUID)
           ? _deselectFolder(parentUID, event.folderUID)
           : _selectFolder(parentUID, event.folderUID);
     }
@@ -162,10 +177,10 @@ class SubjectOverviewSelectionBloc
     SubjectOverviewSelectionDeleteSelectedFiles event,
     Emitter<SubjectOverviewSelectionState> emit,
   ) async {
-    await _cardsRepository.deleteCards(_selectedFiles
+    await _cardsRepository.deleteCards(_selectedFilesNotifier.value
         .where((element) => _cardsRepository.objectFromId(element) is Card)
         .toList());
-    await _cardsRepository.deleteFolders(_selectedFiles
+    await _cardsRepository.deleteFolders(_selectedFilesNotifier.value
         .where((element) => _cardsRepository.objectFromId(element) is Folder)
         .toList());
 
@@ -174,24 +189,11 @@ class SubjectOverviewSelectionBloc
     emit(SubjectOverviewSelectionModeOff());
   }
 
-  Future<FutureOr<void>> _moveSelectedCards(
-    SubjectOverviewSelectionMoveSelectedCards event,
+  Future<FutureOr<void>> _moveSelection(
+    SubjectOverviewSelectionMoveSelection event,
     Emitter<SubjectOverviewSelectionState> emit,
   ) async {
-    //TODO make moveCards and moveFolder with UIDs
-    print('move is not ready');
-    // await _cardsRepository.moveCards(
-    //     selectedFiles
-    //         .where((element) => _cardsRepository.objectFromId(element) is Card)
-    //         .toList(),
-    //     event.parentId);
-
-    // await _cardsRepository.moveFolders(
-    //     selectedFiles
-    //         .where((element) => _cardsRepository.objectFromId(element) is Folder)
-    //         .toList(),
-    //     event.parentId);
-
+    await _cardsRepository.moveFiles(selectedFiles, event.parentId);
     _clearSelectionVariables();
     emit(SubjectOverviewSelectionModeOff());
   }
