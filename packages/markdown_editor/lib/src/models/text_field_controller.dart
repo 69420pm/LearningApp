@@ -27,7 +27,6 @@ class TextFieldController extends TextEditingController {
   bool _previousUnderlined = false;
   Color _previousTextColor = Colors.white;
   Color _previousTextBackgroundColor = Colors.transparent;
-  int _previousSelectionStart = 0;
   List<HyperLinkEntry> hyperLinks = [];
 
   @override
@@ -68,7 +67,6 @@ class TextFieldController extends TextEditingController {
 
     var shiftSelectionEnd = 0;
     var shiftSelectionStart = 0;
-    // final previousSelectionStart = _previousSelectionStart;
     for (var i = 0; i < text.characters.length; i++) {
       if (text.characters.elementAt(i) != text[i + shiftSelectionEnd] &&
           i < selection.end - shiftSelectionEnd) {
@@ -77,9 +75,6 @@ class TextFieldController extends TextEditingController {
       if (text.characters.elementAt(i) != text[i + shiftSelectionStart] &&
           i < selection.start - shiftSelectionStart) {
         shiftSelectionStart += 1;
-      }
-      if (i + 1 == selection.start - shiftSelectionEnd) {
-        _previousSelectionStart = i + 1;
       }
     }
 
