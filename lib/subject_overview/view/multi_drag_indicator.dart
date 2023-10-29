@@ -23,32 +23,51 @@ class MultiDragIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children:[] /* List.generate(
-        cardAmount,
-        (index) => Transform.rotate(
-          angle: index == cardAmount - 1
-              ? 0
-              : 1 / 30 * pi * Random().nextDouble() - 1 / 50 * pi,
-          alignment: Alignment(
-              Random().nextDouble() * 2 - 1, Random().nextDouble() * 2 - 1,),
-          child: CardListTileView(
-            card: index == cardAmount - 1
-                ? firstCard
-                :  Card(
-                    askCardsInverted: false,
-                    dateCreated: DateTime.now(),
-                    dateToReview: DateTime.now(),
-                    uid: '',
-                    typeAnswer: false,
-                    parents: [],
-                    recallScore: 0),
-            isSelected: true,
-            height: height,
-            width: width,
+    var label = '';
+
+    for (var e in firstCardName ?? firstFolderName ?? ["Error  "]) {
+      label += '$e ,';
+    }
+    label = label.substring(0, label.length - 2);
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+          color: UIColors.onOverlayCard,
+          borderRadius: const BorderRadius.all(
+            Radius.circular(UIConstants.cornerRadius),
           ),
+          border: Border.all(color: UIColors.background, width: 3)),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: UIConstants.defaultSize * 2,
+          vertical: UIConstants.defaultSize,
         ),
-      ), */
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AmountIndicator(amount: folderAmount, icon: UIIcons.folder),
+            AmountIndicator(amount: cardAmount, icon: UIIcons.card),
+            if ((folderAmount > 0 && cardAmount == 0) ||
+                (cardAmount > 0 && folderAmount == 0))
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: UIConstants.itemPaddingLarge,
+                  vertical: UIConstants.defaultSize,
+                ),
+                child: SizedBox(
+                  width: UIConstants.defaultSize * 10,
+                  child: DefaultTextStyle(
+                    //* or else yellow lines below text
+                    style: Theme.of(context).textTheme.bodyMedium!,
+                    child: Text(label,
+                        overflow: TextOverflow.ellipsis, style: UIText.label),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
     );
   }
 }

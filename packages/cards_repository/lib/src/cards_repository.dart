@@ -44,6 +44,9 @@ class CardsRepository {
   ValueNotifier<List<File>> getChildrenById(String id) =>
       _cardsApi.getChildrenById(id);
 
+  /// return Folder if one is found by its [folderUID]
+  Folder? getFolderById(String folderUID) => _cardsApi.getFolderById(folderUID);
+
   /// Saves a [card]
   /// If a [card] with same id already exists, it will be replaced
   Future<void> saveCard(Card card, String? parentId) =>

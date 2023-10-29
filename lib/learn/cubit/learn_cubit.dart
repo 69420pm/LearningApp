@@ -27,7 +27,7 @@ class LearnCubit extends Cubit<LearnState> {
     else if (feedbackLastCard == LearnFeedback.medium) {
       cardsToLearn.removeAt(0);
       nextRecallScore -= 1;
-      if(nextRecallScore == 0){
+      if (nextRecallScore == 0) {
         nextRecallScore = 0;
       }
       nextTimeToReview = nextTimeToReview
@@ -66,8 +66,7 @@ class LearnCubit extends Cubit<LearnState> {
     cardsToLearn = _cardsRepository.learnAllCards();
 
     cardsToLearn.sort(
-      (a, b) => a.dateToReview
-          .compareTo(b.dateToReview),
+      (a, b) => a.dateToReview.compareTo(b.dateToReview),
     );
   }
 

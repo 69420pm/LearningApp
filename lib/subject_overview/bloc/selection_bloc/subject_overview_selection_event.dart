@@ -27,7 +27,7 @@ class SubjectOverviewFolderSelectionChange
   });
 }
 
-class SubjectOverviewSelectionDeleteSelectedCards
+class SubjectOverviewSelectionDeleteSelectedFiles
     extends SubjectOverviewSelectionEvent {}
 
 class SubjectOverviewSelectionMoveSelectedCards
@@ -48,19 +48,8 @@ class SubjectOverviewDraggingChange extends SubjectOverviewSelectionEvent {
 class SubjectOverviewGetSelectedCards extends SubjectOverviewSelectionEvent {}
 
 class SubjectOverviewSetSoftSelectFolder extends SubjectOverviewSelectionEvent {
-  Folder? folder;
+  String folderUID;
   SubjectOverviewSetSoftSelectFolder({
-    required this.folder,
-  });
-}
-
-class SubjectOverviewUpdateFolderTable extends SubjectOverviewSelectionEvent {
-  String folderId;
-  Map<Folder, bool> folder;
-  Map<Card, bool> cards;
-  SubjectOverviewUpdateFolderTable({
-    required this.folderId,
-    required this.folder,
-    required this.cards,
+    required this.folderUID,
   });
 }
