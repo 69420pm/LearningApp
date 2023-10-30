@@ -28,6 +28,8 @@ class TextFieldController extends TextEditingController {
   Color _previousTextColor = Colors.white;
   Color _previousTextBackgroundColor = Colors.transparent;
   List<HyperLinkEntry> hyperLinks = [];
+  int shiftSelectionStart = 0;
+  int shiftSelectionEnd = 0;
 
   @override
   TextSpan buildTextSpan({
@@ -37,13 +39,69 @@ class TextFieldController extends TextEditingController {
     bool onlyUpdateCharTiles = false,
   }) {
     super.buildTextSpan(context: context, withComposing: withComposing);
-    hyperLinks = [];
-    // text = String.fromCharCodes(text.codeUnits);
-    // Runes runes = text.runes;
-    // text = String.fromCharCodes(runes);
-    // Runes runes16 = text.runes;
-    // text = utf8.encode(text);
     final children = <InlineSpan>[];
+    // // optimize
+    // if (onlyUpdateCharTiles) {
+    //   text = '';
+    //   charTiles.forEach((key, value) {
+    //     children.add(TextSpan(text: value.text, style: value.style));
+    //     text += value.text;
+    //   });
+    //   _previousText = text;
+    //   selection = _previousSelection;
+    //   return TextSpan(style: style, children: children);
+    // }
+    // final isBold = context.read<TextEditorBloc>().isBold;
+    // final isItalic = context.read<TextEditorBloc>().isItalic;
+    // final isUnderlined = context.read<TextEditorBloc>().isUnderlined;
+    // final textColor = context.read<TextEditorBloc>().textColor;
+    // final textBackgroundColor =
+    //     context.read<TextEditorBloc>().textBackgroundColor;
+    // final styleChanged = isBold == _previousBold &&
+    //     isItalic == _previousItalic &&
+    //     isUnderlined == _previousUnderlined &&
+    //     textColor == _previousTextColor &&
+    //     textBackgroundColor == _previousTextBackgroundColor;
+    // final textDelta = text.characters.length - _previousText.characters.length;
+    // // _selectionDelta(selection, _previousSelection);
+
+    // var shiftSelectionEnd = 0;
+    // var shiftSelectionStart = 0;
+    // for (var i = 0; i < text.characters.length; i++) {
+    //   if (text.characters.elementAt(i) != text[i + shiftSelectionEnd] &&
+    //       i < selection.end - shiftSelectionEnd) {
+    //     shiftSelectionEnd += 1;
+    //   }
+    //   if (text.characters.elementAt(i) != text[i + shiftSelectionStart] &&
+    //       i < selection.start - shiftSelectionStart) {
+    //     shiftSelectionStart += 1;
+    //   }
+    // }
+
+    // if (styleChanged) {
+    //   // new characters
+    //   if (textDelta > 0) {
+    //   }
+    //   // characters got removed
+    //   else if (textDelta < 0) {
+    //   }
+    //   // selection format changed
+    //   else {}
+    // } else {
+    //   // new characters
+    //   if (textDelta > 0) {
+    //   }
+    //   // characters got removed
+    //   else if (textDelta < 0) {
+    //   }
+    //   // selection format changed
+    //   else {}
+    // }
+
+    // ----------------------------------------
+
+    hyperLinks = [];
+    // final children = <InlineSpan>[];
     if (onlyUpdateCharTiles) {
       text = '';
       charTiles.forEach((key, value) {
@@ -67,14 +125,17 @@ class TextFieldController extends TextEditingController {
 
     var shiftSelectionEnd = 0;
     var shiftSelectionStart = 0;
-    for (var i = 0; i < text.characters.length; i++) {
-      if (text.characters.elementAt(i) != text[i + shiftSelectionEnd] &&
-          i < selection.end - shiftSelectionEnd) {
-        shiftSelectionEnd += 1;
-      }
-      if (text.characters.elementAt(i) != text[i + shiftSelectionStart] &&
-          i < selection.start - shiftSelectionStart) {
-        shiftSelectionStart += 1;
+    // emojis are in text
+    if (text.characters.length != text.length) {
+      for (var i = 0; i < text.characters.length; i++) {
+        if (text.characters.elementAt(i) != text[i + shiftSelectionEnd] &&
+            i < selection.end - shiftSelectionEnd) {
+          shiftSelectionEnd += 1;
+        }
+        if (text.characters.elementAt(i) != text[i + shiftSelectionStart] &&
+            i < selection.start - shiftSelectionStart) {
+          shiftSelectionStart += 1;
+        }
       }
     }
 
@@ -186,20 +247,6 @@ class TextFieldController extends TextEditingController {
     ); // Match one or more digits
     for (final Match match in regex.allMatches(text)) {
       hyperLinks.add(HyperLinkEntry(start: match.start, end: match.end - 1));
-      // for (var i = match.start; i < match.end; i++) {
-      //   hyperLinkIndices.add(i);
-      //   // final currentStyle = newCharTiles[i]!.style;
-      //   // newCharTiles[i] = newCharTiles[i]!.copyWith(
-      //   //   isDefaultOnBackgroundTextColor: false,
-      //   //   // isHyperlink: true,
-      //   //   style: currentStyle.copyWith(
-      //   //     color: UIColors.focused,
-      //   //     decoration: TextDecoration.underline,
-      //   //     decorationColor: UIColors.focused,
-      //   //   ),
-      //   // );
-      // }
-      // hyperLinkIndices.add(-1);
     }
     charTiles.forEach((key, value) {
       children.add(
@@ -228,6 +275,13 @@ class TextFieldController extends TextEditingController {
 
     return TextSpan(style: style, children: children);
   }
+
+  // List<int> _selectionDelta(TextSelection current, TextSelection previous){
+  //   int startSelectionDelta = current.start - previous.start;
+  //   int endSelectionDelta = current.end - previous.end;
+  //   if(text[])
+  //   return [1,2];
+  // }
 
   void addText(
     List<CharTile> newCharTiles,

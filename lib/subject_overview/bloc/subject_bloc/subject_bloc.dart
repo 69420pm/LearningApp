@@ -100,7 +100,6 @@ class SubjectBloc extends Bloc<SubjectEvent, SubjectState> {
       uid: event.folderId ?? Uid().uid(),
       name: event.name,
       dateCreated: DateTime.now(),
-      parents: [],
     );
     await cardsRepository.saveFolder(newFolder, event.parentId);
     emit(SubjectSuccess());
@@ -117,7 +116,6 @@ class SubjectBloc extends Bloc<SubjectEvent, SubjectState> {
       // back: event.back,
       dateCreated: DateTime.now(),
       recallScore: 0,
-      parents: [],
       // parentId: event.parentId,
       askCardsInverted: true,
       typeAnswer: true,

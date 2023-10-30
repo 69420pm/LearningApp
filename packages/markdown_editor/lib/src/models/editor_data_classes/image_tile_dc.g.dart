@@ -1,38 +1,41 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'folder.dart';
+part of 'image_tile_dc.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class FolderAdapter extends TypeAdapter<Folder> {
+class ImageTileDCAdapter extends TypeAdapter<ImageTileDC> {
   @override
-  final int typeId = 1;
+  final int typeId = 11;
 
   @override
-  Folder read(BinaryReader reader) {
+  ImageTileDC read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Folder(
-      uid: fields[0] as String,
-      name: fields[1] as String,
-      dateCreated: fields[2] as DateTime,
+    return ImageTileDC(
+      uid: fields[3] as String,
+      filePath: fields[0] as String,
+      scale: fields[1] as double,
+      alignment: fields[2] as int,
     );
   }
 
   @override
-  void write(BinaryWriter writer, Folder obj) {
+  void write(BinaryWriter writer, ImageTileDC obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
-      ..write(obj.uid)
+      ..write(obj.filePath)
       ..writeByte(1)
-      ..write(obj.name)
+      ..write(obj.scale)
       ..writeByte(2)
-      ..write(obj.dateCreated);
+      ..write(obj.alignment)
+      ..writeByte(3)
+      ..write(obj.uid);
   }
 
   @override
@@ -41,7 +44,7 @@ class FolderAdapter extends TypeAdapter<Folder> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is FolderAdapter &&
+      other is ImageTileDCAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

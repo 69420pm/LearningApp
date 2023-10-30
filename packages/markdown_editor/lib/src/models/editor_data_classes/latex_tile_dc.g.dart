@@ -1,38 +1,35 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'folder.dart';
+part of 'latex_tile_dc.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class FolderAdapter extends TypeAdapter<Folder> {
+class LatexTileDCAdapter extends TypeAdapter<LatexTileDC> {
   @override
-  final int typeId = 1;
+  final int typeId = 12;
 
   @override
-  Folder read(BinaryReader reader) {
+  LatexTileDC read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Folder(
-      uid: fields[0] as String,
-      name: fields[1] as String,
-      dateCreated: fields[2] as DateTime,
+    return LatexTileDC(
+      uid: fields[1] as String,
+      latexText: fields[0] as String,
     );
   }
 
   @override
-  void write(BinaryWriter writer, Folder obj) {
+  void write(BinaryWriter writer, LatexTileDC obj) {
     writer
-      ..writeByte(3)
-      ..writeByte(0)
-      ..write(obj.uid)
-      ..writeByte(1)
-      ..write(obj.name)
       ..writeByte(2)
-      ..write(obj.dateCreated);
+      ..writeByte(0)
+      ..write(obj.latexText)
+      ..writeByte(1)
+      ..write(obj.uid);
   }
 
   @override
@@ -41,7 +38,7 @@ class FolderAdapter extends TypeAdapter<Folder> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is FolderAdapter &&
+      other is LatexTileDCAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

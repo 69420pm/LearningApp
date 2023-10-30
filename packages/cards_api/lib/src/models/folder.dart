@@ -20,28 +20,21 @@ class Folder extends File implements Equatable {
   @HiveField(2)
   final DateTime dateCreated;
 
-  /// id of parent subject to order cards
-  @HiveField(3)
-  @override
-  final List<String> parents;
   Folder({
     required this.uid,
     required this.name,
     required this.dateCreated,
-    required this.parents,
-  }) : super(uid: uid, parents: parents);
+  }) : super(uid: uid);
 
   Folder copyWith({
     String? uid,
     String? name,
     DateTime? dateCreated,
-    List<String>? parents,
   }) {
     return Folder(
       uid: uid ?? this.uid,
       name: name ?? this.name,
       dateCreated: dateCreated ?? this.dateCreated,
-      parents: parents ?? this.parents,
     );
   }
 
@@ -51,6 +44,6 @@ class Folder extends File implements Equatable {
 
   @override
   List<Object> get props {
-    return [uid, name, dateCreated, parents];
+    return [uid, name, dateCreated];
   }
 }

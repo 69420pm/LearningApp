@@ -1,47 +1,50 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'card.dart';
+part of 'char_tile_dc.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class CardAdapter extends TypeAdapter<Card> {
+class CharTileDCAdapter extends TypeAdapter<CharTileDC> {
   @override
-  final int typeId = 4;
+  final int typeId = 5;
 
   @override
-  Card read(BinaryReader reader) {
+  CharTileDC read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Card(
-      uid: fields[0] as String,
-      dateCreated: fields[1] as DateTime,
-      askCardsInverted: fields[2] as bool,
-      typeAnswer: fields[3] as bool,
-      recallScore: fields[4] as int,
-      dateToReview: fields[5] as DateTime,
+    return CharTileDC(
+      text: fields[0] as String,
+      start: fields[1] as int,
+      end: fields[2] as int,
+      isBold: fields[3] as bool,
+      isItalic: fields[4] as bool,
+      isUnderlined: fields[5] as bool,
+      color: fields[6] as int,
     );
   }
 
   @override
-  void write(BinaryWriter writer, Card obj) {
+  void write(BinaryWriter writer, CharTileDC obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
-      ..write(obj.uid)
+      ..write(obj.text)
       ..writeByte(1)
-      ..write(obj.dateCreated)
+      ..write(obj.start)
       ..writeByte(2)
-      ..write(obj.askCardsInverted)
+      ..write(obj.end)
       ..writeByte(3)
-      ..write(obj.typeAnswer)
+      ..write(obj.isBold)
       ..writeByte(4)
-      ..write(obj.recallScore)
+      ..write(obj.isItalic)
       ..writeByte(5)
-      ..write(obj.dateToReview);
+      ..write(obj.isUnderlined)
+      ..writeByte(6)
+      ..write(obj.color);
   }
 
   @override
@@ -50,7 +53,7 @@ class CardAdapter extends TypeAdapter<Card> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is CardAdapter &&
+      other is CharTileDCAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

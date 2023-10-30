@@ -76,15 +76,17 @@ class HiveCardsApi extends CardsApi {
     if (childrenIds == null) {
       return valueNotifier;
     }
-    for (final id in childrenIds) {
-      final card = _cardBox.get(id);
+    for (final childrenId in childrenIds) {
+      final card = _cardBox.get(childrenId);
       if (card == null) {
-        final folder = _folderBox.get(id);
+        final folder = _folderBox.get(childrenId);
         if (folder != null) {
           children.add(folder);
         } else {
           throw FolderNotFoundException();
         }
+      }else{
+        children.add(card);
       }
     }
     valueNotifier.value = children;
@@ -142,7 +144,7 @@ class HiveCardsApi extends CardsApi {
     if (relations == null) {
       await _relationsBox.put(parentId, [card.uid]);
     } else {
-      relations!.add(card.uid);
+      relations.add(card.uid);
       await _relationsBox.put(parentId, relations);
     }
 

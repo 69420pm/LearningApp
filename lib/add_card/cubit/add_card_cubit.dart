@@ -24,7 +24,6 @@ class AddCardCubit extends Cubit<AddCardState> {
       askCardsInverted: false,
       typeAnswer: true,
       dateToReview: DateTime.now(),
-      parents: [],
       recallScore: 0
     );
     try {

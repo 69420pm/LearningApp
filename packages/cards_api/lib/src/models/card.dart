@@ -35,10 +35,6 @@ class Card extends File implements Equatable {
   @HiveField(5)
   final DateTime dateToReview;
 
-  // a list of all parent strings in order from closest to most far away parent
-  @override
-  @HiveField(6)
-  final List<String> parents;
   Card({
     required this.uid,
     required this.dateCreated,
@@ -46,8 +42,7 @@ class Card extends File implements Equatable {
     required this.typeAnswer,
     required this.recallScore,
     required this.dateToReview,
-    required this.parents,
-  }) : super(uid: uid, parents: parents);
+  }) : super(uid: uid);
 
   Card copyWith({
     String? uid,
@@ -65,7 +60,6 @@ class Card extends File implements Equatable {
       typeAnswer: typeAnswer ?? this.typeAnswer,
       recallScore: recallScore ?? this.recallScore,
       dateToReview: dateToReview ?? this.dateToReview,
-      parents: parents ?? this.parents,
     );
   }
 
@@ -81,7 +75,6 @@ class Card extends File implements Equatable {
       typeAnswer,
       recallScore,
       dateToReview,
-      parents
     ];
   }
 }
