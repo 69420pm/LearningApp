@@ -55,18 +55,23 @@ class SubjectOverviewSelectionBloc
     }
   }
 
-  void _checkIfParentWasSelected(String parentUID) {
+  bool _checkIfParentIsSelected(String parentUID, String fileUID) {
     if (_selectedFilesNotifier.value.contains(parentUID)) {
-      //deselect parentFolder
-      _deselectFolder(
-          _cardsRepository.getParentIdFromChildId(parentUID), parentUID);
-
       //select all children
       _cardsRepository
           .getChildrenDirectlyBelow(parentUID)
           .forEach(_selectedFilesNotifier.value.add);
 
-      print('parent deselected');
+      //deselect parentFolder
+      _deselectFolder(
+          _cardsRepository.getParentIdFromChildId(parentUID), parentUID);
+
+      //deselect file
+      _selectedFilesNotifier.value.remove(fileUID);
+
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -82,24 +87,24 @@ class SubjectOverviewSelectionBloc
       _cardsRepository
           .getChildrenDirectlyBelow(parentUID)
           .forEach(_selectedFilesNotifier.value.remove);
-
-      print('parent selected');
     }
   }
 
   void _selectFolder(String parentUID, String folderUID) {
-    //select folder
-    _selectedFilesNotifier.value.add(folderUID);
-    //deselect all childern
-    _cardsRepository
-        .getChildrenList(folderUID)
-        .forEach(_selectedFilesNotifier.value.remove);
-    //check if lastSelectedInParentFolder
-    _checkForLastSelectedInFolder(parentUID);
+    if (!_checkIfParentIsSelected(parentUID, folderUID)) {
+      //select folder
+      _selectedFilesNotifier.value.add(folderUID);
+      //deselect all childern
+      _cardsRepository
+          .getChildrenList(folderUID)
+          .forEach(_selectedFilesNotifier.value.remove);
+      //check if lastSelectedInParentFolder
+      _checkForLastSelectedInFolder(parentUID);
+    }
+    ;
   }
 
   void _deselectFolder(String parentUID, String folderUID) {
-    _checkIfParentWasSelected(parentUID);
     _selectedFilesNotifier.value.remove(folderUID);
     _checkIfNothingSelected();
   }
@@ -134,16 +139,15 @@ class SubjectOverviewSelectionBloc
 
     if (!_isRootFile(parentUID, event.cardUID)) {
       if (!_selectedFilesNotifier.value.contains(event.cardUID)) {
-        // new Card selected
-        _selectedFilesNotifier.value.add(event.cardUID);
+        if (!_checkIfParentIsSelected(parentUID, event.cardUID)) {
+          // new Card selected
+          _selectedFilesNotifier.value.add(event.cardUID);
 
-        //check if all are selected
-        _checkForLastSelectedInFolder(parentUID);
+          //check if all are selected
+          _checkForLastSelectedInFolder(parentUID);
+        }
         emit(SubjectOverviewSelectionModeOn());
       } else {
-        //check if parentFolder is Selected
-        _checkIfParentWasSelected(parentUID);
-
         //deselect card
         _selectedFilesNotifier.value.remove(event.cardUID);
 
