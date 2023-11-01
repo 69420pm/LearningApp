@@ -8,6 +8,7 @@
 import 'package:cards_api/cards_api.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/foundation.dart';
+import 'package:markdown_editor/src/models/editor_tile.dart';
 
 /// {@template cards_api}
 /// The interface and models for an API providing access to cards.
@@ -33,7 +34,7 @@ abstract class CardsApi {
 
   /// Saves a [card]
   /// If a [card] with same id already exists, it will be replaced
-  Future<void> saveCard(Card card, String? parentId);
+  Future<void> saveCard(Card card, List<EditorTile>? editorTiles, String? parentId);
 
   /// Saves a [subject]
   /// If a [subject] with same id already exists, it will be replaced

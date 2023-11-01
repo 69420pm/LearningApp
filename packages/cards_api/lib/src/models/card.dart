@@ -19,21 +19,24 @@ class Card extends File implements Equatable {
   /// possibility to get asked when showing the back and hiding the front
   /// (helpful for vocab)
   @HiveField(2)
-  final bool askCardsInverted;
+  bool askCardsInverted;
 
   /// possibility to type answer with keyboard and for learning spelling
   /// of a word
   @HiveField(3)
-  final bool typeAnswer;
+  bool typeAnswer;
 
   /// overall score of recall for this card, the higher the better
   /// ranges from 0 (really new) to 6 (really secure with this card)
   @HiveField(4)
-  final int recallScore;
+  int recallScore;
 
   /// date when the card should get learned again
   @HiveField(5)
-  final DateTime dateToReview;
+  DateTime dateToReview;
+
+  @HiveField(6)
+  String name;
 
   Card({
     required this.uid,
@@ -42,6 +45,7 @@ class Card extends File implements Equatable {
     required this.typeAnswer,
     required this.recallScore,
     required this.dateToReview,
+    required this.name
   }) : super(uid: uid);
 
   Card copyWith({
@@ -52,6 +56,7 @@ class Card extends File implements Equatable {
     int? recallScore,
     DateTime? dateToReview,
     List<String>? parents,
+    String? name
   }) {
     return Card(
       uid: uid ?? this.uid,
@@ -60,6 +65,7 @@ class Card extends File implements Equatable {
       typeAnswer: typeAnswer ?? this.typeAnswer,
       recallScore: recallScore ?? this.recallScore,
       dateToReview: dateToReview ?? this.dateToReview,
+      name: name ?? this.name
     );
   }
 

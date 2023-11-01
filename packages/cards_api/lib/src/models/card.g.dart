@@ -23,13 +23,14 @@ class CardAdapter extends TypeAdapter<Card> {
       typeAnswer: fields[3] as bool,
       recallScore: fields[4] as int,
       dateToReview: fields[5] as DateTime,
+      name: fields[6] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Card obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.uid)
       ..writeByte(1)
@@ -41,7 +42,9 @@ class CardAdapter extends TypeAdapter<Card> {
       ..writeByte(4)
       ..write(obj.recallScore)
       ..writeByte(5)
-      ..write(obj.dateToReview);
+      ..write(obj.dateToReview)
+      ..writeByte(6)
+      ..write(obj.name);
   }
 
   @override
