@@ -11,8 +11,6 @@ import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/dragging_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
 import 'package:learning_app/subject_overview/view/subject_card.dart';
-import 'package:learning_app/subject_overview/view/subject_page_app_bar.dart';
-import 'package:learning_app/subject_overview/view/subject_page_tool_bar.dart';
 import 'package:ui_components/ui_components.dart';
 
 class SubjectPage extends StatelessWidget {
@@ -69,14 +67,68 @@ class _SubjectViewState extends State<SubjectView> {
 
     var isMovingDown = false;
     var isMovingUp = false;
-
+    print("rebuilt");
     final softSelectedFolder = widget.cardsRepository.getFolderById(
         context.read<SubjectOverviewSelectionBloc>().folderUIDSoftSelected);
 
     return UIPage(
-      appBar: SubjectPageAppBar(
-          subjectToEdit: widget.subjectToEdit,
-          cardsRepository: widget.cardsRepository),
+      appBar: PreferredSize(
+        preferredSize:
+            Size.fromHeight(Theme.of(context).appBarTheme.toolbarHeight ?? 10),
+        child: BlocBuilder<SubjectOverviewSelectionBloc,
+            SubjectOverviewSelectionState>(
+          builder: (context, state) {
+            return UIAppBar(
+              leadingBackButton:
+                  context.read<SubjectOverviewSelectionBloc>().isInSelectMode,
+              leading:
+                  context.read<SubjectOverviewSelectionBloc>().isInSelectMode
+                      ? UIIconButton(
+                          icon: UIIcons.close,
+                          onPressed: () =>
+                              context.read<SubjectOverviewSelectionBloc>().add(
+                                    SubjectOverviewSelectionToggleSelectMode(
+                                      inSelectMode: false,
+                                    ),
+                                  ),
+                        )
+                      : null,
+              actions: context
+                      .read<SubjectOverviewSelectionBloc>()
+                      .isInSelectMode
+                  ? []
+                  : context.read<SubjectOverviewSelectionBloc>().isInSelectMode
+                      ? [
+                          UIIconButton(
+                            icon: UIIcons.edit,
+                            onPressed: () => UIBottomSheet.showUIBottomSheet(
+                              context: context,
+                              builder: (_) {
+                                return BlocProvider.value(
+                                  value: context.read<FolderListTileBloc>(),
+                                  child: EditFolderBottomSheet(
+                                    folder: softSelectedFolder!,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ]
+                      : [
+                          UIIconButton(
+                            icon: UIIcons.settings,
+                            onPressed: () {
+                              Navigator.of(context).pushNamed(
+                                '/subject_overview/edit_subject',
+                                arguments: widget.subjectToEdit,
+                              );
+                            },
+                          ),
+                        ],
+            );
+          },
+        ),
+      ),
       body: Column(
         children: [
           SubjectCard(
@@ -85,9 +137,63 @@ class _SubjectViewState extends State<SubjectView> {
           const SizedBox(
             height: UIConstants.itemPaddingLarge,
           ),
-          SubjectPageToolBar(
-              cardsRepository: widget.cardsRepository,
-              subjectToEditUID: widget.subjectToEdit.uid),
+          UILabelRow(
+            labelText: 'Files',
+            actionWidgets: [
+              UIIconButton(
+                icon: UIIcons.search.copyWith(color: UIColors.smallText),
+                onPressed: () {
+                  Navigator.of(context).pushNamed(
+                    '/search',
+                    arguments: widget.subjectToEdit.uid,
+                  );
+                },
+              ),
+              UIIconButton(
+                icon: UIIcons.download.copyWith(color: UIColors.smallText),
+                onPressed: () {
+                  context.read<SubjectBloc>().add(
+                        SubjectAddCard(
+                          front: "test",
+                          back: "test Back",
+                          parentId: softSelectedFolder != null
+                              ? softSelectedFolder.uid
+                              : widget.subjectToEdit.uid,
+                        ),
+                      );
+                },
+              ),
+              UIIconButton(
+                icon: UIIcons.addFolder.copyWith(color: UIColors.smallText),
+                onPressed: () {
+                  UIBottomSheet.showUIBottomSheet(
+                    context: context,
+                    builder: (_) {
+                      return BlocProvider.value(
+                        value: context.read<SubjectBloc>(),
+                        child: AddFolderBottomSheet(
+                          parentId: softSelectedFolder != null
+                              ? softSelectedFolder.uid
+                              : widget.subjectToEdit.uid,
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+              UIIconButton(
+                icon: UIIcons.placeHolder.copyWith(color: UIColors.smallText),
+                onPressed: () {
+                  Navigator.of(context).pushNamed(
+                    '/add_card',
+                    arguments: softSelectedFolder != null
+                        ? softSelectedFolder.uid
+                        : widget.subjectToEdit.uid,
+                  );
+                },
+              ),
+            ],
+          ),
           const SizedBox(
             height: UIConstants.itemPaddingLarge,
           ),
@@ -140,35 +246,43 @@ class _SubjectViewState extends State<SubjectView> {
                     .cardsRepository
                     .getChildrenById(widget.subjectToEdit.uid),
                 builder: (context, value, child) {
-                  return DraggingTile(
-                    fileUID: widget.subjectToEdit.uid,
-                    cardsRepository: widget.cardsRepository,
-                    child: CustomScrollView(
-                      key: globalKey,
-                      controller: scrollController,
-                      slivers: [
-                        SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                            (context, index) => FolderListTileParent(
-                              folder:
-                                  value.whereType<Folder>().elementAt(index),
-                              cardsRepository: widget.cardsRepository,
-                            ),
-                            // ..isHighlight = index.isOdd,
-                            childCount: value.whereType<Folder>().length,
-                          ),
+                  final folder = value.whereType<Folder>().toList();
+                  final card = value.whereType<Card>().toList();
+                  return BlocBuilder<SubjectOverviewSelectionBloc,
+                      SubjectOverviewSelectionState>(
+                    builder: (context, state) {
+                      return DraggingTile(
+                        fileUID: widget.subjectToEdit.uid,
+                        cardsRepository: widget.cardsRepository,
+                        child: CustomScrollView(
+                          key: globalKey,
+                          controller: scrollController,
+                          slivers: [
+                            if (folder.isNotEmpty)
+                              SliverList(
+                                delegate: SliverChildBuilderDelegate(
+                                  (context, index) => FolderListTileParent(
+                                    folder: folder[index],
+                                    cardsRepository: widget.cardsRepository,
+                                  ),
+                                  // ..isHighlight = index.isOdd,
+                                  childCount: folder.length,
+                                ),
+                              ),
+                            if (card.isNotEmpty)
+                              SliverList(
+                                delegate: SliverChildBuilderDelegate(
+                                  (context, index) => CardListTile(
+                                    card: card[index],
+                                    cardsRepository: widget.cardsRepository,
+                                  ),
+                                  childCount: card.length,
+                                ),
+                              ),
+                          ],
                         ),
-                        SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                            (context, index) => CardListTile(
-                              card: value.whereType<Card>().elementAt(index),
-                              cardsRepository: widget.cardsRepository,
-                            ),
-                            childCount: value.whereType<Folder>().length,
-                          ),
-                        ),
-                      ],
-                    ),
+                      );
+                    },
                   );
                 },
               ),
@@ -186,36 +300,3 @@ class _SubjectViewState extends State<SubjectView> {
     super.dispose();
   }
 }
-
-  // bool nothingChanged(String name, String icon, Subject currentSubject) {
-  //   if (name != currentSubject.name ||
-  //       // location != currentSubject.parentId ||
-  //       ) {
-  //     return false;
-  //   }
-  //   return true;
-  // }
-
-  // Future<void> save(
-  //   GlobalKey<FormState> formKey,
-  //   String nameInput,
-  //   String iconInput,
-  //   BuildContext context,
-  // ) async {
-  //   if (formKey.currentState!.validate()) {
-  //     if (!nothingChanged(
-  //       nameInput.trim(),
-  //       iconInput.trim(),
-  //       widget.subjectToEdit,
-  //     )) {
-  //       context.read<SubjectBloc>().add(
-  //             SubjectSaveSubject(
-  //               widget.subjectToEdit
-  //                   .copyWith(name: nameInput, prefixIcon: iconInput),
-  //             ),
-  //           );
-  //     }
-  //   }
-  // }
-
-  
