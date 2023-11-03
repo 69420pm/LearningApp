@@ -1,5 +1,6 @@
 import 'package:cards_api/cards_api.dart';
 import 'package:flutter/material.dart' hide Card;
+import 'package:learning_app/subject_overview/view/dragging_tile.dart';
 import 'package:ui_components/ui_components.dart';
 
 class CardListTileView extends StatelessWidget {
@@ -72,7 +73,7 @@ class CardListTileView extends StatelessWidget {
                         ),
                         const SizedBox(width: UIConstants.defaultSize * 2),
                         Text(
-                          "FRONT SHOULD BE HERE",// card.front,
+                          "FRONT SHOULD BE HERE", // card.front,
                           overflow: TextOverflow.ellipsis,
                           style:
                               Theme.of(context).textTheme.bodyMedium?.copyWith(

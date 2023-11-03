@@ -97,16 +97,11 @@ class _UIExpansionTileState extends State<UIExpansionTile>
           ),
           SizeTransition(
             sizeFactor: _animation,
-            child: Padding(
-              padding: const EdgeInsets.only(
-                right: UIConstants.defaultSize,
-              ),
-              child: ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemBuilder: (context, index) => widget.children[index],
-                itemCount: widget.children.length,
-              ),
+            child: ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemBuilder: (context, index) => widget.children[index],
+              itemCount: widget.children.length,
             ),
           ),
         ],

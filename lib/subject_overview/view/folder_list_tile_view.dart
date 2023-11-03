@@ -2,6 +2,7 @@
 import 'package:cards_api/cards_api.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/subject_overview/view/dragging_tile.dart';
 import 'package:ui_components/ui_components.dart';
 import 'package:uuid/uuid.dart';
 
@@ -29,63 +30,66 @@ class FolderListTileView extends StatelessWidget {
     var isSelected =
         context.read<SubjectOverviewSelectionBloc>().isFileSelected(folder.uid);
 
-    return UIExpansionTile(
-      backgroundColor: isHovered
-          ? UIColors.onOverlayCard
-          : isSoftSelected
-              ? UIColors.overlay
+    return Padding(
+      padding: const EdgeInsets.only(bottom: UIConstants.defaultSize),
+      child: UIExpansionTile(
+        backgroundColor: isHovered
+            ? UIColors.onOverlayCard
+            : isSoftSelected
+                ? UIColors.overlay
+                : isSelected
+                    ? UIColors.overlay
+                    : Colors.transparent,
+        border: Border.all(
+          color: isHovered
+              ? Colors.transparent
               : isSelected
-                  ? UIColors.overlay
+                  ? UIColors.primary
                   : Colors.transparent,
-      border: Border.all(
-        color: isHovered
-            ? Colors.transparent
-            : isSelected
-                ? UIColors.primary
-                : Colors.transparent,
-        width: UIConstants.borderWidth,
-      ),
-      title: Text(folder.uid.substring(0, 20),
-          overflow: TextOverflow.ellipsis, style: UIText.label),
-      iconSpacing: UIConstants.defaultSize,
-      titleSpacing: UIConstants.defaultSize,
-      trailing: UILinearProgressIndicator(value: 0.5),
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(
-            left: UIConstants.defaultSize * 4,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (childListTiles.whereType<FolderListTileParent>().isNotEmpty)
-                ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount:
-                      childListTiles.whereType<FolderListTileParent>().length,
-                  itemBuilder: (context, index) {
-                    return childListTiles
-                        .whereType<FolderListTileParent>()
-                        .elementAt(index);
-                    // ..isHighlight = index.isOdd;
-                  },
-                ),
-              if (childListTiles.whereType<CardListTile>().isNotEmpty)
-                ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: childListTiles.whereType<CardListTile>().length,
-                  itemBuilder: (context, index) {
-                    return childListTiles
-                        .whereType<CardListTile>()
-                        .elementAt(index);
-                  },
-                ),
-            ],
-          ),
+          width: UIConstants.borderWidth,
         ),
-      ],
+        title: Text(folder.uid.substring(0, 20),
+            overflow: TextOverflow.ellipsis, style: UIText.label),
+        iconSpacing: UIConstants.defaultSize,
+        titleSpacing: UIConstants.defaultSize,
+        trailing: UILinearProgressIndicator(value: 0.5),
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(
+              left: UIConstants.defaultSize * 4,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (childListTiles.whereType<FolderListTileParent>().isNotEmpty)
+                  ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount:
+                        childListTiles.whereType<FolderListTileParent>().length,
+                    itemBuilder: (context, index) {
+                      return childListTiles
+                          .whereType<FolderListTileParent>()
+                          .elementAt(index);
+                      // ..isHighlight = index.isOdd;
+                    },
+                  ),
+                if (childListTiles.whereType<CardListTile>().isNotEmpty)
+                  ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: childListTiles.whereType<CardListTile>().length,
+                    itemBuilder: (context, index) {
+                      return childListTiles
+                          .whereType<CardListTile>()
+                          .elementAt(index);
+                    },
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
