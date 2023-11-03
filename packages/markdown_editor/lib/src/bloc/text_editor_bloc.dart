@@ -334,16 +334,6 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
   }
 
   void _defaultEditorTiles(BuildContext context) {
-    final focusNode = FocusNode();
-    final textTile = TextTile(
-      textStyle: TextFieldConstants.normal,
-      focusNode: focusNode,
-      
-    );
-    
-    if (textTile.focusNode != null) {
-      FocusScope.of(context).nextFocus();
-    }
     editorTiles = [
       TextTile(
         textStyle: TextFieldConstants.normal,

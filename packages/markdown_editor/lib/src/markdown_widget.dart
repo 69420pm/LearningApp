@@ -9,13 +9,10 @@ class MarkdownWidget extends StatelessWidget {
   MarkdownWidget({super.key});
   @override
   Widget build(BuildContext context) {
-      FocusScope.of(context).nextFocus();
-
     return BlocBuilder<TextEditorBloc, TextEditorState>(
       buildWhen: (previousState, currentState) =>
           currentState is TextEditorEditorTilesChanged,
       builder: (context, state) {
-
         final editorTiles = context.read<TextEditorBloc>().editorTiles;
         final listChildren = <Widget>[
           SliverList(
