@@ -11,6 +11,7 @@ import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/dragging_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
 import 'package:learning_app/subject_overview/view/subject_card.dart';
+import 'package:learning_app/subject_overview/view/subject_page/subject_page_app_bar.dart';
 import 'package:ui_components/ui_components.dart';
 
 class SubjectPage extends StatelessWidget {
@@ -67,68 +68,14 @@ class _SubjectViewState extends State<SubjectView> {
 
     var isMovingDown = false;
     var isMovingUp = false;
-    print("rebuilt");
+
     final softSelectedFolder = widget.cardsRepository.getFolderById(
         context.read<SubjectOverviewSelectionBloc>().folderUIDSoftSelected);
 
     return UIPage(
-      appBar: PreferredSize(
-        preferredSize:
-            Size.fromHeight(Theme.of(context).appBarTheme.toolbarHeight ?? 10),
-        child: BlocBuilder<SubjectOverviewSelectionBloc,
-            SubjectOverviewSelectionState>(
-          builder: (context, state) {
-            return UIAppBar(
-              leadingBackButton:
-                  context.read<SubjectOverviewSelectionBloc>().isInSelectMode,
-              leading:
-                  context.read<SubjectOverviewSelectionBloc>().isInSelectMode
-                      ? UIIconButton(
-                          icon: UIIcons.close,
-                          onPressed: () =>
-                              context.read<SubjectOverviewSelectionBloc>().add(
-                                    SubjectOverviewSelectionToggleSelectMode(
-                                      inSelectMode: false,
-                                    ),
-                                  ),
-                        )
-                      : null,
-              actions: context
-                      .read<SubjectOverviewSelectionBloc>()
-                      .isInSelectMode
-                  ? []
-                  : context.read<SubjectOverviewSelectionBloc>().isInSelectMode
-                      ? [
-                          UIIconButton(
-                            icon: UIIcons.edit,
-                            onPressed: () => UIBottomSheet.showUIBottomSheet(
-                              context: context,
-                              builder: (_) {
-                                return BlocProvider.value(
-                                  value: context.read<FolderListTileBloc>(),
-                                  child: EditFolderBottomSheet(
-                                    folder: softSelectedFolder!,
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ]
-                      : [
-                          UIIconButton(
-                            icon: UIIcons.settings,
-                            onPressed: () {
-                              Navigator.of(context).pushNamed(
-                                '/subject_overview/edit_subject',
-                                arguments: widget.subjectToEdit,
-                              );
-                            },
-                          ),
-                        ],
-            );
-          },
-        ),
-      ),
+      appBar: SubjectPageAppBar(
+          cardsRepository: widget.cardsRepository,
+          subjectToEdit: widget.subjectToEdit),
       body: Column(
         children: [
           SubjectCard(
