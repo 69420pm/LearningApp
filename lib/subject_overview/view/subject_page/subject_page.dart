@@ -12,6 +12,7 @@ import 'package:learning_app/subject_overview/view/dragging_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
 import 'package:learning_app/subject_overview/view/subject_card.dart';
 import 'package:learning_app/subject_overview/view/subject_page/subject_page_app_bar.dart';
+import 'package:learning_app/subject_overview/view/subject_page/subject_page_tool_bar.dart';
 import 'package:ui_components/ui_components.dart';
 
 class SubjectPage extends StatelessWidget {
@@ -84,63 +85,9 @@ class _SubjectViewState extends State<SubjectView> {
           const SizedBox(
             height: UIConstants.itemPaddingLarge,
           ),
-          UILabelRow(
-            labelText: 'Files',
-            actionWidgets: [
-              UIIconButton(
-                icon: UIIcons.search.copyWith(color: UIColors.smallText),
-                onPressed: () {
-                  Navigator.of(context).pushNamed(
-                    '/search',
-                    arguments: widget.subjectToEdit.uid,
-                  );
-                },
-              ),
-              UIIconButton(
-                icon: UIIcons.download.copyWith(color: UIColors.smallText),
-                onPressed: () {
-                  context.read<SubjectBloc>().add(
-                        SubjectAddCard(
-                          front: "test",
-                          back: "test Back",
-                          parentId: softSelectedFolder != null
-                              ? softSelectedFolder.uid
-                              : widget.subjectToEdit.uid,
-                        ),
-                      );
-                },
-              ),
-              UIIconButton(
-                icon: UIIcons.addFolder.copyWith(color: UIColors.smallText),
-                onPressed: () {
-                  UIBottomSheet.showUIBottomSheet(
-                    context: context,
-                    builder: (_) {
-                      return BlocProvider.value(
-                        value: context.read<SubjectBloc>(),
-                        child: AddFolderBottomSheet(
-                          parentId: softSelectedFolder != null
-                              ? softSelectedFolder.uid
-                              : widget.subjectToEdit.uid,
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
-              UIIconButton(
-                icon: UIIcons.placeHolder.copyWith(color: UIColors.smallText),
-                onPressed: () {
-                  Navigator.of(context).pushNamed(
-                    '/add_card',
-                    arguments: softSelectedFolder != null
-                        ? softSelectedFolder.uid
-                        : widget.subjectToEdit.uid,
-                  );
-                },
-              ),
-            ],
-          ),
+          SubjectPageToolBar(
+              cardsRepository: widget.cardsRepository,
+              subjectToEditUID: widget.subjectToEdit.uid),
           const SizedBox(
             height: UIConstants.itemPaddingLarge,
           ),
