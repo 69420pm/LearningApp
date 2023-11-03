@@ -34,6 +34,12 @@ class CharTileDC extends Equatable {
   @HiveField(6)
   int color;
 
+  @HiveField(7)
+  String uid;
+  
+  // color as int (0:white, 1:red,2:yellow,3:green,4:blue,5:purple)
+  @HiveField(8)
+  int backgroundColor;
   
   CharTileDC({
     required this.text,
@@ -43,9 +49,11 @@ class CharTileDC extends Equatable {
     required this.isItalic,
     required this.isUnderlined,
     required this.color,
+    required this.uid,
+    required this.backgroundColor
   });
 
   @override
   List<Object?> get props =>
-      [text, start, end, isBold, isItalic, isUnderlined, color];
+      [text, start, end, isBold, isItalic, isUnderlined, color, backgroundColor];
 }

@@ -18,7 +18,7 @@ class ListEditorTileDCAdapter extends TypeAdapter<ListEditorTileDC> {
     };
     return ListEditorTileDC(
       uid: fields[2] as String,
-      charTiles: (fields[0] as List).cast<CharTile>(),
+      charTiles: (fields[0] as List).cast<CharTileDC>(),
       orderNumber: fields[1] as int,
     );
   }

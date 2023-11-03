@@ -24,13 +24,15 @@ class CharTileDCAdapter extends TypeAdapter<CharTileDC> {
       isItalic: fields[4] as bool,
       isUnderlined: fields[5] as bool,
       color: fields[6] as int,
+      uid: fields[7] as String,
+      backgroundColor: fields[8] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, CharTileDC obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.text)
       ..writeByte(1)
@@ -44,7 +46,11 @@ class CharTileDCAdapter extends TypeAdapter<CharTileDC> {
       ..writeByte(5)
       ..write(obj.isUnderlined)
       ..writeByte(6)
-      ..write(obj.color);
+      ..write(obj.color)
+      ..writeByte(7)
+      ..write(obj.uid)
+      ..writeByte(8)
+      ..write(obj.backgroundColor);
   }
 
   @override

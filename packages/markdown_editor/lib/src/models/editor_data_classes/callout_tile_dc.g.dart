@@ -18,7 +18,7 @@ class CalloutTileDCAdapter extends TypeAdapter<CalloutTileDC> {
     };
     return CalloutTileDC(
       uid: fields[3] as String,
-      charTiles: (fields[0] as List).cast<CharTile>(),
+      charTiles: (fields[0] as List).cast<CharTileDC>(),
       tileColor: fields[1] as int,
       iconString: fields[2] as String,
     );

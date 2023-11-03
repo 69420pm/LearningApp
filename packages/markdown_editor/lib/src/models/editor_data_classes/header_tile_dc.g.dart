@@ -18,7 +18,7 @@ class HeaderTileDCAdapter extends TypeAdapter<HeaderTileDC> {
     };
     return HeaderTileDC(
       uid: fields[2] as String,
-      charTiles: (fields[0] as List).cast<CharTile>(),
+      charTiles: (fields[0] as List).cast<CharTileDC>(),
       headerSize: fields[1] as int,
     );
   }

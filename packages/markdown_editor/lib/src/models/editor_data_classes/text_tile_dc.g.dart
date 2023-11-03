@@ -18,7 +18,7 @@ class TextTileDCAdapter extends TypeAdapter<TextTileDC> {
     };
     return TextTileDC(
       uid: fields[1] as String,
-      charTiles: (fields[0] as List).cast<CharTile>(),
+      charTiles: (fields[0] as List).cast<CharTileDC>(),
     );
   }
 

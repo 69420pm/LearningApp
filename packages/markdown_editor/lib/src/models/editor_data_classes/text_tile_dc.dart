@@ -1,4 +1,5 @@
 import 'package:markdown_editor/src/models/char_tile.dart';
+import 'package:markdown_editor/src/models/editor_data_classes/char_tile_dc.dart';
 import 'package:markdown_editor/src/models/editor_data_classes/editor_tile_dc.dart';
 import 'package:hive/hive.dart';
 
@@ -11,7 +12,7 @@ class TextTileDC extends EditorTileDC {
 
   /// charTiles of text
   @HiveField(0)
-  List<CharTile> charTiles;
+  List<CharTileDC> charTiles;
 
   @HiveField(1)
   @override

@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/src/bloc/text_editor_bloc.dart';
+import 'package:markdown_editor/src/models/char_tile.dart';
 import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
 
 class HeaderTile extends StatelessWidget implements EditorTile {
-  HeaderTile({super.key, required this.textStyle, required this.hintText}) {
+  HeaderTile({
+    super.key,
+    required this.textStyle,
+    required this.hintText,
+    this.charTiles,
+  }) {
     _textTile = TextTile(
       textStyle: textStyle,
       hintText: hintText,
       focusNode: focusNode,
       parentEditorTile: this,
-      isDense: true,
+      charTiles: charTiles,
     );
   }
 
@@ -22,6 +28,7 @@ class HeaderTile extends StatelessWidget implements EditorTile {
   late TextFieldController _textFieldController;
   @override
   FocusNode? focusNode = FocusNode();
+  final Map<int, CharTile>? charTiles;
 
   @override
   Widget build(BuildContext context) {

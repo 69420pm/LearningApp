@@ -6,3 +6,16 @@ export 'src/cubit/keyboard_row_cubit.dart';
 export 'src/markdown_widget.dart';
 export 'src/widgets/keyboard_row/keyboard_row.dart';
 export 'src/cubit/audio_tile_cubit.dart';
+export 'src/models/editor_data_classes/audio_tile_dc.dart';
+export 'src/models/editor_data_classes/callout_tile_dc.dart';
+export 'src/models/editor_data_classes/char_tile_dc.dart';
+export 'src/models/editor_data_classes/divider_tile_dc.dart';
+export 'src/models/editor_data_classes/header_tile_dc.dart';
+export 'src/models/editor_data_classes/image_tile_dc.dart';
+export 'src/models/editor_data_classes/latex_tile_dc.dart';
+export 'src/models/editor_data_classes/list_editor_tile_dc.dart';
+export 'src/models/editor_data_classes/quote_tile_dc.dart';
+export 'src/models/editor_data_classes/text_tile_dc.dart';
+export 'src/models/editor_data_classes/editor_tile_dc.dart';
+
+

@@ -131,7 +131,10 @@ class KeyboardTextRow extends StatelessWidget {
           ),
           KeyboardButton(
             icon: UIIcons.done.copyWith(color: UIColors.primary),
-            onPressed: () {},
+            onPressed: () {
+              // save content of card
+              
+            },
           ),
         ],
       ),

@@ -2,13 +2,14 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Card;
+import 'package:markdown_editor/src/helper/data_class_helper.dart';
 import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/models/text_field_constants.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/list_editor_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
 import 'package:ui_components/ui_components.dart';
-
+import 'package:cards_repository/cards_repository.dart';
 import '../models/char_tile.dart';
 
 part 'text_editor_event.dart';
@@ -17,7 +18,8 @@ part 'text_editor_state.dart';
 /// bloc for handling all text editor relevant state management
 class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
   /// constructor
-  TextEditorBloc({
+  TextEditorBloc(
+    this._cardsRepository, {
     this.isBold = false,
     this.isItalic = false,
     this.isUnderlined = false,
@@ -30,7 +32,16 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     on<TextEditorReplaceEditorTile>(_replaceTile);
     on<TextEditorChangeOrderOfTile>(_changeOrderOfTile);
     on<TextEditorFocusLastWidget>(_focusLastWidget);
+    on<TextEditorGetSavedEditorTiles>(_getSavedEditorTiles);
   }
+
+  /// reference to card
+  Card? card;
+
+  /// parentId of card
+  String? parentId;
+
+  final CardsRepository _cardsRepository;
 
   /// list of all editorTiles (textWidgets, Images, etc.) of text editor
   List<EditorTile> editorTiles = [
@@ -47,8 +58,6 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
 
   /// whether text should get written underlined or not
   bool isUnderlined;
-
-
 
   /// color of text
   Color textColor;
@@ -84,23 +93,24 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     TextEditorAddEditorTile event,
     Emitter<TextEditorState> emit,
   ) {
-    // print("update "+FocusManager.instance.primaryFocus.toString());
-    // print("update " +focusedTile!.focusNode.toString());
     _addEditorTile(event.newEditorTile, event.context);
-    // _addLastTextTileIfNeeded();
     if (event.emitState) {
       emit(TextEditorEditorTilesChanged(tiles: List.of(editorTiles)));
     }
+    _saveEditorTiles();
   }
 
   FutureOr<void> _removeTile(
     TextEditorRemoveEditorTile event,
     Emitter<TextEditorState> emit,
   ) {
-    _removeEditorTile(event.tileToRemove, event.context,
-        handOverText: event.handOverText);
-    // _addLastTextTileIfNeeded();
+    _removeEditorTile(
+      event.tileToRemove,
+      event.context,
+      handOverText: event.handOverText,
+    );
     emit(TextEditorEditorTilesChanged(tiles: List.of(editorTiles)));
+    _saveEditorTiles();
   }
 
   FutureOr<void> _replaceTile(
@@ -119,6 +129,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     updateOrderedListTile();
 
     emit(TextEditorEditorTilesChanged(tiles: List.of(editorTiles)));
+    _saveEditorTiles();
   }
 
   void _addEditorTile(EditorTile toAdd, BuildContext context) {
@@ -136,6 +147,8 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
           // replace empty TextTile
           editorTiles[i] = toAdd;
           editorTiles[i].focusNode?.requestFocus();
+          DataClassHelper.convertToDataClass(editorTiles);
+
           return;
         }
 
@@ -147,27 +160,11 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
           editorTiles.add(sublist[j]);
         }
 
-        /*if (editorTiles.length - 1 < (i + 1)) {
-          _shiftTextAddEditorTile(toAdd, editorTiles[i], context);
-        } else {
-          editorTiles[i + 1] = toAdd;
-          // _shiftTextAddEditorTile(toAdd, ed, context)
-        }
-
-        editorTiles.removeRange(i + 1, editorTiles.length);
-        // toAdd.focusNode?.requestFocus();
-        for (var j = 0; j < sublist.length; j++) {
-          if (editorTiles.length - 1 > (i + j + 2)) {
-            editorTiles[i + j + 2] = sublist[j];
-          } else {
-            _shiftTextAddEditorTile(sublist[j], editorTiles[i], context);
-            // editorTiles.add(sublist[j]);
-          }
-        }*/
         editorTiles = editorTiles.whereType<EditorTile>().toList();
         break;
       }
     }
+    // _saveCard(event, emit)
     updateOrderedListTile();
   }
 
@@ -182,7 +179,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
       final selectionEnd = current.textFieldController?.selection.end;
       final oldFieldTiles = <CharTile>[];
       final newFieldTiles = <CharTile>[];
-      current.textFieldController?.charTiles.forEach((key, value) {
+      current.textFieldController?.charTiles!.forEach((key, value) {
         if (key >= selectionEnd!) {
           newFieldTiles.add(value);
         } else {
@@ -282,27 +279,18 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     }
   }
 
-  // void _addLastTextTileIfNeeded() {
-  //   if ((editorTiles[editorTiles.length - 1].textFieldController != null &&
-  //           editorTiles[editorTiles.length - 1].textFieldController!.text !=
-  //               '') ||
-  //       editorTiles[editorTiles.length - 1].focusNode == null) {
-  //     editorTiles.add(
-  //       TextTile(
-  //         textStyle: TextFieldConstants.normal,
-  //       ),
-  //     );
-  //   }
-  // }
-
   void _changeOrderOfTile(
-      TextEditorChangeOrderOfTile event, Emitter<TextEditorState> emit) {
+    TextEditorChangeOrderOfTile event,
+    Emitter<TextEditorState> emit,
+  ) {
     editorTiles.insert(event.newIndex, editorTiles[event.oldIndex]);
     editorTiles.removeAt(event.oldIndex);
   }
 
   FutureOr<void> _focusLastWidget(
-      TextEditorFocusLastWidget event, Emitter<TextEditorState> emit) {
+    TextEditorFocusLastWidget event,
+    Emitter<TextEditorState> emit,
+  ) {
     final lastWidget = editorTiles[editorTiles.length - 1];
     if ((lastWidget.textFieldController != null &&
             lastWidget.textFieldController!.text.isNotEmpty) ||
@@ -320,6 +308,46 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     } else {
       lastWidget.focusNode!.requestFocus();
     }
+    _saveEditorTiles();
   }
 
+  void _saveEditorTiles() {
+    if (card != null) {
+      _cardsRepository.saveCard(card!, editorTiles, parentId);
+    }
+  }
+
+  FutureOr<void> _getSavedEditorTiles(
+      TextEditorGetSavedEditorTiles event, Emitter<TextEditorState> emit) {
+    if (card != null) {
+      final loadedEditorTiles = _cardsRepository.getCardContent(card!.uid);
+      if (loadedEditorTiles.isNotEmpty) {
+        editorTiles = loadedEditorTiles;
+        FocusScope.of(event.context).requestFocus(FocusNode());
+      } else {
+        _defaultEditorTiles(event.context);
+      }
+    } else {
+      _defaultEditorTiles(event.context);
+    }
+    emit(TextEditorEditorTilesChanged(tiles: List.of(editorTiles)));
+  }
+
+  void _defaultEditorTiles(BuildContext context) {
+    final focusNode = FocusNode();
+    final textTile = TextTile(
+      textStyle: TextFieldConstants.normal,
+      focusNode: focusNode,
+      
+    );
+    
+    if (textTile.focusNode != null) {
+      FocusScope.of(context).nextFocus();
+    }
+    editorTiles = [
+      TextTile(
+        textStyle: TextFieldConstants.normal,
+      ),
+    ];
+  }
 }

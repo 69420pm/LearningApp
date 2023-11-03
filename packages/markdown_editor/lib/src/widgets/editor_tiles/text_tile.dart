@@ -26,6 +26,7 @@ class TextTile extends StatelessWidget implements EditorTile {
     this.onBackspaceDoubleClick,
     this.onSubmit,
     this.isDefaultOnBackgroundTextColor = true,
+    this.charTiles,
   }) {
     focusNode ??= FocusNode();
     textFieldController = TextFieldController(standardStyle: textStyle);
@@ -75,10 +76,18 @@ class TextTile extends StatelessWidget implements EditorTile {
   @override
   FocusNode? focusNode;
 
+  bool isInit = true;
+
+  final Map<int, CharTile>? charTiles;
+
   final FocusNode _rawKeyboardListenerNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
+    if (charTiles != null && isInit == true) {
+      textFieldController!.addText(charTiles!.values.toList(), context);
+    }
+    isInit = false;
     return BlocBuilder<TextEditorBloc, TextEditorState>(
       buildWhen: (previous, current) {
         if (current is! TextEditorKeyboardRowChanged) {
@@ -108,7 +117,7 @@ class TextTile extends StatelessWidget implements EditorTile {
               // tile gets removed and transformed to normal text tile in
               // same line
               else if (parentEditorTile != null) {
-                TextTile replacingTextTile = TextTile(
+                final replacingTextTile = TextTile(
                   textStyle: TextFieldConstants.normal,
                 );
                 final tiles = <CharTile>[];
@@ -163,7 +172,7 @@ class TextTile extends StatelessWidget implements EditorTile {
               horizontal: padding ? UIConstants.pageHorizontalPadding : 0,
             ),
             child: TextField(
-              autofocus: true,
+              // autofocus: true,
               controller: textFieldController,
               focusNode: focusNode,
               textInputAction: TextInputAction.next,
@@ -192,25 +201,28 @@ class TextTile extends StatelessWidget implements EditorTile {
                     textFieldController!.hyperLinks.isEmpty) {
                   return;
                 }
-                 final entry =  HyperLinkEntry.checkHyperLink(textFieldController!.selection.start, textFieldController!.hyperLinks);
+                final entry = HyperLinkEntry.checkHyperLink(
+                  textFieldController!.selection.start,
+                  textFieldController!.hyperLinks,
+                );
                 if (textFieldController!.selection.end -
                             textFieldController!.selection.start ==
-                        0 && entry != null && entry.start != textFieldController!.selection.start
-                  ) {
-                  var url = textFieldController!.text.substring(
-                    entry.start,
-                    entry.end + 1
-                  );
-                  if(!(url.contains('https') || url.contains('www'))){
-                    url = 'https://www.' + url;
-                  }
-                  else if (url[0] != "h") {
-                    url = 'https://' + url;
+                        0 &&
+                    entry != null &&
+                    entry.start != textFieldController!.selection.start) {
+                  var url = textFieldController!.text
+                      .substring(entry.start, entry.end + 1);
+                  if (!(url.contains('https') || url.contains('www'))) {
+                    url = 'https://www.$url';
+                  } else if (url[0] != 'h') {
+                    url = 'https://$url';
                   }
                   // final Uri uri = Uri(scheme: "https", host:'www.youtube.com');
                   final uri = Uri.parse(url);
-                  if (!await launchUrl(uri,
-                      mode: LaunchMode.externalApplication)) {
+                  if (!await launchUrl(
+                    uri,
+                    mode: LaunchMode.externalApplication,
+                  )) {
                     throw Exception('Could not launch url');
                   }
                 }

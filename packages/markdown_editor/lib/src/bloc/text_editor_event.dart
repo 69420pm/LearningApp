@@ -74,4 +74,12 @@ class TextEditorChangeOrderOfTile extends TextEditorEvent {
   });
 }
 
+class TextEditorGetSavedEditorTiles extends TextEditorEvent {
+  BuildContext context;
+  TextEditorGetSavedEditorTiles({
+    required this.context,
+  });
+}
+
 class TextEditorFocusLastWidget extends TextEditorEvent {}
+
