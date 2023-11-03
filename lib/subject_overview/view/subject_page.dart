@@ -10,7 +10,7 @@ import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overvi
 import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dart';
 import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
-import 'package:learning_app/subject_overview/view/subject_card.dart';
+// import 'package:learning_app/subject_overview/view/subject_card.dart';
 import 'package:ui_components/ui_components.dart';
 
 class SubjectPage extends StatelessWidget {
@@ -133,9 +133,9 @@ class _SubjectViewState extends State<SubjectView> {
       ),
       body: Column(
         children: [
-          SubjectCard(
-            subject: widget.subjectToEdit,
-          ),
+          // SubjectCard(
+          //   subject: widget.subjectToEdit,
+          // ),
           const SizedBox(
             height: UIConstants.itemPaddingLarge,
           ),
@@ -332,13 +332,13 @@ class _SubjectViewState extends State<SubjectView> {
                                       childCount: _folders.length,
                                     ),
                                   ),
-                                  SliverList(
-                                    delegate: SliverChildBuilderDelegate(
-                                      (context, index) =>
-                                          CardListTile(card: _cards[index]),
-                                      childCount: _cards.length,
-                                    ),
-                                  ),
+                                  // SliverList(
+                                  //   delegate: SliverChildBuilderDelegate(
+                                  //     (context, index) =>
+                                  //         CardListTile(card: _cards[index]),
+                                  //     childCount: _cards.length,
+                                  //   ),
+                                  // ),
                                 ],
                               ),
                             );
