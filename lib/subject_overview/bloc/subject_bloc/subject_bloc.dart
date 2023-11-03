@@ -120,9 +120,10 @@ class SubjectBloc extends Bloc<SubjectEvent, SubjectState> {
       askCardsInverted: true,
       typeAnswer: true,
       dateToReview: DateTime.now(),
+      name: ""
       // tags: const [],
     );
-    await cardsRepository.saveCard(newCard, event.parentId);
+    await cardsRepository.saveCard(newCard, null, event.parentId);
     emit(SubjectSuccess());
   }
 

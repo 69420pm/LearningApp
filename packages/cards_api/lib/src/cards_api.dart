@@ -65,6 +65,9 @@ abstract class CardsApi {
   /// return all children in stream to a given parentId
   ValueNotifier<List<File>> getChildrenById(String id);
 
+  /// get contents of card
+  List<EditorTile> getCardContent(String cardId);
+
   /// return Folder if one is found by its [folderUID]
   Folder? getFolderById(String folderUID);
 

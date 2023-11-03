@@ -14,18 +14,18 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:markdown_editor/src/models/editor_tile.dart';
+import 'package:markdown_editor/src/models/editor_data_classes/editor_tile_dc.dart';
+
+import 'package:markdown_editor/src/helper/data_class_helper.dart';
 
 /// {@template hive_cards_api}
 /// A Flutter implementation of the CardsApi that uses the hive database.
 /// {@endtemplate}
 class HiveCardsApi extends CardsApi {
   /// {@macro hive_cards_api}
-  HiveCardsApi(
-    this._subjectBox,
-    this._folderBox,
-    this._cardBox,
-    this._relationsBox,
-  ) {
+  HiveCardsApi(this._subjectBox, this._folderBox, this._cardBox,
+      this._relationsBox, this._cardContentBox) {
     _init();
   }
 
@@ -33,7 +33,7 @@ class HiveCardsApi extends CardsApi {
   final Box<Folder> _folderBox;
   final Box<Card> _cardBox;
   final Box<List<String>> _relationsBox;
-  // final Box<CardContent> _cardContentBox;
+  final Box<List<dynamic>> _cardContentBox;
 
   final Map<String, ValueNotifier<List<File>>> _notifiers = {};
   ValueListenable<Box<Subject>>? _subjectStreamController;
@@ -85,12 +85,22 @@ class HiveCardsApi extends CardsApi {
         } else {
           throw FolderNotFoundException();
         }
-      }else{
+      } else {
         children.add(card);
       }
     }
     valueNotifier.value = children;
     return valueNotifier;
+  }
+
+  @override
+  List<EditorTile> getCardContent(String cardId) {
+    final editorTilesDC = _cardContentBox.get(cardId);
+    if (editorTilesDC != null) {
+      return DataClassHelper.convertFromDataClass(editorTilesDC);
+    } else {
+      return <EditorTile>[];
+    }
   }
 
   @override
@@ -113,11 +123,15 @@ class HiveCardsApi extends CardsApi {
     if (relations == null) {
       await _relationsBox.put(parentId, [folder.uid]);
     } else {
-      relations.add(folder.uid);
-      await _relationsBox.put(parentId, relations);
+      if (!relations.contains(folder.uid)) {
+        relations.add(folder.uid);
+        await _relationsBox.put(parentId, relations);
+      }
     }
     // update notifiers
     final currentNotifier = _notifiers[parentId];
+    var alreadyUpdated = false;
+
     if (currentNotifier != null) {
       final children = currentNotifier.value;
       for (var i = 0; i < children.length; i++) {
@@ -125,16 +139,19 @@ class HiveCardsApi extends CardsApi {
         if (child.uid == folder.uid) {
           children[i] = folder;
           currentNotifier.value = List.from(children);
-          return;
+          break;
         }
       }
-      children.add(folder);
+      if (!alreadyUpdated) {
+        children.add(folder);
+      }
       currentNotifier.value = List.from(children);
     }
   }
 
   @override
-  Future<void> saveCard(Card card, String? parentId_) async {
+  Future<void> saveCard(
+      Card card, List<EditorTile>? editorTiles, String? parentId_) async {
     final parentId = parentId_ ?? getParentIdFromChildId(card.uid);
     // add card to _cardBox
     await _cardBox.put(card.uid, card);
@@ -144,11 +161,14 @@ class HiveCardsApi extends CardsApi {
     if (relations == null) {
       await _relationsBox.put(parentId, [card.uid]);
     } else {
-      relations.add(card.uid);
-      await _relationsBox.put(parentId, relations);
+      if (!relations.contains(card.uid)) {
+        relations.add(card.uid);
+        await _relationsBox.put(parentId, relations);
+      }
     }
 
     // update notifiers
+    var alreadyUpdated = false;
     final currentNotifier = _notifiers[parentId];
     if (currentNotifier != null) {
       final children = currentNotifier.value;
@@ -156,12 +176,20 @@ class HiveCardsApi extends CardsApi {
         final child = children[i];
         if (child.uid == card.uid) {
           children[i] = card;
-          currentNotifier.value = List.from(children);
-          return;
+          alreadyUpdated = true;
+          break;
         }
       }
-      children.add(card);
+      if (!alreadyUpdated) {
+        children.add(card);
+      }
       currentNotifier.value = List.from(children);
+    }
+
+    // save content of card
+    if (editorTiles != null && editorTiles.isNotEmpty) {
+      final editorTilesDC = DataClassHelper.convertToDataClass(editorTiles);
+      await _cardContentBox.put(card.uid, editorTilesDC);
     }
   }
 

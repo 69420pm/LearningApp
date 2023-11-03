@@ -17,4 +17,6 @@ dependencies:
 
   cards_api:
     path: ../cards_api
+  markdown_editor:
+    path: ../markdown_editor
   rxdart: ^0.27.5

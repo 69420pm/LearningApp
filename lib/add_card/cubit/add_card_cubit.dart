@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:cards_repository/cards_repository.dart';
-import 'package:learning_app/app/helper/uid.dart';
 import 'package:meta/meta.dart';
+import 'package:markdown_editor/src/models/editor_tile.dart';
 
 part 'add_card_state.dart';
 
@@ -12,31 +12,13 @@ class AddCardCubit extends Cubit<AddCardState> {
   bool _editMarkDownMode = false;
 
   Future<void> saveCard(
-    String front,
-    String back,
-    Subject parentSubject,
-    String icon,
+    Card card,
+    String? parentId,
+    List<EditorTile>? editorTiles,
   ) async {
     emit(AddCardLoading());
-    final newCard = Card(
-      uid: Uid().uid(),
-      dateCreated: DateTime.now(),
-      askCardsInverted: false,
-      typeAnswer: true,
-      dateToReview: DateTime.now(),
-      recallScore: 0
-    );
-    try {
-      // parentSubject.childCards.add(newCard);
-      await _cardsRepository.saveCard(newCard, parentSubject.uid);
-      emit(AddCardSuccess());
-    } catch (e) {
-      emit(
-        AddCardFailure(
-          errorMessage: 'Card saving failed, while communicating with hive',
-        ),
-      );
-    }
+    await _cardsRepository.saveCard(card, editorTiles, parentId);
+    emit(AddCardSuccess());
   }
 
   void switchMarkdownMode() {

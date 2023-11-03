@@ -1,18 +1,21 @@
+import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/add_card/cubit/add_card_cubit.dart';
 import 'package:learning_app/add_card/view/add_card_settings_bottom_sheet.dart';
+import 'package:learning_app/add_subject/cubit/add_subject_cubit.dart';
 import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
-
 import 'package:ui_components/ui_components.dart';
 
 class AddCardPage extends StatelessWidget {
-  AddCardPage({super.key, required this.parentId});
+  AddCardPage({super.key, required this.card, required this.parentId});
 
   /// when add_Card_page is used as edit_Card_page, when not let it empty
-  final String parentId;
+  // final String parentId;
 
-  // final List<bool> _isOpen = [false, false];
+  Card card;
+  final String? parentId;
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +23,12 @@ class AddCardPage extends StatelessWidget {
     // final backController = TextEditingController();
 
     // final formKey = GlobalKey<FormState>();
+    context.read<TextEditorBloc>().card = card;
+    context.read<TextEditorBloc>().parentId = parentId;
+    context
+        .read<TextEditorBloc>()
+        .add(TextEditorGetSavedEditorTiles(context: context));
+
     return UIPage(
       addPadding: false,
       appBar: UIAppBar(
@@ -31,7 +40,13 @@ class AddCardPage extends StatelessWidget {
               UIBottomSheet.showUIBottomSheet(
                 context: context,
                 builder: (_) {
-                  return AddCardSettingsBottomSheet();
+                  return BlocProvider.value(
+                    value: context.read<AddCardCubit>(),
+                    child: AddCardSettingsBottomSheet(
+                      card: card,
+                      parentId: parentId,
+                    ),
+                  );
                 },
               );
             },

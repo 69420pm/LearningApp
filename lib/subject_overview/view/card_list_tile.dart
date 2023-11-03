@@ -36,6 +36,15 @@ class CardListTile extends StatelessWidget {
       onTap: () {
         if (isInSelectMode) {
           changeCardSelection(context);
+        }else{
+          // open card in editor
+          Navigator.of(context).pushNamed(
+                    '/add_card',
+                    arguments: [
+                      card,
+                      null
+                    ],
+                  );
         }
       },
       child: LongPressDraggable(

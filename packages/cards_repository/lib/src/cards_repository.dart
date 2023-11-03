@@ -8,6 +8,7 @@
 import 'package:cards_api/cards_api.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/foundation.dart';
+import 'package:markdown_editor/src/models/editor_tile.dart';
 
 /// {@template cards_repository}
 /// A Repository that handles everything related to cards, subjects and groups
@@ -44,13 +45,18 @@ class CardsRepository {
   ValueNotifier<List<File>> getChildrenById(String id) =>
       _cardsApi.getChildrenById(id);
 
+  /// get card content
+  List<EditorTile> getCardContent(String cardId) =>
+      _cardsApi.getCardContent(cardId);
+
   /// return Folder if one is found by its [folderUID]
   Folder? getFolderById(String folderUID) => _cardsApi.getFolderById(folderUID);
 
   /// Saves a [card]
   /// If a [card] with same id already exists, it will be replaced
-  Future<void> saveCard(Card card, String? parentId) =>
-      _cardsApi.saveCard(card, parentId);
+  Future<void> saveCard(
+          Card card, List<EditorTile>? editorTiles, String? parentId) =>
+      _cardsApi.saveCard(card, editorTiles, parentId);
 
   /// Saves a [subject]
   /// If a [subject] with same id already exists, it will be replaced

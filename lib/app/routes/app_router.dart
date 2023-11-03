@@ -1,6 +1,6 @@
 import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_card/cubit/add_card_cubit.dart';
 import 'package:learning_app/add_card/view/add_card_page.dart';
@@ -25,20 +25,19 @@ import 'package:markdown_editor/markdown_editor.dart';
 class AppRouter {
   AppRouter(this._cardsRepository);
 
-  final  CardsRepository _cardsRepository;
+  final CardsRepository _cardsRepository;
 
-  late final SubjectBloc _editSubjectBloc =
-      SubjectBloc(_cardsRepository);
+  late final SubjectBloc _editSubjectBloc = SubjectBloc(_cardsRepository);
   late final AddCardCubit _addCardCubit = AddCardCubit(_cardsRepository);
   late final OverviewCubit _overviewCubit = OverviewCubit(_cardsRepository);
-    // ..add(OverviewSubjectSubscriptionRequested());
+  // ..add(OverviewSubjectSubscriptionRequested());
   late final EditSubjectCubit _editSubjectCubit =
       EditSubjectCubit(_cardsRepository);
   late final LearnCubit _learnCubit = LearnCubit(_cardsRepository);
   late final SearchBloc _searchBloc = SearchBloc(_cardsRepository);
   late final FolderListTileBloc _folderListTileBloc =
       FolderListTileBloc(_cardsRepository);
-  final TextEditorBloc _textEditorBloc = TextEditorBloc();
+  late final TextEditorBloc _textEditorBloc = TextEditorBloc(_cardsRepository);
   final KeyboardRowCubit _keyboardRowCubit = KeyboardRowCubit();
 
   Route<dynamic> onGenerateRoute(RouteSettings routeSettings) {
@@ -63,19 +62,24 @@ class AppRouter {
           builder: (_) => MultiBlocProvider(
             providers: [
               BlocProvider.value(value: _addCardCubit),
-              BlocProvider.value(value: _editSubjectBloc),
+              // BlocProvider.value(value: _editSubjectBloc),
               BlocProvider.value(value: _textEditorBloc),
               BlocProvider.value(value: _keyboardRowCubit),
               // BlocProvider.value(value: _audioTileCubit)
             ],
-            child: AddCardPage(parentId: routeSettings.arguments as String),
+            child: AddCardPage(
+              card: (routeSettings.arguments! as List)[0] as Card,
+              parentId: (routeSettings.arguments! as List)[1] as String?,
+            ),
           ),
         );
       case '/search':
         return MaterialPageRoute(
           builder: (_) => MultiBlocProvider(
             providers: [BlocProvider.value(value: _searchBloc)],
-            child: SearchPage(searchId: routeSettings.arguments as String?,),
+            child: SearchPage(
+              searchId: routeSettings.arguments as String?,
+            ),
           ),
         );
 
