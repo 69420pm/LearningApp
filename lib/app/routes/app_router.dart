@@ -18,20 +18,19 @@ import 'package:learning_app/search/view/search_page.dart';
 import 'package:learning_app/subject_overview/bloc/folder_bloc/folder_list_tile_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dart';
-import 'package:learning_app/subject_overview/view/subject_page.dart';
+import 'package:learning_app/subject_overview/view/subject_page/subject_page.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 
 /// Handles complete app routing and is injected in MaterialApp()
 class AppRouter {
   AppRouter(this._cardsRepository);
 
-  final  CardsRepository _cardsRepository;
+  final CardsRepository _cardsRepository;
 
-  late final SubjectBloc _editSubjectBloc =
-      SubjectBloc(_cardsRepository);
+  late final SubjectBloc _editSubjectBloc = SubjectBloc(_cardsRepository);
   late final AddCardCubit _addCardCubit = AddCardCubit(_cardsRepository);
   late final OverviewCubit _overviewCubit = OverviewCubit(_cardsRepository);
-    // ..add(OverviewSubjectSubscriptionRequested());
+  // ..add(OverviewSubjectSubscriptionRequested());
   late final EditSubjectCubit _editSubjectCubit =
       EditSubjectCubit(_cardsRepository);
   late final LearnCubit _learnCubit = LearnCubit(_cardsRepository);
@@ -75,7 +74,9 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => MultiBlocProvider(
             providers: [BlocProvider.value(value: _searchBloc)],
-            child: SearchPage(searchId: routeSettings.arguments as String?,),
+            child: SearchPage(
+              searchId: routeSettings.arguments as String?,
+            ),
           ),
         );
 
