@@ -61,6 +61,8 @@ class DraggingTile extends StatelessWidget {
                     folderUID: isSoftSelected ? '' : fileUID,
                   ),
                 );
+          } else if (isCard) {
+            //? softselect Card or instant open in Page/Bottomsheet
           }
         }
       },

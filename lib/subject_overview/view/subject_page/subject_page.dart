@@ -10,7 +10,7 @@ import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dar
 import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/dragging_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
-import 'package:learning_app/subject_overview/view/subject_card.dart';
+import 'package:learning_app/subject_overview/view/subject_page/subject_card.dart';
 import 'package:learning_app/subject_overview/view/subject_page/subject_page_app_bar.dart';
 import 'package:learning_app/subject_overview/view/subject_page/subject_page_tool_bar.dart';
 import 'package:ui_components/ui_components.dart';
