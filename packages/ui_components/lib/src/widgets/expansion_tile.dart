@@ -6,7 +6,7 @@ import 'package:ui_components/ui_components.dart';
 
 class UIExpansionTile extends StatefulWidget {
   List<Widget> children;
-  Text title;
+  String title;
   double titleSpacing;
   double iconSpacing;
   Widget trailing;
@@ -88,8 +88,11 @@ class _UIExpansionTileState extends State<UIExpansionTile>
                   ),
                 ),
                 SizedBox(width: widget.titleSpacing),
-                widget.title,
-                const Spacer(),
+                Expanded(
+                  child: Text(widget.title,
+                      overflow: TextOverflow.ellipsis, style: UIText.label),
+                ),
+                const SizedBox(width: UIConstants.defaultSize),
                 widget.trailing,
                 const SizedBox(width: UIConstants.defaultSize),
               ],

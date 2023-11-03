@@ -39,25 +39,6 @@ class DraggingTile extends StatelessWidget {
     final isSelected = !isRootFolder &&
         context.read<SubjectOverviewSelectionBloc>().isFileSelected(fileUID);
 
-    Color _getBackgroundColor() {
-      if (isRootFolder) {
-        return Colors.deepPurpleAccent;
-      }
-      if (isSelected) {
-        return Colors.green;
-      }
-      if (isSoftSelected) {
-        return Colors.yellow;
-      }
-      if (isCard) {
-        return Colors.blue;
-      }
-      if (isFolder) {
-        return Colors.red;
-      }
-      return Colors.white;
-    }
-
     return GestureDetector(
       // behavior: HitTestBehavior.translucent,
       onTap: () {
@@ -128,19 +109,13 @@ class DraggingTile extends StatelessWidget {
         child: Builder(
           builder: (context) {
             if (isCard) {
-              return Container(
-                color: _getBackgroundColor(),
-                child: child,
-              );
+              return child;
             } else {
               return FolderDragTarget(
                 folderUID: fileUID,
                 cardsRepository: cardsRepository,
                 inSelectMode: isInSelectMode,
-                child: Container(
-                  color: _getBackgroundColor(),
-                  child: child,
-                ),
+                child: child,
               );
             }
           },
