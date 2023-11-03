@@ -18,7 +18,7 @@ import 'package:learning_app/search/view/search_page.dart';
 import 'package:learning_app/subject_overview/bloc/folder_bloc/folder_list_tile_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dart';
-import 'package:learning_app/subject_overview/view/subject_page.dart';
+import 'package:learning_app/subject_overview/view/subject_page/subject_page.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 
 /// Handles complete app routing and is injected in MaterialApp()

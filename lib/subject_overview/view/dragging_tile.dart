@@ -61,6 +61,14 @@ class DraggingTile extends StatelessWidget {
                     folderUID: isSoftSelected ? '' : fileUID,
                   ),
                 );
+          } else if (isCard) {
+            Navigator.of(context).pushNamed(
+                    '/add_card',
+                    arguments: [
+                      cardsRepository.objectFromId(fileUID),
+                      null
+                    ],
+                  );
           }
         }
       },
