@@ -26,14 +26,19 @@ class CardListTile extends StatelessWidget {
 
     final isInDrag = context.read<SubjectOverviewSelectionBloc>().isInDragging;
 
-    return DraggingTile(
-      fileUID: card.uid,
-      cardsRepository: cardsRepository,
-      child: CardListTileView(
-        isSelected: isSelected,
-        card: card,
-        isChildWhenDragging: isInDrag && isSelected, //! Broken I guess
-      ),
+    return BlocBuilder<SubjectOverviewSelectionBloc,
+        SubjectOverviewSelectionState>(
+      builder: (context, state) {
+        return DraggingTile(
+          fileUID: card.uid,
+          cardsRepository: cardsRepository,
+          child: CardListTileView(
+            isSelected: isSelected,
+            card: card,
+            isChildWhenDragging: isInDrag && isSelected, //! Broken I guess
+          ),
+        );
+      },
     );
   }
 }

@@ -77,7 +77,7 @@ class DraggingTile extends StatelessWidget {
             //change soft selection
             context.read<SubjectOverviewSelectionBloc>().add(
                   SubjectOverviewSetSoftSelectFolder(
-                    folderUID: isSelected ? '' : fileUID,
+                    folderUID: isSoftSelected ? '' : fileUID,
                   ),
                 );
           }

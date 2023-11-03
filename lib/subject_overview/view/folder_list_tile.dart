@@ -7,6 +7,8 @@ import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/dragging_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile_view.dart';
 
+import '../bloc/selection_bloc/subject_overview_selection_bloc.dart';
+
 class FolderListTileParent extends StatelessWidget {
   FolderListTileParent({
     super.key,
@@ -27,24 +29,29 @@ class FolderListTileParent extends StatelessWidget {
           .cardsRepository
           .getChildrenById(folder.uid),
       builder: (context, value, child) {
-        return DraggingTile(
-          fileUID: folder.uid,
-          cardsRepository: cardsRepository,
-          child: FolderListTileView(
-            isHovered: isHovered,
-            folder: folder,
-            childListTiles: value.map((e) {
-              if (e is Folder) {
-                return FolderListTileParent(
-                    folder: e, cardsRepository: cardsRepository);
-              } else {
-                return CardListTile(
-                  card: e as Card,
-                  cardsRepository: cardsRepository,
-                );
-              }
-            }).toList(),
-          ),
+        return BlocBuilder<SubjectOverviewSelectionBloc,
+            SubjectOverviewSelectionState>(
+          builder: (context, state) {
+            return DraggingTile(
+              fileUID: folder.uid,
+              cardsRepository: cardsRepository,
+              child: FolderListTileView(
+                isHovered: isHovered,
+                folder: folder,
+                childListTiles: value.map((e) {
+                  if (e is Folder) {
+                    return FolderListTileParent(
+                        folder: e, cardsRepository: cardsRepository);
+                  } else {
+                    return CardListTile(
+                      card: e as Card,
+                      cardsRepository: cardsRepository,
+                    );
+                  }
+                }).toList(),
+              ),
+            );
+          },
         );
       },
     );
