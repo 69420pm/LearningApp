@@ -172,7 +172,7 @@ class TextTile extends StatelessWidget implements EditorTile {
               horizontal: padding ? UIConstants.pageHorizontalPadding : 0,
             ),
             child: TextField(
-              // autofocus: true,
+              autofocus: true,
               controller: textFieldController,
               focusNode: focusNode,
               textInputAction: TextInputAction.next,
