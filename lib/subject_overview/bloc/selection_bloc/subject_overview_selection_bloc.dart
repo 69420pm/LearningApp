@@ -57,6 +57,7 @@ class SubjectOverviewSelectionBloc
 
   bool _checkIfParentIsSelected(String parentUID, String fileUID) {
     if (_selectedFilesNotifier.value.contains(parentUID)) {
+      //!all parents
       //select all children
       _cardsRepository
           .getChildrenDirectlyBelow(parentUID)
@@ -68,7 +69,6 @@ class SubjectOverviewSelectionBloc
 
       //deselect file
       _selectedFilesNotifier.value.remove(fileUID);
-
       return true;
     } else {
       return false;
@@ -100,8 +100,9 @@ class SubjectOverviewSelectionBloc
           .forEach(_selectedFilesNotifier.value.remove);
       //check if lastSelectedInParentFolder
       _checkForLastSelectedInFolder(parentUID);
+    } else {
+      _checkIfNothingSelected();
     }
-    ;
   }
 
   void _deselectFolder(String parentUID, String folderUID) {
