@@ -21,12 +21,12 @@ class CardListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isSelected =
-        context.read<SubjectOverviewSelectionBloc>().isFileSelected(card.uid);
-
     return BlocBuilder<SubjectOverviewSelectionBloc,
         SubjectOverviewSelectionState>(
       builder: (context, state) {
+        final isSelected = context
+            .read<SubjectOverviewSelectionBloc>()
+            .isFileSelected(card.uid);
         final isDraggedInMultiSelection =
             context.read<SubjectOverviewSelectionBloc>().isInSelectMode &&
                 context.read<SubjectOverviewSelectionBloc>().isInDragging &&

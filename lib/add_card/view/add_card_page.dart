@@ -56,7 +56,8 @@ class AddCardPage extends StatelessWidget {
       body: Stack(
         children: [
           BlocProvider(
-            create: (context) => TextEditorBloc(context.read<AddCardCubit>().cardsRepository),
+            create: (context) =>
+                TextEditorBloc(context.read<AddCardCubit>().cardsRepository),
             child: MarkdownWidget(),
           ),
           Positioned(

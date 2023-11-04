@@ -46,27 +46,10 @@ class SubjectPageToolBar extends StatelessWidget {
           UIIconButton(
             icon: UIIcons.download.copyWith(color: UIColors.smallText),
             onPressed: () {
-              Navigator.of(context).pushNamed(
-                '/add_card',
-                arguments: [
-                  Card(
-                      uid: Uid().uid(),
-                      dateCreated: DateTime.now(),
-                      askCardsInverted: false,
-                      typeAnswer: false,
-                      recallScore: 0,
-                      dateToReview: DateTime.now(),
-                      name: ""),
-                  subjectToEditUID,
-                ],
-              );
-              // context.read<SubjectBloc>().add(
-              //       SubjectAddCard(
-              //         front: "test",
-              //         back: "test Back",
-              //         parentId: softSelectedFolderUID ?? subjectToEditUID,
-              //       ),
-              //     );
+              context.read<SubjectBloc>().add(SubjectAddCard(
+                  front: "test",
+                  back: "test Back",
+                  parentId: softSelectedFolderUID ?? subjectToEditUID));
             },
           ),
           UIIconButton(
@@ -86,7 +69,7 @@ class SubjectPageToolBar extends StatelessWidget {
             },
           ),
           UIIconButton(
-            icon: UIIcons.placeHolder.copyWith(color: UIColors.smallText),
+            icon: UIIcons.card.copyWith(color: UIColors.smallText),
             onPressed: () {
               Navigator.of(context).pushNamed(
                 '/add_card',
