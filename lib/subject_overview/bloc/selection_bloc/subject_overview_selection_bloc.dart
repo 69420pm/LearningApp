@@ -56,19 +56,39 @@ class SubjectOverviewSelectionBloc
   }
 
   bool _checkIfParentIsSelected(String parentUID, String fileUID) {
+    String? selectedParentFolderUID;
+
     if (_selectedFilesNotifier.value.contains(parentUID)) {
-      //!all parents
+      selectedParentFolderUID = parentUID;
+    } else {
+      _cardsRepository.getParentIdsFromChildId(parentUID).forEach((element) {
+        if (_selectedFilesNotifier.value.contains(element)) {
+          selectedParentFolderUID = element;
+          return;
+        }
+      });
+    }
+
+    if (selectedParentFolderUID != null) {
       //select all children
       _cardsRepository
-          .getChildrenDirectlyBelow(parentUID)
+          .getChildrenDirectlyBelow(selectedParentFolderUID!)
           .forEach(_selectedFilesNotifier.value.add);
 
       //deselect parentFolder
       _deselectFolder(
-          _cardsRepository.getParentIdFromChildId(parentUID), parentUID);
+        _cardsRepository.getParentIdFromChildId(selectedParentFolderUID!),
+        selectedParentFolderUID!,
+      );
+
+      if (selectedParentFolderUID != parentUID) {
+        //!rekursion
+        _checkIfParentIsSelected(parentUID, fileUID);
+      }
 
       //deselect file
       _selectedFilesNotifier.value.remove(fileUID);
+
       return true;
     } else {
       return false;
@@ -81,7 +101,9 @@ class SubjectOverviewSelectionBloc
         .every(_selectedFilesNotifier.value.contains)) {
       //select parentFolder
       _selectFolder(
-          _cardsRepository.getParentIdFromChildId(parentUID), parentUID);
+        _cardsRepository.getParentIdFromChildId(parentUID),
+        parentUID,
+      );
 
       //deselect all children
       _cardsRepository
@@ -100,8 +122,6 @@ class SubjectOverviewSelectionBloc
           .forEach(_selectedFilesNotifier.value.remove);
       //check if lastSelectedInParentFolder
       _checkForLastSelectedInFolder(parentUID);
-    } else {
-      _checkIfNothingSelected();
     }
   }
 
@@ -191,12 +211,16 @@ class SubjectOverviewSelectionBloc
     SubjectOverviewSelectionDeleteSelectedFiles event,
     Emitter<SubjectOverviewSelectionState> emit,
   ) async {
-    await _cardsRepository.deleteCards(_selectedFilesNotifier.value
-        .where((element) => _cardsRepository.objectFromId(element) is Card)
-        .toList());
-    await _cardsRepository.deleteFolders(_selectedFilesNotifier.value
-        .where((element) => _cardsRepository.objectFromId(element) is Folder)
-        .toList());
+    await _cardsRepository.deleteCards(
+      _selectedFilesNotifier.value
+          .where((element) => _cardsRepository.objectFromId(element) is Card)
+          .toList(),
+    );
+    await _cardsRepository.deleteFolders(
+      _selectedFilesNotifier.value
+          .where((element) => _cardsRepository.objectFromId(element) is Folder)
+          .toList(),
+    );
 
     _isInSelectMode = false;
     _clearSelectionVariables();
@@ -229,8 +253,10 @@ class SubjectOverviewSelectionBloc
     }
   }
 
-  FutureOr<void> _setSoftSelectFolder(SubjectOverviewSetSoftSelectFolder event,
-      Emitter<SubjectOverviewSelectionState> emit) {
+  FutureOr<void> _setSoftSelectFolder(
+    SubjectOverviewSetSoftSelectFolder event,
+    Emitter<SubjectOverviewSelectionState> emit,
+  ) {
     _folderUIDSoftSelected = event.folderUID;
     if (event.folderUID != '') {
       emit(SubjectOverviewSoftSelectionModeOn());
