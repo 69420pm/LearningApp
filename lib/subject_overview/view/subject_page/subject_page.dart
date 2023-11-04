@@ -79,9 +79,9 @@ class _SubjectViewState extends State<SubjectView> {
           subjectToEdit: widget.subjectToEdit),
       body: Column(
         children: [
-          // SubjectCard(
-          //   subject: widget.subjectToEdit,
-          // ),
+          SubjectCard(
+            subject: widget.subjectToEdit,
+          ),
           const SizedBox(
             height: UIConstants.itemPaddingLarge,
           ),
