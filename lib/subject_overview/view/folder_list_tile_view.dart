@@ -24,6 +24,7 @@ class FolderListTileView extends StatelessWidget {
   final Folder folder;
   final List<Widget> childListTiles;
 
+  @override
   Widget build(BuildContext context) {
     final isSoftSelected = folder.uid ==
         context.read<SubjectOverviewSelectionBloc>().folderUIDSoftSelected;
@@ -51,7 +52,7 @@ class FolderListTileView extends StatelessWidget {
         title: folder.name,
         iconSpacing: UIConstants.defaultSize,
         titleSpacing: UIConstants.defaultSize,
-        trailing: UILinearProgressIndicator(value: 0.5),
+        //trailing: UILinearProgressIndicator(value: 0.5),
         children: [
           Padding(
             padding: const EdgeInsets.only(

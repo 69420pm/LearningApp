@@ -89,6 +89,8 @@ class SubjectOverviewSelectionBloc
       //deselect file
       _selectedFilesNotifier.value.remove(fileUID);
 
+      _checkIfNothingSelected();
+
       return true;
     } else {
       return false;
