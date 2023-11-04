@@ -40,8 +40,10 @@ class SubjectOverviewSelectionMoveSelection
 
 class SubjectOverviewDraggingChange extends SubjectOverviewSelectionEvent {
   bool inDragg;
+  String parentUID;
   SubjectOverviewDraggingChange({
     required this.inDragg,
+    required this.parentUID,
   });
 }
 

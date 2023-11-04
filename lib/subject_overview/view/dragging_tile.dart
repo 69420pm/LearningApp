@@ -76,33 +76,42 @@ class DraggingTile extends StatelessWidget {
               : [fileUID],
         ),
         onDragStarted: () {
-          context
-              .read<SubjectOverviewSelectionBloc>()
-              .add(SubjectOverviewDraggingChange(inDragg: true));
+          context.read<SubjectOverviewSelectionBloc>().add(
+                SubjectOverviewDraggingChange(
+                  inDragg: true,
+                  parentUID: cardsRepository.getParentIdFromChildId(fileUID),
+                ),
+              );
         },
         onDragEnd: (details) {
-          context
-              .read<SubjectOverviewSelectionBloc>()
-              .add(SubjectOverviewDraggingChange(inDragg: false));
+          context.read<SubjectOverviewSelectionBloc>().add(
+                SubjectOverviewDraggingChange(
+                  inDragg: false,
+                  parentUID: cardsRepository.getParentIdFromChildId(fileUID),
+                ),
+              );
         },
         onDraggableCanceled: (_, __) {
+          // context.read<SubjectOverviewSelectionBloc>().add(
+          //     SubjectOverviewDraggingChange(
+          //         inDragg: false,
+          //         parentUID: cardsRepository.getParentIdFromChildId(fileUID)));
           //Start SelectionMode
           if (!isInSelectMode) {
             context.read<SubjectOverviewSelectionBloc>().add(
                   SubjectOverviewSelectionToggleSelectMode(
                     inSelectMode: true,
                   ),
-                );
-          }
-          //select File
-          if (isCard) {
-            context
-                .read<SubjectOverviewSelectionBloc>()
-                .add(SubjectOverviewCardSelectionChange(cardUID: fileUID));
-          } else if (isFolder) {
-            context.read<SubjectOverviewSelectionBloc>().add(
-                  SubjectOverviewFolderSelectionChange(folderUID: fileUID),
-                );
+                ); //select File
+            if (isCard) {
+              context
+                  .read<SubjectOverviewSelectionBloc>()
+                  .add(SubjectOverviewCardSelectionChange(cardUID: fileUID));
+            } else if (isFolder) {
+              context.read<SubjectOverviewSelectionBloc>().add(
+                    SubjectOverviewFolderSelectionChange(folderUID: fileUID),
+                  );
+            }
           }
         },
         child: Builder(

@@ -29,46 +29,35 @@ class FolderListTileParent extends StatelessWidget {
           .cardsRepository
           .getChildrenById(folder.uid),
       builder: (context, value, child) {
-        return BlocBuilder<SubjectOverviewSelectionBloc,
-            SubjectOverviewSelectionState>(
-          builder: (context, state) {
-            return BlocBuilder<FolderListTileBloc, FolderListTileState>(
-              buildWhen: (previous, current) =>
-                  current is FolderListTileSuccess,
-              builder: (context, state) {
-                final isDraggedInMultiSelection = context
-                        .read<SubjectOverviewSelectionBloc>()
-                        .isInSelectMode &&
-                    context.read<SubjectOverviewSelectionBloc>().isInDragging &&
-                    context
-                        .read<SubjectOverviewSelectionBloc>()
-                        .isFileSelected(folder.uid);
-                if (isDraggedInMultiSelection) {
-                  return const InactiveListTile();
+        final isDraggedInMultiSelection =
+            context.read<SubjectOverviewSelectionBloc>().isInSelectMode &&
+                context.read<SubjectOverviewSelectionBloc>().isInDragging &&
+                context
+                    .read<SubjectOverviewSelectionBloc>()
+                    .isFileSelected(folder.uid);
+
+        if (isDraggedInMultiSelection) {
+          return const InactiveListTile();
+        } else {
+          return DraggingTile(
+            fileUID: folder.uid,
+            cardsRepository: cardsRepository,
+            child: FolderListTileView(
+              folder: folder,
+              childListTiles: value.map((e) {
+                if (e is Folder) {
+                  return FolderListTileParent(
+                      folder: e, cardsRepository: cardsRepository);
                 } else {
-                  return DraggingTile(
-                    fileUID: folder.uid,
+                  return CardListTile(
+                    card: e as Card,
                     cardsRepository: cardsRepository,
-                    child: FolderListTileView(
-                      folder: folder,
-                      childListTiles: value.map((e) {
-                        if (e is Folder) {
-                          return FolderListTileParent(
-                              folder: e, cardsRepository: cardsRepository);
-                        } else {
-                          return CardListTile(
-                            card: e as Card,
-                            cardsRepository: cardsRepository,
-                          );
-                        }
-                      }).toList(),
-                    ),
                   );
                 }
-              },
-            );
-          },
-        );
+              }).toList(),
+            ),
+          );
+        }
       },
     );
   }

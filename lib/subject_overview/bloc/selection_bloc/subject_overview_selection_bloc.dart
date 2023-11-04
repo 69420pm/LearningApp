@@ -235,6 +235,9 @@ class SubjectOverviewSelectionBloc
   ) async {
     await _cardsRepository.moveFiles(selectedFiles, event.parentId);
     _clearSelectionVariables();
+    _hoveredFoldeUID = "";
+    _isInDragging = false;
+    _isInSelectMode = false;
     emit(SubjectOverviewSelectionModeOff());
   }
 
@@ -242,17 +245,14 @@ class SubjectOverviewSelectionBloc
     SubjectOverviewDraggingChange event,
     Emitter<SubjectOverviewSelectionState> emit,
   ) {
-    if (event.inDragg && _isInDragging == false) {
+    if (event.inDragg == true && _isInDragging == false) {
       _isInDragging = true;
-      if (_isInSelectMode) {
-        emit(SubjectOverviewSelectionMultiDragging());
-      }
-    } else if (!event.inDragg && _isInDragging == true) {
+      _hoveredFoldeUID = event.parentUID;
+      //if (_isInSelectMode) emit(SubjectOverviewSelectionMultiDragging());
+    } else if (event.inDragg == false && _isInDragging == true) {
       _isInDragging = false;
       _hoveredFoldeUID = "";
-      if (_isInSelectMode) {
-        emit(SubjectOverviewSelectionModeOn());
-      }
+      //if (_isInSelectMode) emit(SubjectOverviewSelectionModeOn());
     }
   }
 
