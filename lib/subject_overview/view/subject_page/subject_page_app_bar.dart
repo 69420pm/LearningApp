@@ -1,6 +1,6 @@
 import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_folder/view/edit_folder_bottom_sheet.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
@@ -18,8 +18,8 @@ class SubjectPageAppBar extends StatelessWidget implements PreferredSizeWidget {
     return BlocBuilder<SubjectOverviewSelectionBloc,
         SubjectOverviewSelectionState>(
       builder: (context, state) {
-        final softSelectedFolder = cardsRepository.getFolderById(
-            context.read<SubjectOverviewSelectionBloc>().folderUIDSoftSelected);
+        final softSelectedFile = cardsRepository.objectFromId(
+            context.read<SubjectOverviewSelectionBloc>().fileUIDSoftSelected);
         return UIAppBar(
           leadingBackButton:
               !context.read<SubjectOverviewSelectionBloc>().isInSelectMode,
@@ -34,7 +34,7 @@ class SubjectPageAppBar extends StatelessWidget implements PreferredSizeWidget {
                           ),
                 )
               : null,
-          actions: softSelectedFolder != null
+          actions: softSelectedFile is Folder
               ? [
                   UIIconButton(
                     icon: UIIcons.edit,
@@ -44,24 +44,28 @@ class SubjectPageAppBar extends StatelessWidget implements PreferredSizeWidget {
                         return BlocProvider.value(
                           value: context.read<FolderListTileBloc>(),
                           child: EditFolderBottomSheet(
-                            folder: softSelectedFolder!,
+                            folder: softSelectedFile!,
                           ),
                         );
                       },
                     ),
                   ),
                 ]
-              : [
-                  UIIconButton(
-                    icon: UIIcons.settings,
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(
-                        '/subject_overview/edit_subject',
-                        arguments: subjectToEdit,
-                      );
-                    },
-                  ),
-                ],
+              : softSelectedFile is Card
+                  ? [
+                      Text((softSelectedFile! as Card).uid),
+                    ]
+                  : [
+                      UIIconButton(
+                        icon: UIIcons.settings,
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(
+                            '/subject_overview/edit_subject',
+                            arguments: subjectToEdit,
+                          );
+                        },
+                      ),
+                    ],
         );
       },
     );

@@ -1,3 +1,4 @@
+import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,6 +8,7 @@ import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overvi
 import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dart';
 import 'package:ui_components/ui_components.dart';
 import 'package:cards_repository/cards_repository.dart';
+
 class SubjectPageToolBar extends StatelessWidget {
   const SubjectPageToolBar(
       {super.key,
@@ -20,11 +22,11 @@ class SubjectPageToolBar extends StatelessWidget {
     return BlocListener<SubjectOverviewSelectionBloc,
         SubjectOverviewSelectionState>(
       listener: (context, state) {
-        softSelectedFolderUID = cardsRepository
-            .getFolderById(context
-                .read<SubjectOverviewSelectionBloc>()
-                .folderUIDSoftSelected)
-            ?.uid;
+        final softSelectedFile = cardsRepository.objectFromId(
+            context.read<SubjectOverviewSelectionBloc>().fileUIDSoftSelected);
+        if (softSelectedFile is Folder) {
+          softSelectedFolderUID = softSelectedFile.uid;
+        }
       },
       listenWhen: (previous, current) =>
           current is SubjectOverviewSoftSelectionModeOn ||
@@ -45,20 +47,19 @@ class SubjectPageToolBar extends StatelessWidget {
             icon: UIIcons.download.copyWith(color: UIColors.smallText),
             onPressed: () {
               Navigator.of(context).pushNamed(
-                    '/add_card',
-                    arguments: [
-                      Card(
-                        uid: Uid().uid(),
-                        dateCreated: DateTime.now(),
-                        askCardsInverted: false,
-                        typeAnswer: false,
-                        recallScore: 0,
-                        dateToReview: DateTime.now(),
-                        name: ""
-                      ),
-                      subjectToEditUID,
-                    ],
-                  );
+                '/add_card',
+                arguments: [
+                  Card(
+                      uid: Uid().uid(),
+                      dateCreated: DateTime.now(),
+                      askCardsInverted: false,
+                      typeAnswer: false,
+                      recallScore: 0,
+                      dateToReview: DateTime.now(),
+                      name: ""),
+                  subjectToEditUID,
+                ],
+              );
               // context.read<SubjectBloc>().add(
               //       SubjectAddCard(
               //         front: "test",
@@ -88,20 +89,19 @@ class SubjectPageToolBar extends StatelessWidget {
             icon: UIIcons.placeHolder.copyWith(color: UIColors.smallText),
             onPressed: () {
               Navigator.of(context).pushNamed(
-                    '/add_card',
-                    arguments: [
-                      Card(
-                        uid: Uid().uid(),
-                        dateCreated: DateTime.now(),
-                        askCardsInverted: false,
-                        typeAnswer: false,
-                        recallScore: 0,
-                        dateToReview: DateTime.now(),
-                        name: ""
-                      ),
-                      subjectToEditUID,
-                    ],
-                  );
+                '/add_card',
+                arguments: [
+                  Card(
+                      uid: Uid().uid(),
+                      dateCreated: DateTime.now(),
+                      askCardsInverted: false,
+                      typeAnswer: false,
+                      recallScore: 0,
+                      dateToReview: DateTime.now(),
+                      name: ""),
+                  subjectToEditUID,
+                ],
+              );
             },
           ),
         ],

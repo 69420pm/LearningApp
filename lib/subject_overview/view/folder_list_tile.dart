@@ -33,36 +33,29 @@ class FolderListTileParent extends StatelessWidget {
         return BlocBuilder<SubjectOverviewSelectionBloc,
             SubjectOverviewSelectionState>(
           builder: (context, state) {
-            return DraggingTile(
-              fileUID: folder.uid,
-              cardsRepository: cardsRepository,
-              child: BlocListener<FolderListTileBloc, FolderListTileState>(
-                listener: (context, state) {
-                  if (state is FolderListTileUpdateOnHover) {
-                    isHovered = state.id == folder.uid;
-                  } else {
-                    isHovered = false;
-                  }
-                },
-                listenWhen: (previous, current) =>
-                    current is FolderListTileUpdateOnHover ||
-                    previous is FolderListTileUpdateOnHover,
-                child: FolderListTileView(
-                  isHovered: isHovered,
-                  folder: folder,
-                  childListTiles: value.map((e) {
-                    if (e is Folder) {
-                      return FolderListTileParent(
-                          folder: e, cardsRepository: cardsRepository);
-                    } else {
-                      return CardListTile(
-                        card: e as Card,
-                        cardsRepository: cardsRepository,
-                      );
-                    }
-                  }).toList(),
-                ),
-              ),
+            return BlocBuilder<FolderListTileBloc, FolderListTileState>(
+              //? brauch man den?
+
+              builder: (context, state) {
+                return DraggingTile(
+                  fileUID: folder.uid,
+                  cardsRepository: cardsRepository,
+                  child: FolderListTileView(
+                    folder: folder,
+                    childListTiles: value.map((e) {
+                      if (e is Folder) {
+                        return FolderListTileParent(
+                            folder: e, cardsRepository: cardsRepository);
+                      } else {
+                        return CardListTile(
+                          card: e as Card,
+                          cardsRepository: cardsRepository,
+                        );
+                      }
+                    }).toList(),
+                  ),
+                );
+              },
             );
           },
         );

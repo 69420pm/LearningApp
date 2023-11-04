@@ -14,20 +14,20 @@ import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
 class FolderListTileView extends StatelessWidget {
   const FolderListTileView({
     Key? key,
-    required this.isHovered,
     required this.folder,
     required this.childListTiles,
   }) : super(key: key);
-
-  final bool isHovered;
 
   final Folder folder;
   final List<Widget> childListTiles;
 
   @override
   Widget build(BuildContext context) {
+    var isHovered =
+        context.read<SubjectOverviewSelectionBloc>().hoveredFolderUID ==
+            folder.uid;
     final isSoftSelected = folder.uid ==
-        context.read<SubjectOverviewSelectionBloc>().folderUIDSoftSelected;
+        context.read<SubjectOverviewSelectionBloc>().fileUIDSoftSelected;
     final isSelected =
         context.read<SubjectOverviewSelectionBloc>().isFileSelected(folder.uid);
 

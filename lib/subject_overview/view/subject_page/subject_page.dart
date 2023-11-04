@@ -70,9 +70,6 @@ class _SubjectViewState extends State<SubjectView> {
     var isMovingDown = false;
     var isMovingUp = false;
 
-    final softSelectedFolder = widget.cardsRepository.getFolderById(
-        context.read<SubjectOverviewSelectionBloc>().folderUIDSoftSelected);
-
     return UIPage(
       appBar: SubjectPageAppBar(
           cardsRepository: widget.cardsRepository,

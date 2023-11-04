@@ -15,14 +15,13 @@ class FolderListTileBloc
     extends Bloc<FolderListTileEvent, FolderListTileState> {
   FolderListTileBloc(this.cardsRepository) : super(FolderListTileInitial()) {
     on<FolderListTileAddFolder>(_addFolder);
-    on<FolderListTileClearHovers>(_clearHovers);
-    on<FolderListTileUpdate>(_folderUpdate);
     on<FolderListTileChangeFolderName>(_changeFolderName);
   }
 
-  bool isDragging = false;
   final CardsRepository cardsRepository;
 
+  bool isDragging = false;
+  String hoveredFolderUID = '';
   String? streamId;
 
   Future<void> _addFolder(
@@ -55,22 +54,6 @@ class FolderListTileBloc
         cardsRepository: cardsRepository,
       ),
     );
-  }
-
-  FutureOr<void> _folderUpdate(
-    FolderListTileUpdate event,
-    Emitter<FolderListTileState> emit,
-  ) {
-    isDragging = true;
-    emit(FolderListTileUpdateOnHover(event.id));
-  }
-
-  FutureOr<void> _clearHovers(
-    FolderListTileClearHovers event,
-    Emitter<FolderListTileState> emit,
-  ) {
-    isDragging = false;
-    emit(FolderListTileToClearHover());
   }
 
   FutureOr<void> _changeFolderName(FolderListTileChangeFolderName event,
