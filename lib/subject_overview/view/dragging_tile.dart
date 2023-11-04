@@ -69,9 +69,11 @@ class DraggingTile extends StatelessWidget {
             (isInSelectMode && !isSelected) || isRootFolder ? 0 : 1,
 
         childWhenDragging: const InactiveListTile(),
-        feedback: const MultiDragIndicator(
-          firstFolderName: ['make multidragindicator'],
-          folderAmount: 1,
+        feedback: MultiDragIndicator(
+          cardsRepository: cardsRepository,
+          fileUIDs: isInSelectMode
+              ? context.read<SubjectOverviewSelectionBloc>().selectedFiles
+              : [fileUID],
         ),
         onDragStarted: () {
           context

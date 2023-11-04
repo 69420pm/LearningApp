@@ -23,13 +23,10 @@ class FolderListTileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var isHovered =
-        context.read<SubjectOverviewSelectionBloc>().hoveredFolderUID ==
-            folder.uid;
-    final isSoftSelected = folder.uid ==
-        context.read<SubjectOverviewSelectionBloc>().fileUIDSoftSelected;
-    final isSelected =
-        context.read<SubjectOverviewSelectionBloc>().isFileSelected(folder.uid);
+    final selectionBloc = context.read<SubjectOverviewSelectionBloc>();
+    final isHovered = selectionBloc.hoveredFolderUID == folder.uid;
+    final isSoftSelected = folder.uid == selectionBloc.fileUIDSoftSelected;
+    final isSelected = selectionBloc.isFileSelected(folder.uid);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: UIConstants.defaultSize),

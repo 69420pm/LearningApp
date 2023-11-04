@@ -53,7 +53,13 @@ class SubjectPageAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ]
               : softSelectedFile is Card
                   ? [
-                      Text((softSelectedFile! as Card).uid),
+                      UIIconButton(
+                        icon: UIIcons.edit,
+                        onPressed: () => Navigator.of(context).pushNamed(
+                          '/add_card',
+                          arguments: [softSelectedFile, null],
+                        ),
+                      ),
                     ]
                   : [
                       UIIconButton(

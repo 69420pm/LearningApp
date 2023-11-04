@@ -70,7 +70,8 @@ class _UIExpansionTileState extends State<UIExpansionTile>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DecoratedBox(
+          Container(
+            height: UIConstants.defaultSize * 5,
             decoration: const BoxDecoration(color: Colors.transparent),
             child: Row(
               children: [

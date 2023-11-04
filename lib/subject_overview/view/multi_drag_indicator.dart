@@ -2,6 +2,7 @@
 import 'dart:math';
 
 import 'package:cards_api/cards_api.dart';
+import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:ui_components/ui_components.dart';
 
@@ -10,25 +11,28 @@ import 'package:learning_app/subject_overview/view/card_list_tile_view.dart';
 class MultiDragIndicator extends StatelessWidget {
   const MultiDragIndicator({
     super.key,
-    this.cardAmount = 0,
-    this.folderAmount = 0,
-    this.firstCardName,
-    this.firstFolderName,
+    required this.fileUIDs,
+    required this.cardsRepository,
   });
 
-  final int cardAmount;
-  final int folderAmount;
-  final List<String>? firstCardName;
-  final List<String>? firstFolderName;
+  final List<String> fileUIDs;
+  final CardsRepository cardsRepository;
 
   @override
   Widget build(BuildContext context) {
     var label = '';
-
-    for (var e in firstCardName ?? firstFolderName ?? ["Error  "]) {
-      label += '$e ,';
+    label += ', ${fileUIDs[0]}';
+    for (var e in fileUIDs) {
+      label += ', $e';
     }
-    label = label.substring(0, label.length - 2);
+
+    final folderAmount = fileUIDs
+        .where((uid) => cardsRepository.objectFromId(uid) is Folder)
+        .length;
+
+    final cardAmount = fileUIDs
+        .where((uid) => cardsRepository.objectFromId(uid) is Card)
+        .length;
 
     return DecoratedBox(
       decoration: BoxDecoration(
