@@ -385,11 +385,29 @@ class HiveCardsApi extends CardsApi {
     final values = _relationsBox.values.toList();
     for (var i = 0; i < values.length; i++) {
       if (values[i].contains(id)) {
-        print(_relationsBox.keys.elementAt(i).toString());
         return _relationsBox.keys.elementAt(i).toString();
       }
     }
     throw ParentNotFoundException();
+  }
+
+@override
+  List<String> getParentIdsFromChildId(String id) {
+    List<String> parentIds = [];
+    var childId = id;
+    while (true) {
+      parentIds.add(childId);
+      try {
+        childId = getParentIdFromChildId(childId);
+      } catch (e) {
+        return parentIds;
+      }
+
+      if (objectFromId(childId) is Subject) {
+        parentIds.add(childId);
+        return parentIds;
+      }
+    }
   }
 
   @override

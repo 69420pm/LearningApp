@@ -96,6 +96,10 @@ class CardsRepository {
   String getParentIdFromChildId(String id) =>
       _cardsApi.getParentIdFromChildId(id);
 
+  /// get parent ids to a given child id
+  List<String> getParentIdsFromChildId(String id) =>
+      _cardsApi.getParentIdsFromChildId(id);
+
   /// folder subject or card form id
   Object? objectFromId(String id) => _cardsApi.objectFromId(id);
 

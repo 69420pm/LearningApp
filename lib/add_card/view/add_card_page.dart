@@ -50,20 +50,23 @@ class AddCardPage extends StatelessWidget {
                 },
               );
             },
-          )
+          ),
         ],
       ),
-      body: Stack(children: [
-        MarkdownWidget(),
-        Positioned(
+      body: Stack(
+        children: [
+          BlocProvider(
+            create: (context) => TextEditorBloc(context.read<AddCardCubit>().cardsRepository),
+            child: MarkdownWidget(),
+          ),
+          Positioned(
             bottom: 0,
             right: 0,
             left: 0,
-            child: Padding(
-              padding: const EdgeInsets.all(0),
-              child: KeyboardRow(),
-            )),
-      ]),
+            child: KeyboardRow(),
+          ),
+        ],
+      ),
     );
     // return Scaffold(
     //   backgroundColor: Theme.of(context).colorScheme.background,

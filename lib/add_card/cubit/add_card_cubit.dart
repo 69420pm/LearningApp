@@ -6,9 +6,9 @@ import 'package:markdown_editor/src/models/editor_tile.dart';
 part 'add_card_state.dart';
 
 class AddCardCubit extends Cubit<AddCardState> {
-  AddCardCubit(this._cardsRepository) : super(AddCardInitial());
+  AddCardCubit(this.cardsRepository) : super(AddCardInitial());
 
-  final CardsRepository _cardsRepository;
+  final CardsRepository cardsRepository;
   bool _editMarkDownMode = false;
 
   Future<void> saveCard(
@@ -17,7 +17,7 @@ class AddCardCubit extends Cubit<AddCardState> {
     List<EditorTile>? editorTiles,
   ) async {
     emit(AddCardLoading());
-    await _cardsRepository.saveCard(card, editorTiles, parentId);
+    await cardsRepository.saveCard(card, editorTiles, parentId);
     emit(AddCardSuccess());
   }
 

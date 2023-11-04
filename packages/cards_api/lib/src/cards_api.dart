@@ -80,6 +80,9 @@ abstract class CardsApi {
   /// get parent id to a given child id
   String getParentIdFromChildId(String id);
 
+  /// get parent ids to a given child id
+  List<String> getParentIdsFromChildId(String id);
+
   /// folder, subject or card from id
   Object? objectFromId(String id);
 
