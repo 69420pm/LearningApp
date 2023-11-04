@@ -25,9 +25,9 @@ class FolderListTileView extends StatelessWidget {
   final List<Widget> childListTiles;
 
   Widget build(BuildContext context) {
-    var isSoftSelected = folder.uid ==
+    final isSoftSelected = folder.uid ==
         context.read<SubjectOverviewSelectionBloc>().folderUIDSoftSelected;
-    var isSelected =
+    final isSelected =
         context.read<SubjectOverviewSelectionBloc>().isFileSelected(folder.uid);
 
     return Padding(

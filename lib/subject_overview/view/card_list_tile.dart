@@ -35,7 +35,6 @@ class CardListTile extends StatelessWidget {
           child: CardListTileView(
             isSelected: isSelected,
             card: card,
-            isChildWhenDragging: isInDrag && isSelected, //! Broken I guess
           ),
         );
       },
