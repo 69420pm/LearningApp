@@ -11,75 +11,91 @@ import 'package:ui_components/ui_components.dart';
 class AddCardPage extends StatelessWidget {
   AddCardPage({super.key, required this.card, required this.parentId});
 
-  Card card;
+  final Card card;
   final String? parentId;
+  TextEditorBloc? textEditorBloc;
 
   @override
   Widget build(BuildContext context) {
-    return UIPage(
-      addPadding: false,
-      appBar: UIAppBar(
-        leadingBackButton: true,
-        // leadingBackButtonPressed: () {
-        //   List<EditorTile>? editorTiles;
-        //   // try {
-        //     editorTiles = context.read<TextEditorBloc>().editorTiles;
-        //   // } catch (e) {}
-        //   context.read<AddCardCubit>().saveCard(
-        //         card,
-        //         parentId,
-        //         editorTiles,
-        //       );
-        // },
-        actions: [
-          UIIconButton(
-            icon: UIIcons.settings,
-            onPressed: () {
-              UIBottomSheet.showUIBottomSheet(
-                context: context,
-                builder: (_) {
-                  return BlocProvider.value(
-                    value: context.read<AddCardCubit>(),
-                    child: AddCardSettingsBottomSheet(
-                      card: card,
-                      parentId: parentId,
-                    ),
-                  );
-                },
+    return WillPopScope(
+      onWillPop: () async {
+        List<EditorTile>? editorTiles;
+        if (textEditorBloc != null) {
+          editorTiles = textEditorBloc!.editorTiles;
+          await context.read<AddCardCubit>().saveCard(
+                card,
+                parentId,
+                editorTiles,
               );
-            },
-          ),
-        ],
-      ),
-      body: FutureBuilder(
-        future: context.read<AddCardCubit>().getSavedEditorTiles(card),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return BlocProvider(
-              create: (context) => TextEditorBloc(
+        }
+        return true;
+      },
+      child: UIPage(
+        addPadding: false,
+        appBar: UIAppBar(
+          leadingBackButton: true,
+          leadingBackButtonPressed: () {
+            List<EditorTile>? editorTiles;
+            if (textEditorBloc != null) {
+              editorTiles = textEditorBloc!.editorTiles;
+              context.read<AddCardCubit>().saveCard(
+                    card,
+                    parentId,
+                    editorTiles,
+                  );
+            }
+          },
+          actions: [
+            UIIconButton(
+              icon: UIIcons.settings,
+              onPressed: () {
+                UIBottomSheet.showUIBottomSheet(
+                  context: context,
+                  builder: (_) {
+                    return BlocProvider.value(
+                      value: context.read<AddCardCubit>(),
+                      child: AddCardSettingsBottomSheet(
+                        card: card,
+                        parentId: parentId,
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ],
+        ),
+        body: FutureBuilder(
+          future: context.read<AddCardCubit>().getSavedEditorTiles(card),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              textEditorBloc = TextEditorBloc(
                 context.read<AddCardCubit>().cardsRepository,
                 (tiles) => context
                     .read<AddCardCubit>()
                     .saveCard(card, parentId, tiles),
                 snapshot.data!,
                 parentId,
-              ),
-              child: Stack(
-                children: [
-                  MarkdownWidget(),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    left: 0,
-                    child: KeyboardRow(),
-                  ),
-                ],
-              ),
-            );
-          } else {
-            return const CircularProgressIndicator();
-          }
-        },
+              );
+              return BlocProvider.value(
+                value: textEditorBloc!,
+                child: Stack(
+                  children: [
+                    MarkdownWidget(),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      left: 0,
+                      child: KeyboardRow(),
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              return const CircularProgressIndicator();
+            }
+          },
+        ),
       ),
     );
   }

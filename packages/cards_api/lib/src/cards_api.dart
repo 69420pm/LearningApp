@@ -83,6 +83,9 @@ abstract class CardsApi {
 
   /// dispose notifier to free up memory
   void disposeNotifier(String id);
+
+  /// get front and back in plain text
+  List<String> getTextFromCard(String cardId, bool onlyFront);
 }
 
 /// Error when a [Card] with given id is not found

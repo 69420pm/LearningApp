@@ -24,8 +24,13 @@ import 'package:markdown_editor/src/helper/data_class_helper.dart';
 /// {@endtemplate}
 class HiveCardsApi extends CardsApi {
   /// {@macro hive_cards_api}
-  HiveCardsApi(this._subjectBox, this._folderBox, this._cardBox,
-      this._relationsBox, this._cardContentBox) {
+  HiveCardsApi(
+    this._subjectBox,
+    this._folderBox,
+    this._cardBox,
+    this._relationsBox,
+    this._cardContentBox,
+  ) {
     _init();
   }
 
@@ -152,7 +157,10 @@ class HiveCardsApi extends CardsApi {
 
   @override
   Future<void> saveCard(
-      Card card, List<EditorTile>? editorTiles, String? parentId_) async {
+    Card card,
+    List<EditorTile>? editorTiles,
+    String? parentId_,
+  ) async {
     final parentId = parentId_ ?? getParentIdFromChildId(card.uid);
     // add card to _cardBox
     await _cardBox.put(card.uid, card);
@@ -192,6 +200,18 @@ class HiveCardsApi extends CardsApi {
       final editorTilesDC = DataClassHelper.convertToDataClass(editorTiles);
       await _cardContentBox.put(card.uid, editorTilesDC);
     }
+  }
+
+  @override
+  List<String> getTextFromCard(String cardId, bool onlyFront) {
+    final editorTilesDC = _cardContentBox.get(cardId);
+    if (editorTilesDC == null || editorTilesDC.isEmpty) {
+      return [];
+    }
+    return DataClassHelper.getFrontAndBackText(
+      editorTilesDC as List<EditorTileDC>,
+      onlyFront,
+    );
   }
 
   @override

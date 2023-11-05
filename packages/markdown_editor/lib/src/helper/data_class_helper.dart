@@ -66,10 +66,11 @@ class DataClassHelper {
           dataClassTiles.add(
             HeaderTileDC(
               uid: Uid().uid(),
-              charTiles: headerTile.textFieldController != null ?
-              _charTileToCharTileDC(
-                headerTile.textFieldController!.charTiles,
-              ):[],
+              charTiles: headerTile.textFieldController != null
+                  ? _charTileToCharTileDC(
+                      headerTile.textFieldController!.charTiles,
+                    )
+                  : [],
               headerSize:
                   headerTile.textStyle == TextFieldConstants.headingBig ? 1 : 0,
             ),
@@ -252,6 +253,44 @@ class DataClassHelper {
       }
     }
     return dataClassTiles;
+  }
+
+  static List<String> getFrontAndBackText(List<EditorTileDC> tiles, bool onlyFront) {
+    var front = '';
+    var back = '';
+    var addFront = true;
+    for (final tile in tiles) {
+      if (tile is TextTileDC) {
+        final text = _charTilesToText(tile.charTiles);
+        addFront ? front += '$text\n' : back += '$text\n';
+      } else if (tile is HeaderTileDC) {
+        final text = _charTilesToText(tile.charTiles);
+        addFront ? front += '$text\n' : back += '$text\n';
+      } else if (tile is CalloutTileDC) {
+        final text = _charTilesToText(tile.charTiles);
+        addFront ? front += '$text\n' : back += '$text\n';
+      } else if (tile is ListEditorTileDC) {
+        final text = _charTilesToText(tile.charTiles);
+        addFront ? front += '$text\n' : back += '$text\n';
+      } else if (tile is QuoteTileDC) {
+        final text = _charTilesToText(tile.charTiles);
+        addFront ? front += '$text\n' : back += '$text\n';
+      } else if (tile is FrontBackSeparatorTileDC) {
+        if(onlyFront){
+          return [front];
+        }
+        addFront = false;
+      }
+    }
+    return [front, back];
+  }
+
+  static String _charTilesToText(List<CharTileDC> charTiles) {
+    var text = '';
+    for (final element in charTiles) {
+      text += element.text;
+    }
+    return text;
   }
 
   // make color storable

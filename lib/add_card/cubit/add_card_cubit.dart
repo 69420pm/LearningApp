@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:cards_repository/cards_repository.dart';
+import 'package:intl/intl.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 import 'package:meta/meta.dart';
 import 'package:markdown_editor/src/models/editor_tile.dart';
@@ -23,6 +24,16 @@ class AddCardCubit extends Cubit<AddCardState> {
   ) async {
     emit(AddCardLoading());
     await cardsRepository.saveCard(card, editorTiles, parentId);
+    final frontText =
+        cardsRepository.getTextFromCard(card.uid, onlyFront: true);
+    if (frontText.isNotEmpty && frontText[0].trim().isNotEmpty) {
+      card.name = frontText[0].replaceAll('\n', '');
+    } else {
+      card.name =
+          "created on ${DateFormat('EEE dd.MM yyyy HH:mm').format(DateTime.now())}";
+    }
+    await cardsRepository.saveCard(card, null, parentId);
+
     emit(AddCardSuccess());
   }
 
@@ -33,9 +44,9 @@ class AddCardCubit extends Cubit<AddCardState> {
     if (loadedEditorTiles.isNotEmpty) {
     } else {
       loadedEditorTiles = [
-        TextTile(
-          textStyle: TextFieldConstants.normal,
+        HeaderTile(
           hintText: 'Front',
+          textStyle: TextFieldConstants.headingSmall,
         ),
         FrontBackSeparatorTile(),
         TextTile(

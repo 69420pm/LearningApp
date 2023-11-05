@@ -22,3 +22,4 @@ export 'src/widgets/editor_tiles/text_tile.dart';
 export 'src/widgets/keyboard_row/keyboard_row.dart';
 export 'src/models/text_field_constants.dart';
 export 'src/widgets/editor_tiles/front_back_seperator_tile.dart';
+export 'src/widgets/editor_tiles/header_tile.dart';

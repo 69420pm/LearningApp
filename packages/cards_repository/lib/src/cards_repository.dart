@@ -101,4 +101,8 @@ class CardsRepository {
 
   /// dispose notifier to free up memory
   void disposeNotifier(String id) => _cardsApi.disposeNotifier(id);
+
+  /// get front and back in plain text
+  List<String> getTextFromCard(String cardId, {bool onlyFront = false}) =>
+      _cardsApi.getTextFromCard(cardId, onlyFront);
 }

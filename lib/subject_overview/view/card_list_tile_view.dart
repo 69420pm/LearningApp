@@ -38,7 +38,7 @@ class CardListTileView extends StatelessWidget {
               const SizedBox(width: UIConstants.defaultSize * 2),
               Expanded(
                 child: Text(
-                  '${card.name} ${card.uid}', // card.front,
+                  '${card.name}', // card.front,
                   overflow: TextOverflow.ellipsis,
                   style: UIText.normal,
                 ),
