@@ -12,6 +12,7 @@ import 'package:learning_app/subject_overview/view/dragging_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
 import 'package:learning_app/subject_overview/view/subject_page/subject_card.dart';
 import 'package:learning_app/subject_overview/view/subject_page/subject_page_app_bar.dart';
+import 'package:learning_app/subject_overview/view/subject_page/subject_page_auto_scroller.dart';
 import 'package:learning_app/subject_overview/view/subject_page/subject_page_tool_bar.dart';
 import 'package:ui_components/ui_components.dart';
 
@@ -62,14 +63,10 @@ class SubjectView extends StatefulWidget {
 }
 
 class _SubjectViewState extends State<SubjectView> {
+  final globalKey = GlobalKey();
+  final scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
-    final globalKey = GlobalKey();
-    final scrollController = ScrollController();
-
-    var isMovingDown = false;
-    var isMovingUp = false;
-
     return UIPage(
       appBar: SubjectPageAppBar(
           cardsRepository: widget.cardsRepository,
@@ -89,48 +86,9 @@ class _SubjectViewState extends State<SubjectView> {
             height: UIConstants.itemPaddingLarge,
           ),
           Expanded(
-            child: Listener(
-              onPointerMove: (event) {
-                if (context.read<SubjectOverviewSelectionBloc>().isInDragging ||
-                    context.read<FolderListTileBloc>().isDragging) {
-                  final render = globalKey.currentContext?.findRenderObject()
-                      as RenderBox?;
-                  final top = render?.localToGlobal(Offset.zero).dy ?? 0;
-                  final bottom = MediaQuery.of(context).size.height;
-
-                  final relPos =
-                      (event.localPosition.dy / (bottom - top)).clamp(0, 1);
-
-                  const space = 0.3;
-
-                  if (relPos < space && isMovingUp == false) {
-                    isMovingUp = true;
-                    isMovingDown = false;
-
-                    scrollController.animateTo(
-                      0,
-                      duration: const Duration(seconds: 1),
-                      curve: Curves.easeIn,
-                    );
-                  } else if (relPos > 1 - space && isMovingDown == false) {
-                    isMovingDown = true;
-                    isMovingUp = false;
-                    scrollController.animateTo(
-                      scrollController.position.maxScrollExtent,
-                      duration: const Duration(seconds: 1),
-                      curve: Curves.easeIn,
-                    );
-                  } else if (relPos > space && relPos < 1 - space) {
-                    if (isMovingUp || isMovingDown) {
-                      scrollController.jumpTo(
-                        scrollController.offset,
-                      );
-                    }
-                    isMovingDown = false;
-                    isMovingUp = false;
-                  }
-                }
-              },
+            child: AutoScrollView(
+              globalKey: globalKey,
+              scrollController: scrollController,
               child: ValueListenableBuilder(
                 valueListenable: context
                     .read<SubjectBloc>()
