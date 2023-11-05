@@ -45,20 +45,14 @@ abstract class CardsApi {
   /// If a [folder] with same id already exists, it will be replaced
   Future<void> saveFolder(Folder folder, String? parentId);
 
-  /// Deletes cards with given id
-  /// If no cards with given id exists, a [CardNotFoundException] error is
-  /// thrown
-  Future<void> deleteCards(List<String> ids);
-
   /// Deletes subject and every children with given id
   /// If no card with given id exists, a [SubjectNotFoundException] error is
   /// thrown
   Future<void> deleteSubject(String id);
 
-  /// Deletes folder and every children with given id
-  /// If no card with given id exists, a [FolderNotFoundException] error is
-  /// thrown
-  Future<void> deleteFolders(List<String> ids);
+  /// delete files when ids match to folder or cards and everything
+  /// if you delete a folder all children get automatically deleted
+  Future<void> deleteFiles(List<String> ids);
 
   /// Move folder and every children to [newParentId]
   Future<void> moveFiles(List<String> fileIds, String newParentId);

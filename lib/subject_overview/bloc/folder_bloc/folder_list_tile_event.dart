@@ -16,15 +16,6 @@ class FolderListTileAddFolder extends FolderListTileEvent {
   FolderListTileAddFolder({required this.folder, required this.newParentId});
 }
 
-class FolderListTileUpdate extends FolderListTileEvent {
-  String id;
-  FolderListTileUpdate({required this.id});
-}
-
-class FolderListTileClearHovers extends FolderListTileEvent {
-  FolderListTileClearHovers();
-}
-
 class FolderListTileChangeFolderName extends FolderListTileEvent {
   Folder folder;
   String newName;

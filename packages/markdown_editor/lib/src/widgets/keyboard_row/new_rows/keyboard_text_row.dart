@@ -133,7 +133,7 @@ class KeyboardTextRow extends StatelessWidget {
             icon: UIIcons.done.copyWith(color: UIColors.primary),
             onPressed: () {
               // save content of card
-              
+              context.read<TextEditorBloc>().add(TextEditorNextCard(context: context));
             },
           ),
         ],

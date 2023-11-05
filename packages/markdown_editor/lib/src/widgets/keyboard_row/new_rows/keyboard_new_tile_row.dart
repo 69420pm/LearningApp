@@ -92,8 +92,7 @@ class KeyboardNewTileRow extends StatelessWidget {
                                   latexText: newLatexTile.latexText,
                                   focusNode: newLatexTile.focusNode ??=
                                       FocusNode(),
-                                  onChanged: (text) =>
-                                      latexText = text,
+                                  onChanged: (text) => latexText = text,
                                 ),
                               ),
                             ],
@@ -290,7 +289,9 @@ class KeyboardNewTileRow extends StatelessWidget {
               ),
               KeyboardButton(
                 icon: UIIcons.done.copyWith(color: UIColors.primary),
-                onPressed: () {},
+                onPressed: () {
+                  context.read<TextEditorBloc>().add(TextEditorNextCard(context:context));
+                },
               ),
             ],
           ),

@@ -40,16 +40,25 @@ class SubjectOverviewSelectionMoveSelection
 
 class SubjectOverviewDraggingChange extends SubjectOverviewSelectionEvent {
   bool inDragg;
+  String parentUID;
   SubjectOverviewDraggingChange({
     required this.inDragg,
+    required this.parentUID,
   });
 }
 
 class SubjectOverviewGetSelectedCards extends SubjectOverviewSelectionEvent {}
 
-class SubjectOverviewSetSoftSelectFolder extends SubjectOverviewSelectionEvent {
+class SubjectOverviewSetSoftSelectFile extends SubjectOverviewSelectionEvent {
+  String fileUID;
+  SubjectOverviewSetSoftSelectFile({
+    required this.fileUID,
+  });
+}
+
+class SubjectOverviewSetHoveredFolder extends SubjectOverviewSelectionEvent {
   String folderUID;
-  SubjectOverviewSetSoftSelectFolder({
+  SubjectOverviewSetHoveredFolder({
     required this.folderUID,
   });
 }

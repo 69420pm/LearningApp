@@ -14,3 +14,6 @@ class SubjectOverviewSoftSelectionModeOn
 
 class SubjectOverviewSelectionMultiDragging
     extends SubjectOverviewSelectionState {}
+
+class SubjectOverviewSelectionUpdateHover
+    extends SubjectOverviewSelectionState {}

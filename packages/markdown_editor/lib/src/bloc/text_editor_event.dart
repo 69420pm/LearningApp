@@ -83,3 +83,10 @@ class TextEditorGetSavedEditorTiles extends TextEditorEvent {
 
 class TextEditorFocusLastWidget extends TextEditorEvent {}
 
+class TextEditorNextCard extends TextEditorEvent {
+  BuildContext context;
+  TextEditorNextCard({
+    required this.context,
+  });
+
+}

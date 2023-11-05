@@ -21,23 +21,32 @@ class CardListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isSelected =
-        context.read<SubjectOverviewSelectionBloc>().isFileSelected(card.uid);
-
-    final isInDrag = context.read<SubjectOverviewSelectionBloc>().isInDragging;
-
     return BlocBuilder<SubjectOverviewSelectionBloc,
         SubjectOverviewSelectionState>(
       builder: (context, state) {
-        return DraggingTile(
-          fileUID: card.uid,
-          cardsRepository: cardsRepository,
-          child: CardListTileView(
-            isSelected: isSelected,
-            card: card,
-            isChildWhenDragging: isInDrag && isSelected, //! Broken I guess
-          ),
-        );
+        final isSelected = context
+            .read<SubjectOverviewSelectionBloc>()
+            .isFileSelected(card.uid);
+        final isDraggedInMultiSelection =
+            context.read<SubjectOverviewSelectionBloc>().isInSelectMode &&
+                context.read<SubjectOverviewSelectionBloc>().isInDragging &&
+                context
+                    .read<SubjectOverviewSelectionBloc>()
+                    .isFileSelected(card.uid);
+
+        if (isDraggedInMultiSelection) {
+          return const InactiveListTile();
+        }
+        {
+          return DraggingTile(
+            fileUID: card.uid,
+            cardsRepository: cardsRepository,
+            child: CardListTileView(
+              isSelected: isSelected,
+              card: card,
+            ),
+          );
+        }
       },
     );
   }

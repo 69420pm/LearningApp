@@ -11,7 +11,7 @@ import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
 import 'package:ui_components/ui_components.dart';
 import 'package:cards_repository/cards_repository.dart';
 import '../models/char_tile.dart';
-
+import 'package:learning_app/app/helper/uid.dart';
 part 'text_editor_event.dart';
 part 'text_editor_state.dart';
 
@@ -19,7 +19,10 @@ part 'text_editor_state.dart';
 class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
   /// constructor
   TextEditorBloc(
-    this._cardsRepository, this._saveEditorTilesCallback, this.editorTiles,{
+    this._cardsRepository,
+    this._saveEditorTilesCallback,
+    this.editorTiles,
+    this.parentId, {
     this.isBold = false,
     this.isItalic = false,
     this.isUnderlined = false,
@@ -32,9 +35,10 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     on<TextEditorReplaceEditorTile>(_replaceTile);
     on<TextEditorChangeOrderOfTile>(_changeOrderOfTile);
     on<TextEditorFocusLastWidget>(_focusLastWidget);
+    on<TextEditorNextCard>(_nextCard);
   }
 
-
+  final String? parentId;
 
   final CardsRepository _cardsRepository;
 
@@ -305,7 +309,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
   }
 
   void _saveEditorTiles() {
-   _saveEditorTilesCallback(editorTiles);
+    _saveEditorTilesCallback(editorTiles);
   }
 
   void _defaultEditorTiles(BuildContext context) {
@@ -314,5 +318,29 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
         textStyle: TextFieldConstants.normal,
       ),
     ];
+  }
+
+  FutureOr<void> _nextCard(
+      TextEditorNextCard event, Emitter<TextEditorState> emit) {
+    _saveEditorTiles();
+    if (parentId != null) {
+      Navigator.of(event.context).pushReplacementNamed(
+        '/add_card',
+        arguments: [
+          Card(
+            uid: Uid().uid(),
+            dateCreated: DateTime.now(),
+            askCardsInverted: false,
+            typeAnswer: false,
+            recallScore: 0,
+            dateToReview: DateTime.now(),
+            name: '',
+          ),
+          parentId,
+        ],
+      );
+    } else {
+      Navigator.pop(event.context);
+    }
   }
 }

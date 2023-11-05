@@ -101,6 +101,10 @@ class KeyboardRowCubit extends Cubit<KeyboardRowState> {
     expandText();
   }
 
+  void saveCard(){
+    
+  }
+
   // void expandAddNewTextTile() {
   //   _textColors = false;
   //   _extraFormat = false;

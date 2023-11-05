@@ -44,17 +44,7 @@ class FolderListTileSuccess extends FolderListTileState {
 }
 
 class FolderListTileUpdateOnHover extends FolderListTileState {
-  FolderListTileUpdateOnHover(this.id);
-
-  final String id;
-
-  @override
-  List<Object?> get props => [id];
-}
-
-class FolderListTileToClearHover extends FolderListTileState {
-  FolderListTileToClearHover();
-
+  FolderListTileUpdateOnHover();
   @override
   List<Object?> get props => [];
 }

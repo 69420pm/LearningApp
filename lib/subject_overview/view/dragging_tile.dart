@@ -32,15 +32,15 @@ class DraggingTile extends StatelessWidget {
     final isInSelectMode =
         context.read<SubjectOverviewSelectionBloc>().isInSelectMode;
 
-    final isSoftSelected = isFolder && //? should cards also be softSelectable
-        context.read<SubjectOverviewSelectionBloc>().folderUIDSoftSelected ==
+    final isSoftSelected =
+        context.read<SubjectOverviewSelectionBloc>().fileUIDSoftSelected ==
             fileUID;
 
     final isSelected = !isRootFolder &&
         context.read<SubjectOverviewSelectionBloc>().isFileSelected(fileUID);
 
     return GestureDetector(
-      // behavior: HitTestBehavior.translucent,
+      behavior: HitTestBehavior.translucent,
       onTap: () {
         if (isInSelectMode) {
           //change file selection
@@ -54,22 +54,12 @@ class DraggingTile extends StatelessWidget {
                 );
           }
         } else {
-          if (isFolder) {
-            //change soft selection
-            context.read<SubjectOverviewSelectionBloc>().add(
-                  SubjectOverviewSetSoftSelectFolder(
-                    folderUID: isSoftSelected ? '' : fileUID,
-                  ),
-                );
-          } else if (isCard) {
-            Navigator.of(context).pushNamed(
-                    '/add_card',
-                    arguments: [
-                      cardsRepository.objectFromId(fileUID),
-                      null
-                    ],
-                  );
-          }
+          //change soft selection
+          context.read<SubjectOverviewSelectionBloc>().add(
+                SubjectOverviewSetSoftSelectFile(
+                  fileUID: isSoftSelected ? '' : fileUID,
+                ),
+              );
         }
       },
       child: LongPressDraggable(
@@ -79,39 +69,49 @@ class DraggingTile extends StatelessWidget {
             (isInSelectMode && !isSelected) || isRootFolder ? 0 : 1,
 
         childWhenDragging: const InactiveListTile(),
-        feedback: const MultiDragIndicator(
-          firstFolderName: ["make multidragindicator"],
-          folderAmount: 1,
+        feedback: MultiDragIndicator(
+          cardsRepository: cardsRepository,
+          fileUIDs: isInSelectMode
+              ? context.read<SubjectOverviewSelectionBloc>().selectedFiles
+              : [fileUID],
         ),
         onDragStarted: () {
-          context
-              .read<SubjectOverviewSelectionBloc>()
-              .add(SubjectOverviewDraggingChange(inDragg: true));
+          context.read<SubjectOverviewSelectionBloc>().add(
+                SubjectOverviewDraggingChange(
+                  inDragg: true,
+                  parentUID: cardsRepository.getParentIdFromChildId(fileUID),
+                ),
+              );
         },
         onDragEnd: (details) {
-          context
-              .read<SubjectOverviewSelectionBloc>()
-              .add(SubjectOverviewDraggingChange(inDragg: false));
-          context.read<FolderListTileBloc>().add(FolderListTileClearHovers());
+          context.read<SubjectOverviewSelectionBloc>().add(
+                SubjectOverviewDraggingChange(
+                  inDragg: false,
+                  parentUID: cardsRepository.getParentIdFromChildId(fileUID),
+                ),
+              );
         },
         onDraggableCanceled: (_, __) {
+          // context.read<SubjectOverviewSelectionBloc>().add(
+          //     SubjectOverviewDraggingChange(
+          //         inDragg: false,
+          //         parentUID: cardsRepository.getParentIdFromChildId(fileUID)));
           //Start SelectionMode
           if (!isInSelectMode) {
             context.read<SubjectOverviewSelectionBloc>().add(
                   SubjectOverviewSelectionToggleSelectMode(
                     inSelectMode: true,
                   ),
-                );
-          }
-          //select File
-          if (isCard) {
-            context
-                .read<SubjectOverviewSelectionBloc>()
-                .add(SubjectOverviewCardSelectionChange(cardUID: fileUID));
-          } else if (isFolder) {
-            context.read<SubjectOverviewSelectionBloc>().add(
-                  SubjectOverviewFolderSelectionChange(folderUID: fileUID),
-                );
+                ); //select File
+            if (isCard) {
+              context
+                  .read<SubjectOverviewSelectionBloc>()
+                  .add(SubjectOverviewCardSelectionChange(cardUID: fileUID));
+            } else if (isFolder) {
+              context.read<SubjectOverviewSelectionBloc>().add(
+                    SubjectOverviewFolderSelectionChange(folderUID: fileUID),
+                  );
+            }
           }
         },
         child: Builder(
@@ -149,71 +149,68 @@ class FolderDragTarget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FolderListTileBloc, FolderListTileState>(
-      builder: (context, state) {
-        final isHovered =
-            state is FolderListTileUpdateOnHover && state.id == folderUID;
-        return DragTarget(
-          onMove: (details) {
-            if (isHovered == false) {
-              context
-                  .read<FolderListTileBloc>()
-                  .add(FolderListTileUpdate(id: folderUID));
-            }
-          },
-          onAccept: (String fileUID) {
-            //if dragged and dropped in same folder
-            if (cardsRepository.getParentIdFromChildId(fileUID) == folderUID) {
-              if (inSelectMode) {
-                //move hole selection to this folder
-                context.read<SubjectOverviewSelectionBloc>().add(
-                      SubjectOverviewSelectionMoveSelection(
-                        parentId: folderUID,
-                      ),
-                    );
-              } else {
-                //start selectionMode
-                context.read<SubjectOverviewSelectionBloc>().add(
-                      SubjectOverviewSelectionToggleSelectMode(
-                        inSelectMode: true,
-                      ),
-                    );
-                //select data
-                if (cardsRepository.objectFromId(fileUID) is Card) {
-                  context.read<SubjectOverviewSelectionBloc>().add(
-                        SubjectOverviewCardSelectionChange(cardUID: fileUID),
-                      );
-                } else {
-                  context.read<SubjectOverviewSelectionBloc>().add(
-                        SubjectOverviewFolderSelectionChange(
-                          folderUID: fileUID,
-                        ),
-                      );
-                }
-              }
-              return;
-            }
-
-            if (inSelectMode) {
-              //move hole selection
+    var isHovered =
+        context.read<SubjectOverviewSelectionBloc>().hoveredFolderUID ==
+            folderUID;
+    return DragTarget(
+      onMove: (details) {
+        if (isHovered == false) {
+          context
+              .read<SubjectOverviewSelectionBloc>()
+              .add(SubjectOverviewSetHoveredFolder(folderUID: folderUID));
+        }
+      },
+      onAccept: (String fileUID) {
+        //if dragged and dropped in same folder
+        if (cardsRepository.getParentIdFromChildId(fileUID) == folderUID) {
+          if (inSelectMode) {
+            //move hole selection to this folder
+            context.read<SubjectOverviewSelectionBloc>().add(
+                  SubjectOverviewSelectionMoveSelection(
+                    parentId: folderUID,
+                  ),
+                );
+          } else {
+            //start selectionMode
+            context.read<SubjectOverviewSelectionBloc>().add(
+                  SubjectOverviewSelectionToggleSelectMode(
+                    inSelectMode: true,
+                  ),
+                );
+            //select data
+            if (cardsRepository.objectFromId(fileUID) is Card) {
               context.read<SubjectOverviewSelectionBloc>().add(
-                    SubjectOverviewSelectionMoveSelection(parentId: folderUID),
+                    SubjectOverviewCardSelectionChange(cardUID: fileUID),
                   );
             } else {
-              //move data
-
-              context.read<SubjectBloc>().add(
-                    SubjectSetFileParent(
-                      fileUID: fileUID,
-                      parentId: folderUID,
+              context.read<SubjectOverviewSelectionBloc>().add(
+                    SubjectOverviewFolderSelectionChange(
+                      folderUID: fileUID,
                     ),
                   );
             }
-          },
-          builder: (context, candidateData, rejectedData) {
-            return child;
-          },
-        );
+          }
+          return;
+        }
+
+        if (inSelectMode) {
+          //move hole selection
+          context.read<SubjectOverviewSelectionBloc>().add(
+                SubjectOverviewSelectionMoveSelection(parentId: folderUID),
+              );
+        } else {
+          //move data
+
+          context.read<SubjectBloc>().add(
+                SubjectSetFileParent(
+                  fileUID: fileUID,
+                  parentId: folderUID,
+                ),
+              );
+        }
+      },
+      builder: (context, candidateData, rejectedData) {
+        return child;
       },
     );
   }

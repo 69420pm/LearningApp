@@ -12,6 +12,7 @@ class UIAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.leading,
     this.bottom,
     this.leadingBackButton = false,
+    this.leadingBackButtonPressed,
   }) : super(key: key);
   final String? title;
   final bool automaticallyImplyLeading;
@@ -19,16 +20,22 @@ class UIAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? leading;
   final PreferredSizeWidget? bottom;
   final bool leadingBackButton;
+  final void Function()? leadingBackButtonPressed;
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       leading: Padding(
-        padding: EdgeInsets.only(left: UIConstants.cardHorizontalPadding),
+        padding: const EdgeInsets.only(left: UIConstants.cardHorizontalPadding),
         child: leadingBackButton
             ? UIIconButton(
                 icon: UIIcons.arrowBack,
-                onPressed: () => Navigator.pop(context),
+                onPressed: () {
+                  if (leadingBackButtonPressed != null) {
+                    leadingBackButtonPressed?.call();
+                  }
+                  Navigator.pop(context);
+                },
               )
             : Align(alignment: Alignment.centerLeft, child: leading),
       ),

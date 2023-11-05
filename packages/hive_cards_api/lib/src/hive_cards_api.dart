@@ -139,6 +139,7 @@ class HiveCardsApi extends CardsApi {
         if (child.uid == folder.uid) {
           children[i] = folder;
           currentNotifier.value = List.from(children);
+          alreadyUpdated = true;
           break;
         }
       }
@@ -197,7 +198,8 @@ class HiveCardsApi extends CardsApi {
   Future<void> deleteSubject(String id) async {
     await _subjectBox.delete(id);
     final children = getChildrenList(id);
-    await _deleteFolders(children, false);
+    disposeNotifier(id);
+    await _deleteFiles(children, false);
   }
 
   @override
@@ -369,11 +371,74 @@ class HiveCardsApi extends CardsApi {
   }
 
   @override
+  Future<void> deleteFiles(List<String> ids) async {
+    var idsToDelete = List<String>.of(ids);
+    // add children of ids
+    for (final id in ids) {
+      idsToDelete.addAll(getChildrenList(id));
+    }
+    // remove duplicates
+    idsToDelete = idsToDelete.toSet().toList();
+    await _deleteFiles(ids, true);
+  }
+
+  @override
+  Future<void> _deleteFiles(List<String> ids, bool updateNotifier) async {
+    for (var i = 0; i < ids.length; i++) {
+      final fileId = ids[i];
+      try {
+        final parentId = getParentIdFromChildId(ids[i]);
+        // remove folder from parent relation entry
+        final currentRelationEntry = _relationsBox.get(parentId);
+        if (currentRelationEntry != null) {
+          currentRelationEntry.remove(fileId);
+          await _relationsBox.put(parentId, currentRelationEntry);
+        }
+
+        if (updateNotifier == true) {
+          // remove folder from _notifier
+          final currentNotifier = _notifiers[parentId];
+          if (currentNotifier != null) {
+            final children = currentNotifier.value
+              ..remove(_folderBox.get(fileId));
+            currentNotifier.value = children;
+          }
+        }
+      } catch (e) {}
+      // get all ids of children
+
+      // iterate over all children of folder
+      // for (final childrenId in childrenIds) {
+      //   // dispose subscribed notifiers
+      //   disposeNotifier(childrenId);
+      //   // delete children in card or folder box
+      //   if (_cardBox.get(childrenId) != null) {
+      //     await _cardBox.delete(childrenId);
+      //   } else if (_folderBox.get(childrenId) != null) {
+      //     await _folderBox.delete(childrenId);
+      //   } else {
+      //     throw FolderNotFoundException();
+      //   }
+      //   // delete entries of children in relations box
+      //   await _relationsBox.delete(childrenId);
+      // }
+      // remove file from folderBox or cardBox and relationBox directly
+      // box.delete, when object not in box nothing happens
+      await _folderBox.delete(fileId);
+      await _cardBox.delete(fileId);
+      await _cardContentBox.delete(fileId);
+      await _relationsBox.delete(fileId);
+
+      disposeNotifier(fileId);
+    }
+  }
+
+  @override
   void disposeNotifier(String id) {
     // dispose all children of id and id itself
     final childrenList = getChildrenList(id)..add(id);
     for (final childId in childrenList) {
-      if (_notifiers[childId] != null) {
+      if (_notifiers.containsKey(childId)) {
         _notifiers[childId]!.dispose();
         _notifiers.remove(childId);
       }
@@ -391,7 +456,7 @@ class HiveCardsApi extends CardsApi {
     throw ParentNotFoundException();
   }
 
-@override
+  @override
   List<String> getParentIdsFromChildId(String id) {
     List<String> parentIds = [];
     var childId = id;

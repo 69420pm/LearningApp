@@ -67,18 +67,14 @@ class CardsRepository {
   Future<void> saveFolder(Folder folder, String? parentId) =>
       _cardsApi.saveFolder(folder, parentId);
 
-  /// Deletes card with given id
-  /// If no card with given id exists, a [CardNotFoundException] error is
-  /// thrown
-  Future<void> deleteCards(List<String> id) => _cardsApi.deleteCards(id);
-
   /// Deletes subject and every children with given id
   /// If no card with given id exists, a [SubjectNotFoundException] error is
   /// thrown
   Future<void> deleteSubject(String id) => _cardsApi.deleteSubject(id);
 
-  /// Delete subject and every children inheriting from it
-  Future<void> deleteFolders(List<String> id) => _cardsApi.deleteFolders(id);
+  /// delete files when ids match to folder or cards and everything
+  /// if you delete a folder all children get automatically deleted
+  Future<void> deleteFiles(List<String> ids) => _cardsApi.deleteFiles(ids);
 
   /// Move folder and every children to [newParentId]
   Future<void> moveFiles(List<String> fileIds, String newParentId) =>

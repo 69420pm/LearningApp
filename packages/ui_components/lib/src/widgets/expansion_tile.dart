@@ -9,7 +9,7 @@ class UIExpansionTile extends StatefulWidget {
   String title;
   double titleSpacing;
   double iconSpacing;
-  Widget trailing;
+  Widget? trailing;
   Color backgroundColor;
   Border border;
 
@@ -19,7 +19,7 @@ class UIExpansionTile extends StatefulWidget {
     required this.title,
     required this.titleSpacing,
     required this.iconSpacing,
-    required this.trailing,
+    this.trailing,
     required this.backgroundColor,
     required this.border,
   });
@@ -70,7 +70,8 @@ class _UIExpansionTileState extends State<UIExpansionTile>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DecoratedBox(
+          Container(
+            height: UIConstants.defaultSize * 5,
             decoration: const BoxDecoration(color: Colors.transparent),
             child: Row(
               children: [
@@ -93,7 +94,7 @@ class _UIExpansionTileState extends State<UIExpansionTile>
                       overflow: TextOverflow.ellipsis, style: UIText.label),
                 ),
                 const SizedBox(width: UIConstants.defaultSize),
-                widget.trailing,
+                if (widget.trailing != null) widget.trailing!,
                 const SizedBox(width: UIConstants.defaultSize),
               ],
             ),
