@@ -46,7 +46,7 @@ class CardsRepository {
       _cardsApi.getChildrenById(id);
 
   /// get card content
-  List<EditorTile> getCardContent(String cardId) =>
+  Future<List<EditorTile>> getCardContent(String cardId) =>
       _cardsApi.getCardContent(cardId);
 
   /// return Folder if one is found by its [folderUID]

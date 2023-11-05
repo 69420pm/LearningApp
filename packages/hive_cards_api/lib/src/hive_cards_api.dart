@@ -94,8 +94,8 @@ class HiveCardsApi extends CardsApi {
   }
 
   @override
-  List<EditorTile> getCardContent(String cardId) {
-    final editorTilesDC = _cardContentBox.get(cardId);
+  Future<List<EditorTile>> getCardContent(String cardId) async {
+    final editorTilesDC = await _cardContentBox.get(cardId);
     if (editorTilesDC != null) {
       return DataClassHelper.convertFromDataClass(editorTilesDC);
     } else {

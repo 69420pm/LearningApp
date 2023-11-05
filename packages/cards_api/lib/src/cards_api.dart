@@ -34,7 +34,8 @@ abstract class CardsApi {
 
   /// Saves a [card]
   /// If a [card] with same id already exists, it will be replaced
-  Future<void> saveCard(Card card, List<EditorTile>? editorTiles, String? parentId);
+  Future<void> saveCard(
+      Card card, List<EditorTile>? editorTiles, String? parentId);
 
   /// Saves a [subject]
   /// If a [subject] with same id already exists, it will be replaced
@@ -66,7 +67,7 @@ abstract class CardsApi {
   ValueNotifier<List<File>> getChildrenById(String id);
 
   /// get contents of card
-  List<EditorTile> getCardContent(String cardId);
+  Future<List<EditorTile>> getCardContent(String cardId);
 
   /// return Folder if one is found by its [folderUID]
   Folder? getFolderById(String folderUID);

@@ -23,11 +23,6 @@ class AddCardPage extends StatelessWidget {
     // final backController = TextEditingController();
 
     // final formKey = GlobalKey<FormState>();
-    context.read<TextEditorBloc>().card = card;
-    context.read<TextEditorBloc>().parentId = parentId;
-    context
-        .read<TextEditorBloc>()
-        .add(TextEditorGetSavedEditorTiles(context: context));
 
     return UIPage(
       addPadding: false,
@@ -53,19 +48,32 @@ class AddCardPage extends StatelessWidget {
           ),
         ],
       ),
-      body: Stack(
-        children: [
-          BlocProvider(
-            create: (context) => TextEditorBloc(context.read<AddCardCubit>().cardsRepository),
-            child: MarkdownWidget(),
-          ),
-          Positioned(
-            bottom: 0,
-            right: 0,
-            left: 0,
-            child: KeyboardRow(),
-          ),
-        ],
+      body: FutureBuilder(
+        future: context.read<AddCardCubit>().getSavedEditorTiles(card),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return BlocProvider(
+              create: (context) => TextEditorBloc(
+                context.read<AddCardCubit>().cardsRepository,
+                (tiles) => context
+                    .read<AddCardCubit>()
+                    .saveCard(card, parentId, tiles),
+                snapshot.data!,
+              ),
+              child: Stack(children: [
+                MarkdownWidget(),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  left: 0,
+                  child: KeyboardRow(),
+                ),
+              ]),
+            );
+          } else {
+            return const CircularProgressIndicator();
+          }
+        },
       ),
     );
     // return Scaffold(
