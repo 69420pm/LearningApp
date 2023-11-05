@@ -84,12 +84,12 @@ class SubjectOverviewSelectionBloc
       if (selectedParentFolderUID != parentUID) {
         //!rekursion
         _checkIfParentIsSelected(parentUID, fileUID);
+      } else {
+        //deselect file
+        _selectedFiles.remove(fileUID);
+
+        _checkIfNothingSelected();
       }
-
-      //deselect file
-      _selectedFiles.remove(fileUID);
-
-      _checkIfNothingSelected();
 
       return true;
     } else {

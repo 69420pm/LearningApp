@@ -26,11 +26,10 @@ class SubjectPageToolBar extends StatelessWidget {
             context.read<SubjectOverviewSelectionBloc>().fileUIDSoftSelected);
         if (softSelectedFile is Folder) {
           softSelectedFolderUID = softSelectedFile.uid;
+        } else {
+          softSelectedFolderUID = null;
         }
       },
-      listenWhen: (previous, current) =>
-          current is SubjectOverviewSoftSelectionModeOn ||
-          previous is SubjectOverviewSoftSelectionModeOn,
       child: UILabelRow(
         labelText: 'Files',
         actionWidgets: [
