@@ -33,11 +33,9 @@ class FolderListTileView extends StatelessWidget {
       child: UIExpansionTile(
         backgroundColor: isHovered
             ? UIColors.onOverlayCard
-            : isSoftSelected
+            : isSoftSelected || isSelected
                 ? UIColors.overlay
-                : isSelected
-                    ? UIColors.overlay
-                    : Colors.transparent,
+                : Colors.transparent,
         border: Border.all(
           color: isHovered
               ? Colors.transparent

@@ -29,15 +29,13 @@ class DraggingTile extends StatelessWidget {
     final isFolder = cardsRepository.objectFromId(fileUID) is Folder;
     final isRootFolder = cardsRepository.objectFromId(fileUID) is Subject;
 
-    final isInSelectMode =
-        context.read<SubjectOverviewSelectionBloc>().isInSelectMode;
+    final selectionBloc = context.read<SubjectOverviewSelectionBloc>();
 
-    final isSoftSelected =
-        context.read<SubjectOverviewSelectionBloc>().fileUIDSoftSelected ==
-            fileUID;
+    final isInSelectMode = selectionBloc.isInSelectMode;
 
-    final isSelected = !isRootFolder &&
-        context.read<SubjectOverviewSelectionBloc>().isFileSelected(fileUID);
+    final isSoftSelected = selectionBloc.fileUIDSoftSelected == fileUID;
+
+    final isSelected = !isRootFolder && selectionBloc.isFileSelected(fileUID);
 
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
@@ -53,11 +51,16 @@ class DraggingTile extends StatelessWidget {
                   SubjectOverviewFolderSelectionChange(folderUID: fileUID),
                 );
           }
-        } else {
+        } else if (!(isRootFolder &&
+            selectionBloc.fileUIDSoftSelected.isEmpty)) {
           //change soft selection
           context.read<SubjectOverviewSelectionBloc>().add(
                 SubjectOverviewSetSoftSelectFile(
-                  fileUID: isSoftSelected ? '' : fileUID,
+                  fileUID: isSoftSelected
+                      ? ''
+                      : isRootFolder
+                          ? ''
+                          : fileUID,
                 ),
               );
         }

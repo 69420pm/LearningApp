@@ -1,25 +1,31 @@
 import 'package:cards_api/cards_api.dart';
 import 'package:flutter/material.dart' hide Card;
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:ui_components/ui_components.dart';
 
 class CardListTileView extends StatelessWidget {
   CardListTileView({
     super.key,
     required this.card,
-    required this.isSelected,
   });
 
   final Card card;
-  final bool isSelected;
 
   @override
   Widget build(BuildContext context) {
+    final selectionBloc = context.read<SubjectOverviewSelectionBloc>();
+    final isSelected = selectionBloc.isFileSelected(card.uid);
+    final isSoftSelected = selectionBloc.fileUIDSoftSelected == card.uid;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: UIConstants.defaultSize),
       child: Container(
         height: UIConstants.defaultSize * 5,
         decoration: BoxDecoration(
-          color: isSelected ? UIColors.overlay : Colors.transparent,
+          color: isSoftSelected || isSelected
+              ? UIColors.overlay
+              : Colors.transparent,
           borderRadius: const BorderRadius.all(
             Radius.circular(UIConstants.cornerRadius),
           ),

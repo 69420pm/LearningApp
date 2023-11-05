@@ -18,60 +18,31 @@ class SubjectPageAppBar extends StatelessWidget implements PreferredSizeWidget {
     return BlocBuilder<SubjectOverviewSelectionBloc,
         SubjectOverviewSelectionState>(
       builder: (context, state) {
-        final softSelectedFile = cardsRepository.objectFromId(
-            context.read<SubjectOverviewSelectionBloc>().fileUIDSoftSelected);
+        final selectionBloc = context.read<SubjectOverviewSelectionBloc>();
+
         return UIAppBar(
-          leadingBackButton:
-              !context.read<SubjectOverviewSelectionBloc>().isInSelectMode,
-          leading: context.read<SubjectOverviewSelectionBloc>().isInSelectMode
+          leadingBackButton: !selectionBloc.isInSelectMode,
+          leading: selectionBloc.isInSelectMode
               ? UIIconButton(
                   icon: UIIcons.close,
-                  onPressed: () =>
-                      context.read<SubjectOverviewSelectionBloc>().add(
-                            SubjectOverviewSelectionToggleSelectMode(
-                              inSelectMode: false,
-                            ),
-                          ),
-                )
-              : null,
-          actions: softSelectedFile is Folder
-              ? [
-                  UIIconButton(
-                    icon: UIIcons.edit,
-                    onPressed: () => UIBottomSheet.showUIBottomSheet(
-                      context: context,
-                      builder: (_) {
-                        return BlocProvider.value(
-                          value: context.read<FolderListTileBloc>(),
-                          child: EditFolderBottomSheet(
-                            folder: softSelectedFile!,
-                          ),
-                        );
-                      },
+                  onPressed: () => selectionBloc.add(
+                    SubjectOverviewSelectionToggleSelectMode(
+                      inSelectMode: false,
                     ),
                   ),
-                ]
-              : softSelectedFile is Card
-                  ? [
-                      UIIconButton(
-                        icon: UIIcons.edit,
-                        onPressed: () => Navigator.of(context).pushNamed(
-                          '/add_card',
-                          arguments: [softSelectedFile, null],
-                        ),
-                      ),
-                    ]
-                  : [
-                      UIIconButton(
-                        icon: UIIcons.settings,
-                        onPressed: () {
-                          Navigator.of(context).pushNamed(
-                            '/subject_overview/edit_subject',
-                            arguments: subjectToEdit,
-                          );
-                        },
-                      ),
-                    ],
+                )
+              : null,
+          actions: [
+            UIIconButton(
+              icon: UIIcons.settings,
+              onPressed: () {
+                Navigator.of(context).pushNamed(
+                  '/subject_overview/edit_subject',
+                  arguments: subjectToEdit,
+                );
+              },
+            ),
+          ],
         );
       },
     );

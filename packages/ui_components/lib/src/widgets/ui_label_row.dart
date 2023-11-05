@@ -8,7 +8,7 @@ class UILabelRow extends StatelessWidget {
     super.key,
     this.horizontalPadding = false,
     this.actionWidgets,
-    required this.labelText,
+    this.labelText,
   });
 
   /// whether the entire row should have horizontalPadding,
@@ -16,7 +16,7 @@ class UILabelRow extends StatelessWidget {
   final bool horizontalPadding;
 
   /// lable text on the beginning of the row, font is [UIText.label]
-  final String labelText;
+  final String? labelText;
 
   final List<Widget>? actionWidgets;
 
@@ -30,11 +30,12 @@ class UILabelRow extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           // TODO add color
-          Text(
-            labelText,
-            style: UIText.label.copyWith(color: UIColors.smallText),
-          ),
-          Row(children: actionWidgets ?? []),
+          if (labelText != null)
+            Text(
+              labelText!,
+              style: UIText.label.copyWith(color: UIColors.smallText),
+            ),
+          Expanded(child: Row(children: actionWidgets ?? [])),
         ],
       ),
     );
