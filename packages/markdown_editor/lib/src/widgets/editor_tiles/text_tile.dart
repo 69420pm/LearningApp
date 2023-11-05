@@ -172,13 +172,14 @@ class TextTile extends StatelessWidget implements EditorTile {
               horizontal: padding ? UIConstants.pageHorizontalPadding : 0,
             ),
             child: TextField(
-              autofocus: true,
+              // autofocus: true,
               controller: textFieldController,
               focusNode: focusNode,
               textInputAction: TextInputAction.next,
               // textfield gets pushed 80 above keyboard, that textfield
               // doesn't get hided by keyboard row, standard is 20
               scrollPadding: const EdgeInsets.all(50),
+              
               onSubmitted: (value) {
                 if (onSubmit != null) {
                   onSubmit?.call();
@@ -242,7 +243,8 @@ class TextTile extends StatelessWidget implements EditorTile {
                 hintStyle: textStyle.copyWith(color: UIColors.smallTextDark),
                 contentPadding: contentPadding,
                 labelStyle: TextFieldConstants.zero,
-                labelText: '',
+                labelText: "",
+                // floatingLabelBehavior:  FloatingLabelBehavior.always
               ),
             ),
           ),

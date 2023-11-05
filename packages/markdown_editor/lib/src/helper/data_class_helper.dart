@@ -2,12 +2,14 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/models/char_tile.dart';
 import 'package:markdown_editor/src/models/editor_data_classes/audio_tile_dc.dart';
 import 'package:markdown_editor/src/models/editor_data_classes/callout_tile_dc.dart';
 import 'package:markdown_editor/src/models/editor_data_classes/char_tile_dc.dart';
 import 'package:markdown_editor/src/models/editor_data_classes/divider_tile_dc.dart';
 import 'package:markdown_editor/src/models/editor_data_classes/editor_tile_dc.dart';
+import 'package:markdown_editor/src/models/editor_data_classes/front_back_seperator_tile_dc.dart';
 import 'package:markdown_editor/src/models/editor_data_classes/header_tile_dc.dart';
 import 'package:markdown_editor/src/models/editor_data_classes/image_tile_dc.dart';
 import 'package:markdown_editor/src/models/editor_data_classes/latex_tile_dc.dart';
@@ -64,9 +66,10 @@ class DataClassHelper {
           dataClassTiles.add(
             HeaderTileDC(
               uid: Uid().uid(),
-              charTiles: _charTileToCharTileDC(
+              charTiles: headerTile.textFieldController != null ?
+              _charTileToCharTileDC(
                 headerTile.textFieldController!.charTiles,
-              ),
+              ):[],
               headerSize:
                   headerTile.textStyle == TextFieldConstants.headingBig ? 1 : 0,
             ),
@@ -128,10 +131,10 @@ class DataClassHelper {
             ),
           );
           break;
-
-        // Add more cases for other tile types if needed
+        case FrontBackSeparatorTile:
+          dataClassTiles.add(FrontBackSeparatorTileDC(uid: Uid().uid()));
+          break;
         default:
-        // Handle the default case, if any
       }
     }
     return dataClassTiles;
@@ -240,7 +243,9 @@ class DataClassHelper {
             ),
           );
           break;
-
+        case FrontBackSeparatorTileDC:
+          dataClassTiles.add(FrontBackSeparatorTile());
+          break;
         // Add more cases for other tile types if needed
         default:
         // Handle the default case, if any

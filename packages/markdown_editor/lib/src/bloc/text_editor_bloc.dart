@@ -19,7 +19,7 @@ part 'text_editor_state.dart';
 class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
   /// constructor
   TextEditorBloc(
-    this._cardsRepository, {
+    this._cardsRepository, this._saveEditorTilesCallback, this.editorTiles,{
     this.isBold = false,
     this.isItalic = false,
     this.isUnderlined = false,
@@ -32,23 +32,16 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     on<TextEditorReplaceEditorTile>(_replaceTile);
     on<TextEditorChangeOrderOfTile>(_changeOrderOfTile);
     on<TextEditorFocusLastWidget>(_focusLastWidget);
-    on<TextEditorGetSavedEditorTiles>(_getSavedEditorTiles);
   }
 
-  /// reference to card
-  Card? card;
 
-  /// parentId of card
-  String? parentId;
 
   final CardsRepository _cardsRepository;
 
   /// list of all editorTiles (textWidgets, Images, etc.) of text editor
-  List<EditorTile> editorTiles = [
-    TextTile(
-      textStyle: TextFieldConstants.normal,
-    ),
-  ];
+  List<EditorTile> editorTiles;
+
+  void Function(List<EditorTile>) _saveEditorTilesCallback;
 
   /// whether text should get written in bold or not
   bool isBold;
@@ -312,25 +305,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
   }
 
   void _saveEditorTiles() {
-    if (card != null) {
-      _cardsRepository.saveCard(card!, editorTiles, parentId);
-    }
-  }
-
-  FutureOr<void> _getSavedEditorTiles(
-      TextEditorGetSavedEditorTiles event, Emitter<TextEditorState> emit) {
-    if (card != null) {
-      final loadedEditorTiles = _cardsRepository.getCardContent(card!.uid);
-      if (loadedEditorTiles.isNotEmpty) {
-        editorTiles = loadedEditorTiles;
-        FocusScope.of(event.context).requestFocus(FocusNode());
-      } else {
-        _defaultEditorTiles(event.context);
-      }
-    } else {
-      _defaultEditorTiles(event.context);
-    }
-    emit(TextEditorEditorTilesChanged(tiles: List.of(editorTiles)));
+   _saveEditorTilesCallback(editorTiles);
   }
 
   void _defaultEditorTiles(BuildContext context) {
