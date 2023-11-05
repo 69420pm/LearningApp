@@ -101,16 +101,18 @@ class SubjectOverviewSelectionBloc
     if (_cardsRepository
         .getChildrenDirectlyBelow(parentUID)
         .every(_selectedFiles.contains)) {
-      //select parentFolder
-      _selectFolder(
-        _cardsRepository.getParentIdFromChildId(parentUID),
-        parentUID,
-      );
+      if (_cardsRepository.objectFromId(parentUID) is! Subject) {
+        //select parentFolder
+        _selectFolder(
+          _cardsRepository.getParentIdFromChildId(parentUID),
+          parentUID,
+        );
 
-      //deselect all children
-      _cardsRepository
-          .getChildrenDirectlyBelow(parentUID)
-          .forEach(_selectedFiles.remove);
+        //deselect all children
+        _cardsRepository
+            .getChildrenDirectlyBelow(parentUID)
+            .forEach(_selectedFiles.remove);
+      }
     }
   }
 
