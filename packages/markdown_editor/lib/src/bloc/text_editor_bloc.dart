@@ -176,7 +176,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
       final selectionEnd = current.textFieldController?.selection.end;
       final oldFieldTiles = <CharTile>[];
       final newFieldTiles = <CharTile>[];
-      current.textFieldController?.charTiles!.forEach((key, value) {
+      current.textFieldController?.charTiles.forEach((key, value) {
         if (key >= selectionEnd!) {
           newFieldTiles.add(value);
         } else {
@@ -305,7 +305,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     } else {
       lastWidget.focusNode!.requestFocus();
     }
-    _saveEditorTiles();
+    // _saveEditorTiles();
   }
 
   void _saveEditorTiles() {
