@@ -44,7 +44,7 @@ class SubjectPageToolBar extends StatelessWidget {
                 );
               },
             ),
-            Spacer(),
+            const Spacer(),
             if (softSelectedFile != null)
               UIIconButton(
                 icon: UIIcons.edit.copyWith(color: UIColors.smallText),
@@ -67,6 +67,17 @@ class SubjectPageToolBar extends StatelessWidget {
                       arguments: [softSelectedFile, null],
                     );
                   }
+                },
+              ),
+            if (softSelectedFile != null ||
+                context.read<SubjectOverviewSelectionBloc>().isInSelectMode)
+              UIIconButton(
+                icon: UIIcons.delete.copyWith(color: UIColors.smallText),
+                onPressed: () {
+                  context.read<SubjectOverviewSelectionBloc>().add(
+                        SubjectOverviewSelectionDeleteSelectedFiles(
+                            softSelectedFile: (softSelectedFile as File?)?.uid),
+                      );
                 },
               ),
             UIIconButton(

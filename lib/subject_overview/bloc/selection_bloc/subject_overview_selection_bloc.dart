@@ -218,7 +218,11 @@ class SubjectOverviewSelectionBloc
     SubjectOverviewSelectionDeleteSelectedFiles event,
     Emitter<SubjectOverviewSelectionState> emit,
   ) async {
-    await _cardsRepository.deleteFiles(_selectedFiles);
+    if (event.softSelectedFile != null) {
+      await _cardsRepository.deleteFiles([event.softSelectedFile!]);
+    } else {
+      await _cardsRepository.deleteFiles(_selectedFiles);
+    }
 
     _isInSelectMode = false;
     _clearSelectionVariables();

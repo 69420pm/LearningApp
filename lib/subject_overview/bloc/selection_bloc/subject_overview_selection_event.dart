@@ -28,7 +28,13 @@ class SubjectOverviewFolderSelectionChange
 }
 
 class SubjectOverviewSelectionDeleteSelectedFiles
-    extends SubjectOverviewSelectionEvent {}
+    extends SubjectOverviewSelectionEvent {
+  //null if in selectMode and hole Selection should be deleted
+  String? softSelectedFile;
+  SubjectOverviewSelectionDeleteSelectedFiles({
+    this.softSelectedFile,
+  });
+}
 
 class SubjectOverviewSelectionMoveSelection
     extends SubjectOverviewSelectionEvent {
