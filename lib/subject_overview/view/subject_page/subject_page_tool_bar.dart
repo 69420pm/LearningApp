@@ -2,6 +2,7 @@ import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:learning_app/add_folder/view/add_folder_bottom_sheet.dart';
 import 'package:learning_app/add_folder/view/edit_folder_bottom_sheet.dart';
 import 'package:learning_app/app/helper/uid.dart';
@@ -11,10 +12,11 @@ import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dar
 import 'package:ui_components/ui_components.dart';
 
 class SubjectPageToolBar extends StatelessWidget {
-  const SubjectPageToolBar(
-      {super.key,
-      required this.cardsRepository,
-      required this.subjectToEditUID,});
+  const SubjectPageToolBar({
+    super.key,
+    required this.cardsRepository,
+    required this.subjectToEditUID,
+  });
   final CardsRepository cardsRepository;
   final String subjectToEditUID;
   @override
@@ -25,7 +27,8 @@ class SubjectPageToolBar extends StatelessWidget {
         SubjectOverviewSelectionState>(
       builder: (context, state) {
         softSelectedFile = cardsRepository.objectFromId(
-            context.read<SubjectOverviewSelectionBloc>().fileSoftSelected,);
+          context.read<SubjectOverviewSelectionBloc>().fileSoftSelected,
+        );
         if (softSelectedFile is Folder) {
           softSelectedFolderUID = (softSelectedFile! as Folder).uid;
         } else {
@@ -75,17 +78,21 @@ class SubjectPageToolBar extends StatelessWidget {
                 onPressed: () {
                   context.read<SubjectOverviewSelectionBloc>().add(
                         SubjectOverviewSelectionDeleteSelectedFiles(
-                            softSelectedFile: (softSelectedFile as File?)?.uid,),
+                          softSelectedFile: (softSelectedFile as File?)?.uid,
+                        ),
                       );
                 },
               ),
             UIIconButton(
               icon: UIIcons.download.copyWith(color: UIColors.smallText),
               onPressed: () {
-                context.read<SubjectBloc>().add(SubjectAddCard(
-                    front: 'test',
-                    back: 'test Back',
-                    parentId: softSelectedFolderUID ?? subjectToEditUID,),);
+                context.read<SubjectBloc>().add(
+                      SubjectAddCard(
+                        name:
+                            "created on ${DateFormat('EEE dd.MM yyyy HH:mm').format(DateTime.now())}",
+                        parentId: softSelectedFolderUID ?? subjectToEditUID,
+                      ),
+                    );
               },
             ),
             UIIconButton(
@@ -111,13 +118,14 @@ class SubjectPageToolBar extends StatelessWidget {
                   '/add_card',
                   arguments: [
                     Card(
-                        uid: Uid().uid(),
-                        dateCreated: DateTime.now(),
-                        askCardsInverted: false,
-                        typeAnswer: false,
-                        recallScore: 0,
-                        dateToReview: DateTime.now(),
-                        name: '',),
+                      uid: Uid().uid(),
+                      dateCreated: DateTime.now(),
+                      askCardsInverted: false,
+                      typeAnswer: false,
+                      recallScore: 0,
+                      dateToReview: DateTime.now(),
+                      name: '',
+                    ),
                     subjectToEditUID,
                   ],
                 );

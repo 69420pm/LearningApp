@@ -32,12 +32,10 @@ class SubjectAddFolder extends SubjectEvent {
 }
 
 class SubjectAddCard extends SubjectEvent {
-  String front;
-  String back;
+  String name;
   String parentId;
   SubjectAddCard({
-    required this.front,
-    required this.back,
+    required this.name,
     required this.parentId,
   });
 }

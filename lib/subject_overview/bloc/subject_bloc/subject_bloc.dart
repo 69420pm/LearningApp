@@ -110,16 +110,12 @@ class SubjectBloc extends Bloc<SubjectEvent, SubjectState> {
     emit(SubjectLoading());
     final newCard = Card(
       uid: Uid().uid(),
-      // front: event.front,
-      // back: event.back,
       dateCreated: DateTime.now(),
       recallScore: 0,
-      // parentId: event.parentId,
       askCardsInverted: true,
       typeAnswer: true,
       dateToReview: DateTime.now(),
-      name: '',
-      // tags: const [],
+      name: event.name,
     );
     await cardsRepository.saveCard(newCard, null, event.parentId);
     emit(SubjectSuccess());
