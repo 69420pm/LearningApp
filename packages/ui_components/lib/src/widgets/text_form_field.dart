@@ -37,7 +37,7 @@ class UITextFormField extends StatefulWidget {
   final List<TextInputFormatter>? formater;
   final String? Function(String?) validation;
   final Function(String)? onChanged;
-  final onFieldSubmitted;
+  final void Function(String)? onFieldSubmitted;
   final onLoseFocus;
   final bool? autofocus;
   final TextInputAction? textInputAction;
