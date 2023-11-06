@@ -252,7 +252,7 @@ class SubjectOverviewSelectionBloc
       _fileDragged = '';
       //if (_isInSelectMode) emit(SubjectOverviewSelectionModeOn());
     }
-    if (_isInSelectMode) emit(SubjectOverviewSelectionMultiDraggingChange());
+    if (_isInSelectMode) emit(SubjectOverviewSelectionModeOn());
   }
 
   FutureOr<void> _setSoftSelectFile(

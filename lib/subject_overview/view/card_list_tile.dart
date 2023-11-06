@@ -33,7 +33,7 @@ class CardListTile extends StatelessWidget {
                 selectionBloc.fileDragged != card.uid;
 
         if (isSelectedWhileDraggingButIsNotDraggedTile) {
-          return const Text("inactive");
+          return const InactiveListTile();
         }
         {
           return DraggingTile(

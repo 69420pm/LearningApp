@@ -23,7 +23,6 @@ class FolderListTileParent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(folder.name);
     return ValueListenableBuilder(
       valueListenable: context
           .read<SubjectBloc>()
@@ -39,25 +38,30 @@ class FolderListTileParent extends StatelessWidget {
                 selectionBloc.fileDragged != folder.uid;
 
         if (isSelectedWhileDraggingButIsNotDraggedTile) {
-          return const Text("inactive");
+          return const InactiveListTile();
         } else {
-          return DraggingTile(
-            fileUID: folder.uid,
-            cardsRepository: cardsRepository,
-            child: FolderListTileView(
-              folder: folder,
-              childListTiles: value.map((e) {
-                if (e is Folder) {
-                  return FolderListTileParent(
-                      folder: e, cardsRepository: cardsRepository);
-                } else {
-                  return CardListTile(
-                    card: e as Card,
-                    cardsRepository: cardsRepository,
-                  );
-                }
-              }).toList(),
-            ),
+          return BlocBuilder<SubjectOverviewSelectionBloc,
+              SubjectOverviewSelectionState>(
+            builder: (context, state) {
+              return DraggingTile(
+                fileUID: folder.uid,
+                cardsRepository: cardsRepository,
+                child: FolderListTileView(
+                  folder: folder,
+                  childListTiles: value.map((e) {
+                    if (e is Folder) {
+                      return FolderListTileParent(
+                          folder: e, cardsRepository: cardsRepository);
+                    } else {
+                      return CardListTile(
+                        card: e as Card,
+                        cardsRepository: cardsRepository,
+                      );
+                    }
+                  }).toList(),
+                ),
+              );
+            },
           );
         }
       },
