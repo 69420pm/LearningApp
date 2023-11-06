@@ -12,7 +12,7 @@ import '../bloc/folder_bloc/folder_list_tile_bloc.dart';
 import '../bloc/selection_bloc/subject_overview_selection_bloc.dart';
 
 class FolderListTileParent extends StatelessWidget {
-  FolderListTileParent({
+  const FolderListTileParent({
     super.key,
     required this.folder,
     required this.cardsRepository,
@@ -23,7 +23,6 @@ class FolderListTileParent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("moin");
     return ValueListenableBuilder(
       valueListenable: context
           .read<SubjectBloc>()
