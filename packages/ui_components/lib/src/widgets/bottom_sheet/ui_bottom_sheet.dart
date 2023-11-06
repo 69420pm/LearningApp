@@ -10,7 +10,7 @@ class UIBottomSheet extends StatelessWidget {
     this.actionLeft,
     this.title,
     this.actionRight,
-    this.addPadding=false
+    this.addPadding=false,
   });
   final Widget child;
 
@@ -63,7 +63,7 @@ class UIBottomSheet extends StatelessWidget {
   static Future<UIBottomSheet?> showUIBottomSheet(
       {required BuildContext context,
       required WidgetBuilder builder,
-      bool transparentBarrier = false}) {
+      bool transparentBarrier = false,}) {
     final navigator = Navigator.of(context);
     final localizations = MaterialLocalizations.of(context);
 
@@ -81,6 +81,6 @@ class UIBottomSheet extends StatelessWidget {
           ? Colors.transparent
           : Theme.of(context).bottomSheetTheme.modalBarrierColor,
       showDragHandle: true,
-    ));
+    ),);
   }
 }

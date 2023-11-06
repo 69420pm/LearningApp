@@ -1,7 +1,6 @@
 import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:learning_app/add_subject/cubit/add_subject_cubit.dart';
 import 'package:learning_app/edit_subject/cubit/edit_subject_cubit.dart';
 import 'package:ui_components/ui_components.dart';
 
@@ -14,7 +13,7 @@ class PageWeekdayPicker extends StatelessWidget {
     return BlocBuilder<EditSubjectCubit, EditSubjectState>(
       buildWhen: (previous, current) => current is EditSubjectUpdateWeekdays,
       builder: (context, state) {
-        return Container(
+        return DecoratedBox(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(UIConstants.cornerRadius),
             color: UIColors.overlay,
@@ -87,7 +86,6 @@ class PageWeekdayPicker extends StatelessWidget {
 
 class _WeekDay extends StatelessWidget {
   _WeekDay({
-    super.key,
     required this.text,
     required this.id,
     required this.isSelected,

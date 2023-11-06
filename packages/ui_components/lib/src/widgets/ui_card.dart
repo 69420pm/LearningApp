@@ -6,13 +6,13 @@ import 'package:ui_components/ui_components.dart';
 
 class UICard extends StatelessWidget {
   const UICard({
-    Key? key,
+    super.key,
     this.onTap,
     this.color,
     required this.child,
     this.useGradient = false,
     this.distanceToTop = 0,
-  }) : super(key: key);
+  });
 
   final void Function()? onTap;
   final Color? color;
@@ -30,14 +30,14 @@ class UICard extends StatelessWidget {
         width: double.infinity,
         decoration: BoxDecoration(
           color: color ?? UIColors.overlay,
-          borderRadius: BorderRadius.all(
+          borderRadius: const BorderRadius.all(
             Radius.circular(UIConstants.cornerRadius),
           ),
           image: useGradient
               ? DecorationImage(
-                  image: AssetImage("assets/gradient.png"),
+                  image: const AssetImage('assets/gradient.png'),
                   alignment: Alignment.lerp(Alignment.topCenter,
-                          Alignment.bottomCenter, relativeGradientPos) ??
+                          Alignment.bottomCenter, relativeGradientPos,) ??
                       Alignment.center,
                   fit: BoxFit.cover,
                 )
@@ -46,7 +46,7 @@ class UICard extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(
               horizontal: UIConstants.cardHorizontalPadding,
-              vertical: UIConstants.cardVerticalPaddingLarge),
+              vertical: UIConstants.cardVerticalPaddingLarge,),
           child: child,
         ),
       ),

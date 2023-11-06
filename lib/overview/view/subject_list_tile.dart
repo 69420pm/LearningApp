@@ -24,7 +24,7 @@ class SubjectListTile extends StatelessWidget {
             alignment: Alignment.center,
             children: [
               UICircularProgressIndicator(value: 0.5),
-              UIIcons.download.copyWith(size: 24, color: UIColors.primary)
+              UIIcons.download.copyWith(size: 24, color: UIColors.primary),
             ],
           ),
           const SizedBox(
@@ -52,13 +52,13 @@ class SubjectListTile extends StatelessWidget {
                           TextSpan(
                               text: nextClassTestInDays.toString(),
                               style: UIText.normal
-                                  .copyWith(color: nextClassTestInDays<5?UIColors.delete: UIColors.primary)),
+                                  .copyWith(color: nextClassTestInDays<5?UIColors.delete: UIColors.primary),),
                           TextSpan(text: nextClassTestInDays == 1? ' day': ' days'),
                         ],
                       ),
-                    )
+                    ),
                   ],
-                )
+                ),
               // RichText(
               //   text: TextSpan(
               //     style: UIText.normal.copyWith(color: UIColors.smallText),

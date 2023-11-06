@@ -7,7 +7,7 @@ class UIIconRow extends StatelessWidget {
       required this.text,
       required this.icon,
       required this.onPressed,
-      this.horizontalPadding = false});
+      this.horizontalPadding = false,});
 
   /// whether the entire row should have horizontalPadding,
   /// when true padding is [UIConstants.cardHorizontalPadding]
@@ -27,13 +27,13 @@ class UIIconRow extends StatelessWidget {
     return Padding(
         padding: EdgeInsets.symmetric(
             horizontal:
-                horizontalPadding ? UIConstants.cardHorizontalPadding : 0),
+                horizontalPadding ? UIConstants.cardHorizontalPadding : 0,),
         child: UIIconButton(
           icon: icon.copyWith(size: 28, color: UIColors.primary),
           onPressed: onPressed,
           text: text,
           textColor: UIColors.textLight,
           swapTextWithIcon: true,
-        ));
+        ),);
   }
 }

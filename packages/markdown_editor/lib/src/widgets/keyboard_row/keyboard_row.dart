@@ -29,13 +29,13 @@ class _KeyboardRowState extends State<KeyboardRow> with WidgetsBindingObserver {
       child: BlocBuilder<KeyboardRowCubit, KeyboardRowState>(
         builder: (context, state) {
           if (state is KeyboardRowText) {
-            return KeyboardTextRow();
+            return const KeyboardTextRow();
           } else if (state is KeyboardRowTextColors) {
-            return KeyboardTextColorRow();
+            return const KeyboardTextColorRow();
           } else if (state is KeyboardRowBackgroundColors) {
-            return KeyboardBackgroundColorRow();
+            return const KeyboardBackgroundColorRow();
           } else if (state is KeyboardRowNewTile) {
-            return KeyboardNewTileRow();
+            return const KeyboardNewTileRow();
           } else {
             return const Text('error');
           }

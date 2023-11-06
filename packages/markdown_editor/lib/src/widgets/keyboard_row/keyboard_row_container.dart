@@ -12,7 +12,7 @@ class KeyboardRowContainer extends StatelessWidget {
       decoration: BoxDecoration(
           color: onBottomSheet?UIColors.onOverlayCard: UIColors.overlay,
           borderRadius:
-              BorderRadius.all(Radius.circular(UIConstants.cornerRadius))),
+              const BorderRadius.all(Radius.circular(UIConstants.cornerRadius)),),
       child: child,
     );
   }

@@ -13,7 +13,7 @@ class UITextField extends StatelessWidget {
       this.hintText,
       this.initialValue,
       this.style,
-      this.multiline=1});
+      this.multiline=1,});
 
   /// Controls the text being edited.
   final TextEditingController? controller;
@@ -52,7 +52,7 @@ class UITextField extends StatelessWidget {
       maxLines: multiline,
       style: style?? UIText.label,
       decoration: InputDecoration(
-          border: InputBorder.none, isDense: true, hintText: hintText ),
+          border: InputBorder.none, isDense: true, hintText: hintText, ),
     );
   }
 }

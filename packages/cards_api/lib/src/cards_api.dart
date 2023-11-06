@@ -6,6 +6,9 @@
 // https://opensource.org/licenses/MIT.
 
 import 'package:cards_api/cards_api.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:flutter/foundation.dart';
+import 'package:markdown_editor/src/models/editor_tile.dart';
 
 /// {@template cards_api}
 /// The interface and models for an API providing access to cards.
@@ -15,23 +18,24 @@ abstract class CardsApi {
   const CardsApi();
 
   /// provide a [Stream] of all subjects
-  Stream<List<Subject>> getSubjects();
+  ValueListenable<Box<Subject>> getSubjects();
 
   /// return all cards which should get learned
   List<Card> learnAllCards();
 
-  /// search for cards 
+  /// search for cards
   List<SearchResult> searchCard(String searchRequest, String? id);
 
-  /// search for cards 
+  /// search for cards
   List<SearchResult> searchFolder(String searchRequest, String? id);
 
-  /// search for cards 
+  /// search for cards
   List<Subject> searchSubject(String searchRequest);
 
   /// Saves a [card]
   /// If a [card] with same id already exists, it will be replaced
-  Future<void> saveCard(Card card);
+  Future<void> saveCard(
+      Card card, List<EditorTile>? editorTiles, String? parentId,);
 
   /// Saves a [subject]
   /// If a [subject] with same id already exists, it will be replaced
@@ -39,39 +43,49 @@ abstract class CardsApi {
 
   /// Saves a [folder]
   /// If a [folder] with same id already exists, it will be replaced
-  Future<void> saveFolder(Folder folder);
-
-  /// Deletes card with given id
-  /// If no card with given id exists, a [CardNotFoundException] error is
-  /// thrown
-  Future<void> deleteCard(String id, String parentId);
-
-/// Deletes cards with given id
-  /// If no cards with given id exists, a [CardNotFoundException] error is
-  /// thrown
-  Future<void> deleteCards(List<String> id, List<String> parentId);
+  Future<void> saveFolder(Folder folder, String? parentId);
 
   /// Deletes subject and every children with given id
   /// If no card with given id exists, a [SubjectNotFoundException] error is
   /// thrown
   Future<void> deleteSubject(String id);
 
-  /// Deletes folder and every children with given id
-  /// If no card with given id exists, a [FolderNotFoundException] error is
-  /// thrown
-  Future<void> deleteFolder(String id, String parentId);
+  /// delete files when ids match to folder or cards and everything
+  /// if you delete a folder all children get automatically deleted
+  Future<void> deleteFiles(List<String> ids);
 
   /// Move folder and every children to [newParentId]
-  Future<void> moveFolder(Folder folder, String newParentId);
-
-  /// Move multiple cards to [newParentId]
-  Future<void> moveCards(List<Card> cards, String newParentId);
+  Future<void> moveFiles(List<String> fileIds, String newParentId);
 
   /// return all children in stream to a given parentId
-  Stream<List<Object>> getChildrenById(String id);
+  ValueNotifier<List<File>> getChildrenById(String id);
 
-  /// close stream for given parentId to avoid stream leaks
-  Future<void> closeStreamById(String id, {bool deleteChildren = false});
+  /// get contents of card
+  Future<List<EditorTile>> getCardContent(String cardId);
+
+  /// return Folder if one is found by its [folderUID]
+  Folder? getFolderById(String folderUID);
+
+  /// get list of every children for a given [parentId]
+  List<String> getChildrenList(String parentId);
+
+  /// get list of children ids one level below
+  List<String> getChildrenDirectlyBelow(String parentId);
+
+  /// get parent id to a given child id
+  String getParentIdFromChildId(String id);
+
+  /// get parent ids to a given child id
+  List<String> getParentIdsFromChildId(String id);
+
+  /// folder, subject or card from id
+  Object? objectFromId(String id);
+
+  /// dispose notifier to free up memory
+  void disposeNotifier(String id);
+
+  /// get front and back in plain text
+  List<String> getTextFromCard(String cardId, bool onlyFront);
 }
 
 /// Error when a [Card] with given id is not found
@@ -90,4 +104,4 @@ class ParentNotFoundException implements Exception {}
 class StreamNotFoundException implements Exception {}
 
 /// when given input doesn't work
-class WrongInput implements Exception{}
+class WrongInput implements Exception {}

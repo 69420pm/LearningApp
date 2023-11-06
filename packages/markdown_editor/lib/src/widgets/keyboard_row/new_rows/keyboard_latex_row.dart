@@ -1,11 +1,7 @@
 // ignore_for_file: public_member_api_docs
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:markdown_editor/markdown_editor.dart';
-import 'package:markdown_editor/src/models/text_field_constants.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_button.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_row_container.dart';
-import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_toggle.dart';
 import 'package:ui_components/ui_components.dart';
 
 // ignore: must_be_immutable
@@ -76,7 +72,7 @@ class KeyboardLatexRow extends StatelessWidget {
             KeyboardRowContainer(
               onBottomSheet: true,
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 2),
                 child: Row(
                   children: [
                     _KeyboardTextButton(
@@ -170,13 +166,13 @@ class KeyboardLatexRow extends StatelessWidget {
                                 icon: UIIcons.superscript,
                                 withBackgroundColor: false,
                                 onPressed: () => addString('^{}',
-                                    selectionStart: 2, selectionEnd: 2),
+                                    selectionStart: 2, selectionEnd: 2,),
                               ),
                               KeyboardButton(
                                 icon: UIIcons.subscript,
                                 withBackgroundColor: false,
                                 onPressed: () => addString('_{}',
-                                    selectionStart: 2, selectionEnd: 2),
+                                    selectionStart: 2, selectionEnd: 2,),
                               ),
                             ],
                           ),
@@ -233,12 +229,12 @@ class KeyboardLatexRow extends StatelessWidget {
                                   icon: UIIcons.chevronLeft
                                       .copyWith(color: UIColors.smallText),
                                   withBackgroundColor: false,
-                                  onPressed: () => moveCursor(-1)),
+                                  onPressed: () => moveCursor(-1),),
                               KeyboardButton(
                                   icon: UIIcons.chevronRight
                                       .copyWith(color: UIColors.smallText),
                                   withBackgroundColor: false,
-                                  onPressed: () => moveCursor(1)),
+                                  onPressed: () => moveCursor(1),),
                             ],
                           ),
                         ),
@@ -274,7 +270,7 @@ class KeyboardLatexRow extends StatelessWidget {
         previousSelection.end + amount >= 0) {
       textEditingController.selection = TextSelection(
           baseOffset: previousSelection.end + amount,
-          extentOffset: previousSelection.end + amount);
+          extentOffset: previousSelection.end + amount,);
       updateLatex(textEditingController.text);
     }
   }
@@ -316,12 +312,12 @@ class KeyboardLatexRow extends StatelessWidget {
 }
 
 class _KeyboardTextButton extends StatelessWidget {
-  _KeyboardTextButton({super.key, required this.text, required this.onPressed});
+  _KeyboardTextButton({required this.text, required this.onPressed});
   String text;
   void Function() onPressed;
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 44,
       width: 44,
       child: Center(

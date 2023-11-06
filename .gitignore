@@ -35,6 +35,7 @@
 /dev/integration_tests/**/xcuserdata
 /dev/integration_tests/**/Pods
 /packages/flutter/coverage/
+/macos/
 version
 
 # packages file containing multi-root paths

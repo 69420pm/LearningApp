@@ -25,12 +25,11 @@ class TextFieldController extends TextEditingController {
   bool _previousBold = false;
   bool _previousItalic = false;
   bool _previousUnderlined = false;
-  bool _previousCode = false;
-  bool _previousDefaultColor = true;
   Color _previousTextColor = Colors.white;
   Color _previousTextBackgroundColor = Colors.transparent;
-  int _previousSelectionStart = 0;
   List<HyperLinkEntry> hyperLinks = [];
+  int shiftSelectionStart = 0;
+  int shiftSelectionEnd = 0;
 
   @override
   TextSpan buildTextSpan({
@@ -40,18 +39,74 @@ class TextFieldController extends TextEditingController {
     bool onlyUpdateCharTiles = false,
   }) {
     super.buildTextSpan(context: context, withComposing: withComposing);
-    hyperLinks = [];
-    // text = String.fromCharCodes(text.codeUnits);
-    // Runes runes = text.runes;
-    // text = String.fromCharCodes(runes);
-    // Runes runes16 = text.runes;
-    // text = utf8.encode(text);
     final children = <InlineSpan>[];
+    // // optimize
+    // if (onlyUpdateCharTiles) {
+    //   text = '';
+    //   charTiles.forEach((key, value) {
+    //     children.add(TextSpan(text: value.text, style: value.style));
+    //     text += value.text;
+    //   });
+    //   _previousText = text;
+    //   selection = _previousSelection;
+    //   return TextSpan(style: style, children: children);
+    // }
+    // final isBold = context.read<TextEditorBloc>().isBold;
+    // final isItalic = context.read<TextEditorBloc>().isItalic;
+    // final isUnderlined = context.read<TextEditorBloc>().isUnderlined;
+    // final textColor = context.read<TextEditorBloc>().textColor;
+    // final textBackgroundColor =
+    //     context.read<TextEditorBloc>().textBackgroundColor;
+    // final styleChanged = isBold == _previousBold &&
+    //     isItalic == _previousItalic &&
+    //     isUnderlined == _previousUnderlined &&
+    //     textColor == _previousTextColor &&
+    //     textBackgroundColor == _previousTextBackgroundColor;
+    // final textDelta = text.characters.length - _previousText.characters.length;
+    // // _selectionDelta(selection, _previousSelection);
+
+    // var shiftSelectionEnd = 0;
+    // var shiftSelectionStart = 0;
+    // for (var i = 0; i < text.characters.length; i++) {
+    //   if (text.characters.elementAt(i) != text[i + shiftSelectionEnd] &&
+    //       i < selection.end - shiftSelectionEnd) {
+    //     shiftSelectionEnd += 1;
+    //   }
+    //   if (text.characters.elementAt(i) != text[i + shiftSelectionStart] &&
+    //       i < selection.start - shiftSelectionStart) {
+    //     shiftSelectionStart += 1;
+    //   }
+    // }
+
+    // if (styleChanged) {
+    //   // new characters
+    //   if (textDelta > 0) {
+    //   }
+    //   // characters got removed
+    //   else if (textDelta < 0) {
+    //   }
+    //   // selection format changed
+    //   else {}
+    // } else {
+    //   // new characters
+    //   if (textDelta > 0) {
+    //   }
+    //   // characters got removed
+    //   else if (textDelta < 0) {
+    //   }
+    //   // selection format changed
+    //   else {}
+    // }
+
+    // ----------------------------------------
+
+    hyperLinks = [];
+    // final children = <InlineSpan>[];
     if (onlyUpdateCharTiles) {
       text = '';
       charTiles.forEach((key, value) {
-        children.add(TextSpan(text: value.char, style: value.style));
-        text += value.char;
+        children.add(TextSpan(text: value.text, style: value.style));
+        text += value.text;
       });
       _previousText = text;
       selection = _previousSelection;
@@ -61,9 +116,6 @@ class TextFieldController extends TextEditingController {
     final isBold = context.read<TextEditorBloc>().isBold;
     final isItalic = context.read<TextEditorBloc>().isItalic;
     final isUnderlined = context.read<TextEditorBloc>().isUnderlined;
-    final isCode = context.read<TextEditorBloc>().isCode;
-    final isDefaultColor =
-        context.read<TextEditorBloc>().isDefaultOnBackgroundTextColor;
     final textColor = context.read<TextEditorBloc>().textColor;
     final textBackgroundColor =
         context.read<TextEditorBloc>().textBackgroundColor;
@@ -73,18 +125,17 @@ class TextFieldController extends TextEditingController {
 
     var shiftSelectionEnd = 0;
     var shiftSelectionStart = 0;
-    final previousSelectionStart = _previousSelectionStart;
-    for (var i = 0; i < text.characters.length; i++) {
-      if (text.characters.elementAt(i) != text[i + shiftSelectionEnd] &&
-          i < selection.end - shiftSelectionEnd) {
-        shiftSelectionEnd += 1;
-      }
-      if (text.characters.elementAt(i) != text[i + shiftSelectionStart] &&
-          i < selection.start - shiftSelectionStart) {
-        shiftSelectionStart += 1;
-      }
-      if (i + 1 == selection.start - shiftSelectionEnd) {
-        _previousSelectionStart = i + 1;
+    // emojis are in text
+    if (text.characters.length != text.length) {
+      for (var i = 0; i < text.characters.length; i++) {
+        if (text.characters.elementAt(i) != text[i + shiftSelectionEnd] &&
+            i < selection.end - shiftSelectionEnd) {
+          shiftSelectionEnd += 1;
+        }
+        if (text.characters.elementAt(i) != text[i + shiftSelectionStart] &&
+            i < selection.start - shiftSelectionStart) {
+          shiftSelectionStart += 1;
+        }
       }
     }
 
@@ -95,8 +146,6 @@ class TextFieldController extends TextEditingController {
       bool? boldToChange;
       bool? italicToChange;
       bool? underlinedToChange;
-      bool? codeToChange;
-      bool? defaultColorChange;
       Color? textColorToChange;
       Color? textBackgroundColorToChange;
       if (isBold != _previousBold) {
@@ -108,15 +157,11 @@ class TextFieldController extends TextEditingController {
       if (isUnderlined != _previousUnderlined) {
         underlinedToChange = isUnderlined;
       }
-      if (isDefaultColor != _previousDefaultColor) {
-        defaultColorChange = isDefaultColor;
-      }
+
       if (textColor != _previousTextColor) {
         textColorToChange = textColor;
       }
-      if (codeToChange != _previousCode) {
-        codeToChange = isCode;
-      }
+
       if (textBackgroundColor != _previousTextBackgroundColor) {
         textBackgroundColorToChange = textBackgroundColor;
       }
@@ -124,41 +169,33 @@ class TextFieldController extends TextEditingController {
           i < selection.end - shiftSelectionEnd;
           i++) {
         charTiles[i] = CharTile(
-          char: text.characters.elementAt(i),
-          isDefaultOnBackgroundTextColor: isDefaultColor,
+          text: text.characters.elementAt(i),
           isBold: isBold,
           isItalic: isItalic,
           isUnderlined: isUnderlined,
-          style: !isCode
-              ? standardStyle.copyWith(
-                  color: defaultColorChange ?? false
-                      ? Theme.of(context).colorScheme.onBackground
-                      : textColorToChange ?? charTiles[i]!.style.color,
-                  backgroundColor: textBackgroundColorToChange ??
-                      charTiles[i]!.style.backgroundColor,
-                  fontWeight: boldToChange != null
-                      ? boldToChange
-                          ? FontWeight.bold
-                          : standardStyle.fontWeight
-                      : charTiles[i]!.style.fontWeight,
-                  fontStyle: italicToChange != null
-                      ? italicToChange
-                          ? FontStyle.italic
-                          : standardStyle.fontStyle
-                      : charTiles[i]!.style.fontStyle,
-                  decoration: underlinedToChange != null
-                      ? underlinedToChange
-                          ? TextDecoration.underline
-                          : standardStyle.decoration
-                      : charTiles[i]!.style.decoration,
-                  // decorationColor: underlinedToChange != null ? underlinedToChange?charTiles[i].,
-                  background: standardStyle.background,
-                )
-              : standardStyle.copyWith(
-                  // TODO colors not theme specific
-                  color: Theme.of(context).colorScheme.onBackground,
-                  background: Paint()..color = Colors.transparent,
-                ),
+          style: standardStyle.copyWith(
+            color: textColorToChange ?? charTiles[i]!.style.color,
+            decorationColor: textColorToChange ?? charTiles[i]!.style.color,
+            backgroundColor: textBackgroundColorToChange ??
+                charTiles[i]!.style.backgroundColor,
+            fontWeight: boldToChange != null
+                ? boldToChange
+                    ? FontWeight.bold
+                    : standardStyle.fontWeight
+                : charTiles[i]!.style.fontWeight,
+            fontStyle: italicToChange != null
+                ? italicToChange
+                    ? FontStyle.italic
+                    : standardStyle.fontStyle
+                : charTiles[i]!.style.fontStyle,
+            decoration: underlinedToChange != null
+                ? underlinedToChange
+                    ? TextDecoration.underline
+                    : standardStyle.decoration
+                : charTiles[i]!.style.decoration,
+            // decorationColor: underlinedToChange != null ? underlinedToChange?charTiles[i].,
+            background: standardStyle.background,
+          ),
         );
       }
       // if text has changed
@@ -173,25 +210,18 @@ class TextFieldController extends TextEditingController {
           //   newCharTiles[i] = charTiles[i]!;
           // } else {
           newCharTiles[i] = CharTile(
-            char: text.characters.elementAt(i),
-            style: !isCode
-                ? standardStyle.copyWith(
-                    color: textColor,
-                    backgroundColor: textBackgroundColor,
-                    fontWeight:
-                        isBold ? FontWeight.bold : standardStyle.fontWeight,
-                    fontStyle:
-                        isItalic ? FontStyle.italic : standardStyle.fontStyle,
-                    decoration: isUnderlined
-                        ? TextDecoration.underline
-                        : standardStyle.decoration,
-                    background: standardStyle.background,
-                  )
-                : standardStyle.copyWith(
-                    color: Theme.of(context).colorScheme.onBackground,
-                    background: Paint()..color = Colors.transparent,
-                  ),
-            isDefaultOnBackgroundTextColor: isDefaultColor,
+            text: text.characters.elementAt(i),
+            style: standardStyle.copyWith(
+              color: textColor,
+              decorationColor: textColor,
+              backgroundColor: textBackgroundColor,
+              fontWeight: isBold ? FontWeight.bold : standardStyle.fontWeight,
+              fontStyle: isItalic ? FontStyle.italic : standardStyle.fontStyle,
+              decoration: isUnderlined
+                  ? TextDecoration.underline
+                  : standardStyle.decoration,
+              background: standardStyle.background,
+            ),
             isBold: isBold,
             isItalic: isItalic,
             isUnderlined: isUnderlined,
@@ -217,26 +247,12 @@ class TextFieldController extends TextEditingController {
     ); // Match one or more digits
     for (final Match match in regex.allMatches(text)) {
       hyperLinks.add(HyperLinkEntry(start: match.start, end: match.end - 1));
-      // for (var i = match.start; i < match.end; i++) {
-      //   hyperLinkIndices.add(i);
-      //   // final currentStyle = newCharTiles[i]!.style;
-      //   // newCharTiles[i] = newCharTiles[i]!.copyWith(
-      //   //   isDefaultOnBackgroundTextColor: false,
-      //   //   // isHyperlink: true,
-      //   //   style: currentStyle.copyWith(
-      //   //     color: UIColors.focused,
-      //   //     decoration: TextDecoration.underline,
-      //   //     decorationColor: UIColors.focused,
-      //   //   ),
-      //   // );
-      // }
-      // hyperLinkIndices.add(-1);
     }
     charTiles.forEach((key, value) {
       children.add(
         HyperLinkEntry.checkHyperLink(key, hyperLinks) != null
             ? TextSpan(
-                text: value.char,
+                text: value.text,
                 style: value.style.copyWith(
                   color: UIColors.focused,
                   decoration: TextDecoration.underline,
@@ -244,12 +260,8 @@ class TextFieldController extends TextEditingController {
                 ),
               )
             : TextSpan(
-                text: value.char,
-                style: value.isDefaultOnBackgroundTextColor
-                    ? (value.style.copyWith(
-                        color: Theme.of(context).colorScheme.onBackground,
-                      ))
-                    : value.style,
+                text: value.text,
+                style: value.style,
               ),
       );
     });
@@ -258,13 +270,18 @@ class TextFieldController extends TextEditingController {
     _previousBold = isBold;
     _previousItalic = isItalic;
     _previousUnderlined = isUnderlined;
-    _previousCode = isCode;
-    _previousDefaultColor = isDefaultColor;
     _previousTextColor = textColor;
     _previousTextBackgroundColor = textBackgroundColor;
 
     return TextSpan(style: style, children: children);
   }
+
+  // List<int> _selectionDelta(TextSelection current, TextSelection previous){
+  //   int startSelectionDelta = current.start - previous.start;
+  //   int endSelectionDelta = current.end - previous.end;
+  //   if(text[])
+  //   return [1,2];
+  // }
 
   void addText(
     List<CharTile> newCharTiles,
@@ -291,9 +308,8 @@ class TextFieldController extends TextEditingController {
           fontStyle: currentCharTile.isItalic ? FontStyle.italic : null,
           decoration:
               currentCharTile.isUnderlined ? TextDecoration.underline : null,
-          color: currentCharTile.isDefaultOnBackgroundTextColor
-              ? Theme.of(context).colorScheme.onBackground
-              : currentCharTile.style.color,
+          color: currentCharTile.style.color,
+          decorationColor: currentCharTile.style.color,
           backgroundColor: currentCharTile.style.backgroundColor,
         ),
       );

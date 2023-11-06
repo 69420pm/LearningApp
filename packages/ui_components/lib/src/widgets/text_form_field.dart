@@ -26,7 +26,8 @@ class UITextFormField extends StatefulWidget {
     this.prefixIcon,
   });
 
-  final String? label, hintText;
+  final String? label;
+  final String? hintText;
   final Widget? suffixIcon;
   final Widget? icon;
   final TextEditingController controller;
@@ -35,7 +36,9 @@ class UITextFormField extends StatefulWidget {
   final TextInputType? inputType;
   final List<TextInputFormatter>? formater;
   final String? Function(String?) validation;
-  final Function(String)? onChanged, onFieldSubmitted, onLoseFocus;
+  final Function(String)? onChanged;
+  final onFieldSubmitted;
+  final onLoseFocus;
   final bool? autofocus;
   final TextInputAction? textInputAction;
   final int? maxLines;

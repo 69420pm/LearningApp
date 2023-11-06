@@ -4,12 +4,12 @@ version: 0.1.0+1
 publish_to: none
 
 environment:
-  sdk: ">=2.18.0 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dev_dependencies:
-  mocktail: ^0.3.0
+  mocktail: ^1.0.1
   test: ^1.19.2
-  very_good_analysis: ^3.1.0
+  very_good_analysis: ^5.1.0
 dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
@@ -17,4 +17,6 @@ dependencies:
 
   cards_api:
     path: ../cards_api
+  markdown_editor:
+    path: ../markdown_editor
   rxdart: ^0.27.5

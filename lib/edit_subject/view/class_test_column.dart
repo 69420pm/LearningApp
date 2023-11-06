@@ -109,7 +109,7 @@ class ClassTestListTile extends StatelessWidget {
               children: [
                 Text(
                   DateFormat('MM/dd/yyyy')
-                      .format(DateTime.parse(classTest.date)),
+                      .format(classTest.date),
                   style: UIText.label,
                 ),
                 const SizedBox(

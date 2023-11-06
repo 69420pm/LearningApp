@@ -8,7 +8,6 @@ class TextEditorKeyboardRowChange extends TextEditorEvent {
   bool? isItalic;
   bool? isUnderlined;
   bool? isCode;
-  bool? isDefaultOnBackgroundTextColor;
   Color? textColor;
   Color? textBackgroundColor;
   TextEditorKeyboardRowChange({
@@ -16,7 +15,6 @@ class TextEditorKeyboardRowChange extends TextEditorEvent {
     this.isItalic,
     this.isUnderlined,
     this.isCode,
-    this.isDefaultOnBackgroundTextColor,
     this.textColor,
     this.textBackgroundColor,
   });
@@ -29,7 +27,7 @@ class TextEditorAddEditorTile extends TextEditorEvent {
   TextEditorAddEditorTile(
       {required this.newEditorTile,
       required this.context,
-      this.emitState = true});
+      this.emitState = true,});
 }
 
 class TextEditorRemoveEditorTile extends TextEditorEvent {
@@ -76,4 +74,19 @@ class TextEditorChangeOrderOfTile extends TextEditorEvent {
   });
 }
 
+class TextEditorGetSavedEditorTiles extends TextEditorEvent {
+  BuildContext context;
+  TextEditorGetSavedEditorTiles({
+    required this.context,
+  });
+}
+
 class TextEditorFocusLastWidget extends TextEditorEvent {}
+
+class TextEditorNextCard extends TextEditorEvent {
+  BuildContext context;
+  TextEditorNextCard({
+    required this.context,
+  });
+
+}

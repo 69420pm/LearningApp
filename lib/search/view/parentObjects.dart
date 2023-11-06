@@ -5,11 +5,11 @@ import 'package:ui_components/ui_components.dart';
 class ParentObjects extends StatelessWidget {
   ParentObjects({super.key, required this.parentObjects}) {
     var i = 0;
-    for (var element in parentObjects) {
+    for (final element in parentObjects) {
       pathViewElements.add(
         _PathViewElement(
           title: (element is Folder)
-              ? (element as Folder).name
+              ? element.name
               : (element as Subject).name,
           icon: i == 0
               //TODO add below custom subject icon to display
@@ -26,7 +26,7 @@ class ParentObjects extends StatelessWidget {
       if (i < parentObjects.length - 1) {
         pathViewElements
           ..add(Text('->',
-              style: UIText.normalBold.copyWith(color: UIColors.smallText)))
+              style: UIText.normalBold.copyWith(color: UIColors.smallText),),)
           ..add(
             const SizedBox(
               width: UIConstants.itemPadding / 4,
@@ -47,7 +47,7 @@ class ParentObjects extends StatelessWidget {
 }
 
 class _PathViewElement extends StatelessWidget {
-  _PathViewElement({super.key, required this.title, required this.icon});
+  _PathViewElement({required this.title, required this.icon});
   String title;
   Widget icon;
   @override

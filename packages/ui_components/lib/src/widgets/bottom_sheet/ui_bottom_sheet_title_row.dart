@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class UIBottomSheetTitleRow extends StatelessWidget {
-  UIBottomSheetTitleRow({
+  const UIBottomSheetTitleRow({
     super.key,
     this.title,
     this.actionLeft,
@@ -21,8 +21,8 @@ class UIBottomSheetTitleRow extends StatelessWidget {
   Widget build(BuildContext context) {
     if (actionLeft == null && actionRight == null && title != null) {
       return Container(
-        child: title!,
         alignment: Alignment.center,
+        child: title,
       );
     }
     return Row(
@@ -45,7 +45,7 @@ class UIBottomSheetTitleRow extends StatelessWidget {
             alignment: Alignment.centerRight,
             child: actionRight,
           ),
-        )
+        ),
       ],
     );
   }

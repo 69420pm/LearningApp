@@ -14,18 +14,15 @@ class OverviewPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return UIPage(
       appBar: UIAppBar(
-        automaticallyImplyLeading: true,
         leading: UIIconButton(
           icon: UIIcons.account,
-          onPressed: () {
-            print("object");
-          },
+          onPressed: () {},
         ),
         actions: [
           UIIconButton(
             icon: UIIcons.search,
             onPressed: () => Navigator.of(context).pushNamed('/search'),
-          )
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -52,7 +49,7 @@ class OverviewPage extends StatelessWidget {
                       builder: (_) {
                         return BlocProvider.value(
                           value: context.read<AddSubjectCubit>(),
-                          child: AddSubjectBottomSheet(),
+                          child: const AddSubjectBottomSheet(),
                         );
                       },
                     );
@@ -68,15 +65,15 @@ class OverviewPage extends StatelessWidget {
             UILabelRow(
               labelText: 'Disabled',
               actionWidgets: [
-                UIIcons.arrowDown.copyWith(color: UIColors.smallText)
+                UIIcons.arrowDown.copyWith(color: UIColors.smallText),
               ],
             ),
             const SizedBox(
               height: UIConstants.itemPaddingLarge,
             ),
-            SubjectList(
-              showDisabled: true,
-            ),
+            // SubjectList(
+            //   showDisabled: true,
+            // ),
           ],
         ),
       ),

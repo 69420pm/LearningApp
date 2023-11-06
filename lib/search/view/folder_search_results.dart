@@ -41,7 +41,7 @@ class FolderSearchResults extends StatelessWidget {
               Text(
                 '${foundFolders.length} Found',
                 style: UIText.label.copyWith(color: UIColors.smallText),
-              )
+              ),
             ],
           ),
           const SizedBox(
@@ -49,7 +49,7 @@ class FolderSearchResults extends StatelessWidget {
           ),
           Column(
             children: widgetFolders,
-          )
+          ),
         ],
       );
     } else {
@@ -96,7 +96,7 @@ class FolderListTileSearch extends StatelessWidget {
                   ),
                   ParentObjects(
                     parentObjects: parentObjects,
-                  )
+                  ),
                 ],
               ),
             ),

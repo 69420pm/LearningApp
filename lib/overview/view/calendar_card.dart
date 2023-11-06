@@ -35,10 +35,10 @@ class CalendarCard extends StatelessWidget {
                     style: UIText.label.copyWith(
                       color: UIColors.textDark,
                     ),
-                  )
+                  ),
                 ],
               ),
-              UIIcons.arrowForwardNormal.copyWith(color: UIColors.overlay)
+              UIIcons.arrowForwardNormal.copyWith(color: UIColors.overlay),
             ],
           ),
           const SizedBox(
@@ -51,8 +51,8 @@ class CalendarCard extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: 7,
-                itemBuilder: (context, index) => DayTile(index: index)),
-          )
+                itemBuilder: (context, index) => DayTile(index: index),),
+          ),
         ],
       ),
     );

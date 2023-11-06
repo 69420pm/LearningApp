@@ -25,7 +25,6 @@ class _KeyboardTextColorRowState extends State<KeyboardTextColorRow> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const _DefaultTextColorSelector(),
               ColorSelector(
@@ -72,13 +71,15 @@ class _KeyboardTextColorRowState extends State<KeyboardTextColorRow> {
 
 
 class _DefaultTextColorSelector extends StatelessWidget {
-  const _DefaultTextColorSelector({super.key});
+  const _DefaultTextColorSelector();
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.read<KeyboardRowCubit>().defaultTextColor(context.read<TextEditorBloc>());
+        context
+                    .read<KeyboardRowCubit>()
+                    .changeTextColor(UIColors.textLight, context.read<TextEditorBloc>());
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -91,7 +92,7 @@ class _DefaultTextColorSelector extends StatelessWidget {
                   color: UIColors.textLight,
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(UIConstants.cornerRadius),
-                      bottomLeft: Radius.circular(UIConstants.cornerRadius))),
+                      bottomLeft: Radius.circular(UIConstants.cornerRadius),),),
             ),
             Container(
               height: 28,
@@ -100,7 +101,7 @@ class _DefaultTextColorSelector extends StatelessWidget {
                   color: UIColors.textDark,
                   borderRadius: BorderRadius.only(
                       topRight: Radius.circular(UIConstants.cornerRadius),
-                      bottomRight: Radius.circular(UIConstants.cornerRadius))),
+                      bottomRight: Radius.circular(UIConstants.cornerRadius),),),
             ),
           ],
         ),

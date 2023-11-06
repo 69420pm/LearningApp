@@ -1,17 +1,12 @@
-import 'dart:io';
-
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/helper/image_helper.dart';
-import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/image_tile.dart';
 import 'package:ui_components/ui_components.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddImageBottomSheet extends StatelessWidget {
-  AddImageBottomSheet({super.key});
+  const AddImageBottomSheet({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -1,45 +1,58 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:cards_repository/cards_repository.dart';
-import 'package:learning_app/app/helper/uid.dart';
+import 'package:intl/intl.dart';
+import 'package:markdown_editor/markdown_editor.dart';
 import 'package:meta/meta.dart';
 
 part 'add_card_state.dart';
 
 class AddCardCubit extends Cubit<AddCardState> {
-  AddCardCubit(this._cardsRepository) : super(AddCardInitial());
+  AddCardCubit(this.cardsRepository) : super(AddCardInitial());
 
-  final CardsRepository _cardsRepository;
+  final CardsRepository cardsRepository;
   bool _editMarkDownMode = false;
 
   Future<void> saveCard(
-    String front,
-    String back,
-    Subject parentSubject,
-    String icon,
+    Card card,
+    String? parentId,
+    List<EditorTile>? editorTiles,
   ) async {
     emit(AddCardLoading());
-    final newCard = Card(
-      id: Uid().uid(),
-      front: front,
-      back: back,
-      dateCreated: DateTime.now().toIso8601String(),
-      parentId: parentSubject.id,
-      askCardsInverted: false,
-      typeAnswer: true,
-      dateToReview: DateTime.now().toIso8601String(),
-      tags: const [],
-    );
-    try {
-      // parentSubject.childCards.add(newCard);
-      await _cardsRepository.saveCard(newCard);
-      emit(AddCardSuccess());
-    } catch (e) {
-      emit(
-        AddCardFailure(
-          errorMessage: 'Card saving failed, while communicating with hive',
-        ),
-      );
+    await cardsRepository.saveCard(card, editorTiles, parentId);
+    final frontText =
+        cardsRepository.getTextFromCard(card.uid, onlyFront: true);
+    if (frontText.isNotEmpty && frontText[0].trim().isNotEmpty) {
+      card.name = frontText[0].replaceAll('\n', '');
+    } else {
+      card.name =
+          "created on ${DateFormat('EEE dd.MM yyyy HH:mm').format(DateTime.now())}";
     }
+    await cardsRepository.saveCard(card, null, parentId);
+
+    emit(AddCardSuccess());
+  }
+
+  Future<List<EditorTile>> getSavedEditorTiles(
+    Card card,
+  ) async {
+    var loadedEditorTiles = await cardsRepository.getCardContent(card.uid);
+    if (loadedEditorTiles.isNotEmpty) {
+    } else {
+      loadedEditorTiles = [
+        HeaderTile(
+          hintText: 'Front',
+          textStyle: TextFieldConstants.headingSmall,
+        ),
+        FrontBackSeparatorTile(),
+        TextTile(
+          textStyle: TextFieldConstants.normal,
+          hintText: 'Back',
+        ),
+      ];
+    }
+    return loadedEditorTiles;
   }
 
   void switchMarkdownMode() {

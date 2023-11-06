@@ -7,8 +7,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/app/helper/uid.dart';
-import 'package:learning_app/subject_overview/view/card_list_tile.dart';
-import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
 
 part 'subject_event.dart';
 part 'subject_state.dart';
@@ -29,8 +27,7 @@ class SubjectBloc extends Bloc<SubjectEvent, SubjectState> {
     on<SubjectCloseStreamById>(
       _closeStream,
     );
-    on<SubjectSetFolderParent>(_setParent);
-    on<SubjectSetCardParent>(_setParentCard);
+    on<SubjectSetFileParent>(_setParent);
   }
 
   final CardsRepository cardsRepository;
@@ -57,40 +54,39 @@ class SubjectBloc extends Bloc<SubjectEvent, SubjectState> {
     emit(SubjectLoading());
     // await cardsRepository.closeStreamById(event.id);
 
-    await emit.forEach(
-      cardsRepository.getChildrenById(event.id),
-      onData: (data) {
-        final childListTiles = <String, Widget>{};
-        final widgetsToRemove = <Removed>[];
-        for (final element in data) {
-          if (element is Folder) {
-            childListTiles[element.id] = FolderListTileParent(
-              folder: element,
-              // cardsRepository: cardsRepository,
-            );
-          } else if (element is Card) {
-            childListTiles[element.id] = CardListTile(
-              card: element,
-              isCardSelected: false,
-              isInSelectMode: false,
-              parentFolder: null,
-            );
-          } else if (element is Removed) {
-            widgetsToRemove.add(element);
-          }
-        }
+    // await emit.forEach(
+    //   cardsRepository.getChildrenById(event.id),
+    //   onData: (data) {
+    //     final childListTiles = <String, Widget>{};
+    //     final widgetsToRemove = <Removed>[];
+    //     for (final element in data) {
+    //       if (element is Folder) {
+    //         childListTiles[element.id] = FolderListTileParent(
+    //           folder: element,
+    //           // cardsRepository: cardsRepository,
+    //         );
+    //       } else if (element is Card) {
+    //         childListTiles[element.id] = CardListTile(
+    //           card: element,
+    //           isCardSelected: false,
+    //           isInSelectMode: false,
+    //         );
+    //       } else if (element is Removed) {
+    //         widgetsToRemove.add(element);
+    //       }
+    //     }
 
-        // if (childListTiles.isNotEmpty || widgetsToRemove.isNotEmpty) {
-        return SubjectRetrieveChildren(
-          childrenStream: childListTiles,
-          removedWidgets: widgetsToRemove,
-        );
-        // }
-        // return EditSubjectSuccess();
-      },
-      onError: (error, stackTrace) =>
-          SubjectFailure(errorMessage: 'backend broken'),
-    );
+    //     // if (childListTiles.isNotEmpty || widgetsToRemove.isNotEmpty) {
+    //     return SubjectRetrieveChildren(
+    //       childrenStream: childListTiles,
+    //       removedWidgets: widgetsToRemove,
+    //     );
+    //     // }
+    //     // return EditSubjectSuccess();
+    //   },
+    //   onError: (error, stackTrace) =>
+    //       SubjectFailure(errorMessage: 'backend broken'),
+    // );
   }
 
   Future<void> _saveFolder(
@@ -99,12 +95,11 @@ class SubjectBloc extends Bloc<SubjectEvent, SubjectState> {
   ) async {
     emit(SubjectLoading());
     final newFolder = Folder(
-      id: event.folderId ?? Uid().uid(),
+      uid: event.folderId ?? Uid().uid(),
       name: event.name,
-      dateCreated: DateTime.now().toIso8601String(),
-      parentId: event.parentId,
+      dateCreated: DateTime.now(),
     );
-    await cardsRepository.saveFolder(newFolder);
+    await cardsRepository.saveFolder(newFolder, event.parentId);
     emit(SubjectSuccess());
   }
 
@@ -114,17 +109,19 @@ class SubjectBloc extends Bloc<SubjectEvent, SubjectState> {
   ) async {
     emit(SubjectLoading());
     final newCard = Card(
-      id: Uid().uid(),
-      front: event.front,
-      back: event.back,
-      dateCreated: DateTime.now().toIso8601String(),
-      parentId: event.parentId,
+      uid: Uid().uid(),
+      // front: event.front,
+      // back: event.back,
+      dateCreated: DateTime.now(),
+      recallScore: 0,
+      // parentId: event.parentId,
       askCardsInverted: true,
       typeAnswer: true,
-      dateToReview: DateTime.now().toIso8601String(),
-      tags: const [],
+      dateToReview: DateTime.now(),
+      name: '',
+      // tags: const [],
     );
-    await cardsRepository.saveCard(newCard);
+    await cardsRepository.saveCard(newCard, null, event.parentId);
     emit(SubjectSuccess());
   }
 
@@ -132,7 +129,7 @@ class SubjectBloc extends Bloc<SubjectEvent, SubjectState> {
     SubjectCloseStreamById event,
     Emitter<SubjectState> emit,
   ) {
-    cardsRepository.closeStreamById(event.id, deleteChildren: true);
+    // cardsRepository.closeStreamById(event.id, deleteChildren: true);
   }
 
   // Future<void> _saveFolder(
@@ -212,20 +209,10 @@ class SubjectBloc extends Bloc<SubjectEvent, SubjectState> {
   // }
 
   Future<FutureOr<void>> _setParent(
-    SubjectSetFolderParent event,
+    SubjectSetFileParent event,
     Emitter<SubjectState> emit,
   ) async {
-    await cardsRepository.moveFolder(event.folder, event.parentId);
-    emit(SubjectSuccess());
-  }
-
-  Future<FutureOr<void>> _setParentCard(
-    SubjectSetCardParent event,
-    Emitter<SubjectState> emit,
-  ) async {
-    await cardsRepository.deleteCard(event.card.id, event.card.parentId);
-    await cardsRepository
-        .saveCard(event.card.copyWith(parentId: event.parentId));
+    await cardsRepository.moveFiles([event.fileUID], event.parentId);
     emit(SubjectSuccess());
   }
 }

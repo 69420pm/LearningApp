@@ -7,7 +7,7 @@ class SubjectsSearchResults extends StatelessWidget {
   SubjectsSearchResults({super.key, required this.foundSubjects}) {
     if (foundSubjects.isNotEmpty) {
       var i = 0;
-      for (final element in foundSubjects!) {
+      for (final element in foundSubjects) {
         subjectTiles.add(SubjectListTile(subject: element));
         if (i < foundSubjects.length - 1) {
           subjectTiles.add(
@@ -30,7 +30,7 @@ class SubjectsSearchResults extends StatelessWidget {
   List<Widget> subjectTiles = [
     const SizedBox(
       height: UIConstants.itemPadding * 0.5,
-    )
+    ),
   ];
 
   @override
@@ -44,7 +44,7 @@ class SubjectsSearchResults extends StatelessWidget {
               Text(
                 '${foundSubjects.length} Found',
                 style: UIText.label.copyWith(color: UIColors.smallText),
-              )
+              ),
             ],
           ),
           const SizedBox(

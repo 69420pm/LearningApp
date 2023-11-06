@@ -41,7 +41,7 @@ class CardsSearchResults extends StatelessWidget {
               Text(
                 '${foundCards.length} Found',
                 style: UIText.label.copyWith(color: UIColors.smallText),
-              )
+              ),
             ],
           ),
           const SizedBox(
@@ -63,7 +63,6 @@ class CardsSearchResults extends StatelessWidget {
 
 class _CardListTileSearch extends StatelessWidget {
   const _CardListTileSearch({
-    super.key,
     required this.card,
     required this.searchRequest,
     required this.parentObjects,
@@ -92,14 +91,15 @@ class _CardListTileSearch extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(card.front, style: UIText.labelBold),
+                  // card.front was there before
+                  Text(card.uid, style: UIText.labelBold),
                   const SizedBox(
                     height: UIConstants.itemPadding / 4,
                   ),
                   // _HitText(searchRequest: searchRequest, text: card.front + card.back)
                   ParentObjects(
                     parentObjects: parentObjects,
-                  )
+                  ),
                 ],
               ),
             ),
@@ -119,7 +119,7 @@ class _CardListTileSearch extends StatelessWidget {
 
 // TODO finish hit text
 class _HitText extends StatelessWidget {
-  _HitText({super.key, required this.searchRequest, required this.text});
+  _HitText({required this.searchRequest, required this.text});
 
   String searchRequest;
   String text;

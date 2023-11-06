@@ -6,7 +6,7 @@ class UIDialog extends StatelessWidget {
       {super.key,
       required this.title,
       required this.body,
-      required this.actions});
+      required this.actions,});
 
   String title;
   String body;

@@ -6,7 +6,7 @@ import 'package:ui_components/ui_components.dart';
 class SearchTextField extends StatelessWidget {
   SearchTextField({
     super.key,
-    this.searchSubject = false
+    this.searchSubject = false,
   });
   final searchController = TextEditingController();
   final focusNode = FocusNode();

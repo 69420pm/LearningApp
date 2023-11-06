@@ -1,34 +1,34 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:math';
-
 import 'package:cards_api/cards_api.dart';
+import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:ui_components/ui_components.dart';
-
-import 'package:learning_app/subject_overview/view/card_list_tile_view.dart';
 
 class MultiDragIndicator extends StatelessWidget {
   const MultiDragIndicator({
     super.key,
-    this.cardAmount = 0,
-    this.folderAmount = 0,
-    this.firstCardName,
-    this.firstFolderName,
+    required this.fileUIDs,
+    required this.cardsRepository,
   });
 
-  final int cardAmount;
-  final int folderAmount;
-  final List<String>? firstCardName;
-  final List<String>? firstFolderName;
+  final List<String> fileUIDs;
+  final CardsRepository cardsRepository;
 
   @override
   Widget build(BuildContext context) {
     var label = '';
-
-    for (var e in firstCardName ?? firstFolderName ?? ["Error  "]) {
-      label += '$e ,';
+    label += ', ${fileUIDs[0]}';
+    for (final e in fileUIDs) {
+      label += ', $e';
     }
-    label = label.substring(0, label.length - 2);
+
+    final folderAmount = fileUIDs
+        .where((uid) => cardsRepository.objectFromId(uid) is Folder)
+        .length;
+
+    final cardAmount = fileUIDs
+        .where((uid) => cardsRepository.objectFromId(uid) is Card)
+        .length;
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -36,7 +36,7 @@ class MultiDragIndicator extends StatelessWidget {
           borderRadius: const BorderRadius.all(
             Radius.circular(UIConstants.cornerRadius),
           ),
-          border: Border.all(color: UIColors.background, width: 3)),
+          border: Border.all(color: UIColors.background, width: 3),),
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: UIConstants.defaultSize * 2,
@@ -61,7 +61,7 @@ class MultiDragIndicator extends StatelessWidget {
                     //* or else yellow lines below text
                     style: Theme.of(context).textTheme.bodyMedium!,
                     child: Text(label,
-                        overflow: TextOverflow.ellipsis, style: UIText.label),
+                        overflow: TextOverflow.ellipsis, style: UIText.label,),
                   ),
                 ),
               ),
@@ -74,10 +74,10 @@ class MultiDragIndicator extends StatelessWidget {
 
 class AmountIndicator extends StatelessWidget {
   const AmountIndicator({
-    Key? key,
+    super.key,
     required this.amount,
     required this.icon,
-  }) : super(key: key);
+  });
 
   final int amount;
   final UIIcon icon;
@@ -98,7 +98,7 @@ class AmountIndicator extends StatelessWidget {
                 ),
               if (amount > 1)
                 const SizedBox(width: UIConstants.itemPaddingSmall),
-              icon
+              icon,
             ]
           : [],
     );

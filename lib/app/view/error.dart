@@ -11,7 +11,7 @@ class ErrorPage extends StatelessWidget {
       body: Column(
         children: [
           Text(errorMessage),
-          const Text('please restart application')
+          const Text('please restart application'),
         ],
       ),
     );

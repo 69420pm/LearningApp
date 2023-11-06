@@ -72,10 +72,10 @@ class _UIEmojiPickerState extends State<UIEmojiPicker>
                             categories.length,
                             (index) => Tab(
                               child: Text(
-                                '${emojis.firstWhere(
+                                emojis.firstWhere(
                                       (element) =>
                                           element.category == categories[index],
-                                    ).emoji}',
+                                    ).emoji,
                               ),
                             ),
                           ),
@@ -86,7 +86,7 @@ class _UIEmojiPickerState extends State<UIEmojiPicker>
                       const SizedBox(width: UIConstants.defaultSize),
                       IconButton(
                           onPressed: () => setState(() => isInSearch = true),
-                          icon: Icon(Icons.search)),
+                          icon: const Icon(Icons.search),),
                     ],
                   ),
                   const SizedBox(height: UIConstants.defaultSize),
@@ -140,7 +140,6 @@ class _UIEmojiPickerState extends State<UIEmojiPicker>
               ).toList();
 
               if (searchEmojisList.length > maxLengthOfSearch) {
-                print("object");
                 searchEmojisList =
                     searchEmojisList.sublist(0, maxLengthOfSearch);
               }
@@ -163,7 +162,7 @@ class _UIEmojiPickerState extends State<UIEmojiPicker>
                             return null;
                           },
                         ),
-                      )
+                      ),
                     ],
                   ),
                   GridView.count(

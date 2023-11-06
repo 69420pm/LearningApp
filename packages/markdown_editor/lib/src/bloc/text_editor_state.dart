@@ -12,16 +12,12 @@ class TextEditorKeyboardRowChanged extends TextEditorState {
   bool isBold;
   bool isItalic;
   bool isUnderlined;
-  bool isCode;
-  bool isDefaultOnBackgroundTextColor;
   Color textColor;
   Color textBackgroundColor;
   TextEditorKeyboardRowChanged({
     required this.isBold,
     required this.isItalic,
     required this.isUnderlined,
-    required this.isCode,
-    required this.isDefaultOnBackgroundTextColor,
     required this.textColor,
     required this.textBackgroundColor,
   });
@@ -32,10 +28,9 @@ class TextEditorKeyboardRowChanged extends TextEditorState {
         isBold,
         isItalic,
         isUnderlined,
-        isCode,
         textColor,
         textBackgroundColor,
-        isDefaultOnBackgroundTextColor      ];
+        ];
 }
 
 class TextEditorEditorTilesChanged extends TextEditorState {

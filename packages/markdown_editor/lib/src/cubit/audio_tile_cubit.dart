@@ -9,7 +9,7 @@ import 'package:file_picker/file_picker.dart';
 part 'audio_tile_state.dart';
 
 class AudioTileCubit extends Cubit<AudioTileState> {
-  AudioTileCubit() : super(AudioTileInitial()) {}
+  AudioTileCubit() : super(AudioTileInitial());
 
   bool _isRecording = false;
   bool _isPlaying = false;
@@ -27,7 +27,7 @@ class AudioTileCubit extends Cubit<AudioTileState> {
   Future<void> initState(String fileName) async {
     _directory ??= await getApplicationDocumentsDirectory();
     _fileName = fileName;
-    _filePath = _directory!.path + '/' + fileName;
+    _filePath = '${_directory!.path}/$fileName';
     print(_filePath);
     if (File(_filePath!).existsSync() && state is! AudioTilePlayAudio) {
       _isPlaying = false;
@@ -56,7 +56,7 @@ class AudioTileCubit extends Cubit<AudioTileState> {
   }
 
   /// toggle recording on or off
-  void toggleRecording() async {
+  Future<void> toggleRecording() async {
     // _isRecording = await AudioHelper.toggleRecording(_filePath!);
     final stoppedRightNow = !_isRecording;
     // if (stoppedRightNow) AudioHelper.disposeRecorder();
@@ -92,11 +92,11 @@ class AudioTileCubit extends Cubit<AudioTileState> {
     );
   }
 
-  void togglePlaying() async {
+  Future<void> togglePlaying() async {
     _isPlaying = !_isPlaying;
     if (_isPlaying) {
       await _audioPlayer.play(DeviceFileSource(_filePath!),
-          position: _position);
+          position: _position,);
       // duration = await audioPlayer.getDuration();
     } else {
       await _audioPlayer.pause();
@@ -124,7 +124,7 @@ class AudioTileCubit extends Cubit<AudioTileState> {
           AudioTilePlayAudio(
               isPlaying: _isPlaying,
               position: newPosition,
-              duration: _duration),
+              duration: _duration,),
         );
       },
     );
@@ -132,8 +132,8 @@ class AudioTileCubit extends Cubit<AudioTileState> {
 
   Future<void> jumpTo(Duration position) async {
     await _audioPlayer.seek(position);
-    this._position = position;
+    _position = position;
     emit(AudioTilePlayAudio(
-        isPlaying: _isPlaying, position: position, duration: _duration));
+        isPlaying: _isPlaying, position: position, duration: _duration,),);
   }
 }

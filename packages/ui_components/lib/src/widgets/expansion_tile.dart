@@ -6,10 +6,10 @@ import 'package:ui_components/ui_components.dart';
 
 class UIExpansionTile extends StatefulWidget {
   List<Widget> children;
-  Text title;
+  String title;
   double titleSpacing;
   double iconSpacing;
-  Widget trailing;
+  Widget? trailing;
   Color backgroundColor;
   Border border;
 
@@ -19,7 +19,7 @@ class UIExpansionTile extends StatefulWidget {
     required this.title,
     required this.titleSpacing,
     required this.iconSpacing,
-    required this.trailing,
+    this.trailing,
     required this.backgroundColor,
     required this.border,
   });
@@ -70,7 +70,8 @@ class _UIExpansionTileState extends State<UIExpansionTile>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DecoratedBox(
+          Container(
+            height: UIConstants.defaultSize * 5,
             decoration: const BoxDecoration(color: Colors.transparent),
             child: Row(
               children: [
@@ -88,19 +89,19 @@ class _UIExpansionTileState extends State<UIExpansionTile>
                   ),
                 ),
                 SizedBox(width: widget.titleSpacing),
-                widget.title,
-                const Spacer(),
-                widget.trailing,
+                Expanded(
+                  child: Text(widget.title,
+                      overflow: TextOverflow.ellipsis, style: UIText.label,),
+                ),
+                const SizedBox(width: UIConstants.defaultSize),
+                if (widget.trailing != null) widget.trailing!,
                 const SizedBox(width: UIConstants.defaultSize),
               ],
             ),
           ),
-          SizeTransition(
-            sizeFactor: _animation,
-            child: Padding(
-              padding: const EdgeInsets.only(
-                right: UIConstants.defaultSize,
-              ),
+          if (_isOpened || _animation.value > 0)
+            SizeTransition(
+              sizeFactor: _animation,
               child: ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
@@ -108,7 +109,6 @@ class _UIExpansionTileState extends State<UIExpansionTile>
                 itemCount: widget.children.length,
               ),
             ),
-          ),
         ],
       ),
     );

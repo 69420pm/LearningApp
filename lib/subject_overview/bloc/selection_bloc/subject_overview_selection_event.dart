@@ -13,56 +13,59 @@ class SubjectOverviewSelectionToggleSelectMode
 }
 
 class SubjectOverviewCardSelectionChange extends SubjectOverviewSelectionEvent {
-  Card card;
-  Folder? parentFolder;
+  String cardUID;
   SubjectOverviewCardSelectionChange({
-    required this.card,
-    required this.parentFolder,
+    required this.cardUID,
   });
 }
 
 class SubjectOverviewFolderSelectionChange
     extends SubjectOverviewSelectionEvent {
-  Folder folder;
+  String folderUID;
   SubjectOverviewFolderSelectionChange({
-    required this.folder,
+    required this.folderUID,
   });
 }
 
-class SubjectOverviewSelectionDeleteSelectedCards
-    extends SubjectOverviewSelectionEvent {}
+class SubjectOverviewSelectionDeleteSelectedFiles
+    extends SubjectOverviewSelectionEvent {
+  //null if in selectMode and hole Selection should be deleted
+  String? softSelectedFile;
+  SubjectOverviewSelectionDeleteSelectedFiles({
+    this.softSelectedFile,
+  });
+}
 
-class SubjectOverviewSelectionMoveSelectedCards
+class SubjectOverviewSelectionMoveSelection
     extends SubjectOverviewSelectionEvent {
   String parentId;
-  SubjectOverviewSelectionMoveSelectedCards({
+  SubjectOverviewSelectionMoveSelection({
     required this.parentId,
   });
 }
 
 class SubjectOverviewDraggingChange extends SubjectOverviewSelectionEvent {
   bool inDragg;
+  String draggedFileUID;
+
   SubjectOverviewDraggingChange({
     required this.inDragg,
+    required this.draggedFileUID,
   });
 }
 
 class SubjectOverviewGetSelectedCards extends SubjectOverviewSelectionEvent {}
 
-class SubjectOverviewSetSoftSelectFolder extends SubjectOverviewSelectionEvent {
-  Folder? folder;
-  SubjectOverviewSetSoftSelectFolder({
-    required this.folder,
+class SubjectOverviewSetSoftSelectFile extends SubjectOverviewSelectionEvent {
+  String fileUID;
+  SubjectOverviewSetSoftSelectFile({
+    required this.fileUID,
   });
 }
 
-class SubjectOverviewUpdateFolderTable extends SubjectOverviewSelectionEvent {
-  String folderId;
-  Map<Folder, bool> folder;
-  Map<Card, bool> cards;
-  SubjectOverviewUpdateFolderTable({
-    required this.folderId,
-    required this.folder,
-    required this.cards,
+class SubjectOverviewSetHoveredFolder extends SubjectOverviewSelectionEvent {
+  String folderUID;
+  SubjectOverviewSetHoveredFolder({
+    required this.folderUID,
   });
 }

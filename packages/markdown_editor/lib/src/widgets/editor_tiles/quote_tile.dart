@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:markdown_editor/src/models/char_tile.dart';
 import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/models/text_field_constants.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
@@ -6,13 +7,16 @@ import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
 import 'package:ui_components/ui_components.dart';
 
 class QuoteTile extends StatelessWidget implements EditorTile {
-  QuoteTile({super.key}) {
+  QuoteTile({super.key, this.charTiles}) {
     _textTile = TextTile(
       focusNode: focusNode,
       textStyle: TextFieldConstants.quote,
       parentEditorTile: this,
+      charTiles: charTiles,
     );
     _textTile.padding = false;
+    textFieldController = _textTile.textFieldController;
+
   }
 
   late final TextTile _textTile;
@@ -22,13 +26,14 @@ class QuoteTile extends StatelessWidget implements EditorTile {
 
   @override
   TextFieldController? textFieldController;
+  final Map<int, CharTile>? charTiles;
+
 
   @override
   Widget build(BuildContext context) {
-    textFieldController = _textTile.textFieldController;
     return Padding(
       padding: const EdgeInsets.symmetric(
-          horizontal: UIConstants.pageHorizontalPadding),
+          horizontal: UIConstants.pageHorizontalPadding,),
       child: Row(
         children: [
           Container(

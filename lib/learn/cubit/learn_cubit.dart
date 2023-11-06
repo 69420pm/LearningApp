@@ -27,7 +27,7 @@ class LearnCubit extends Cubit<LearnState> {
     else if (feedbackLastCard == LearnFeedback.medium) {
       cardsToLearn.removeAt(0);
       nextRecallScore -= 1;
-      if(nextRecallScore == 0){
+      if (nextRecallScore == 0) {
         nextRecallScore = 0;
       }
       nextTimeToReview = nextTimeToReview
@@ -35,7 +35,7 @@ class LearnCubit extends Cubit<LearnState> {
       if (nextRecallScore < 2) {
         final newCard = card.copyWith(
           recallScore: nextRecallScore,
-          dateToReview: nextTimeToReview.toIso8601String(),
+          dateToReview: nextTimeToReview,
         );
         cardsToLearn.add(newCard);
       }
@@ -47,18 +47,18 @@ class LearnCubit extends Cubit<LearnState> {
       nextTimeToReview = DateTime.now();
       final newCard = card.copyWith(
         recallScore: nextRecallScore,
-        dateToReview: nextTimeToReview.toIso8601String(),
+        dateToReview: nextTimeToReview,
       );
       cardsToLearn.add(newCard);
     }
     final newCard = card.copyWith(
       recallScore: nextRecallScore,
-      dateToReview: nextTimeToReview.toIso8601String(),
+      dateToReview: nextTimeToReview,
     );
     print('card alla');
     print(nextRecallScore);
     print(nextTimeToReview);
-    _cardsRepository.saveCard(newCard);
+    _cardsRepository.saveCard(newCard, null,null);
     emit(FrontState());
   }
 
@@ -66,8 +66,7 @@ class LearnCubit extends Cubit<LearnState> {
     cardsToLearn = _cardsRepository.learnAllCards();
 
     cardsToLearn.sort(
-      (a, b) => DateTime.parse(a.dateToReview)
-          .compareTo(DateTime.parse(b.dateToReview)),
+      (a, b) => a.dateToReview.compareTo(b.dateToReview),
     );
   }
 

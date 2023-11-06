@@ -12,12 +12,12 @@ class LearningScreen extends StatelessWidget {
     context.read<LearnCubit>().learnAllCards();
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
-      appBar: UIAppBar(
+      appBar: const UIAppBar(
         title: 'Learning Site',
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(
-            horizontal: UIConstants.cardHorizontalPadding),
+            horizontal: UIConstants.cardHorizontalPadding,),
         child: BlocBuilder<LearnCubit, LearnState>(
           builder: (context, state) {
             final card = context.read<LearnCubit>().getNextCard();
@@ -32,43 +32,17 @@ class LearningScreen extends StatelessWidget {
                   children: [
                     Opacity(
                       opacity: state is BackState ? 1 : 0,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(
                           vertical: UIConstants.defaultSize * 3,
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            // UIButton(
-                            //   onTap: () => context
-                            //       .read<LearnCubit>()
-                            //       .newCard(LearnFeedback.bad, card),
-                            //   label: 'again',
-                            //   color: Colors.red,
-                            //   textColor: Colors.black,
-                            // ),
-                            // UIButton(
-                            //   onTap: () => context
-                            //       .read<LearnCubit>()
-                            //       .newCard(LearnFeedback.medium, card),
-                            //   label: 'almost',
-                            //   textColor: Colors.black,
-                            //   color: Colors.yellow,
-                            // ),
-                            // UIButton(
-                            //   onTap: () => context
-                            //       .read<LearnCubit>()
-                            //       .newCard(LearnFeedback.good, card),
-                            //   label: 'easy',
-                            //   textColor: Colors.black,
-                            //   color: Colors.green,
-                            // ),
-                          ],
                         ),
                       ),
                     ),
                   ],
-                )
+                ),
               ],
             );
           },

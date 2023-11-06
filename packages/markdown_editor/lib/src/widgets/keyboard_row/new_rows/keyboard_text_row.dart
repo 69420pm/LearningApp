@@ -100,9 +100,7 @@ class KeyboardTextRow extends StatelessWidget {
                       ),
                       KeyboardButton(
                         icon: UIIcons.formatColorText.copyWith(
-                          color: textEditorBloc.isDefaultOnBackgroundTextColor
-                              ? UIColors.textLight
-                              : textEditorBloc.textColor,
+                          color: textEditorBloc.textColor,
                         ),
                         onPressed: () {
                           if (!context
@@ -114,6 +112,9 @@ class KeyboardTextRow extends StatelessWidget {
                           }
                         },
                         onDoubleTap: () {
+                          context.read<KeyboardRowCubit>().changeTextColor(
+                              UIColors.textLight,
+                              context.read<TextEditorBloc>(),);
                           context
                               .read<KeyboardRowCubit>()
                               .defaultTextColor(textEditorBloc);
@@ -130,7 +131,10 @@ class KeyboardTextRow extends StatelessWidget {
           ),
           KeyboardButton(
             icon: UIIcons.done.copyWith(color: UIColors.primary),
-            onPressed: () {},
+            onPressed: () {
+              // save content of card
+              context.read<TextEditorBloc>().add(TextEditorNextCard(context: context));
+            },
           ),
         ],
       ),

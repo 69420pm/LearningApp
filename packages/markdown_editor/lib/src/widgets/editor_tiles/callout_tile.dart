@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
-import 'package:markdown_editor/src/models/char_tile.dart';
-import 'package:markdown_editor/src/models/editor_tile.dart';
-import 'package:markdown_editor/src/models/text_field_constants.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
 import 'package:markdown_editor/src/widgets/bottom_sheets/callout_tile_bottom_sheet.dart';
-import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
 import 'package:ui_components/ui_components.dart';
 
 class CalloutTile extends StatelessWidget implements EditorTile {
@@ -64,7 +60,7 @@ class CalloutTile extends StatelessWidget implements EditorTile {
     //   };
 
     return Padding(
-      padding: const EdgeInsets.only(top: 4.0, left: UIConstants.pageHorizontalPadding, right: UIConstants.pageHorizontalPadding),
+      padding: const EdgeInsets.only(top: 4, left: UIConstants.pageHorizontalPadding, right: UIConstants.pageHorizontalPadding),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: tileColor,
@@ -130,7 +126,7 @@ class CalloutTile extends StatelessWidget implements EditorTile {
                   ),
                 ),
               ),
-              const SizedBox(width: 4,)
+              const SizedBox(width: 4,),
             ],
           ),
         ),
