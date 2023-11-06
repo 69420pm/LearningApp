@@ -16,7 +16,7 @@ class CardListTileView extends StatelessWidget {
   Widget build(BuildContext context) {
     final selectionBloc = context.read<SubjectOverviewSelectionBloc>();
     final isSelected = selectionBloc.isFileSelected(card.uid);
-    final isSoftSelected = selectionBloc.fileUIDSoftSelected == card.uid;
+    final isSoftSelected = selectionBloc.fileSoftSelected == card.uid;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: UIConstants.defaultSize),

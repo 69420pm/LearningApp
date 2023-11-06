@@ -26,7 +26,7 @@ class SubjectPageToolBar extends StatelessWidget {
         SubjectOverviewSelectionState>(
       builder: (context, state) {
         softSelectedFile = cardsRepository.objectFromId(
-            context.read<SubjectOverviewSelectionBloc>().fileUIDSoftSelected);
+            context.read<SubjectOverviewSelectionBloc>().fileSoftSelected);
         if (softSelectedFile is Folder) {
           softSelectedFolderUID = (softSelectedFile! as Folder).uid;
         } else {

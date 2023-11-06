@@ -26,11 +26,14 @@ class SubjectOverviewSelectionBloc
   final List<String> _selectedFiles = List.empty(growable: true);
   List<String> get selectedFiles => _selectedFiles;
 
-  String _fileUIDSoftSelected = '';
-  String get fileUIDSoftSelected => _fileUIDSoftSelected;
+  String _fileSoftSelected = '';
+  String get fileSoftSelected => _fileSoftSelected;
 
   bool _isInDragging = false;
   bool get isInDragging => _isInDragging;
+
+  String _fileDragged = '';
+  String get fileDragged => _fileDragged;
 
   String _hoveredFoldeUID = "";
   String get hoveredFolderUID => _hoveredFoldeUID;
@@ -202,7 +205,7 @@ class SubjectOverviewSelectionBloc
   ) {
     if (event.inSelectMode) {
       _isInSelectMode = true;
-      _fileUIDSoftSelected = '';
+      _fileSoftSelected = '';
       emit(SubjectOverviewSelectionModeOn());
     } else {
       _isInSelectMode = false;
@@ -231,6 +234,7 @@ class SubjectOverviewSelectionBloc
     _hoveredFoldeUID = "";
     _isInDragging = false;
     _isInSelectMode = false;
+    _fileDragged = "";
     emit(SubjectOverviewSelectionModeOff());
   }
 
@@ -240,20 +244,22 @@ class SubjectOverviewSelectionBloc
   ) {
     if (event.inDragg == true && _isInDragging == false) {
       _isInDragging = true;
-      _hoveredFoldeUID = event.parentUID;
+      _fileDragged = event.draggedFileUID;
       //if (_isInSelectMode) emit(SubjectOverviewSelectionMultiDragging());
     } else if (event.inDragg == false && _isInDragging == true) {
       _isInDragging = false;
       _hoveredFoldeUID = "";
+      _fileDragged = '';
       //if (_isInSelectMode) emit(SubjectOverviewSelectionModeOn());
     }
+    if (_isInSelectMode) emit(SubjectOverviewSelectionMultiDraggingChange());
   }
 
   FutureOr<void> _setSoftSelectFile(
     SubjectOverviewSetSoftSelectFile event,
     Emitter<SubjectOverviewSelectionState> emit,
   ) {
-    _fileUIDSoftSelected = event.fileUID;
+    _fileSoftSelected = event.fileUID;
     if (event.fileUID != '') {
       emit(SubjectOverviewSoftSelectionModeOn());
     } else {

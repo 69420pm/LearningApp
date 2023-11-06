@@ -29,15 +29,16 @@ class FolderListTileParent extends StatelessWidget {
           .cardsRepository
           .getChildrenById(folder.uid),
       builder: (context, value, child) {
-        final isDraggedInMultiSelection =
-            context.read<SubjectOverviewSelectionBloc>().isInSelectMode &&
-                context.read<SubjectOverviewSelectionBloc>().isInDragging &&
-                context
-                    .read<SubjectOverviewSelectionBloc>()
-                    .isFileSelected(folder.uid);
+        final selectionBloc = context.read<SubjectOverviewSelectionBloc>();
 
-        if (isDraggedInMultiSelection) {
-          return const InactiveListTile();
+        final isSelectedWhileDraggingButIsNotDraggedTile =
+            selectionBloc.isInSelectMode &&
+                selectionBloc.isInDragging &&
+                selectionBloc.isFileSelected(folder.uid) &&
+                selectionBloc.fileDragged != folder.uid;
+
+        if (isSelectedWhileDraggingButIsNotDraggedTile) {
+          return const Text("inactive");
         } else {
           return DraggingTile(
             fileUID: folder.uid,

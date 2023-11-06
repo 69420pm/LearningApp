@@ -263,23 +263,25 @@ class HiveCardsApi extends CardsApi {
       if (file != null && file is File) {
         // --- STORAGE CHANGES ---
         final fileParentId = getParentIdFromChildId(fileId);
-        // remove old folder relation to parent
-        final relationEntry = _relationsBox.get(fileParentId);
-        if (relationEntry != null) {
-          relationEntry.remove(fileId);
-          await _relationsBox.put(fileParentId, relationEntry);
-        }
-        // add folder to new relation entry
-        newRelationEntry.add(fileId);
+        if (fileParentId != newParentId) {
+          // remove old folder relation to parent
+          final relationEntry = _relationsBox.get(fileParentId);
+          if (relationEntry != null) {
+            relationEntry.remove(fileId);
+            await _relationsBox.put(fileParentId, relationEntry);
+          }
+          // add folder to new relation entry
+          newRelationEntry.add(fileId);
 
-        // --- FRONTEND UPDATE CHANGES ---
-        // remove from old notifier
-        final oldNotifier = _notifiers[fileParentId];
-        if (oldNotifier != null) {
-          final children = oldNotifier.value..remove(file);
-          oldNotifier.value = List.from(children);
+          // --- FRONTEND UPDATE CHANGES ---
+          // remove from old notifier
+          final oldNotifier = _notifiers[fileParentId];
+          if (oldNotifier != null) {
+            final children = oldNotifier.value..remove(file);
+            oldNotifier.value = List.from(children);
+          }
+          notifierChildren.add(file);
         }
-        notifierChildren.add(file);
       }
     }
 

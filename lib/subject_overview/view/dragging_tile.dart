@@ -33,7 +33,7 @@ class DraggingTile extends StatelessWidget {
 
     final isInSelectMode = selectionBloc.isInSelectMode;
 
-    final isSoftSelected = selectionBloc.fileUIDSoftSelected == fileUID;
+    final isSoftSelected = selectionBloc.fileSoftSelected == fileUID;
 
     final isSelected = !isRootFolder && selectionBloc.isFileSelected(fileUID);
 
@@ -51,8 +51,7 @@ class DraggingTile extends StatelessWidget {
                   SubjectOverviewFolderSelectionChange(folderUID: fileUID),
                 );
           }
-        } else if (!(isRootFolder &&
-            selectionBloc.fileUIDSoftSelected.isEmpty)) {
+        } else if (!(isRootFolder && selectionBloc.fileSoftSelected.isEmpty)) {
           //change soft selection
           context.read<SubjectOverviewSelectionBloc>().add(
                 SubjectOverviewSetSoftSelectFile(
@@ -82,7 +81,7 @@ class DraggingTile extends StatelessWidget {
           context.read<SubjectOverviewSelectionBloc>().add(
                 SubjectOverviewDraggingChange(
                   inDragg: true,
-                  parentUID: cardsRepository.getParentIdFromChildId(fileUID),
+                  draggedFileUID: fileUID,
                 ),
               );
         },
@@ -90,17 +89,20 @@ class DraggingTile extends StatelessWidget {
           context.read<SubjectOverviewSelectionBloc>().add(
                 SubjectOverviewDraggingChange(
                   inDragg: false,
-                  parentUID: cardsRepository.getParentIdFromChildId(fileUID),
+                  draggedFileUID: '',
                 ),
               );
         },
         onDraggableCanceled: (_, __) {
-          // context.read<SubjectOverviewSelectionBloc>().add(
-          //     SubjectOverviewDraggingChange(
-          //         inDragg: false,
-          //         parentUID: cardsRepository.getParentIdFromChildId(fileUID)));
           //Start SelectionMode
-          if (!isInSelectMode) {
+          if (isInSelectMode) {
+            context.read<SubjectOverviewSelectionBloc>().add(
+                  SubjectOverviewDraggingChange(
+                    inDragg: false,
+                    draggedFileUID: '',
+                  ),
+                );
+          } else {
             context.read<SubjectOverviewSelectionBloc>().add(
                   SubjectOverviewSelectionToggleSelectMode(
                     inSelectMode: true,
