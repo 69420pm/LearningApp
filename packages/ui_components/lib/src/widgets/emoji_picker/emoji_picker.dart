@@ -140,7 +140,6 @@ class _UIEmojiPickerState extends State<UIEmojiPicker>
               ).toList();
 
               if (searchEmojisList.length > maxLengthOfSearch) {
-                print("object");
                 searchEmojisList =
                     searchEmojisList.sublist(0, maxLengthOfSearch);
               }

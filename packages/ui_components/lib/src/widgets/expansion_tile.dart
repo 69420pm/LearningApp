@@ -99,15 +99,16 @@ class _UIExpansionTileState extends State<UIExpansionTile>
               ],
             ),
           ),
-          SizeTransition(
-            sizeFactor: _animation,
-            child: ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemBuilder: (context, index) => widget.children[index],
-              itemCount: widget.children.length,
+          if (_isOpened || _animation.value > 0)
+            SizeTransition(
+              sizeFactor: _animation,
+              child: ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemBuilder: (context, index) => widget.children[index],
+                itemCount: widget.children.length,
+              ),
             ),
-          ),
         ],
       ),
     );

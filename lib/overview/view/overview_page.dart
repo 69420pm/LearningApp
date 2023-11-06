@@ -17,9 +17,7 @@ class OverviewPage extends StatelessWidget {
         automaticallyImplyLeading: true,
         leading: UIIconButton(
           icon: UIIcons.account,
-          onPressed: () {
-            print("object");
-          },
+          onPressed: () {},
         ),
         actions: [
           UIIconButton(

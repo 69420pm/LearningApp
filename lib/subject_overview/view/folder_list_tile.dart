@@ -23,6 +23,7 @@ class FolderListTileParent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(folder.name);
     return ValueListenableBuilder(
       valueListenable: context
           .read<SubjectBloc>()

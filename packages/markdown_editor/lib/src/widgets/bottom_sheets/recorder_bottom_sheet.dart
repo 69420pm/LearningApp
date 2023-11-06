@@ -26,7 +26,6 @@ class _RecorderBottomSheetState extends State<RecorderBottomSheet> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      print("call");
       await _asyncInit();
     });
   }
