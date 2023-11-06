@@ -7,7 +7,7 @@ import 'package:markdown_editor/src/models/text_field_controller.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
 import 'package:ui_components/ui_components.dart';
 
-import '../../models/char_tile.dart';
+import 'package:markdown_editor/src/models/char_tile.dart';
 
 class ListEditorTile extends StatelessWidget implements EditorTile {
   /// initialize ListEditorTile
@@ -82,7 +82,7 @@ class ListEditorTile extends StatelessWidget implements EditorTile {
             width: 8,
           ),
           Padding(
-            padding: EdgeInsets.only(top: 6),
+            padding: const EdgeInsets.only(top: 6),
             child: orderNumber == 0
                 ? UIIcons.circle
                 : Text(
@@ -93,7 +93,7 @@ class ListEditorTile extends StatelessWidget implements EditorTile {
           const SizedBox(
             width: 12,
           ),
-          Expanded(child: _textTile)
+          Expanded(child: _textTile),
         ],
       ),
     );

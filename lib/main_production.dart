@@ -15,7 +15,6 @@ import 'package:learning_app/bootstrap.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:ui_components/ui_components.dart';
-import 'package:markdown_editor/src/models/editor_data_classes/editor_tile_dc.dart';
 
 Future<void> main() async {
    /// Init hive
@@ -52,5 +51,5 @@ Future<void> main() async {
   await bootstrap(() => App(
         cardsRepository: cardsRepository,
         uiRepository: uiRepository,
-      ));
+      ),);
 }

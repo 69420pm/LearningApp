@@ -6,7 +6,7 @@ import 'package:ui_components/ui_components.dart';
 
 class AddCardSettingsBottomSheet extends StatelessWidget {
   AddCardSettingsBottomSheet(
-      {super.key, required this.card, required this.parentId});
+      {super.key, required this.card, required this.parentId,});
   Card card;
   String? parentId;
   @override

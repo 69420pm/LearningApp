@@ -5,9 +5,6 @@ import 'package:cards_repository/cards_repository.dart';
 import 'package:intl/intl.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 import 'package:meta/meta.dart';
-import 'package:markdown_editor/src/models/editor_tile.dart';
-import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
-import 'package:markdown_editor/src/models/text_field_constants.dart';
 
 part 'add_card_state.dart';
 

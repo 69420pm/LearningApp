@@ -7,7 +7,7 @@ class AutoScrollView extends StatelessWidget {
       {super.key,
       required this.child,
       required this.globalKey,
-      required this.scrollController});
+      required this.scrollController,});
 
   final Widget child;
   final GlobalKey globalKey;

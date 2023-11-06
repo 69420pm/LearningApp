@@ -4,7 +4,7 @@ import 'package:learning_app/add_subject/cubit/add_subject_cubit.dart';
 import 'package:ui_components/ui_components.dart';
 
 class WeekdayPicker extends StatelessWidget {
-  WeekdayPicker({super.key});
+  const WeekdayPicker({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +58,6 @@ class WeekdayPicker extends StatelessWidget {
 
 class _WeekDay extends StatelessWidget {
   _WeekDay({
-    super.key,
     required this.text,
     required this.id,
     required this.isSelected,

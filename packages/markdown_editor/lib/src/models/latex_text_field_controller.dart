@@ -11,13 +11,13 @@ class LatexTextFieldController extends TextEditingController {
   final Map<String, TextStyle> map = {
     r'(?<!\\)%(.*?)(?:\r?\n|$)': const TextStyle(color: Color.fromARGB(83, 0, 0, 0)),
     r'\\([A-Za-z]+|_|&|{|}|#|!|$|%|>|\||:|;|,)': const TextStyle(color: Color.fromARGB(255, 0, 255, 0)),
-    r'{|}|&|_|^': const TextStyle(color: Color.fromARGB(255, 131, 131, 131)),
-    r'__(.*?)__': const TextStyle(fontStyle: FontStyle.italic),
+    '{|}|&|_|^': const TextStyle(color: Color.fromARGB(255, 131, 131, 131)),
+    '__(.*?)__': const TextStyle(fontStyle: FontStyle.italic),
     '~~(.*?)~~': const TextStyle(decoration: TextDecoration.lineThrough),
-    r'```(.*?)```': const TextStyle(
+    '```(.*?)```': const TextStyle(
       fontFamily: 'mono',
       fontFeatures: [FontFeature.tabularFigures()],
-    )
+    ),
   };
 
   @override
@@ -31,12 +31,12 @@ class LatexTextFieldController extends TextEditingController {
 
   @override
   TextSpan buildTextSpan({
-    required context,
+    required BuildContext context,
     TextStyle? style,
     required bool withComposing,
   }) {
 
-  final List<InlineSpan> children = [];
+  final children = <InlineSpan>[];
   text.splitMapJoin(
     pattern,
     onMatch: (Match match) {
@@ -65,12 +65,12 @@ class LatexTextFieldController extends TextEditingController {
       children.add(TextSpan(
         text: formattedText,
         style: style!.merge(map[textPattern!]),
-      ));
-      return "";
+      ),);
+      return '';
     },
     onNonMatch: (String text) {
       children.add(TextSpan(text: text, style: style));
-      return "";
+      return '';
     },
   );
 

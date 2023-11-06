@@ -118,7 +118,7 @@ class AppRouter {
             providers: [
               BlocProvider.value(
                 value: _editSubjectCubit,
-              )
+              ),
             ],
             child: EditSubjectPage(
               subject: routeSettings.arguments! as Subject,
@@ -131,7 +131,7 @@ class AppRouter {
             providers: [
               BlocProvider.value(
                 value: _editSubjectCubit,
-              )
+              ),
             ],
             child: AddClassTestPage(
               classTest: routeSettings.arguments as ClassTest?,

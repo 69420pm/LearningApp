@@ -33,7 +33,7 @@ class QuoteTile extends StatelessWidget implements EditorTile {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-          horizontal: UIConstants.pageHorizontalPadding),
+          horizontal: UIConstants.pageHorizontalPadding,),
       child: Row(
         children: [
           Container(

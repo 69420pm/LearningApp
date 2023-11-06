@@ -4,19 +4,17 @@ import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
+import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dart';
 import 'package:learning_app/subject_overview/view/inactive_list_tile.dart';
-
-import '../bloc/folder_bloc/folder_list_tile_bloc.dart';
-import '../bloc/subject_bloc/subject_bloc.dart';
-import 'multi_drag_indicator.dart';
+import 'package:learning_app/subject_overview/view/multi_drag_indicator.dart';
 
 class DraggingTile extends StatelessWidget {
   const DraggingTile({
-    Key? key,
+    super.key,
     required this.fileUID,
     required this.child,
     required this.cardsRepository,
-  }) : super(key: key);
+  });
 
   final String fileUID;
   final CardsRepository cardsRepository;
@@ -154,7 +152,7 @@ class FolderDragTarget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var isHovered =
+    final isHovered =
         context.read<SubjectOverviewSelectionBloc>().hoveredFolderUID ==
             folderUID;
     return DragTarget(

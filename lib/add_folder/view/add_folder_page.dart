@@ -18,8 +18,8 @@ class AddFolderPage extends StatelessWidget {
         UIIconButton(
           icon: UIIcons.share,
           onPressed: () {},
-        )
-      ]),
+        ),
+      ],),
       body: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -69,7 +69,7 @@ class AddFolderPage extends StatelessWidget {
           Text(
             'Select weekdays on which this subject is scheduled to let the test algorithm adapt to your needs',
             style: UIText.small.copyWith(color: UIColors.smallText),
-          )
+          ),
         ],
       ),
     );

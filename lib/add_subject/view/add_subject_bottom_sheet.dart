@@ -6,7 +6,7 @@ import 'package:learning_app/add_subject/view/weekday_picker.dart';
 import 'package:ui_components/ui_components.dart';
 
 class AddSubjectBottomSheet extends StatefulWidget {
-  AddSubjectBottomSheet({
+  const AddSubjectBottomSheet({
     super.key,
     this.recommendedSubjectParentId,
   });
@@ -95,7 +95,7 @@ class _AddSubjectBottomSheetState extends State<AddSubjectBottomSheet> {
           const SizedBox(
             height: UIConstants.itemPaddingSmall,
           ),
-          WeekdayPicker(),
+          const WeekdayPicker(),
           UIDescription(
             text:
                 'Select weekdays on which this subject is scheduled to let the test algorithm adapt to your needs ',

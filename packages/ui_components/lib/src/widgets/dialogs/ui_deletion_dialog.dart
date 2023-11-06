@@ -3,7 +3,7 @@ import 'package:ui_components/ui_components.dart';
 
 class UIDeletionDialog extends StatelessWidget {
   UIDeletionDialog(
-      {super.key, required this.whatToDelete, required this.onAccepted});
+      {super.key, required this.whatToDelete, required this.onAccepted,});
 
   String whatToDelete;
   void Function() onAccepted;
@@ -23,15 +23,15 @@ class UIDeletionDialog extends StatelessWidget {
       elevation: 0,
       actions: [
          UIButton(
-          child: Text('Cancel', style: UIText.label),
+          child: const Text('Cancel', style: UIText.label),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
         UIButton(
-          child: Text('Delete',
-              style: UIText.labelBold.copyWith(color: UIColors.delete)),
           onPressed: onAccepted,
+          child: Text('Delete',
+              style: UIText.labelBold.copyWith(color: UIColors.delete),),
         ),
        
       ],

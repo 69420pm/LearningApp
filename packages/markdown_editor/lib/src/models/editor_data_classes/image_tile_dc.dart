@@ -5,6 +5,13 @@ part 'image_tile_dc.g.dart'; // Add this line
 
 @HiveType(typeId: 11) // Change the typeId accordingly
 class ImageTileDC extends EditorTileDC {
+
+  ImageTileDC({
+    required this.uid,
+    required this.filePath,
+    required this.scale,
+    required this.alignment,
+  }) : super(uid:uid);
   @HiveField(0)
   String filePath;
 
@@ -17,13 +24,6 @@ class ImageTileDC extends EditorTileDC {
 @HiveField(3)
   @override
   String uid;
-
-  ImageTileDC({
-    required this.uid,
-    required this.filePath,
-    required this.scale,
-    required this.alignment,
-  }) : super(uid:uid);
 
   @override
   List<Object?> get props => [filePath, scale, alignment];

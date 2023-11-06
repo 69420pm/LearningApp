@@ -91,7 +91,7 @@ class _UIExpansionTileState extends State<UIExpansionTile>
                 SizedBox(width: widget.titleSpacing),
                 Expanded(
                   child: Text(widget.title,
-                      overflow: TextOverflow.ellipsis, style: UIText.label),
+                      overflow: TextOverflow.ellipsis, style: UIText.label,),
                 ),
                 const SizedBox(width: UIConstants.defaultSize),
                 if (widget.trailing != null) widget.trailing!,

@@ -50,7 +50,7 @@ class CharTileDC extends Equatable {
     required this.isUnderlined,
     required this.color,
     required this.uid,
-    required this.backgroundColor
+    required this.backgroundColor,
   });
 
   @override

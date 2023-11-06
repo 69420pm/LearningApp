@@ -27,7 +27,7 @@ class TextEditorAddEditorTile extends TextEditorEvent {
   TextEditorAddEditorTile(
       {required this.newEditorTile,
       required this.context,
-      this.emitState = true});
+      this.emitState = true,});
 }
 
 class TextEditorRemoveEditorTile extends TextEditorEvent {

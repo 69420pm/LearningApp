@@ -1,14 +1,11 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
-import 'package:markdown_editor/src/bloc/text_editor_bloc.dart';
-import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
 
 class MarkdownWidget extends StatelessWidget {
-  bool _firstBuild = true;
   MarkdownWidget({super.key});
+  bool _firstBuild = true;
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
@@ -58,7 +55,7 @@ class MarkdownWidget extends StatelessWidget {
           );
         },
       ),
-    ]);
+    ],);
   }
 }
 

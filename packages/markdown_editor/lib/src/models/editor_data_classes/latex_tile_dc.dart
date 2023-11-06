@@ -5,15 +5,15 @@ part 'latex_tile_dc.g.dart'; // Add this line
 
 @HiveType(typeId: 12) // Change the typeId accordingly
 class LatexTileDC extends EditorTileDC {
+  LatexTileDC({
+    required this.uid,
+    required this.latexText,
+  }) : super(uid:uid);
   @HiveField(0)
   String latexText;
 @HiveField(1)
   @override
   String uid;
-  LatexTileDC({
-    required this.uid,
-    required this.latexText,
-  }) : super(uid:uid);
 
   @override
   List<Object?> get props => [latexText];

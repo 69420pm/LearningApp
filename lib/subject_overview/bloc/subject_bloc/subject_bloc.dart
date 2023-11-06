@@ -7,8 +7,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/app/helper/uid.dart';
-import 'package:learning_app/subject_overview/view/card_list_tile.dart';
-import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
 
 part 'subject_event.dart';
 part 'subject_state.dart';
@@ -120,7 +118,7 @@ class SubjectBloc extends Bloc<SubjectEvent, SubjectState> {
       askCardsInverted: true,
       typeAnswer: true,
       dateToReview: DateTime.now(),
-      name: ""
+      name: '',
       // tags: const [],
     );
     await cardsRepository.saveCard(newCard, null, event.parentId);

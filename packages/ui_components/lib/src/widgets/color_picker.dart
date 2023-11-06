@@ -138,7 +138,7 @@ class _UIColorPickerState extends State<UIColorPicker> {
                           blendMode: BlendMode.srcIn,
                           shaderCallback: (bounds) => gradient.createShader(
                             Rect.fromLTRB(bounds.width / 2 - 1, 0,
-                                bounds.width / 2, bounds.height),
+                                bounds.width / 2, bounds.height,),
                           ),
                           child: Container(
                             decoration: const BoxDecoration(
@@ -156,7 +156,7 @@ class _UIColorPickerState extends State<UIColorPicker> {
                           ),
                           border: Border.all(
                               color: Theme.of(context).colorScheme.primary,
-                              width: UIConstants.borderWidth * 2)),
+                              width: UIConstants.borderWidth * 2,),),
                     ),
                   ],
                 ),

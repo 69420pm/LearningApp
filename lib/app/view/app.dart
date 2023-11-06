@@ -16,7 +16,7 @@ import 'package:ui_components/ui_components.dart';
 
 class App extends StatelessWidget {
   const App(
-      {super.key, required this.cardsRepository, required this.uiRepository});
+      {super.key, required this.cardsRepository, required this.uiRepository,});
 
   final CardsRepository cardsRepository;
   final UIRepository uiRepository;
@@ -27,7 +27,7 @@ class App extends StatelessWidget {
       value: cardsRepository,
       child: RepositoryProvider.value(
         value: uiRepository,
-        child: AppView(),
+        child: const AppView(),
       ),
     );
   }
@@ -89,7 +89,7 @@ class AppView extends StatelessWidget {
           elevation: 0,
         ),
         useMaterial3: true,
-        fontFamily: "Inter",
-        textTheme: const TextTheme());
+        fontFamily: 'Inter',
+        textTheme: const TextTheme(),);
   }
 }

@@ -37,7 +37,7 @@ class UILabelRow extends StatelessWidget {
           Expanded(
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
-                  children: actionWidgets ?? [])),
+                  children: actionWidgets ?? [],),),
         ],
       ),
     );

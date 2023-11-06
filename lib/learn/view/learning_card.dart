@@ -35,7 +35,7 @@ class LearningCard extends StatelessWidget {
                   children: [
                     const SizedBox(height: UIConstants.defaultSize * 3),
                     Text(
-                      "HIER SOLLTE DIE VORDERSEITE DER KARTE STEHEN",
+                      'HIER SOLLTE DIE VORDERSEITE DER KARTE STEHEN',
                       textAlign: TextAlign.center,
                       style: Theme.of(context)
                           .textTheme

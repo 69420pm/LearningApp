@@ -53,7 +53,7 @@ class SubjectCard extends StatelessWidget {
                             const SizedBox(width: UIConstants.descriptionPadding,),
                             Text('This subject is disabled, enable in Settings', style: UIText.smallBold.copyWith(color: UIColors.textDark)),
                           ],
-                        )
+                        ),
                       ],
                     ),
                   
@@ -76,7 +76,7 @@ class SubjectCard extends StatelessWidget {
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );

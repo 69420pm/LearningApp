@@ -9,13 +9,12 @@ import 'package:learning_app/subject_overview/bloc/folder_bloc/folder_list_tile_
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dart';
 import 'package:ui_components/ui_components.dart';
-import 'package:cards_repository/cards_repository.dart';
 
 class SubjectPageToolBar extends StatelessWidget {
   const SubjectPageToolBar(
       {super.key,
       required this.cardsRepository,
-      required this.subjectToEditUID});
+      required this.subjectToEditUID,});
   final CardsRepository cardsRepository;
   final String subjectToEditUID;
   @override
@@ -26,7 +25,7 @@ class SubjectPageToolBar extends StatelessWidget {
         SubjectOverviewSelectionState>(
       builder: (context, state) {
         softSelectedFile = cardsRepository.objectFromId(
-            context.read<SubjectOverviewSelectionBloc>().fileSoftSelected);
+            context.read<SubjectOverviewSelectionBloc>().fileSoftSelected,);
         if (softSelectedFile is Folder) {
           softSelectedFolderUID = (softSelectedFile! as Folder).uid;
         } else {
@@ -76,7 +75,7 @@ class SubjectPageToolBar extends StatelessWidget {
                 onPressed: () {
                   context.read<SubjectOverviewSelectionBloc>().add(
                         SubjectOverviewSelectionDeleteSelectedFiles(
-                            softSelectedFile: (softSelectedFile as File?)?.uid),
+                            softSelectedFile: (softSelectedFile as File?)?.uid,),
                       );
                 },
               ),
@@ -84,9 +83,9 @@ class SubjectPageToolBar extends StatelessWidget {
               icon: UIIcons.download.copyWith(color: UIColors.smallText),
               onPressed: () {
                 context.read<SubjectBloc>().add(SubjectAddCard(
-                    front: "test",
-                    back: "test Back",
-                    parentId: softSelectedFolderUID ?? subjectToEditUID));
+                    front: 'test',
+                    back: 'test Back',
+                    parentId: softSelectedFolderUID ?? subjectToEditUID,),);
               },
             ),
             UIIconButton(
@@ -118,7 +117,7 @@ class SubjectPageToolBar extends StatelessWidget {
                         typeAnswer: false,
                         recallScore: 0,
                         dateToReview: DateTime.now(),
-                        name: ""),
+                        name: '',),
                     subjectToEditUID,
                   ],
                 );

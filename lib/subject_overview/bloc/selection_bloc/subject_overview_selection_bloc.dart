@@ -35,7 +35,7 @@ class SubjectOverviewSelectionBloc
   String _fileDragged = '';
   String get fileDragged => _fileDragged;
 
-  String _hoveredFoldeUID = "";
+  String _hoveredFoldeUID = '';
   String get hoveredFolderUID => _hoveredFoldeUID;
 
   bool _isInSelectMode = false;
@@ -235,10 +235,10 @@ class SubjectOverviewSelectionBloc
   ) async {
     await _cardsRepository.moveFiles(selectedFiles, event.parentId);
     _clearSelectionVariables();
-    _hoveredFoldeUID = "";
+    _hoveredFoldeUID = '';
     _isInDragging = false;
     _isInSelectMode = false;
-    _fileDragged = "";
+    _fileDragged = '';
     emit(SubjectOverviewSelectionModeOff());
   }
 
@@ -252,7 +252,7 @@ class SubjectOverviewSelectionBloc
       //if (_isInSelectMode) emit(SubjectOverviewSelectionMultiDragging());
     } else if (event.inDragg == false && _isInDragging == true) {
       _isInDragging = false;
-      _hoveredFoldeUID = "";
+      _hoveredFoldeUID = '';
       _fileDragged = '';
       //if (_isInSelectMode) emit(SubjectOverviewSelectionModeOn());
     }
@@ -272,7 +272,7 @@ class SubjectOverviewSelectionBloc
   }
 
   FutureOr<void> _setHoveredFolder(SubjectOverviewSetHoveredFolder event,
-      Emitter<SubjectOverviewSelectionState> emit) {
+      Emitter<SubjectOverviewSelectionState> emit,) {
     if (_hoveredFoldeUID != event.folderUID) {
       _hoveredFoldeUID = event.folderUID;
       emit(SubjectOverviewSelectionUpdateHover());

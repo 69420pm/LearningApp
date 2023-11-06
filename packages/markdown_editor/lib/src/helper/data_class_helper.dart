@@ -1,36 +1,17 @@
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:learning_app/app/helper/uid.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/models/char_tile.dart';
-import 'package:markdown_editor/src/models/editor_data_classes/audio_tile_dc.dart';
-import 'package:markdown_editor/src/models/editor_data_classes/callout_tile_dc.dart';
-import 'package:markdown_editor/src/models/editor_data_classes/char_tile_dc.dart';
-import 'package:markdown_editor/src/models/editor_data_classes/divider_tile_dc.dart';
-import 'package:markdown_editor/src/models/editor_data_classes/editor_tile_dc.dart';
-import 'package:markdown_editor/src/models/editor_data_classes/front_back_seperator_tile_dc.dart';
-import 'package:markdown_editor/src/models/editor_data_classes/header_tile_dc.dart';
-import 'package:markdown_editor/src/models/editor_data_classes/image_tile_dc.dart';
-import 'package:markdown_editor/src/models/editor_data_classes/latex_tile_dc.dart';
-import 'package:markdown_editor/src/models/editor_data_classes/list_editor_tile_dc.dart';
-import 'package:markdown_editor/src/models/editor_data_classes/quote_tile_dc.dart';
-import 'package:markdown_editor/src/models/editor_data_classes/text_tile_dc.dart';
-import 'package:markdown_editor/src/models/editor_tile.dart';
-import 'package:markdown_editor/src/models/text_field_constants.dart';
-import 'package:markdown_editor/src/models/text_field_controller.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/audio_tile.dart';
-import 'package:learning_app/app/helper/uid.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/callout_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/divider_tile.dart';
-import 'package:markdown_editor/src/widgets/editor_tiles/header_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/image_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/latex_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/list_editor_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/quote_tile.dart';
-import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
 import 'package:ui_components/ui_components.dart';
-import 'package:markdown_editor/src/models/editor_data_classes/char_tile_dc.dart';
 
 class DataClassHelper {
   static List<EditorTileDC> convertToDataClass(List<EditorTile> editorTiles) {

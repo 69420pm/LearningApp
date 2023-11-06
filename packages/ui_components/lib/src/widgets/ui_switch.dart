@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ui_components/ui_components.dart';
 
 class UISwitch extends StatefulWidget {
   UISwitch({super.key, required this.onChanged, this.startValue = false, this.disabled=false}) {

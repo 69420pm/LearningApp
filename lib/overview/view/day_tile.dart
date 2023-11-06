@@ -23,14 +23,13 @@ class DayTile extends StatelessWidget {
     return SizedBox(
       width: width,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             days[index],
             style: UIText.normal.copyWith(color: UIColors.overlay),
           ),
-          SizedBox(
+          const SizedBox(
             height: UIConstants.defaultSize,
           ),
           Stack(
@@ -41,13 +40,13 @@ class DayTile extends StatelessWidget {
                 width: width / 1.2,
                 decoration: BoxDecoration(
                   color: isToday ? UIColors.textDark : Colors.transparent,
-                  borderRadius: BorderRadius.all(Radius.circular(100)),
+                  borderRadius: const BorderRadius.all(Radius.circular(100)),
                 ),
               ),
               Text(
                 '$day',
                 style: UIText.label.copyWith(
-                    color: isToday ? UIColors.primary : UIColors.textDark),
+                    color: isToday ? UIColors.primary : UIColors.textDark,),
               ),
               if (isToday)
                 Positioned(
@@ -55,14 +54,14 @@ class DayTile extends StatelessWidget {
                   child: Container(
                     height: 5,
                     width: 5,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: UIColors.primary,
                       borderRadius: BorderRadius.all(Radius.circular(100)),
                     ),
                   ),
                 ),
             ],
-          )
+          ),
         ],
       ),
     );

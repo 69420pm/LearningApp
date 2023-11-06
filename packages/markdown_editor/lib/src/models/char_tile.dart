@@ -45,7 +45,7 @@ class CharTile extends Equatable {
     bool? isHyperlink,
   }) {
     return CharTile(
-      text: char ?? this.text,
+      text: char ?? text,
       style: style ?? this.style,
       isBold: isBold ?? this.isBold,
       isItalic: isItalic ?? this.isItalic,

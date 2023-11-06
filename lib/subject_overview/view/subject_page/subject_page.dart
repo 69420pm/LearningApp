@@ -2,10 +2,6 @@ import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:learning_app/add_folder/view/add_folder_bottom_sheet.dart';
-import 'package:learning_app/add_folder/view/edit_folder_bottom_sheet.dart';
-import 'package:learning_app/subject_overview/bloc/folder_bloc/folder_list_tile_bloc.dart';
-import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dart';
 import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/dragging_tile.dart';
@@ -70,7 +66,7 @@ class _SubjectViewState extends State<SubjectView> {
     return UIPage(
       appBar: SubjectPageAppBar(
           cardsRepository: widget.cardsRepository,
-          subjectToEdit: widget.subjectToEdit),
+          subjectToEdit: widget.subjectToEdit,),
       body: Column(
         children: [
           SubjectCard(
@@ -81,7 +77,7 @@ class _SubjectViewState extends State<SubjectView> {
           ),
           SubjectPageToolBar(
               cardsRepository: widget.cardsRepository,
-              subjectToEditUID: widget.subjectToEdit.uid),
+              subjectToEditUID: widget.subjectToEdit.uid,),
           const SizedBox(
             height: UIConstants.itemPaddingLarge,
           ),
@@ -131,7 +127,7 @@ class _SubjectViewState extends State<SubjectView> {
                 ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );

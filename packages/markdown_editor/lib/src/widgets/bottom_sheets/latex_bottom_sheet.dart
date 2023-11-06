@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:markdown_editor/markdown_editor.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/new_rows/keyboard_latex_row.dart';
 import 'package:ui_components/ui_components.dart';
-import 'package:flutter_math_fork/ast.dart';
-import 'package:flutter_math_fork/flutter_math.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_math_fork/tex.dart';
 
 class LatexBottomSheet extends StatefulWidget {
   LatexBottomSheet(
@@ -13,7 +10,7 @@ class LatexBottomSheet extends StatefulWidget {
       required this.textEditingController,
       required this.latexText,
       required this.onChanged,
-      required this.focusNode}) {
+      required this.focusNode,}) {
     textEditingController.text = latexText;
   }
 
@@ -67,7 +64,7 @@ class _LatexBottomSheetState extends State<LatexBottomSheet> {
                         widget.focusNode.hasFocus &&
                         widget.textEditingController.selection.start == 0 &&
                         widget.textEditingController.selection.end == 0) {
-                          renderLatex("");
+                          renderLatex('');
                           Navigator.of(context).pop();
                         }
                   },

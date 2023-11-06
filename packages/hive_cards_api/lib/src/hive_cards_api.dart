@@ -10,14 +10,11 @@ import 'dart:developer';
 
 import 'package:cards_api/cards_api.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart' hide Card;
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:markdown_editor/src/models/editor_tile.dart';
-import 'package:markdown_editor/src/models/editor_data_classes/editor_tile_dc.dart';
-
 import 'package:markdown_editor/src/helper/data_class_helper.dart';
+import 'package:markdown_editor/src/models/editor_data_classes/editor_tile_dc.dart';
+import 'package:markdown_editor/src/models/editor_tile.dart';
 
 /// {@template hive_cards_api}
 /// A Flutter implementation of the CardsApi that uses the hive database.
@@ -100,7 +97,7 @@ class HiveCardsApi extends CardsApi {
 
   @override
   Future<List<EditorTile>> getCardContent(String cardId) async {
-    final editorTilesDC = await _cardContentBox.get(cardId);
+    final editorTilesDC = _cardContentBox.get(cardId);
     if (editorTilesDC != null) {
       return DataClassHelper.convertFromDataClass(editorTilesDC);
     } else {
@@ -480,7 +477,7 @@ class HiveCardsApi extends CardsApi {
 
   @override
   List<String> getParentIdsFromChildId(String id) {
-    List<String> parentIds = [];
+    final parentIds = <String>[];
     var childId = id;
     while (true) {
       parentIds.add(childId);

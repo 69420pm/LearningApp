@@ -1,7 +1,5 @@
 import 'package:cards_api/cards_api.dart';
-import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
-import 'package:flutter/scheduler.dart';
 import 'package:learning_app/search/view/parentObjects.dart';
 import 'package:ui_components/ui_components.dart';
 
@@ -42,7 +40,7 @@ class FolderListTileSearch extends StatelessWidget {
                   ),
                   ParentObjects(
                     parentObjects: parentObjects,
-                  )
+                  ),
                 ],
               ),
             ),

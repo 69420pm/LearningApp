@@ -2,14 +2,12 @@ import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dart';
 import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/dragging_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile_view.dart';
 import 'package:learning_app/subject_overview/view/inactive_list_tile.dart';
-
-import '../bloc/folder_bloc/folder_list_tile_bloc.dart';
-import '../bloc/selection_bloc/subject_overview_selection_bloc.dart';
 
 class FolderListTileParent extends StatelessWidget {
   const FolderListTileParent({
@@ -52,7 +50,7 @@ class FolderListTileParent extends StatelessWidget {
                     (e) {
                       if (e is Folder) {
                         return FolderListTileParent(
-                            folder: e, cardsRepository: cardsRepository);
+                            folder: e, cardsRepository: cardsRepository,);
                       } else {
                         return CardListTile(
                           card: e as Card,

@@ -5,7 +5,7 @@ import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overvi
 import 'package:ui_components/ui_components.dart';
 
 class CardListTileView extends StatelessWidget {
-  CardListTileView({
+  const CardListTileView({
     super.key,
     required this.card,
   });
@@ -44,7 +44,7 @@ class CardListTileView extends StatelessWidget {
               const SizedBox(width: UIConstants.defaultSize * 2),
               Expanded(
                 child: Text(
-                  '${card.name}', // card.front,
+                  card.name, // card.front,
                   overflow: TextOverflow.ellipsis,
                   style: UIText.normal,
                 ),
