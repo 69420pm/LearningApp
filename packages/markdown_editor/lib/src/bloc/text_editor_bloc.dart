@@ -305,7 +305,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     } else {
       lastWidget.focusNode!.requestFocus();
     }
-    _saveEditorTiles();
+    // _saveEditorTiles();
   }
 
   void _saveEditorTiles() {
