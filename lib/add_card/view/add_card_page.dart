@@ -6,43 +6,47 @@ import 'package:learning_app/add_card/view/add_card_settings_bottom_sheet.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 import 'package:ui_components/ui_components.dart';
 
-class AddCardPage extends StatelessWidget {
+class AddCardPage extends StatefulWidget {
   AddCardPage({super.key, required this.card, required this.parentId});
 
   final Card card;
   final String? parentId;
+
+  @override
+  State<AddCardPage> createState() => _AddCardPageState();
+}
+
+class _AddCardPageState extends State<AddCardPage> with WidgetsBindingObserver {
   TextEditorBloc? textEditorBloc;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this);
+    super.initState();
+  }
+
+  // when app gets minimized
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused) {
+      // App gets minimized
+      _saveEditorTiles();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        List<EditorTile>? editorTiles;
-        if (textEditorBloc != null) {
-          editorTiles = textEditorBloc!.editorTiles;
-          await context.read<AddCardCubit>().saveCard(
-                card,
-                parentId,
-                editorTiles,
-              );
-        }
+        await _saveEditorTiles();
         return true;
       },
       child: UIPage(
         addPadding: false,
         appBar: UIAppBar(
           leadingBackButton: true,
-          leadingBackButtonPressed: () {
-            List<EditorTile>? editorTiles;
-            if (textEditorBloc != null) {
-              editorTiles = textEditorBloc!.editorTiles;
-              context.read<AddCardCubit>().saveCard(
-                    card,
-                    parentId,
-                    editorTiles,
-                  );
-            }
-          },
+          leadingBackButtonPressed: _saveEditorTiles,
           actions: [
             UIIconButton(
               icon: UIIcons.settings,
@@ -53,8 +57,8 @@ class AddCardPage extends StatelessWidget {
                     return BlocProvider.value(
                       value: context.read<AddCardCubit>(),
                       child: AddCardSettingsBottomSheet(
-                        card: card,
-                        parentId: parentId,
+                        card: widget.card,
+                        parentId: widget.parentId,
                       ),
                     );
                   },
@@ -64,16 +68,16 @@ class AddCardPage extends StatelessWidget {
           ],
         ),
         body: FutureBuilder(
-          future: context.read<AddCardCubit>().getSavedEditorTiles(card),
+          future: context.read<AddCardCubit>().getSavedEditorTiles(widget.card),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               textEditorBloc = TextEditorBloc(
                 context.read<AddCardCubit>().cardsRepository,
                 (tiles) => context
                     .read<AddCardCubit>()
-                    .saveCard(card, parentId, tiles),
+                    .saveCard(widget.card, widget.parentId, tiles),
                 snapshot.data!,
-                parentId,
+                widget.parentId,
               );
               return BlocProvider.value(
                 value: textEditorBloc!,
@@ -96,5 +100,23 @@ class AddCardPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _saveEditorTiles() async {
+    List<EditorTile>? editorTiles;
+    if (textEditorBloc != null) {
+      editorTiles = textEditorBloc!.editorTiles;
+      await context.read<AddCardCubit>().saveCard(
+            widget.card,
+            widget.parentId,
+            editorTiles,
+          );
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 }
