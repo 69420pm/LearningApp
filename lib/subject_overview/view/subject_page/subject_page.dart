@@ -89,51 +89,46 @@ class _SubjectViewState extends State<SubjectView> {
             child: AutoScrollView(
               globalKey: globalKey,
               scrollController: scrollController,
-              child: ValueListenableBuilder(
-                valueListenable: context
-                    .read<SubjectBloc>()
-                    .cardsRepository
-                    .getChildrenById(widget.subjectToEdit.uid),
-                builder: (context, value, child) {
-                  final folder = value.whereType<Folder>().toList();
-                  final card = value.whereType<Card>().toList();
-                  return BlocBuilder<SubjectOverviewSelectionBloc,
-                      SubjectOverviewSelectionState>(
-                    builder: (context, state) {
-                      return DraggingTile(
-                        fileUID: widget.subjectToEdit.uid,
-                        cardsRepository: widget.cardsRepository,
-                        child: CustomScrollView(
-                          key: globalKey,
-                          controller: scrollController,
-                          slivers: [
-                            if (folder.isNotEmpty)
-                              SliverList(
-                                delegate: SliverChildBuilderDelegate(
-                                  (context, index) => FolderListTileParent(
-                                    folder: folder[index],
-                                    cardsRepository: widget.cardsRepository,
-                                  ),
-                                  // ..isHighlight = index.isOdd,
-                                  childCount: folder.length,
-                                ),
+              child: DraggingTile(
+                fileUID: widget.subjectToEdit.uid,
+                cardsRepository: widget.cardsRepository,
+                child: ValueListenableBuilder(
+                  valueListenable: context
+                      .read<SubjectBloc>()
+                      .cardsRepository
+                      .getChildrenById(widget.subjectToEdit.uid),
+                  builder: (context, value, child) {
+                    final folder = value.whereType<Folder>().toList();
+                    final card = value.whereType<Card>().toList();
+                    return CustomScrollView(
+                      key: globalKey,
+                      controller: scrollController,
+                      slivers: [
+                        if (folder.isNotEmpty)
+                          SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (context, index) => FolderListTileParent(
+                                folder: folder[index],
+                                cardsRepository: widget.cardsRepository,
                               ),
-                            if (card.isNotEmpty)
-                              SliverList(
-                                delegate: SliverChildBuilderDelegate(
-                                  (context, index) => CardListTile(
-                                    card: card[index],
-                                    cardsRepository: widget.cardsRepository,
-                                  ),
-                                  childCount: card.length,
-                                ),
+                              // ..isHighlight = index.isOdd,
+                              childCount: folder.length,
+                            ),
+                          ),
+                        if (card.isNotEmpty)
+                          SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (context, index) => CardListTile(
+                                card: card[index],
+                                cardsRepository: widget.cardsRepository,
                               ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                },
+                              childCount: card.length,
+                            ),
+                          ),
+                      ],
+                    );
+                  },
+                ),
               ),
             ),
           )

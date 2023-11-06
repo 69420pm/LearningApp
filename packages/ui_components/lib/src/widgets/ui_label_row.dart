@@ -29,13 +29,15 @@ class UILabelRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // TODO add color
           if (labelText != null)
             Text(
               labelText!,
               style: UIText.label.copyWith(color: UIColors.smallText),
             ),
-          Expanded(child: Row(children: actionWidgets ?? [])),
+          Expanded(
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: actionWidgets ?? [])),
         ],
       ),
     );
