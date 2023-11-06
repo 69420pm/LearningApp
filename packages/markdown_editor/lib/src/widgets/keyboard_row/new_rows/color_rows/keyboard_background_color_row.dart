@@ -26,7 +26,6 @@ class _KeyboardBackgroundColorRowState
           child: Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const _DefaultBackgroundColorSelector(),
               ColorSelector(
@@ -72,14 +71,14 @@ class _KeyboardBackgroundColorRowState
 }
 
 class _DefaultBackgroundColorSelector extends StatelessWidget {
-  const _DefaultBackgroundColorSelector({super.key});
+  const _DefaultBackgroundColorSelector();
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         context.read<KeyboardRowCubit>().changeBackgroundColor(
-            Colors.transparent, context.read<TextEditorBloc>());
+            Colors.transparent, context.read<TextEditorBloc>(),);
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -97,7 +96,7 @@ class _DefaultBackgroundColorSelector extends StatelessWidget {
                       color: UIColors.smallText,
                       borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(UIConstants.cornerRadius),
-                      ))
+                      ),),
                 ),
                 Container(
                   height: 12,
@@ -106,7 +105,7 @@ class _DefaultBackgroundColorSelector extends StatelessWidget {
                       color: UIColors.onOverlayCard,
                       borderRadius: BorderRadius.only(
                           topRight: Radius.circular(UIConstants.cornerRadius),
-                          )),
+                          ),),
                 ),
               ],
             ),
@@ -121,7 +120,7 @@ class _DefaultBackgroundColorSelector extends StatelessWidget {
                       color: UIColors.onOverlayCard,
                       borderRadius: BorderRadius.only(
                           
-                          bottomLeft: Radius.circular(UIConstants.cornerRadius))),
+                          bottomLeft: Radius.circular(UIConstants.cornerRadius),),),
                 ),
                 Container(
                   height: 12,
@@ -130,7 +129,7 @@ class _DefaultBackgroundColorSelector extends StatelessWidget {
                       color: UIColors.smallText,
                       borderRadius: BorderRadius.only(
                           
-                          bottomRight: Radius.circular(UIConstants.cornerRadius))),
+                          bottomRight: Radius.circular(UIConstants.cornerRadius),),),
                 ),
               ],
             ),

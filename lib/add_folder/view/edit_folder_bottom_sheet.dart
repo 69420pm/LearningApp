@@ -2,7 +2,6 @@ import 'package:cards_api/cards_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/folder_bloc/folder_list_tile_bloc.dart';
-import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dart';
 import 'package:ui_components/ui_components.dart';
 
 class EditFolderBottomSheet extends StatefulWidget {
@@ -22,7 +21,7 @@ class _EditFolderBottomSheetState extends State<EditFolderBottomSheet> {
     context.read<FolderListTileBloc>().add(FolderListTileChangeFolderName(
           folder: widget.folder,
           newName: name,
-        ));
+        ),);
     Navigator.pop(context);
   }
 
@@ -72,7 +71,7 @@ class _EditFolderBottomSheetState extends State<EditFolderBottomSheet> {
               ),
             ],
           ),
-          const SizedBox(height: UIConstants.itemPaddingLarge)
+          const SizedBox(height: UIConstants.itemPaddingLarge),
         ],
       ),
     );

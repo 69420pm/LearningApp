@@ -1,12 +1,8 @@
+import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-
-import 'package:bloc/bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
-import 'package:markdown_editor/src/models/editor_tile.dart';
-import 'package:markdown_editor/src/widgets/keyboard_row/new_rows/color_rows/keyboard_text_color_row.dart';
 import 'package:ui_components/ui_components.dart';
-import 'package:meta/meta.dart';
 
 part 'keyboard_row_state.dart';
 

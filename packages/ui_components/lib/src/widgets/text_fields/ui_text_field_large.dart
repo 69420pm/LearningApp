@@ -9,7 +9,7 @@ class UITextFieldLarge extends StatelessWidget {
       this.autofocus = false,
       this.validator,
       this.onFieldSubmitted,
-      this.onChanged});
+      this.onChanged,});
 
   /// Controls the text being edited.
   final TextEditingController? controller;
@@ -41,7 +41,7 @@ class UITextFieldLarge extends StatelessWidget {
       decoration: const InputDecoration(
         border: InputBorder.none,
         isDense: true,
-        hintText: "Name"
+        hintText: 'Name',
       ),
     );
   }

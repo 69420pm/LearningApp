@@ -30,10 +30,10 @@ class LearnAllCard extends StatelessWidget {
                 style: UIText.label.copyWith(
                   color: UIColors.textDark,
                 ),
-              )
+              ),
             ],
           ),
-          UIIcons.arrowForwardNormal.copyWith(color: UIColors.overlay)
+          UIIcons.arrowForwardNormal.copyWith(color: UIColors.overlay),
         ],
       ),
     );

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/overview/cubit/overview_cubit.dart';
 import 'package:learning_app/overview/view/subject_list_tile.dart';
-import 'package:ui_components/ui_components.dart';
 
 class SubjectList extends StatelessWidget {
   SubjectList({super.key, this.showDisabled = false});

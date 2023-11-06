@@ -1,11 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:markdown_editor/markdown_editor.dart';
-import 'package:markdown_editor/src/models/editor_tile.dart';
-import 'package:markdown_editor/src/models/text_field_controller.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:ui_components/ui_components.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:markdown_editor/markdown_editor.dart';
+import 'package:markdown_editor/src/models/text_field_controller.dart';
+import 'package:ui_components/ui_components.dart';
 
 class AudioTile extends StatefulWidget implements EditorTile {
   AudioTile({super.key, required this.filePath});
@@ -94,10 +93,10 @@ class _AudioTileState extends State<AudioTile>
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-          horizontal: UIConstants.pageHorizontalPadding),
+          horizontal: UIConstants.pageHorizontalPadding,),
       child: DecoratedBox(
         decoration: BoxDecoration(
-            color: UIColors.overlay, borderRadius: BorderRadius.circular(100)),
+            color: UIColors.overlay, borderRadius: BorderRadius.circular(100),),
         child: Padding(
           padding: const EdgeInsets.all(8),
           child: Row(
@@ -124,13 +123,13 @@ class _AudioTileState extends State<AudioTile>
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
+                  padding: const EdgeInsets.only(left: 8),
                   child: Row(
                     children: [
                       Expanded(
                         child: SliderTheme(
                           data: SliderThemeData(
-                              overlayShape: SliderComponentShape.noOverlay),
+                              overlayShape: SliderComponentShape.noOverlay,),
                           child: Slider(
                             max: _duration.inMilliseconds.toDouble(),
                             value: _position.inMilliseconds.toDouble(),
@@ -145,13 +144,13 @@ class _AudioTileState extends State<AudioTile>
                           ),
                         ),
                       ),
-                      Container(
+                      SizedBox(
                           width: 49,
                           child: Text(formatDuration(_position),
                               style: UIText.label.copyWith(
                                   color: _isPlaying
                                       ? UIColors.primary
-                                      : UIColors.smallText)))
+                                      : UIColors.smallText,),),),
                     ],
                   ),
                 ),
@@ -164,11 +163,10 @@ class _AudioTileState extends State<AudioTile>
                     context.read<TextEditorBloc>().add(
                           TextEditorRemoveEditorTile(
                             tileToRemove: widget,
-                            handOverText: false,
                             context: context,
                           ),
                         );
-                  })
+                  },),
             ],
           ),
         ),

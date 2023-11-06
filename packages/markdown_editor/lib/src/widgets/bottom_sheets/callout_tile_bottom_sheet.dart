@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:markdown_editor/markdown_editor.dart';
-import 'package:markdown_editor/src/models/editor_tile.dart';
-import 'package:markdown_editor/src/widgets/editor_tiles/callout_tile.dart';
-import 'package:markdown_editor/src/widgets/keyboard_row/new_rows/color_rows/color_selectors.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:markdown_editor/markdown_editor.dart';
+import 'package:markdown_editor/src/widgets/editor_tiles/callout_tile.dart';
 import 'package:ui_components/ui_components.dart';
 
 class CalloutTileBottomSheet extends StatelessWidget {
@@ -67,7 +65,6 @@ class CalloutTileBottomSheet extends StatelessWidget {
               context.read<TextEditorBloc>().add(
                     TextEditorRemoveEditorTile(
                       tileToRemove: parentEditorTile,
-                      handOverText: false,
                       context: context,
                     ),
                   );
@@ -81,7 +78,7 @@ class CalloutTileBottomSheet extends StatelessWidget {
 }
 
 class _ColorPicker extends StatefulWidget {
-  _ColorPicker({super.key, required this.parentEditorTile});
+  _ColorPicker({required this.parentEditorTile});
   EditorTile parentEditorTile;
 
   @override
@@ -191,7 +188,6 @@ class _ColorPickerState extends State<_ColorPicker> {
 
 class _ColorSelector extends StatelessWidget {
   _ColorSelector({
-    super.key,
     required this.color,
     required this.onPressed,
     this.selected = false,

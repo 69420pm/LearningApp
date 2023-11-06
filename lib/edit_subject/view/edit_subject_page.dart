@@ -5,7 +5,7 @@ import 'package:learning_app/edit_subject/view/class_test_column.dart';
 import 'package:learning_app/edit_subject/view/page_weekday_picker.dart';
 import 'package:ui_components/ui_components.dart';
 
-import '../cubit/edit_subject_cubit.dart';
+import 'package:learning_app/edit_subject/cubit/edit_subject_cubit.dart';
 
 class EditSubjectPage extends StatelessWidget {
   EditSubjectPage({super.key, required this.subject});
@@ -106,7 +106,7 @@ class EditSubjectPage extends StatelessWidget {
                         subject.streakRelevant = value; 
                         context
                             .read<EditSubjectCubit>()
-                            .saveSubject(this.subject);
+                            .saveSubject(subject);
                       },
                     );
                   },

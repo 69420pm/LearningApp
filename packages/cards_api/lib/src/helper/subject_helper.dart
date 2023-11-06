@@ -1,5 +1,4 @@
 import 'package:cards_api/cards_api.dart';
-import 'package:cards_api/src/models/class_test.dart';
 
 class SubjectHelper {
   static int daysTillNextClassTest(Subject subject, DateTime rightNow) {
@@ -8,7 +7,7 @@ class SubjectHelper {
     for (final element in subject.classTests) {
       DateTime? classTestDate;
       try {
-        classTestDate = (element.date);
+        classTestDate = element.date;
       } catch (e) {
         continue;
       }

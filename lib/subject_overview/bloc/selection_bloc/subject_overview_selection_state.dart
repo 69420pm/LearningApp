@@ -12,7 +12,7 @@ class SubjectOverviewSelectionModeOff extends SubjectOverviewSelectionState {}
 class SubjectOverviewSoftSelectionModeOn
     extends SubjectOverviewSelectionState {}
 
-class SubjectOverviewSelectionMultiDragging
+class SubjectOverviewSelectionMultiDraggingChange
     extends SubjectOverviewSelectionState {}
 
 class SubjectOverviewSelectionUpdateHover

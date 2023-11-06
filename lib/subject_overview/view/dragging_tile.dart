@@ -4,19 +4,17 @@ import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
+import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dart';
 import 'package:learning_app/subject_overview/view/inactive_list_tile.dart';
-
-import '../bloc/folder_bloc/folder_list_tile_bloc.dart';
-import '../bloc/subject_bloc/subject_bloc.dart';
-import 'multi_drag_indicator.dart';
+import 'package:learning_app/subject_overview/view/multi_drag_indicator.dart';
 
 class DraggingTile extends StatelessWidget {
   const DraggingTile({
-    Key? key,
+    super.key,
     required this.fileUID,
     required this.child,
     required this.cardsRepository,
-  }) : super(key: key);
+  });
 
   final String fileUID;
   final CardsRepository cardsRepository;
@@ -29,15 +27,13 @@ class DraggingTile extends StatelessWidget {
     final isFolder = cardsRepository.objectFromId(fileUID) is Folder;
     final isRootFolder = cardsRepository.objectFromId(fileUID) is Subject;
 
-    final isInSelectMode =
-        context.read<SubjectOverviewSelectionBloc>().isInSelectMode;
+    final selectionBloc = context.read<SubjectOverviewSelectionBloc>();
 
-    final isSoftSelected =
-        context.read<SubjectOverviewSelectionBloc>().fileUIDSoftSelected ==
-            fileUID;
+    final isInSelectMode = selectionBloc.isInSelectMode;
 
-    final isSelected = !isRootFolder &&
-        context.read<SubjectOverviewSelectionBloc>().isFileSelected(fileUID);
+    final isSoftSelected = selectionBloc.fileSoftSelected == fileUID;
+
+    final isSelected = !isRootFolder && selectionBloc.isFileSelected(fileUID);
 
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
@@ -53,11 +49,15 @@ class DraggingTile extends StatelessWidget {
                   SubjectOverviewFolderSelectionChange(folderUID: fileUID),
                 );
           }
-        } else {
+        } else if (!(isRootFolder && selectionBloc.fileSoftSelected.isEmpty)) {
           //change soft selection
           context.read<SubjectOverviewSelectionBloc>().add(
                 SubjectOverviewSetSoftSelectFile(
-                  fileUID: isSoftSelected ? '' : fileUID,
+                  fileUID: isSoftSelected
+                      ? ''
+                      : isRootFolder
+                          ? ''
+                          : fileUID,
                 ),
               );
         }
@@ -79,7 +79,7 @@ class DraggingTile extends StatelessWidget {
           context.read<SubjectOverviewSelectionBloc>().add(
                 SubjectOverviewDraggingChange(
                   inDragg: true,
-                  parentUID: cardsRepository.getParentIdFromChildId(fileUID),
+                  draggedFileUID: fileUID,
                 ),
               );
         },
@@ -87,17 +87,20 @@ class DraggingTile extends StatelessWidget {
           context.read<SubjectOverviewSelectionBloc>().add(
                 SubjectOverviewDraggingChange(
                   inDragg: false,
-                  parentUID: cardsRepository.getParentIdFromChildId(fileUID),
+                  draggedFileUID: '',
                 ),
               );
         },
         onDraggableCanceled: (_, __) {
-          // context.read<SubjectOverviewSelectionBloc>().add(
-          //     SubjectOverviewDraggingChange(
-          //         inDragg: false,
-          //         parentUID: cardsRepository.getParentIdFromChildId(fileUID)));
           //Start SelectionMode
-          if (!isInSelectMode) {
+          if (isInSelectMode) {
+            context.read<SubjectOverviewSelectionBloc>().add(
+                  SubjectOverviewDraggingChange(
+                    inDragg: false,
+                    draggedFileUID: '',
+                  ),
+                );
+          } else {
             context.read<SubjectOverviewSelectionBloc>().add(
                   SubjectOverviewSelectionToggleSelectMode(
                     inSelectMode: true,
@@ -149,7 +152,7 @@ class FolderDragTarget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var isHovered =
+    final isHovered =
         context.read<SubjectOverviewSelectionBloc>().hoveredFolderUID ==
             folderUID;
     return DragTarget(

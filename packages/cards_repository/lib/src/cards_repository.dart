@@ -55,7 +55,7 @@ class CardsRepository {
   /// Saves a [card]
   /// If a [card] with same id already exists, it will be replaced
   Future<void> saveCard(
-          Card card, List<EditorTile>? editorTiles, String? parentId) =>
+          Card card, List<EditorTile>? editorTiles, String? parentId,) =>
       _cardsApi.saveCard(card, editorTiles, parentId);
 
   /// Saves a [subject]

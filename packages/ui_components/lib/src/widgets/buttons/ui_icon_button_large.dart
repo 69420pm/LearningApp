@@ -6,7 +6,7 @@ class UIIconButtonLarge extends StatefulWidget {
     super.key,
     required this.icon,
     required this.onPressed,
-    this.onBottomSheet = true
+    this.onBottomSheet = true,
   });
 
   /// displayed icon
@@ -30,7 +30,7 @@ class _UIIconButtonLargeState extends State<UIIconButtonLarge> {
       width: 48,
       decoration: BoxDecoration(
         color: widget.onBottomSheet?UIColors.onOverlayCard:UIColors.overlay,
-        borderRadius: BorderRadius.all(Radius.circular(420)),
+        borderRadius: const BorderRadius.all(Radius.circular(420)),
       ),
       child: IconButton(
         icon: widget.icon,

@@ -28,7 +28,13 @@ class SubjectOverviewFolderSelectionChange
 }
 
 class SubjectOverviewSelectionDeleteSelectedFiles
-    extends SubjectOverviewSelectionEvent {}
+    extends SubjectOverviewSelectionEvent {
+  //null if in selectMode and hole Selection should be deleted
+  String? softSelectedFile;
+  SubjectOverviewSelectionDeleteSelectedFiles({
+    this.softSelectedFile,
+  });
+}
 
 class SubjectOverviewSelectionMoveSelection
     extends SubjectOverviewSelectionEvent {
@@ -40,10 +46,11 @@ class SubjectOverviewSelectionMoveSelection
 
 class SubjectOverviewDraggingChange extends SubjectOverviewSelectionEvent {
   bool inDragg;
-  String parentUID;
+  String draggedFileUID;
+
   SubjectOverviewDraggingChange({
     required this.inDragg,
-    required this.parentUID,
+    required this.draggedFileUID,
   });
 }
 

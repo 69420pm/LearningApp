@@ -15,12 +15,12 @@ class KeyboardButton extends StatelessWidget {
         decoration: BoxDecoration(
             color: withBackgroundColor? UIColors.overlay:Colors.transparent,
             borderRadius:
-                BorderRadius.all(Radius.circular(UIConstants.cornerRadius))),
+                const BorderRadius.all(Radius.circular(UIConstants.cornerRadius)),),
         child: UIIconButton(
           icon: icon,
           onPressed: onPressed,
           onDoubleTap: onDoubleTap,
-        ));
+        ),);
   }
 }
 

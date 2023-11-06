@@ -45,7 +45,7 @@ class Card extends File implements Equatable {
     required this.typeAnswer,
     required this.recallScore,
     required this.dateToReview,
-    required this.name
+    required this.name,
   }) : super(uid: uid);
 
   Card copyWith({
@@ -56,7 +56,7 @@ class Card extends File implements Equatable {
     int? recallScore,
     DateTime? dateToReview,
     List<String>? parents,
-    String? name
+    String? name,
   }) {
     return Card(
       uid: uid ?? this.uid,
@@ -65,7 +65,7 @@ class Card extends File implements Equatable {
       typeAnswer: typeAnswer ?? this.typeAnswer,
       recallScore: recallScore ?? this.recallScore,
       dateToReview: dateToReview ?? this.dateToReview,
-      name: name ?? this.name
+      name: name ?? this.name,
     );
   }
 

@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
-import 'package:markdown_editor/src/models/text_field_constants.dart';
 import 'package:markdown_editor/src/widgets/bottom_sheets/add_audio_bottom_sheet.dart';
 import 'package:markdown_editor/src/widgets/bottom_sheets/add_image_bottom_sheet.dart';
 import 'package:markdown_editor/src/widgets/bottom_sheets/latex_bottom_sheet.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/callout_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/divider_tile.dart';
-import 'package:markdown_editor/src/widgets/editor_tiles/header_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/latex_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/list_editor_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/quote_tile.dart';
-import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_button.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_row_container.dart';
 import 'package:ui_components/ui_components.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class KeyboardNewTileRow extends StatelessWidget {
   const KeyboardNewTileRow({super.key});
@@ -30,7 +27,7 @@ class KeyboardNewTileRow extends StatelessWidget {
           children: [
             KeyboardRowContainer(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 2),
                 child: Row(
                   children: [
                     KeyboardButton(
@@ -79,7 +76,7 @@ class KeyboardNewTileRow extends StatelessWidget {
                       icon: UIIcons.functions,
                       onPressed: () {
                         final newLatexTile = LatexTile();
-                        String latexText = "";
+                        var latexText = '';
                         UIBottomSheet.showUIBottomSheet(
                           context: context,
                           builder: (_) => Wrap(
@@ -131,7 +128,7 @@ class KeyboardNewTileRow extends StatelessWidget {
             ),
             KeyboardRowContainer(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 2),
                 child: Row(
                   children: [
                     KeyboardButton(
@@ -141,7 +138,7 @@ class KeyboardNewTileRow extends StatelessWidget {
                           context: context,
                           builder: (_) => BlocProvider.value(
                             value: context.read<TextEditorBloc>(),
-                            child: AddImageBottomSheet(),
+                            child: const AddImageBottomSheet(),
                           ),
                         ).whenComplete(
                           () => context.read<KeyboardRowCubit>().expandText(),
@@ -155,7 +152,7 @@ class KeyboardNewTileRow extends StatelessWidget {
                           context: context,
                           builder: (_) => BlocProvider.value(
                             value: context.read<TextEditorBloc>(),
-                            child: AddAudioBottomSheet(),
+                            child: const AddAudioBottomSheet(),
                           ),
                         ).whenComplete(
                           () => context.read<KeyboardRowCubit>().expandText(),

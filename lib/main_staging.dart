@@ -52,5 +52,5 @@ Future<void> main() async {
   await bootstrap(() => App(
         cardsRepository: cardsRepository,
         uiRepository: uiRepository,
-      ));
+      ),);
 }

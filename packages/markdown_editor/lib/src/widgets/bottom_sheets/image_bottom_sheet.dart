@@ -42,9 +42,9 @@ class ImageBottomSheet extends StatelessWidget {
                   return BlocProvider.value(
                     value: context.read<TextEditorBloc>(),
                     child: UISelectionBottomSheet(
-                      selectionText: ['Left', 'Centered', 'Right'],
+                      selectionText: const ['Left', 'Centered', 'Right'],
                       selection: (index) {
-                        Alignment alignment = Alignment.center;
+                        var alignment = Alignment.center;
                         if (index == 0) {
                           alignment = Alignment.centerLeft;
                         } else if (index == 1) {
@@ -78,7 +78,6 @@ class ImageBottomSheet extends StatelessWidget {
               context.read<TextEditorBloc>().add(
                     TextEditorRemoveEditorTile(
                       tileToRemove: parentEditorTile,
-                      handOverText: false,
                       context: context,
                     ),
                   );

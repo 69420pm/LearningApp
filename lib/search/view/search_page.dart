@@ -8,7 +8,7 @@ import 'package:learning_app/search/view/subject_search_results.dart';
 import 'package:ui_components/ui_components.dart';
 
 class SearchPage extends StatelessWidget {
-  SearchPage({super.key, required this.searchId});
+  const SearchPage({super.key, required this.searchId});
   /// parent id to search e.g. within subjects or folders
   final String? searchId;
 
@@ -55,7 +55,7 @@ class SearchPage extends StatelessWidget {
               }
               return Container();
             },
-          )
+          ),
         ],
       ),
     );

@@ -20,7 +20,6 @@ class _KeyboardTextColorRowState extends State<KeyboardTextColorRow> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               _ColorSelector(color: UIColors.textLight),
               _ColorSelector(color: UIColors.red),
@@ -32,17 +31,17 @@ class _KeyboardTextColorRowState extends State<KeyboardTextColorRow> {
             ],
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 8,
         ),
-        KeyboardTextRow()
+        const KeyboardTextRow(),
       ],
     );
   }
 }
 
 class _ColorSelector extends StatelessWidget {
-  _ColorSelector({super.key, required this.color});
+  _ColorSelector({required this.color});
   Color color;
   @override
   Widget build(BuildContext context) {
@@ -54,7 +53,7 @@ class _ColorSelector extends StatelessWidget {
             width: 28,
             decoration: BoxDecoration(
                 color: color,
-                borderRadius: BorderRadius.circular(UIConstants.cornerRadius))),
+                borderRadius: BorderRadius.circular(UIConstants.cornerRadius),),),
       ),
     );
   }

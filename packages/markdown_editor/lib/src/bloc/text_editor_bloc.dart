@@ -10,7 +10,7 @@ import 'package:markdown_editor/src/widgets/editor_tiles/list_editor_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
 import 'package:ui_components/ui_components.dart';
 import 'package:cards_repository/cards_repository.dart';
-import '../models/char_tile.dart';
+import 'package:markdown_editor/src/models/char_tile.dart';
 import 'package:learning_app/app/helper/uid.dart';
 part 'text_editor_event.dart';
 part 'text_editor_state.dart';
@@ -45,7 +45,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
   /// list of all editorTiles (textWidgets, Images, etc.) of text editor
   List<EditorTile> editorTiles;
 
-  void Function(List<EditorTile>) _saveEditorTilesCallback;
+  final void Function(List<EditorTile>) _saveEditorTilesCallback;
 
   /// whether text should get written in bold or not
   bool isBold;
@@ -321,7 +321,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
   }
 
   FutureOr<void> _nextCard(
-      TextEditorNextCard event, Emitter<TextEditorState> emit) {
+      TextEditorNextCard event, Emitter<TextEditorState> emit,) {
     _saveEditorTiles();
     if (parentId != null) {
       Navigator.of(event.context).pushReplacementNamed(

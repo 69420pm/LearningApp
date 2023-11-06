@@ -14,7 +14,7 @@ class AddClassTestPage extends StatelessWidget {
       canSave = true;
     } else {
       classTest = ClassTest(
-          uid: Uid().uid(), name: '', date: DateTime.now(), folderIds: []);
+          uid: Uid().uid(), name: '', date: DateTime.now(), folderIds: const [],);
     }
   }
 

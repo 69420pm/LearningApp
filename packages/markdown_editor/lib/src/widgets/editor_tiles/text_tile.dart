@@ -1,13 +1,9 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
-import 'package:markdown_editor/src/bloc/text_editor_bloc.dart';
 import 'package:markdown_editor/src/models/char_tile.dart';
-import 'package:markdown_editor/src/models/editor_tile.dart';
-import 'package:markdown_editor/src/models/text_field_constants.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
 import 'package:ui_components/ui_components.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -243,7 +239,7 @@ class TextTile extends StatelessWidget implements EditorTile {
                 hintStyle: textStyle.copyWith(color: UIColors.smallTextDark),
                 contentPadding: contentPadding,
                 labelStyle: TextFieldConstants.zero,
-                labelText: "",
+                labelText: '',
                 // floatingLabelBehavior:  FloatingLabelBehavior.always
               ),
             ),

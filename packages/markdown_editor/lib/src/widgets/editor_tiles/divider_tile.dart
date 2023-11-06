@@ -11,9 +11,9 @@ class DividerTile extends StatelessWidget implements EditorTile {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: UIConstants.pageHorizontalPadding),
-      child: const Divider(color: UIColors.smallTextDark, thickness: 2,),
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: UIConstants.pageHorizontalPadding),
+      child: Divider(color: UIColors.smallTextDark, thickness: 2,),
     );
   }
 

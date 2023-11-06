@@ -11,6 +11,8 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:intl/intl.dart';
 
 class RecorderBottomSheet extends StatefulWidget {
+  const RecorderBottomSheet({super.key});
+
   @override
   State<RecorderBottomSheet> createState() => _RecorderBottomSheetState();
 }
@@ -18,7 +20,7 @@ class RecorderBottomSheet extends StatefulWidget {
 class _RecorderBottomSheetState extends State<RecorderBottomSheet> {
   bool? _microphonePermissionGranted;
   late Timer _timer;
-  Duration _elapsedTime = Duration(seconds: 0);
+  Duration _elapsedTime = const Duration();
 
   final _recorder = FlutterSoundRecorder();
 
@@ -26,7 +28,6 @@ class _RecorderBottomSheetState extends State<RecorderBottomSheet> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      print("call");
       await _asyncInit();
     });
   }
@@ -71,7 +72,7 @@ class _RecorderBottomSheetState extends State<RecorderBottomSheet> {
       setState(() {
         _microphonePermissionGranted = true;
       });
-      _startRecording();
+      await _startRecording();
       await _recorder.openRecorder();
     }
   }
@@ -108,9 +109,9 @@ class _RecorderBottomSheetState extends State<RecorderBottomSheet> {
 
   Future<void> _startRecording() async {
     final path = await getApplicationDocumentsDirectory();
-    _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
       setState(() {
-        _elapsedTime += Duration(seconds: 1);
+        _elapsedTime += const Duration(seconds: 1);
       });
     });
     // play
@@ -151,7 +152,7 @@ class _RecorderBottomSheetState extends State<RecorderBottomSheet> {
                 );
               } else {
                 return Text('00:00:00',
-                    style: UIText.label.copyWith(color: UIColors.smallText));
+                    style: UIText.label.copyWith(color: UIColors.smallText),);
               }
             },
           ),

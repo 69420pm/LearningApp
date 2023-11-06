@@ -5,7 +5,7 @@ import 'package:ui_components/ui_components.dart';
 
 class UIAppBar extends StatelessWidget implements PreferredSizeWidget {
   const UIAppBar({
-    Key? key,
+    super.key,
     this.title,
     this.automaticallyImplyLeading = true,
     this.actions,
@@ -13,7 +13,7 @@ class UIAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.bottom,
     this.leadingBackButton = false,
     this.leadingBackButtonPressed,
-  }) : super(key: key);
+  });
   final String? title;
   final bool automaticallyImplyLeading;
   final List<Widget>? actions;

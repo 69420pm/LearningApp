@@ -114,7 +114,7 @@ class KeyboardTextRow extends StatelessWidget {
                         onDoubleTap: () {
                           context.read<KeyboardRowCubit>().changeTextColor(
                               UIColors.textLight,
-                              context.read<TextEditorBloc>());
+                              context.read<TextEditorBloc>(),);
                           context
                               .read<KeyboardRowCubit>()
                               .defaultTextColor(textEditorBloc);

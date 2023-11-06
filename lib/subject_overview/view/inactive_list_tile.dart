@@ -11,9 +11,9 @@ class InactiveListTile extends StatelessWidget {
       child: Container(
         width: double.infinity,
         height: UIConstants.defaultSize * 5,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           borderRadius:
-              const BorderRadius.all(Radius.circular(UIConstants.cornerRadius)),
+              BorderRadius.all(Radius.circular(UIConstants.cornerRadius)),
           color: UIColors.overlayDisabled,
         ),
       ),

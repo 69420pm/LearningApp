@@ -17,10 +17,10 @@ class AddSubjectCubit extends Cubit<AddSubjectState> {
       name: name,
       dateCreated: DateTime.now(),
       icon: icon,
-      classTests: [],
+      classTests: const [],
       scheduledDays: daysToGetNotified,
       streakRelevant: true,
-      disabled: false
+      disabled: false,
     );
     try {
       await _cardsRepository.saveSubject(newSubject);

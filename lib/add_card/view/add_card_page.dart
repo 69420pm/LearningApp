@@ -3,8 +3,6 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_card/cubit/add_card_cubit.dart';
 import 'package:learning_app/add_card/view/add_card_settings_bottom_sheet.dart';
-import 'package:learning_app/add_subject/cubit/add_subject_cubit.dart';
-import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 import 'package:ui_components/ui_components.dart';
 

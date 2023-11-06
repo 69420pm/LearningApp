@@ -26,13 +26,16 @@ class SubjectOverviewSelectionBloc
   final List<String> _selectedFiles = List.empty(growable: true);
   List<String> get selectedFiles => _selectedFiles;
 
-  String _fileUIDSoftSelected = '';
-  String get fileUIDSoftSelected => _fileUIDSoftSelected;
+  String _fileSoftSelected = '';
+  String get fileSoftSelected => _fileSoftSelected;
 
   bool _isInDragging = false;
   bool get isInDragging => _isInDragging;
 
-  String _hoveredFoldeUID = "";
+  String _fileDragged = '';
+  String get fileDragged => _fileDragged;
+
+  String _hoveredFoldeUID = '';
   String get hoveredFolderUID => _hoveredFoldeUID;
 
   bool _isInSelectMode = false;
@@ -84,12 +87,12 @@ class SubjectOverviewSelectionBloc
       if (selectedParentFolderUID != parentUID) {
         //!rekursion
         _checkIfParentIsSelected(parentUID, fileUID);
+      } else {
+        //deselect file
+        _selectedFiles.remove(fileUID);
+
+        _checkIfNothingSelected();
       }
-
-      //deselect file
-      _selectedFiles.remove(fileUID);
-
-      _checkIfNothingSelected();
 
       return true;
     } else {
@@ -101,16 +104,18 @@ class SubjectOverviewSelectionBloc
     if (_cardsRepository
         .getChildrenDirectlyBelow(parentUID)
         .every(_selectedFiles.contains)) {
-      //select parentFolder
-      _selectFolder(
-        _cardsRepository.getParentIdFromChildId(parentUID),
-        parentUID,
-      );
+      if (_cardsRepository.objectFromId(parentUID) is! Subject) {
+        //select parentFolder
+        _selectFolder(
+          _cardsRepository.getParentIdFromChildId(parentUID),
+          parentUID,
+        );
 
-      //deselect all children
-      _cardsRepository
-          .getChildrenDirectlyBelow(parentUID)
-          .forEach(_selectedFiles.remove);
+        //deselect all children
+        _cardsRepository
+            .getChildrenDirectlyBelow(parentUID)
+            .forEach(_selectedFiles.remove);
+      }
     }
   }
 
@@ -200,7 +205,7 @@ class SubjectOverviewSelectionBloc
   ) {
     if (event.inSelectMode) {
       _isInSelectMode = true;
-      _fileUIDSoftSelected = '';
+      _fileSoftSelected = '';
       emit(SubjectOverviewSelectionModeOn());
     } else {
       _isInSelectMode = false;
@@ -213,7 +218,11 @@ class SubjectOverviewSelectionBloc
     SubjectOverviewSelectionDeleteSelectedFiles event,
     Emitter<SubjectOverviewSelectionState> emit,
   ) async {
-    await _cardsRepository.deleteFiles(_selectedFiles);
+    if (event.softSelectedFile != null) {
+      await _cardsRepository.deleteFiles([event.softSelectedFile!]);
+    } else {
+      await _cardsRepository.deleteFiles(_selectedFiles);
+    }
 
     _isInSelectMode = false;
     _clearSelectionVariables();
@@ -226,9 +235,10 @@ class SubjectOverviewSelectionBloc
   ) async {
     await _cardsRepository.moveFiles(selectedFiles, event.parentId);
     _clearSelectionVariables();
-    _hoveredFoldeUID = "";
+    _hoveredFoldeUID = '';
     _isInDragging = false;
     _isInSelectMode = false;
+    _fileDragged = '';
     emit(SubjectOverviewSelectionModeOff());
   }
 
@@ -238,20 +248,22 @@ class SubjectOverviewSelectionBloc
   ) {
     if (event.inDragg == true && _isInDragging == false) {
       _isInDragging = true;
-      _hoveredFoldeUID = event.parentUID;
+      _fileDragged = event.draggedFileUID;
       //if (_isInSelectMode) emit(SubjectOverviewSelectionMultiDragging());
     } else if (event.inDragg == false && _isInDragging == true) {
       _isInDragging = false;
-      _hoveredFoldeUID = "";
+      _hoveredFoldeUID = '';
+      _fileDragged = '';
       //if (_isInSelectMode) emit(SubjectOverviewSelectionModeOn());
     }
+    if (_isInSelectMode) emit(SubjectOverviewSelectionModeOn());
   }
 
   FutureOr<void> _setSoftSelectFile(
     SubjectOverviewSetSoftSelectFile event,
     Emitter<SubjectOverviewSelectionState> emit,
   ) {
-    _fileUIDSoftSelected = event.fileUID;
+    _fileSoftSelected = event.fileUID;
     if (event.fileUID != '') {
       emit(SubjectOverviewSoftSelectionModeOn());
     } else {
@@ -260,7 +272,7 @@ class SubjectOverviewSelectionBloc
   }
 
   FutureOr<void> _setHoveredFolder(SubjectOverviewSetHoveredFolder event,
-      Emitter<SubjectOverviewSelectionState> emit) {
+      Emitter<SubjectOverviewSelectionState> emit,) {
     if (_hoveredFoldeUID != event.folderUID) {
       _hoveredFoldeUID = event.folderUID;
       emit(SubjectOverviewSelectionUpdateHover());

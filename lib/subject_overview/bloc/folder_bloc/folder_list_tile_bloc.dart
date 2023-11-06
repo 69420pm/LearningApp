@@ -5,7 +5,6 @@ import 'package:cards_repository/cards_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
 
 part 'folder_list_tile_event.dart';
@@ -57,11 +56,11 @@ class FolderListTileBloc
   }
 
   FutureOr<void> _changeFolderName(FolderListTileChangeFolderName event,
-      Emitter<FolderListTileState> emit) async {
+      Emitter<FolderListTileState> emit,) async {
     emit(FolderListTileLoading());
     // try {
     await cardsRepository.saveFolder(
-        event.folder.copyWith(name: event.newName), null);
+        event.folder.copyWith(name: event.newName), null,);
     emit(FolderListTileSuccess());
   }
 }

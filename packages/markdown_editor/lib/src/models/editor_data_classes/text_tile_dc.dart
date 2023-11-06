@@ -1,7 +1,6 @@
-import 'package:markdown_editor/src/models/char_tile.dart';
+import 'package:hive/hive.dart';
 import 'package:markdown_editor/src/models/editor_data_classes/char_tile_dc.dart';
 import 'package:markdown_editor/src/models/editor_data_classes/editor_tile_dc.dart';
-import 'package:hive/hive.dart';
 
 part 'text_tile_dc.g.dart';
 /// matching data class to TextTile

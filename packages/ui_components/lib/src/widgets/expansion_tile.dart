@@ -91,7 +91,7 @@ class _UIExpansionTileState extends State<UIExpansionTile>
                 SizedBox(width: widget.titleSpacing),
                 Expanded(
                   child: Text(widget.title,
-                      overflow: TextOverflow.ellipsis, style: UIText.label),
+                      overflow: TextOverflow.ellipsis, style: UIText.label,),
                 ),
                 const SizedBox(width: UIConstants.defaultSize),
                 if (widget.trailing != null) widget.trailing!,
@@ -99,15 +99,16 @@ class _UIExpansionTileState extends State<UIExpansionTile>
               ],
             ),
           ),
-          SizeTransition(
-            sizeFactor: _animation,
-            child: ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemBuilder: (context, index) => widget.children[index],
-              itemCount: widget.children.length,
+          if (_isOpened || _animation.value > 0)
+            SizeTransition(
+              sizeFactor: _animation,
+              child: ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemBuilder: (context, index) => widget.children[index],
+                itemCount: widget.children.length,
+              ),
             ),
-          ),
         ],
       ),
     );
