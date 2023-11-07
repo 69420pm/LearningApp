@@ -90,3 +90,10 @@ class TextEditorNextCard extends TextEditorEvent {
   });
 
 }
+
+class TextEditorSetFocusedWidget extends TextEditorEvent {
+  FocusNode? focusedWidget;
+  TextEditorSetFocusedWidget({
+    required this.focusedWidget,
+  });
+}
