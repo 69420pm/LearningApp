@@ -23,3 +23,8 @@ export 'src/widgets/keyboard_row/keyboard_row.dart';
 export 'src/models/text_field_constants.dart';
 export 'src/widgets/editor_tiles/front_back_seperator_tile.dart';
 export 'src/widgets/editor_tiles/header_tile.dart';
+export 'src/helper/data_class_helper.dart';
+export 'src/widgets/editor_tiles/image_tile.dart';
+export 'src/widgets/editor_tiles/audio_tile.dart';
+export 'src/widgets/editor_tiles/latex_tile.dart';
+

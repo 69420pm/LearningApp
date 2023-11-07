@@ -236,28 +236,31 @@ class DataClassHelper {
     return dataClassTiles;
   }
 
-  static List<String> getFrontAndBackText(List<EditorTileDC> tiles, bool onlyFront) {
+  static List<String> getFrontAndBackText(
+    List<EditorTileDC> tiles,
+    bool onlyFront,
+  ) {
     var front = '';
     var back = '';
     var addFront = true;
     for (final tile in tiles) {
       if (tile is TextTileDC) {
-        final text = _charTilesToText(tile.charTiles);
+        final text = _charTilesDCToText(tile.charTiles);
         addFront ? front += '$text\n' : back += '$text\n';
       } else if (tile is HeaderTileDC) {
-        final text = _charTilesToText(tile.charTiles);
+        final text = _charTilesDCToText(tile.charTiles);
         addFront ? front += '$text\n' : back += '$text\n';
       } else if (tile is CalloutTileDC) {
-        final text = _charTilesToText(tile.charTiles);
+        final text = _charTilesDCToText(tile.charTiles);
         addFront ? front += '$text\n' : back += '$text\n';
       } else if (tile is ListEditorTileDC) {
-        final text = _charTilesToText(tile.charTiles);
+        final text = _charTilesDCToText(tile.charTiles);
         addFront ? front += '$text\n' : back += '$text\n';
       } else if (tile is QuoteTileDC) {
-        final text = _charTilesToText(tile.charTiles);
+        final text = _charTilesDCToText(tile.charTiles);
         addFront ? front += '$text\n' : back += '$text\n';
       } else if (tile is FrontBackSeparatorTileDC) {
-        if(onlyFront){
+        if (onlyFront) {
           return [front];
         }
         addFront = false;
@@ -266,7 +269,58 @@ class DataClassHelper {
     return [front, back];
   }
 
-  static String _charTilesToText(List<CharTileDC> charTiles) {
+  static List<String> getFrontAndBackTextFromEditorTiles(
+    List<EditorTile> tiles,
+    bool onlyFront,
+  ) {
+    var front = '';
+    var back = '';
+    var addFront = true;
+    for (final tile in tiles) {
+      if (tile is TextTile && tile.textFieldController != null) {
+        final text = _charTilesToText(
+          tile.textFieldController!.charTiles.values.toList(),
+        );
+        addFront ? front += '$text\n' : back += '$text\n';
+      } else if (tile is HeaderTile) {
+        final text = _charTilesToText(
+          tile.textFieldController!.charTiles.values.toList(),
+        );
+        addFront ? front += '$text\n' : back += '$text\n';
+      } else if (tile is CalloutTile) {
+        final text = _charTilesToText(
+          tile.textFieldController!.charTiles.values.toList(),
+        );
+        addFront ? front += '$text\n' : back += '$text\n';
+      } else if (tile is ListEditorTile) {
+        final text = _charTilesToText(
+          tile.textFieldController!.charTiles.values.toList(),
+        );
+        addFront ? front += '$text\n' : back += '$text\n';
+      } else if (tile is QuoteTile) {
+        final text = _charTilesToText(
+          tile.textFieldController!.charTiles.values.toList(),
+        );
+        addFront ? front += '$text\n' : back += '$text\n';
+      } else if (tile is FrontBackSeparatorTile) {
+        if (onlyFront) {
+          return [front];
+        }
+        addFront = false;
+      }
+    }
+    return [front, back];
+  }
+
+  static String _charTilesDCToText(List<CharTileDC> charTiles) {
+    var text = '';
+    for (final element in charTiles) {
+      text += element.text;
+    }
+    return text;
+  }
+
+  static String _charTilesToText(List<CharTile> charTiles) {
     var text = '';
     for (final element in charTiles) {
       text += element.text;
