@@ -11,6 +11,7 @@ class UIDeletionDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      
       title: Text(
         'Delete $whatToDelete?',
         style: UIText.labelBold,

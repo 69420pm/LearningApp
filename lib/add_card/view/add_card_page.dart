@@ -31,7 +31,7 @@ class _AddCardPageState extends State<AddCardPage> with WidgetsBindingObserver {
     if (state == AppLifecycleState.inactive ||
         state == AppLifecycleState.paused) {
       // App gets minimized
-      _saveEditorTiles();
+      _saveEditorTiles(emptyWarning: false, leaveEditorAfterSaving: false);
     }
   }
 
@@ -39,14 +39,20 @@ class _AddCardPageState extends State<AddCardPage> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        await _saveEditorTiles();
-        return true;
+        _saveEditorTiles();
+        return false;
       },
       child: UIPage(
         addPadding: false,
         appBar: UIAppBar(
-          leadingBackButton: true,
-          leadingBackButtonPressed: _saveEditorTiles,
+          leading: UIIconButton(
+            icon: UIIcons.arrowBack,
+            onPressed: () async {
+              _saveEditorTiles();
+            },
+          ),
+          // leadingBackButton: true,
+          // leadingBackButtonPressed: _saveEditorTiles,
           actions: [
             UIIconButton(
               icon: UIIcons.settings,
@@ -102,15 +108,101 @@ class _AddCardPageState extends State<AddCardPage> with WidgetsBindingObserver {
     );
   }
 
-  Future<void> _saveEditorTiles() async {
-    List<EditorTile>? editorTiles;
+  Future<void> _saveEditorTiles(
+      {bool emptyWarning = true, bool leaveEditorAfterSaving = true}) async {
     if (textEditorBloc != null) {
-      editorTiles = textEditorBloc!.editorTiles;
-      await context.read<AddCardCubit>().saveCard(
-            widget.card,
-            widget.parentId,
-            editorTiles,
-          );
+      final editorTiles = textEditorBloc!.editorTiles;
+      bool isEmpty = true;
+      for (var element in editorTiles) {
+        if (element is FrontBackSeparatorTile) {
+          break;
+        }
+        if (element is ImageTile) {
+          isEmpty = false;
+          break;
+        }
+        if (element is AudioTile) {
+          isEmpty = false;
+          break;
+        }
+        if (element is LatexTile) {
+          isEmpty = false;
+          break;
+        }
+      }
+      if (isEmpty) {
+        final frontText = DataClassHelper.getFrontAndBackTextFromEditorTiles(
+            editorTiles, true);
+        if (frontText.isNotEmpty &&
+            frontText[0].trim().isNotEmpty &&
+            editorTiles.isNotEmpty) {
+          // card content is not empty
+          await context.read<AddCardCubit>().saveCard(
+                widget.card,
+                widget.parentId,
+                editorTiles,
+              );
+          if (leaveEditorAfterSaving) {
+            Navigator.of(context).pop();
+          }
+          return;
+        } else {
+          // card content is empty
+          var leaveEditor = false;
+          if (!emptyWarning) {
+            if (leaveEditorAfterSaving) {
+              Navigator.of(context).pop();
+            }
+            return;
+          }
+          await showDialog(
+            context: context,
+            builder: (_) => UIDialog(
+              title: 'Front of card is empty',
+              body:
+                  'This card can not be saved, please add some content to the front of the card.',
+              actions: [
+                UIButton(
+                  child: Text('Leave without saving',
+                      style: UIText.labelBold.copyWith(color: UIColors.delete)),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    leaveEditor = true;
+                  },
+                ),
+                UIButton(
+                  child: const Text('Keep editing', style: UIText.label),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          ).then((value) {
+            if (leaveEditor) {
+              Navigator.of(context).pop();
+              return;
+            }
+          });
+        }
+      } else {
+        // card content is not empty
+        await context.read<AddCardCubit>().saveCard(
+              widget.card,
+              widget.parentId,
+              editorTiles,
+            );
+        if (leaveEditorAfterSaving) {
+          Navigator.of(context).pop();
+        }
+        return;
+      }
+
+      return;
+    } else {
+      if (leaveEditorAfterSaving) {
+        Navigator.of(context).pop();
+      }
     }
   }
 
