@@ -35,7 +35,7 @@ dependencies:
   image_picker: ^1.0.2
   permission_handler: ^11.0.1
   audioplayers: ^5.0.0
-  file_picker: ^6.0.0
+  file_picker: ^6.1.1
   flutter_math_fork: ^0.7.1
   flutter_sound: ^9.2.13
   url_launcher: ^6.1.14
