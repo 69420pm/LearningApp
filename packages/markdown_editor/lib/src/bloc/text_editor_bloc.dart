@@ -148,7 +148,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
         }
         // if focused textfield is an empty TextTile
         if (editorTiles[i].focusNode != null &&
-            // editorTiles[i].focusNode!.hasFocus &&
+            editorTiles[i].focusNode!.hasFocus &&
             editorTiles[i] is TextTile &&
             (editorTiles[i] as TextTile).textFieldController!.text.isEmpty &&
             toAdd is! TextTile) {
