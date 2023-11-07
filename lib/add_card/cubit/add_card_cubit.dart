@@ -20,18 +20,24 @@ class AddCardCubit extends Cubit<AddCardState> {
     List<EditorTile>? editorTiles,
   ) async {
     emit(AddCardLoading());
-    await cardsRepository.saveCard(card, editorTiles, parentId);
-    final frontText =
-        cardsRepository.getTextFromCard(card.uid, onlyFront: true);
-    if (frontText.isNotEmpty && frontText[0].trim().isNotEmpty) {
-      card.name = frontText[0].replaceAll('\n', '');
-    } else {
-      card.name =
-          "created on ${DateFormat('EEE dd.MM yyyy HH:mm').format(DateTime.now())}";
-    }
-    await cardsRepository.saveCard(card, null, parentId);
+    if (editorTiles != null) {
+      final frontText =
+          DataClassHelper.getFrontAndBackTextFromEditorTiles(editorTiles, true);
+      if (frontText.isNotEmpty && frontText[0].trim().isNotEmpty) {
+        final newlineIndex = frontText[0].indexOf("\n");
+        if (newlineIndex != -1) {
+          card.name = frontText[0].substring(0,newlineIndex);
+        } else {
+          card.name = frontText[0];
+        }
+      } else {
+        card.name =
+            "created on ${DateFormat('EEE dd.MM yyyy HH:mm').format(DateTime.now())}";
+      }
+      await cardsRepository.saveCard(card, editorTiles, parentId);
 
-    emit(AddCardSuccess());
+      emit(AddCardSuccess());
+    }
   }
 
   Future<List<EditorTile>> getSavedEditorTiles(

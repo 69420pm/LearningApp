@@ -11,7 +11,8 @@ import 'package:markdown_editor/src/models/char_tile.dart';
 
 class ListEditorTile extends StatelessWidget implements EditorTile {
   /// initialize ListEditorTile
-  ListEditorTile({super.key, this.orderNumber = 0, TextTile? textTile, this.charTiles}) {
+  ListEditorTile(
+      {super.key, this.orderNumber = 0, TextTile? textTile, this.charTiles}) {
     _textTile = textTile ??
         TextTile(
           textStyle: TextFieldConstants.normal,
@@ -29,7 +30,6 @@ class ListEditorTile extends StatelessWidget implements EditorTile {
   FocusNode? focusNode = FocusNode();
   final Map<int, CharTile>? charTiles;
 
-
   @override
   TextFieldController? textFieldController;
 
@@ -41,7 +41,19 @@ class ListEditorTile extends StatelessWidget implements EditorTile {
 
     _textTile
       ..onSubmit = () {
-        context.read<TextEditorBloc>().add(
+        if (textFieldController != null && textFieldController!.text.isEmpty) {
+          context.read<TextEditorBloc>().add(
+                TextEditorReplaceEditorTile(
+                  tileToRemove: this,
+                  newEditorTile: TextTile(
+                    key: ValueKey(DateTime.now()),
+                    textStyle: TextFieldConstants.normal,
+                  ),
+                  context: context,
+                ),
+              );
+        }else{
+context.read<TextEditorBloc>().add(
               orderNumber == 0
                   ? TextEditorAddEditorTile(
                       newEditorTile: ListEditorTile(),
@@ -54,6 +66,8 @@ class ListEditorTile extends StatelessWidget implements EditorTile {
                       context: context,
                     ),
             );
+        }
+        
       }
       ..onBackspaceDoubleClick = () {
         _textTile.focusNode = FocusNode();
@@ -75,7 +89,8 @@ class ListEditorTile extends StatelessWidget implements EditorTile {
             );
       };
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: UIConstants.pageHorizontalPadding),
+      padding: const EdgeInsets.symmetric(
+          horizontal: UIConstants.pageHorizontalPadding),
       child: Row(
         children: [
           const SizedBox(

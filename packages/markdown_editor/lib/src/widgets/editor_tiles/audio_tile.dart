@@ -93,7 +93,7 @@ class _AudioTileState extends State<AudioTile>
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-          horizontal: UIConstants.pageHorizontalPadding,),
+          horizontal: UIConstants.pageHorizontalPadding, vertical: UIConstants.itemPadding/2),
       child: DecoratedBox(
         decoration: BoxDecoration(
             color: UIColors.overlay, borderRadius: BorderRadius.circular(100),),

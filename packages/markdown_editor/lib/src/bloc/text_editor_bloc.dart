@@ -36,6 +36,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     on<TextEditorChangeOrderOfTile>(_changeOrderOfTile);
     on<TextEditorFocusLastWidget>(_focusLastWidget);
     on<TextEditorNextCard>(_nextCard);
+    on<TextEditorSetFocusedWidget>(_setFocusedWidget);
   }
 
   final String? parentId;
@@ -61,6 +62,8 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
 
   /// background color of text
   Color textBackgroundColor;
+
+  FocusNode? _focusedWidget;
 
   FutureOr<void> _keyboardRowChange(
     TextEditorKeyboardRowChange event,
@@ -91,6 +94,9 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     Emitter<TextEditorState> emit,
   ) {
     _addEditorTile(event.newEditorTile, event.context);
+    if(event.newEditorTile.focusNode == null){
+      FocusManager.instance.primaryFocus?.unfocus();
+    }
     if (event.emitState) {
       emit(TextEditorEditorTilesChanged(tiles: List.of(editorTiles)));
     }
@@ -123,7 +129,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
         break;
       }
     }
-    updateOrderedListTile();
+    _updateOrderedListTile();
 
     emit(TextEditorEditorTilesChanged(tiles: List.of(editorTiles)));
     _saveEditorTiles();
@@ -133,8 +139,13 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     for (var i = 0; i < editorTiles.length; i++) {
       // get focused/current editorTile,
       // or the last one when no tile is focused
-      if (editorTiles[i].focusNode == FocusManager.instance.primaryFocus ||
-          i == editorTiles.length - 1) {
+      if ((_focusedWidget != null &&
+              editorTiles[i].focusNode == _focusedWidget) ||
+          (editorTiles[i].focusNode == FocusManager.instance.primaryFocus ||
+              i == editorTiles.length - 1)) {
+        if (_focusedWidget != null) {
+          _focusedWidget = null;
+        }
         // if focused textfield is an empty TextTile
         if (editorTiles[i].focusNode != null &&
             editorTiles[i].focusNode!.hasFocus &&
@@ -144,8 +155,6 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
           // replace empty TextTile
           editorTiles[i] = toAdd;
           editorTiles[i].focusNode?.requestFocus();
-          DataClassHelper.convertToDataClass(editorTiles);
-
           return;
         }
 
@@ -162,7 +171,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
       }
     }
     // _saveCard(event, emit)
-    updateOrderedListTile();
+    _updateOrderedListTile();
   }
 
   void _shiftTextAddEditorTile(
@@ -250,10 +259,10 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
       );
       editorTiles[0].focusNode?.requestFocus();
     }
-    updateOrderedListTile();
+    _updateOrderedListTile();
   }
 
-  void updateOrderedListTile() {
+  void _updateOrderedListTile() {
     for (var i = 0; i < editorTiles.length; i++) {
       if (editorTiles[i] is ListEditorTile &&
           (editorTiles[i] as ListEditorTile).orderNumber != 0) {
@@ -321,7 +330,9 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
   }
 
   FutureOr<void> _nextCard(
-      TextEditorNextCard event, Emitter<TextEditorState> emit,) {
+    TextEditorNextCard event,
+    Emitter<TextEditorState> emit,
+  ) {
     _saveEditorTiles();
     if (parentId != null) {
       Navigator.of(event.context).pushReplacementNamed(
@@ -342,5 +353,10 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     } else {
       Navigator.pop(event.context);
     }
+  }
+
+  FutureOr<void> _setFocusedWidget(
+      TextEditorSetFocusedWidget event, Emitter<TextEditorState> emit) {
+    _focusedWidget = event.focusedWidget;
   }
 }
