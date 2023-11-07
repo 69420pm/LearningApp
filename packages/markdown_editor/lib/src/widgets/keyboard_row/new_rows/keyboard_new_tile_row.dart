@@ -75,6 +75,12 @@ class KeyboardNewTileRow extends StatelessWidget {
                     KeyboardButton(
                       icon: UIIcons.functions,
                       onPressed: () {
+                        context.read<TextEditorBloc>().add(
+                              TextEditorSetFocusedWidget(
+                                focusedWidget:
+                                    FocusManager.instance.primaryFocus,
+                              ),
+                            );
                         final newLatexTile = LatexTile();
                         var latexText = '';
                         UIBottomSheet.showUIBottomSheet(
@@ -95,22 +101,13 @@ class KeyboardNewTileRow extends StatelessWidget {
                             ],
                           ),
                         ).whenComplete(() {
-                          print(FocusManager.instance.primaryFocus.hashCode);
                           if (latexText.isNotEmpty) {
                             context.read<KeyboardRowCubit>().addNewTile(
                                   newLatexTile.copyWith(latexText: latexText),
                                   textEditorBloc,
                                   context,
                                 );
-                            // context.read<TextEditorBloc>().add(
-                            //       TextEditorReplaceEditorTile(
-                            //         tileToRemove: newLatexTile,
-                            //         newEditorTile: newLatexTile.copyWith(
-                            //             latexText: newLatexTile
-                            //                 .textEditingController.text),
-                            //         context: context,
-                            //       ),
-                            //     );
+                            FocusManager.instance.primaryFocus?.unfocus();
                           } else {
                             context.read<TextEditorBloc>().add(
                                   TextEditorRemoveEditorTile(
@@ -118,6 +115,7 @@ class KeyboardNewTileRow extends StatelessWidget {
                                     context: context,
                                   ),
                                 );
+                            FocusManager.instance.primaryFocus?.unfocus();
                           }
                         });
                       },
@@ -134,6 +132,12 @@ class KeyboardNewTileRow extends StatelessWidget {
                     KeyboardButton(
                       icon: UIIcons.image,
                       onPressed: () {
+                        context.read<TextEditorBloc>().add(
+                              TextEditorSetFocusedWidget(
+                                focusedWidget:
+                                    FocusManager.instance.primaryFocus,
+                              ),
+                            );
                         UIBottomSheet.showUIBottomSheet(
                           context: context,
                           builder: (_) => BlocProvider.value(
@@ -148,6 +152,12 @@ class KeyboardNewTileRow extends StatelessWidget {
                     KeyboardButton(
                       icon: UIIcons.audio,
                       onPressed: () {
+                        context.read<TextEditorBloc>().add(
+                              TextEditorSetFocusedWidget(
+                                focusedWidget:
+                                    FocusManager.instance.primaryFocus,
+                              ),
+                            );
                         UIBottomSheet.showUIBottomSheet(
                           context: context,
                           builder: (_) => BlocProvider.value(
@@ -287,7 +297,9 @@ class KeyboardNewTileRow extends StatelessWidget {
               KeyboardButton(
                 icon: UIIcons.done.copyWith(color: UIColors.primary),
                 onPressed: () {
-                  context.read<TextEditorBloc>().add(TextEditorNextCard(context:context));
+                  context
+                      .read<TextEditorBloc>()
+                      .add(TextEditorNextCard(context: context));
                 },
               ),
             ],
