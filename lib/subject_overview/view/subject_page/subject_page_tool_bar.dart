@@ -103,8 +103,11 @@ class SubjectPageToolBar extends StatelessWidget {
                   builder: (_) {
                     return BlocProvider.value(
                       value: context.read<SubjectBloc>(),
-                      child: AddFolderBottomSheet(
-                        parentId: softSelectedFolderUID ?? subjectToEditUID,
+                      child: BlocProvider.value(
+                        value: context.read<SubjectOverviewSelectionBloc>(),
+                        child: AddFolderBottomSheet(
+                          parentId: softSelectedFolderUID ?? subjectToEditUID,
+                        ),
                       ),
                     );
                   },
