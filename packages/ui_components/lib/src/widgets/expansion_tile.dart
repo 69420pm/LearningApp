@@ -7,22 +7,32 @@ import 'package:ui_components/ui_components.dart';
 class UIExpansionTile extends StatefulWidget {
   List<Widget> children;
   String title;
-  double titleSpacing;
-  double iconSpacing;
+  double? titleSpacing;
+  double? iconSpacing;
+  double? childSpacing;
+  double? collapsedHeight;
   Widget? trailing;
-  Color backgroundColor;
-  Border border;
+  Color? backgroundColor;
+  Color? textColor;
+  Color? iconColor;
+  Border? border;
 
   UIExpansionTile({
     super.key,
     required this.children,
     required this.title,
-    required this.titleSpacing,
-    required this.iconSpacing,
+    this.titleSpacing = UIConstants.defaultSize,
+    this.iconSpacing = UIConstants.defaultSize,
+    this.childSpacing = 0,
+    this.collapsedHeight,
     this.trailing,
-    required this.backgroundColor,
-    required this.border,
-  });
+    this.backgroundColor,
+    this.textColor,
+    this.iconColor,
+    this.border,
+  }) {
+    iconColor ??= textColor;
+  }
 
   @override
   State<UIExpansionTile> createState() => _UIExpansionTileState();
@@ -71,11 +81,10 @@ class _UIExpansionTileState extends State<UIExpansionTile>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            height: UIConstants.defaultSize * 5,
+            height: widget.collapsedHeight,
             decoration: const BoxDecoration(color: Colors.transparent),
             child: Row(
               children: [
-                const SizedBox(width: UIConstants.defaultSize),
                 GestureDetector(
                   onTap: update,
                   child: AnimatedBuilder(
@@ -83,15 +92,19 @@ class _UIExpansionTileState extends State<UIExpansionTile>
                     builder: (context, _) {
                       return Transform.rotate(
                         angle: pi * _animation.value / 2 - pi / 2,
-                        child: UIIcons.expandMore,
+                        child: UIIcons.expandMore
+                            .copyWith(color: widget.iconColor),
                       );
                     },
                   ),
                 ),
                 SizedBox(width: widget.titleSpacing),
                 Expanded(
-                  child: Text(widget.title,
-                      overflow: TextOverflow.ellipsis, style: UIText.label,),
+                  child: Text(
+                    widget.title,
+                    overflow: TextOverflow.ellipsis,
+                    style: UIText.label.copyWith(color: widget.textColor),
+                  ),
                 ),
                 const SizedBox(width: UIConstants.defaultSize),
                 if (widget.trailing != null) widget.trailing!,
@@ -99,6 +112,9 @@ class _UIExpansionTileState extends State<UIExpansionTile>
               ],
             ),
           ),
+          if ((_isOpened || _animation.value > 0) &&
+              widget.childSpacing != null)
+            SizedBox(height: widget.childSpacing),
           if (_isOpened || _animation.value > 0)
             SizeTransition(
               sizeFactor: _animation,

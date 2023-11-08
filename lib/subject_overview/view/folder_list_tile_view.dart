@@ -41,8 +41,7 @@ class FolderListTileView extends StatelessWidget {
           width: UIConstants.borderWidth,
         ),
         title: folder.name,
-        iconSpacing: UIConstants.defaultSize,
-        titleSpacing: UIConstants.defaultSize,
+        collapsedHeight: UIConstants.defaultSize * 5,
         //trailing: UILinearProgressIndicator(value: 0.5),
         children: [
           Padding(
