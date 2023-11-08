@@ -33,47 +33,7 @@ class OverviewPage extends StatelessWidget {
             const SizedBox(height: UIConstants.itemPaddingLarge),
             const CalendarCard(),
             const SizedBox(height: UIConstants.itemPaddingLarge * 2),
-            UILabelRow(
-              labelText: 'Subjects',
-              actionWidgets: [
-                UIIconButton(
-                  icon: UIIcons.download.copyWith(color: UIColors.smallText),
-                  onPressed: () {},
-                ),
-                UIIconButton(
-                  icon: UIIcons.add.copyWith(color: UIColors.smallText),
-                  onPressed: () {
-                    context.read<AddSubjectCubit>().resetWeekDays();
-                    UIBottomSheet.showUIBottomSheet(
-                      context: context,
-                      builder: (_) {
-                        return BlocProvider.value(
-                          value: context.read<AddSubjectCubit>(),
-                          child: const AddSubjectBottomSheet(),
-                        );
-                      },
-                    );
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: UIConstants.itemPaddingLarge,
-            ),
-            SubjectList(),
-            const SizedBox(height: UIConstants.itemPaddingLarge * 2),
-            UILabelRow(
-              labelText: 'Disabled',
-              actionWidgets: [
-                UIIcons.arrowDown.copyWith(color: UIColors.smallText),
-              ],
-            ),
-            const SizedBox(
-              height: UIConstants.itemPaddingLarge,
-            ),
-            // SubjectList(
-            //   showDisabled: true,
-            // ),
+            const SubjectList(),
           ],
         ),
       ),

@@ -40,8 +40,6 @@ class UIAppBar extends StatelessWidget implements PreferredSizeWidget {
             : Align(alignment: Alignment.centerLeft, child: leading),
       ),
       elevation: 0,
-      leadingWidth: UIConstants.buttonSize, //! only works for iconbuttons
-      titleSpacing: 0,
       backgroundColor: UIColors.background,
       systemOverlayStyle: SystemUiOverlayStyle(
         statusBarColor: UIColors.background,

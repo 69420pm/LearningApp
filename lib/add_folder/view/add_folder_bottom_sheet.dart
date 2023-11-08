@@ -1,6 +1,8 @@
 import 'package:cards_api/cards_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/app/helper/uid.dart';
+import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dart';
 import 'package:ui_components/ui_components.dart';
 
@@ -24,20 +26,27 @@ class _AddFolderBottomSheetState extends State<AddFolderBottomSheet> {
   bool canSave = false;
   final nameController = TextEditingController();
 
-  void trySaveFolder() {
-    if (canSave) {
-      context.read<SubjectBloc>().add(
-            SubjectAddFolder(
-              name: nameController.text,
-              parentId: widget.parentId,
-            ),
-          );
-      Navigator.pop(context);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    void trySaveFolder() {
+      final folderUID = Uid().uid();
+      if (canSave) {
+        context.read<SubjectBloc>().add(
+              SubjectAddFolder(
+                name: nameController.text,
+                parentId: widget.parentId,
+                folderId: folderUID,
+              ),
+            );
+        if (context.read<SubjectOverviewSelectionBloc>().isInSelectMode) {
+          context
+              .read<SubjectOverviewSelectionBloc>()
+              .add(SubjectOverviewSelectionMoveSelection(parentId: folderUID));
+        }
+        Navigator.pop(context);
+      }
+    }
+
     return UIBottomSheet(
       actionLeft: UIIconButton(
         icon: UIIcons.close,
