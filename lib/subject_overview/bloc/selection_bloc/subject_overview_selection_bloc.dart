@@ -20,6 +20,7 @@ class SubjectOverviewSelectionBloc
     on<SubjectOverviewDraggingChange>(_toggleDragging);
     on<SubjectOverviewSetSoftSelectFile>(_setSoftSelectFile);
     on<SubjectOverviewSetHoveredFolder>(_setHoveredFolder);
+    on<SubjectOverviewSelectAll>(_seletAll);
   }
   final CardsRepository _cardsRepository;
 
@@ -100,25 +101,6 @@ class SubjectOverviewSelectionBloc
     }
   }
 
-  void _checkForLastSelectedInFolder(String parentUID) {
-    if (_cardsRepository
-        .getChildrenDirectlyBelow(parentUID)
-        .every(_selectedFiles.contains)) {
-      if (_cardsRepository.objectFromId(parentUID) is! Subject) {
-        //select parentFolder
-        _selectFolder(
-          _cardsRepository.getParentIdFromChildId(parentUID),
-          parentUID,
-        );
-
-        //deselect all children
-        _cardsRepository
-            .getChildrenDirectlyBelow(parentUID)
-            .forEach(_selectedFiles.remove);
-      }
-    }
-  }
-
   void _selectFolder(String parentUID, String folderUID) {
     if (!_checkIfParentIsSelected(parentUID, folderUID)) {
       //select folder
@@ -127,8 +109,6 @@ class SubjectOverviewSelectionBloc
       _cardsRepository
           .getChildrenList(folderUID)
           .forEach(_selectedFiles.remove);
-      //check if lastSelectedInParentFolder
-      _checkForLastSelectedInFolder(parentUID);
     }
   }
 
@@ -170,9 +150,6 @@ class SubjectOverviewSelectionBloc
         if (!_checkIfParentIsSelected(parentUID, event.cardUID)) {
           // new Card selected
           _selectedFiles.add(event.cardUID);
-
-          //check if all are selected
-          _checkForLastSelectedInFolder(parentUID);
         }
         emit(SubjectOverviewSelectionModeOn());
       } else {
@@ -271,11 +248,28 @@ class SubjectOverviewSelectionBloc
     }
   }
 
-  FutureOr<void> _setHoveredFolder(SubjectOverviewSetHoveredFolder event,
-      Emitter<SubjectOverviewSelectionState> emit,) {
+  FutureOr<void> _setHoveredFolder(
+    SubjectOverviewSetHoveredFolder event,
+    Emitter<SubjectOverviewSelectionState> emit,
+  ) {
     if (_hoveredFoldeUID != event.folderUID) {
       _hoveredFoldeUID = event.folderUID;
       emit(SubjectOverviewSelectionUpdateHover());
+    }
+  }
+
+  FutureOr<void> _seletAll(SubjectOverviewSelectAll event,
+      Emitter<SubjectOverviewSelectionState> emit) async {
+    var childUIDs =
+        await _cardsRepository.getChildrenById(event.subjectUID).value;
+    for (final file in childUIDs) {
+      if (!_selectedFiles.contains(file.uid)) {
+        if (file is Folder) {
+          _selectFolder(event.subjectUID, file.uid);
+        } else if (file is Card) {
+          _selectedFiles.add(file.uid);
+        }
+      }
     }
   }
 }

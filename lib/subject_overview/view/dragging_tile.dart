@@ -164,46 +164,34 @@ class FolderDragTarget extends StatelessWidget {
         }
       },
       onAccept: (String fileUID) {
-        //if dragged and dropped in same folder
-        if (cardsRepository.getParentIdFromChildId(fileUID) == folderUID) {
-          if (inSelectMode) {
-            //move hole selection to this folder
-            context.read<SubjectOverviewSelectionBloc>().add(
-                  SubjectOverviewSelectionMoveSelection(
-                    parentId: folderUID,
-                  ),
-                );
-          } else {
-            //start selectionMode
-            context.read<SubjectOverviewSelectionBloc>().add(
-                  SubjectOverviewSelectionToggleSelectMode(
-                    inSelectMode: true,
-                  ),
-                );
-            //select data
-            if (cardsRepository.objectFromId(fileUID) is Card) {
-              context.read<SubjectOverviewSelectionBloc>().add(
-                    SubjectOverviewCardSelectionChange(cardUID: fileUID),
-                  );
-            } else {
-              context.read<SubjectOverviewSelectionBloc>().add(
-                    SubjectOverviewFolderSelectionChange(
-                      folderUID: fileUID,
-                    ),
-                  );
-            }
-          }
-          return;
-        }
-
         if (inSelectMode) {
           //move hole selection
           context.read<SubjectOverviewSelectionBloc>().add(
                 SubjectOverviewSelectionMoveSelection(parentId: folderUID),
               );
+        }
+        //if dragged and dropped in same folder
+        else if (cardsRepository.getParentIdFromChildId(fileUID) == folderUID) {
+          //start selectionMode
+          context.read<SubjectOverviewSelectionBloc>().add(
+                SubjectOverviewSelectionToggleSelectMode(
+                  inSelectMode: true,
+                ),
+              );
+          //select data
+          if (cardsRepository.objectFromId(fileUID) is Card) {
+            context.read<SubjectOverviewSelectionBloc>().add(
+                  SubjectOverviewCardSelectionChange(cardUID: fileUID),
+                );
+          } else {
+            context.read<SubjectOverviewSelectionBloc>().add(
+                  SubjectOverviewFolderSelectionChange(
+                    folderUID: fileUID,
+                  ),
+                );
+          }
         } else {
-          //move data
-
+          //move single file
           context.read<SubjectBloc>().add(
                 SubjectSetFileParent(
                   fileUID: fileUID,

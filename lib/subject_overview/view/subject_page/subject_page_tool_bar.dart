@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
@@ -27,8 +29,7 @@ class SubjectPageToolBar extends StatelessWidget {
         SubjectOverviewSelectionState>(
       builder: (context, state) {
         softSelectedFile = cardsRepository.objectFromId(
-          context.read<SubjectOverviewSelectionBloc>().fileSoftSelected,
-        );
+            context.read<SubjectOverviewSelectionBloc>().fileSoftSelected);
         if (softSelectedFile is Folder) {
           softSelectedFolderUID = (softSelectedFile! as Folder).uid;
         } else {
@@ -38,61 +39,19 @@ class SubjectPageToolBar extends StatelessWidget {
           labelText: 'Files',
           actionWidgets: [
             UIIconButton(
-              icon: UIIcons.search.copyWith(color: UIColors.smallText),
+              text: "100 cards",
+              swapTextWithIcon: true,
+              icon: UIIcons.debug.copyWith(color: UIColors.overlay),
               onPressed: () {
-                Navigator.of(context).pushNamed(
-                  '/search',
-                  arguments: subjectToEditUID,
-                );
-              },
-            ),
-            const Spacer(),
-            if (softSelectedFile != null)
-              UIIconButton(
-                icon: UIIcons.edit.copyWith(color: UIColors.smallText),
-                onPressed: () {
-                  if (softSelectedFile is Folder) {
-                    UIBottomSheet.showUIBottomSheet(
-                      context: context,
-                      builder: (_) {
-                        return BlocProvider.value(
-                          value: context.read<FolderListTileBloc>(),
-                          child: EditFolderBottomSheet(
-                            folder: softSelectedFile! as Folder,
-                          ),
-                        );
-                      },
-                    );
-                  } else if (softSelectedFile is Card) {
-                    Navigator.of(context).pushNamed(
-                      '/add_card',
-                      arguments: [softSelectedFile, null],
-                    );
-                  }
-                },
-              ),
-            if (softSelectedFile != null ||
-                context.read<SubjectOverviewSelectionBloc>().isInSelectMode)
-              UIIconButton(
-                icon: UIIcons.delete.copyWith(color: UIColors.smallText),
-                onPressed: () {
-                  context.read<SubjectOverviewSelectionBloc>().add(
-                        SubjectOverviewSelectionDeleteSelectedFiles(
-                          softSelectedFile: (softSelectedFile as File?)?.uid,
+                final r = Random();
+                for (var i = 0; i < 100; i++) {
+                  context.read<SubjectBloc>().add(
+                        SubjectAddCard(
+                          name: r.nextDouble().toString(),
+                          parentId: softSelectedFolderUID ?? subjectToEditUID,
                         ),
                       );
-                },
-              ),
-            UIIconButton(
-              icon: UIIcons.download.copyWith(color: UIColors.smallText),
-              onPressed: () {
-                context.read<SubjectBloc>().add(
-                      SubjectAddCard(
-                        name:
-                            "created on ${DateFormat('EEE dd.MM yyyy HH:mm').format(DateTime.now())}",
-                        parentId: softSelectedFolderUID ?? subjectToEditUID,
-                      ),
-                    );
+                }
               },
             ),
             UIIconButton(
