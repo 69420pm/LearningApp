@@ -46,7 +46,7 @@ class CardListTileView extends StatelessWidget {
                 child: Text(
                   card.name,
                   overflow: TextOverflow.ellipsis,
-                  style: UIText.normal,
+                  style: UIText.label,
                 ),
               ),
             ],

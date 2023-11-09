@@ -20,6 +20,7 @@ class SubjectOverviewSelectionBloc
     on<SubjectOverviewDraggingChange>(_toggleDragging);
     on<SubjectOverviewSetSoftSelectFile>(_setSoftSelectFile);
     on<SubjectOverviewSetHoveredFolder>(_setHoveredFolder);
+    on<SubjectOverviewSelectAll>(_seletAll);
   }
   final CardsRepository _cardsRepository;
 
@@ -254,6 +255,21 @@ class SubjectOverviewSelectionBloc
     if (_hoveredFoldeUID != event.folderUID) {
       _hoveredFoldeUID = event.folderUID;
       emit(SubjectOverviewSelectionUpdateHover());
+    }
+  }
+
+  FutureOr<void> _seletAll(SubjectOverviewSelectAll event,
+      Emitter<SubjectOverviewSelectionState> emit) async {
+    var childUIDs =
+        await _cardsRepository.getChildrenById(event.subjectUID).value;
+    for (final file in childUIDs) {
+      if (!_selectedFiles.contains(file.uid)) {
+        if (file is Folder) {
+          _selectFolder(event.subjectUID, file.uid);
+        } else if (file is Card) {
+          _selectedFiles.add(file.uid);
+        }
+      }
     }
   }
 }

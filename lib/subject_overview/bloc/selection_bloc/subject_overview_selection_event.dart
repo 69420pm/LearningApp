@@ -69,3 +69,10 @@ class SubjectOverviewSetHoveredFolder extends SubjectOverviewSelectionEvent {
     required this.folderUID,
   });
 }
+
+class SubjectOverviewSelectAll extends SubjectOverviewSelectionEvent {
+  String subjectUID;
+  SubjectOverviewSelectAll({
+    required this.subjectUID,
+  });
+}

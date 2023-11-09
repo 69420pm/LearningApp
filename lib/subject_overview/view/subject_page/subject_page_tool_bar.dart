@@ -39,17 +39,9 @@ class SubjectPageToolBar extends StatelessWidget {
           labelText: 'Files',
           actionWidgets: [
             UIIconButton(
-              icon: UIIcons.search.copyWith(color: UIColors.smallText),
-              onPressed: () {
-                Navigator.of(context).pushNamed(
-                  '/search',
-                  arguments: subjectToEditUID,
-                );
-              },
-            ),
-            const Spacer(),
-            UIIconButton(
-              icon: UIIcons.debug.copyWith(color: UIColors.smallText),
+              text: "100 cards",
+              swapTextWithIcon: true,
+              icon: UIIcons.debug.copyWith(color: UIColors.overlay),
               onPressed: () {
                 final r = Random();
                 for (var i = 0; i < 100; i++) {
@@ -62,7 +54,6 @@ class SubjectPageToolBar extends StatelessWidget {
                 }
               },
             ),
-            const Spacer(),
             UIIconButton(
               icon: UIIcons.addFolder.copyWith(color: UIColors.smallText),
               onPressed: () {

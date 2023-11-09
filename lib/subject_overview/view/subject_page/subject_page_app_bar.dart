@@ -35,8 +35,19 @@ class SubjectPageAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                 )
               : null,
-          actions: softSelectedFile != null || selectionBloc.isInSelectMode
+          actions: !(softSelectedFile != null || selectionBloc.isInSelectMode)
               ? [
+                  UIIconButton(
+                    icon: UIIcons.settings,
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(
+                        '/subject_overview/edit_subject',
+                        arguments: subjectToEdit,
+                      );
+                    },
+                  ),
+                ]
+              : [
                   if (softSelectedFile != null)
                     UIIconButton(
                       icon: UIIcons.edit,
@@ -61,6 +72,13 @@ class SubjectPageAppBar extends StatelessWidget implements PreferredSizeWidget {
                         }
                       },
                     ),
+                  if (selectionBloc.isInSelectMode)
+                    UIIconButton(
+                        icon: UIIcons.selectAll,
+                        onPressed: () {
+                          selectionBloc.add(SubjectOverviewSelectAll(
+                              subjectUID: subjectToEdit.uid));
+                        }),
                   UIIconButton(
                     icon: UIIcons.delete.copyWith(color: UIColors.delete),
                     onPressed: () {
@@ -70,17 +88,6 @@ class SubjectPageAppBar extends StatelessWidget implements PreferredSizeWidget {
                                   (softSelectedFile as File?)?.uid,
                             ),
                           );
-                    },
-                  ),
-                ]
-              : [
-                  UIIconButton(
-                    icon: UIIcons.settings,
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(
-                        '/subject_overview/edit_subject',
-                        arguments: subjectToEdit,
-                      );
                     },
                   ),
                 ],
