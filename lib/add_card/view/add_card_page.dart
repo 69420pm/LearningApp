@@ -2,7 +2,7 @@ import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_card/cubit/add_card_cubit.dart';
-import 'package:learning_app/add_card/view/add_card_settings_bottom_sheet.dart';
+import 'package:learning_app/add_card/view/card_settings_page.dart';
 import 'package:markdown_editor/markdown_editor.dart';
 import 'package:ui_components/ui_components.dart';
 
@@ -39,7 +39,7 @@ class _AddCardPageState extends State<AddCardPage> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        _saveEditorTiles();
+        await _saveEditorTiles();
         return false;
       },
       child: UIPage(
@@ -48,7 +48,7 @@ class _AddCardPageState extends State<AddCardPage> with WidgetsBindingObserver {
           leading: UIIconButton(
             icon: UIIcons.arrowBack,
             onPressed: () async {
-              _saveEditorTiles();
+              await _saveEditorTiles();
             },
           ),
           // leadingBackButton: true,
@@ -57,18 +57,22 @@ class _AddCardPageState extends State<AddCardPage> with WidgetsBindingObserver {
             UIIconButton(
               icon: UIIcons.settings,
               onPressed: () {
-                UIBottomSheet.showUIBottomSheet(
-                  context: context,
-                  builder: (_) {
-                    return BlocProvider.value(
-                      value: context.read<AddCardCubit>(),
-                      child: AddCardSettingsBottomSheet(
-                        card: widget.card,
-                        parentId: widget.parentId,
-                      ),
-                    );
-                  },
-                );
+                Navigator.pushNamed(context, '/add_card/settings', arguments: [
+      
+                  widget.card, widget.parentId, textEditorBloc!.editorTiles
+                ]);
+                // UIBottomSheet.showUIBottomSheet(
+                //   context: context,
+                //   builder: (_) {
+                //     return BlocProvider.value(
+                //       value: context.read<AddCardCubit>(),
+                //       child: CardSettingsPage(
+                //         card: widget.card,
+                //         parentId: widget.parentId,
+                //       ),
+                //     );
+                //   },
+                // );
               },
             ),
           ],
