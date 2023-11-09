@@ -54,6 +54,8 @@ class KeyboardRowCubit extends Cubit<KeyboardRowState> {
 
   void changeTextColor(Color color, TextEditorBloc textEditorBloc) {
     textEditorBloc.add(TextEditorKeyboardRowChange(textColor: color));
+    expandedTextColors = false;
+    expandedBackgroundColors = false;
     emit(
       KeyboardRowText(
         textColor: color,
@@ -73,6 +75,8 @@ class KeyboardRowCubit extends Cubit<KeyboardRowState> {
 
   void changeBackgroundColor(Color color, TextEditorBloc textEditorBloc) {
     textEditorBloc.add(TextEditorKeyboardRowChange(textBackgroundColor: color));
+    expandedTextColors = false;
+    expandedBackgroundColors = false;
     emit(
       KeyboardRowText(
         textColor: textEditorBloc.textColor,
@@ -97,9 +101,7 @@ class KeyboardRowCubit extends Cubit<KeyboardRowState> {
     expandText();
   }
 
-  void saveCard(){
-    
-  }
+  void saveCard() {}
 
   // void expandAddNewTextTile() {
   //   _textColors = false;
