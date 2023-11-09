@@ -16,54 +16,91 @@ class MultiDragIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var label = '';
-    label += ', ${fileUIDs[0]}';
-    for (final e in fileUIDs) {
-      label += ', $e';
+    final folderUIDs = fileUIDs
+        .where((uid) => cardsRepository.objectFromId(uid) is Folder)
+        .toList();
+    final cardUIDs = fileUIDs
+        .where((uid) => cardsRepository.objectFromId(uid) is Card)
+        .toList();
+
+    var folderLabel = '';
+    for (var i = 0; i < folderUIDs.length; i++) {
+      if (i > 0) folderLabel += ', ';
+      folderLabel +=
+          (cardsRepository.objectFromId(folderUIDs[i]) as Folder).name;
     }
 
-    final folderAmount = fileUIDs
-        .where((uid) => cardsRepository.objectFromId(uid) is Folder)
-        .length;
-
-    final cardAmount = fileUIDs
-        .where((uid) => cardsRepository.objectFromId(uid) is Card)
-        .length;
+    var cardsLabel = '';
+    for (var i = 0; i < cardUIDs.length; i++) {
+      if (i > 0) cardsLabel += ', ';
+      cardsLabel += (cardsRepository.objectFromId(cardUIDs[i]) as Card).name;
+    }
 
     return DecoratedBox(
       decoration: BoxDecoration(
-          color: UIColors.onOverlayCard,
-          borderRadius: const BorderRadius.all(
-            Radius.circular(UIConstants.cornerRadius),
-          ),
-          border: Border.all(color: UIColors.background, width: 3),),
+        color: UIColors.onOverlayCard,
+        borderRadius: const BorderRadius.all(
+          Radius.circular(UIConstants.cornerRadius),
+        ),
+        border: Border.all(color: UIColors.background, width: 3),
+      ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: UIConstants.defaultSize * 2,
           vertical: UIConstants.defaultSize,
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          mainAxisSize: MainAxisSize.min,
+        child: Column(
           children: [
-            AmountIndicator(amount: folderAmount, icon: UIIcons.folder),
-            AmountIndicator(amount: cardAmount, icon: UIIcons.card),
-            if ((folderAmount > 0 && cardAmount == 0) ||
-                (cardAmount > 0 && folderAmount == 0))
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: UIConstants.itemPaddingLarge,
-                  vertical: UIConstants.defaultSize,
-                ),
-                child: SizedBox(
-                  width: UIConstants.defaultSize * 10,
-                  child: DefaultTextStyle(
-                    //* or else yellow lines below text
-                    style: Theme.of(context).textTheme.bodyMedium!,
-                    child: Text(label,
-                        overflow: TextOverflow.ellipsis, style: UIText.label,),
+            if (folderUIDs.isNotEmpty)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AmountIndicator(
+                      amount: folderUIDs.length, icon: UIIcons.folder),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: UIConstants.itemPaddingLarge,
+                      vertical: UIConstants.defaultSize,
+                    ),
+                    child: SizedBox(
+                      width: UIConstants.defaultSize * 10,
+                      child: DefaultTextStyle(
+                        style: UIText.normal,
+                        child: Text(
+                          folderLabel,
+                          overflow: TextOverflow.ellipsis,
+                          style: UIText.label,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                ],
+              ),
+            if (cardUIDs.isNotEmpty)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AmountIndicator(amount: cardUIDs.length, icon: UIIcons.card),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: UIConstants.itemPaddingLarge,
+                      vertical: UIConstants.defaultSize,
+                    ),
+                    child: SizedBox(
+                      width: UIConstants.defaultSize * 10,
+                      child: DefaultTextStyle(
+                        style: UIText.normal,
+                        child: Text(
+                          cardsLabel,
+                          overflow: TextOverflow.ellipsis,
+                          style: UIText.label,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
           ],
         ),
