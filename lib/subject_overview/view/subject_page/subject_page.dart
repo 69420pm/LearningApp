@@ -2,6 +2,7 @@ import 'package:cards_api/cards_api.dart';
 import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dart';
 import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/dragging_tile.dart';
@@ -65,8 +66,9 @@ class _SubjectViewState extends State<SubjectView> {
   Widget build(BuildContext context) {
     return UIPage(
       appBar: SubjectPageAppBar(
-          cardsRepository: widget.cardsRepository,
-          subjectToEdit: widget.subjectToEdit,),
+        cardsRepository: widget.cardsRepository,
+        subjectToEdit: widget.subjectToEdit,
+      ),
       body: Column(
         children: [
           SubjectCard(
@@ -76,8 +78,9 @@ class _SubjectViewState extends State<SubjectView> {
             height: UIConstants.itemPaddingLarge,
           ),
           SubjectPageToolBar(
-              cardsRepository: widget.cardsRepository,
-              subjectToEditUID: widget.subjectToEdit.uid,),
+            cardsRepository: widget.cardsRepository,
+            subjectToEditUID: widget.subjectToEdit.uid,
+          ),
           const SizedBox(
             height: UIConstants.itemPaddingLarge,
           ),
@@ -85,46 +88,51 @@ class _SubjectViewState extends State<SubjectView> {
             child: AutoScrollView(
               globalKey: globalKey,
               scrollController: scrollController,
-              child: DraggingTile(
-                fileUID: widget.subjectToEdit.uid,
-                cardsRepository: widget.cardsRepository,
-                child: ValueListenableBuilder(
-                  valueListenable: context
-                      .read<SubjectBloc>()
-                      .cardsRepository
-                      .getChildrenById(widget.subjectToEdit.uid),
-                  builder: (context, value, child) {
-                    final folder = value.whereType<Folder>().toList();
-                    final card = value.whereType<Card>().toList();
-                    return CustomScrollView(
-                      key: globalKey,
-                      controller: scrollController,
-                      slivers: [
-                        if (folder.isNotEmpty)
-                          SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (context, index) => FolderListTileParent(
-                                folder: folder[index],
-                                cardsRepository: widget.cardsRepository,
+              child: BlocBuilder<SubjectOverviewSelectionBloc,
+                  SubjectOverviewSelectionState>(
+                builder: (context, state) {
+                  return DraggingTile(
+                    fileUID: widget.subjectToEdit.uid,
+                    cardsRepository: widget.cardsRepository,
+                    child: ValueListenableBuilder(
+                      valueListenable: context
+                          .read<SubjectBloc>()
+                          .cardsRepository
+                          .getChildrenById(widget.subjectToEdit.uid),
+                      builder: (context, value, child) {
+                        final folder = value.whereType<Folder>().toList();
+                        final card = value.whereType<Card>().toList();
+                        return CustomScrollView(
+                          key: globalKey,
+                          controller: scrollController,
+                          slivers: [
+                            if (folder.isNotEmpty)
+                              SliverList(
+                                delegate: SliverChildBuilderDelegate(
+                                  (context, index) => FolderListTileParent(
+                                    folder: folder[index],
+                                    cardsRepository: widget.cardsRepository,
+                                  ),
+                                  // ..isHighlight = index.isOdd,
+                                  childCount: folder.length,
+                                ),
                               ),
-                              // ..isHighlight = index.isOdd,
-                              childCount: folder.length,
-                            ),
-                          ),
-                        if (card.isNotEmpty)
-                          SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (context, index) => CardListTile(
-                                card: card[index],
-                                cardsRepository: widget.cardsRepository,
+                            if (card.isNotEmpty)
+                              SliverList(
+                                delegate: SliverChildBuilderDelegate(
+                                  (context, index) => CardListTile(
+                                    card: card[index],
+                                    cardsRepository: widget.cardsRepository,
+                                  ),
+                                  childCount: card.length,
+                                ),
                               ),
-                              childCount: card.length,
-                            ),
-                          ),
-                      ],
-                    );
-                  },
-                ),
+                          ],
+                        );
+                      },
+                    ),
+                  );
+                },
               ),
             ),
           ),
