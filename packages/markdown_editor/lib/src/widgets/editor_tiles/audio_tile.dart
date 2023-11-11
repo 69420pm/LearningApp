@@ -20,14 +20,15 @@ class AudioTile extends StatefulWidget implements EditorTile {
   State<AudioTile> createState() => _AudioTileState();
 }
 
-class _AudioTileState extends State<AudioTile>
-    with TickerProviderStateMixin {
+class _AudioTileState extends State<AudioTile> with TickerProviderStateMixin {
   bool _isPlaying = false;
 
   Duration _duration = Duration.zero;
   Duration _position = Duration.zero;
 
   final _audioPlayer = AudioPlayer();
+
+  late final _fileSource = DeviceFileSource(widget.filePath);
 
   late AnimationController _animationController;
 
@@ -46,7 +47,7 @@ class _AudioTileState extends State<AudioTile>
     });
     if (_isPlaying) {
       await _audioPlayer.play(
-        DeviceFileSource(widget.filePath),
+        _fileSource,
         position: _position,
       );
       await _animationController.forward();
@@ -64,7 +65,10 @@ class _AudioTileState extends State<AudioTile>
     _audioPlayer.onPlayerStateChanged.listen(
       (state) async {
         _isPlaying = state == PlayerState.playing;
-        _position = (await _audioPlayer.getCurrentPosition())!;
+        final position = await _audioPlayer.getCurrentPosition();
+        if (position != null) {
+          _position = position;
+        }
       },
     );
 
@@ -93,10 +97,14 @@ class _AudioTileState extends State<AudioTile>
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-          horizontal: UIConstants.pageHorizontalPadding, vertical: UIConstants.itemPadding/2),
+        horizontal: UIConstants.pageHorizontalPadding,
+        vertical: UIConstants.itemPadding / 2,
+      ),
       child: DecoratedBox(
         decoration: BoxDecoration(
-            color: UIColors.overlay, borderRadius: BorderRadius.circular(100),),
+          color: UIColors.overlay,
+          borderRadius: BorderRadius.circular(100),
+        ),
         child: Padding(
           padding: const EdgeInsets.all(8),
           child: Row(
@@ -129,7 +137,8 @@ class _AudioTileState extends State<AudioTile>
                       Expanded(
                         child: SliderTheme(
                           data: SliderThemeData(
-                              overlayShape: SliderComponentShape.noOverlay,),
+                            overlayShape: SliderComponentShape.noOverlay,
+                          ),
                           child: Slider(
                             max: _duration.inMilliseconds.toDouble(),
                             value: _position.inMilliseconds.toDouble(),
@@ -145,28 +154,33 @@ class _AudioTileState extends State<AudioTile>
                         ),
                       ),
                       SizedBox(
-                          width: 49,
-                          child: Text(formatDuration(_position),
-                              style: UIText.label.copyWith(
-                                  color: _isPlaying
-                                      ? UIColors.primary
-                                      : UIColors.smallText,),),),
+                        width: 49,
+                        child: Text(
+                          formatDuration(_position),
+                          style: UIText.label.copyWith(
+                            color: _isPlaying
+                                ? UIColors.primary
+                                : UIColors.smallText,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
               UIIconButton(
-                  icon: UIIcons.cancel
-                      .copyWith(color: UIColors.background, size: 28),
-                  animateToWhite: true,
-                  onPressed: () {
-                    context.read<TextEditorBloc>().add(
-                          TextEditorRemoveEditorTile(
-                            tileToRemove: widget,
-                            context: context,
-                          ),
-                        );
-                  },),
+                icon: UIIcons.cancel
+                    .copyWith(color: UIColors.background, size: 28),
+                animateToWhite: true,
+                onPressed: () {
+                  context.read<TextEditorBloc>().add(
+                        TextEditorRemoveEditorTile(
+                          tileToRemove: widget,
+                          context: context,
+                        ),
+                      );
+                },
+              ),
             ],
           ),
         ),
