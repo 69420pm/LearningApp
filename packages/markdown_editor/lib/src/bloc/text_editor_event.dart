@@ -97,3 +97,13 @@ class TextEditorSetFocusedWidget extends TextEditorEvent {
     required this.focusedWidget,
   });
 }
+
+class TextEditorAddWidgetAboveSeparator extends TextEditorEvent {
+  BuildContext context;
+  TextEditorAddWidgetAboveSeparator({
+    required this.context,
+  });
+}
+
+class TextEditorFocusWidgetAfterSeparator extends TextEditorEvent{
+}
