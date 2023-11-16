@@ -12,6 +12,7 @@ class CardContentWidget extends StatelessWidget {
     return BlocProvider(
       create: (context) => TextEditorBloc((_) {}, editorTiles, null),
       child: Scrollbar(
+        interactive: true,
         child: CustomScrollView(shrinkWrap: true, slivers: [
           SliverList(
             delegate: SliverChildBuilderDelegate(

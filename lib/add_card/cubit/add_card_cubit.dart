@@ -20,7 +20,8 @@ class AddCardCubit extends Cubit<AddCardState> {
   ) async {
     emit(AddCardLoading());
     if (editorTiles != null) {
-      if (card.name.isEmpty && card.name.trim().isEmpty) {
+      if ((card.name.isEmpty && card.name.trim().isEmpty) ||
+          card.name.startsWith('created on ') && card.name.length == 31) {
         card.name = getCardName(editorTiles);
       }
     }

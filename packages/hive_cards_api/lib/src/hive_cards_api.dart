@@ -319,10 +319,57 @@ class HiveCardsApi extends CardsApi {
 
   @override
   List<SearchResult> searchCard(String searchRequest, String? id) {
+    final foundCards = <SearchResult>[];
+    final cardIds = id != null ? getChildrenList(id) : _cardBox.keys;
+    for (final id in cardIds) {
+      final cardContent = _cardContentBox.get(id);
+      if (cardContent is List<EditorTileDC>) {
+        final textList = DataClassHelper.getFrontAndBackText(
+          cardContent as List<EditorTileDC>,
+          false,
+        );
+        var text = '';
+        for (final element in textList) {
+          text += '$element\n';
+        }
+        if (text.toLowerCase().contains(searchRequest.toLowerCase())) {
+          final card = _cardBox.get(id);
+          if (card == null) {
+            continue;
+          }
+          final parentObjects = <Object>[];
+          var currentId = card.uid;
+          while (true) {
+            try {
+              final parentId = getParentIdFromChildId(currentId);
+              final potentialFolder = _folderBox.get(parentId);
+              if (potentialFolder != null) {
+                parentObjects.add(potentialFolder);
+                currentId = potentialFolder.uid;
+              } else {
+                final potentialSubject = _subjectBox.get(parentId);
+                if (potentialSubject != null) {
+                  parentObjects.add(potentialSubject);
+                  currentId = potentialSubject.uid;
+                } else {
+                  break;
+                }
+              }
+            } catch (e) {
+              break;
+            }
+          }
+          foundCards.add(
+            SearchResult(
+              searchedObject: card,
+              parentObjects: [],
+            ),
+          );
+        }
+      }
+    }
     return [];
   }
-
- 
 
   @override
   Future<void> deleteFiles(List<String> ids) async {
@@ -357,8 +404,7 @@ class HiveCardsApi extends CardsApi {
           // remove folder from _notifier
           final currentNotifier = _notifiers[parentId];
           if (currentNotifier != null) {
-            final children = currentNotifier.value
-              ..remove(file);
+            final children = currentNotifier.value..remove(file);
             currentNotifier.value = List.of(children);
           }
         }
