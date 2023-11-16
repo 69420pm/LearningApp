@@ -58,7 +58,6 @@ class _AddCardPageState extends State<AddCardPage> with WidgetsBindingObserver {
               icon: UIIcons.settings,
               onPressed: () {
                 Navigator.pushNamed(context, '/add_card/settings', arguments: [
-      
                   widget.card, widget.parentId, textEditorBloc!.editorTiles
                 ]);
                 // UIBottomSheet.showUIBottomSheet(
@@ -92,7 +91,7 @@ class _AddCardPageState extends State<AddCardPage> with WidgetsBindingObserver {
                 value: textEditorBloc!,
                 child: Stack(
                   children: [
-                    MarkdownWidget(),
+                    EditorWidget(),
                     Positioned(
                       bottom: 0,
                       right: 0,
@@ -115,8 +114,8 @@ class _AddCardPageState extends State<AddCardPage> with WidgetsBindingObserver {
       {bool emptyWarning = true, bool leaveEditorAfterSaving = true}) async {
     if (textEditorBloc != null) {
       final editorTiles = textEditorBloc!.editorTiles;
-      bool isEmpty = true;
-      for (var element in editorTiles) {
+      var isEmpty = true;
+      for (final element in editorTiles) {
         if (element is FrontBackSeparatorTile) {
           break;
         }

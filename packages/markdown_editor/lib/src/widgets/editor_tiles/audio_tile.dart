@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:markdown_editor/markdown_editor.dart';
+import 'package:markdown_editor/src/models/read_only_interactable.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
 import 'package:ui_components/ui_components.dart';
 
-class AudioTile extends StatefulWidget implements EditorTile {
-  AudioTile({super.key, required this.filePath});
+class AudioTile extends StatefulWidget
+    implements EditorTile, ReadOnlyInteractable {
+  AudioTile({super.key, required this.filePath, this.interactable = true});
 
   String filePath;
   @override
@@ -18,6 +20,9 @@ class AudioTile extends StatefulWidget implements EditorTile {
 
   @override
   State<AudioTile> createState() => _AudioTileState();
+
+  @override
+  bool interactable;
 }
 
 class _AudioTileState extends State<AudioTile> with TickerProviderStateMixin {
@@ -173,6 +178,7 @@ class _AudioTileState extends State<AudioTile> with TickerProviderStateMixin {
                     .copyWith(color: UIColors.background, size: 28),
                 animateToWhite: true,
                 onPressed: () {
+                  if(!widget.interactable) return;
                   context.read<TextEditorBloc>().add(
                         TextEditorRemoveEditorTile(
                           tileToRemove: widget,

@@ -6,6 +6,8 @@ import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overvi
 import 'package:learning_app/subject_overview/view/card_list_tile_view.dart';
 import 'package:learning_app/subject_overview/view/dragging_tile.dart';
 import 'package:learning_app/subject_overview/view/inactive_list_tile.dart';
+import 'package:markdown_editor/markdown_editor.dart';
+import 'package:ui_components/ui_components.dart';
 
 class CardListTile extends StatelessWidget {
   const CardListTile({
@@ -33,11 +35,26 @@ class CardListTile extends StatelessWidget {
           return const InactiveListTile();
         }
         {
-          return DraggingTile(
-            fileUID: card.uid,
-            cardsRepository: cardsRepository,
-            child: CardListTileView(
-              card: card,
+          return GestureDetector(
+            child: DraggingTile(
+              fileUID: card.uid,
+              cardsRepository: cardsRepository,
+              child: GestureDetector(
+                onTap: () {
+                  UIBottomSheet.showUIBottomSheet(
+                    context: context,
+                    builder: (_) {
+                      return CardPreviewBottomSheet(
+                        card: card,
+                        cardsRepository: cardsRepository,
+                      );
+                    },
+                  );
+                },
+                child: CardListTileView(
+                  card: card,
+                ),
+              ),
             ),
           );
         }

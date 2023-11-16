@@ -4,7 +4,7 @@ library markdown_editor;
 export 'src/bloc/text_editor_bloc.dart';
 export 'src/cubit/audio_tile_cubit.dart';
 export 'src/cubit/keyboard_row_cubit.dart';
-export 'src/markdown_widget.dart';
+export 'src/editor_widget.dart';
 export 'src/models/editor_data_classes/audio_tile_dc.dart';
 export 'src/models/editor_data_classes/callout_tile_dc.dart';
 export 'src/models/editor_data_classes/char_tile_dc.dart';
@@ -27,4 +27,4 @@ export 'src/helper/data_class_helper.dart';
 export 'src/widgets/editor_tiles/image_tile.dart';
 export 'src/widgets/editor_tiles/audio_tile.dart';
 export 'src/widgets/editor_tiles/latex_tile.dart';
-
+export 'src/card_preview_bottom_sheet.dart';
