@@ -22,9 +22,9 @@ class CardPreviewBottomSheet extends StatelessWidget {
         icon: UIIcons.edit.copyWith(size: 32),
         onPressed: () {
           Navigator.of(context).pushReplacementNamed(
-                            '/add_card',
-                            arguments: [card, null],
-                          );
+            '/add_card',
+            arguments: [card, null],
+          );
         },
       ),
       child: FutureBuilder(
@@ -33,7 +33,9 @@ class CardPreviewBottomSheet extends StatelessWidget {
           if (snapshot.hasData) {
             return ConstrainedBox(
                 constraints: BoxConstraints(maxHeight: maxHeight),
-                child: CardContentWidget(editorTiles: snapshot.data!));
+                child: Column(children: [
+                  CardContentWidget(editorTiles: snapshot.data!)
+                ]));
           }
           return const Text("loading");
         },

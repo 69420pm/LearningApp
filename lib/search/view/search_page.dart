@@ -17,8 +17,9 @@ class SearchPage extends StatelessWidget {
     context.read<SearchBloc>().resetState();
     context.read<SearchBloc>().searchId = searchId;
     return UIPage(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: ListView(
+        // crossAxisAlignment: CrossAxisAlignment.start,
+        shrinkWrap: true,
         children: [
           SearchTextField(searchSubject: searchId!=null,),
           const SizedBox(

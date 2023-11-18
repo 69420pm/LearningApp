@@ -35,26 +35,11 @@ class CardListTile extends StatelessWidget {
           return const InactiveListTile();
         }
         {
-          return GestureDetector(
-            child: DraggingTile(
-              fileUID: card.uid,
-              cardsRepository: cardsRepository,
-              child: GestureDetector(
-                onTap: () {
-                  UIBottomSheet.showUIBottomSheet(
-                    context: context,
-                    builder: (_) {
-                      return CardPreviewBottomSheet(
-                        card: card,
-                        cardsRepository: cardsRepository,
-                      );
-                    },
-                  );
-                },
-                child: CardListTileView(
-                  card: card,
-                ),
-              ),
+          return DraggingTile(
+            fileUID: card.uid,
+            cardsRepository: cardsRepository,
+            child: CardListTileView(
+              card: card,
             ),
           );
         }

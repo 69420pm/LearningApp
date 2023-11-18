@@ -229,33 +229,71 @@ class HiveCardsApi extends CardsApi {
     if (newNotifier != null) {
       notifierChildren = newNotifier.value;
     }
-
+    final files = <String, List<File>>{};
     for (final fileId in fileIds) {
       final file = objectFromId(fileId);
       if (file != null && file is File) {
-        // --- STORAGE CHANGES ---
         final fileParentId = getParentIdFromChildId(fileId);
-        if (fileParentId != newParentId) {
-          // remove old folder relation to parent
-          final relationEntry = _relationsBox.get(fileParentId);
-          if (relationEntry != null) {
-            relationEntry.remove(fileId);
-            await _relationsBox.put(fileParentId, relationEntry);
-          }
-          // add folder to new relation entry
-          newRelationEntry.add(fileId);
 
-          // --- FRONTEND UPDATE CHANGES ---
-          // remove from old notifier
-          final oldNotifier = _notifiers[fileParentId];
-          if (oldNotifier != null) {
-            final children = oldNotifier.value..remove(file);
-            oldNotifier.value = List.from(children);
-          }
-          notifierChildren.add(file);
+        // remove old folder relation to parent
+        final relationEntry = _relationsBox.get(fileParentId);
+        if (relationEntry != null) {
+          relationEntry.remove(fileId);
+          await _relationsBox.put(fileParentId, relationEntry);
         }
+        // add folder to new relation entry
+        newRelationEntry.add(fileId);
+
+        // add folder to files map to later update notifiers
+        if (files[fileParentId] != null) {
+          files[fileParentId]!.add(file);
+        } else {
+          files[fileParentId] = [file];
+        }
+
+        // add file to new notifier
+        notifierChildren.add(file);
       }
     }
+
+    files.forEach((key, value) {
+      final oldNotifier = _notifiers[key];
+      if (oldNotifier != null) {
+        final children = oldNotifier.value;
+
+        for (final element in value) {
+          children.remove(element);
+        }
+        oldNotifier.value = List.from(children);
+      }
+    });
+
+    // for (final fileId in fileIds) {
+    //   final file = objectFromId(fileId);
+    //   if (file != null && file is File) {
+    //     // --- STORAGE CHANGES ---
+    //     final fileParentId = getParentIdFromChildId(fileId);
+    //     if (fileParentId != newParentId) {
+    //       // remove old folder relation to parent
+    //       final relationEntry = _relationsBox.get(fileParentId);
+    //       if (relationEntry != null) {
+    //         relationEntry.remove(fileId);
+    //         await _relationsBox.put(fileParentId, relationEntry);
+    //       }
+    //       // add folder to new relation entry
+    //       newRelationEntry.add(fileId);
+
+    //       // --- FRONTEND UPDATE CHANGES ---
+    //       // remove from old notifier
+    //       final oldNotifier = _notifiers[fileParentId];
+    //       if (oldNotifier != null) {
+    //         final children = oldNotifier.value..remove(file);
+    //         oldNotifier.value = List.from(children);
+    //       }
+    //       notifierChildren.add(file);
+    //     }
+    //   }
+    // }
 
     if (newNotifier != null) {
       newNotifier.value = List.from(notifierChildren);
@@ -269,7 +307,7 @@ class HiveCardsApi extends CardsApi {
     final subjects = _subjectBox.values.toList();
     for (final subject in subjects) {
       // if name matches search string
-      if (subject.name.toLowerCase().contains(searchRequest.toLowerCase())) {
+      if (subject.name.toLowerCase().trim().contains(searchRequest)) {
         foundSubjects.add(subject);
       }
     }
@@ -283,7 +321,7 @@ class HiveCardsApi extends CardsApi {
     for (final id in folderIds) {
       final folder = _folderBox.get(id);
       if (folder != null &&
-          folder.name.toLowerCase().contains(searchRequest.toLowerCase())) {
+          folder.name.toLowerCase().trim().contains(searchRequest)) {
         final parentObjects = <Object>[];
         var currentId = folder.uid;
         while (true) {
@@ -297,7 +335,7 @@ class HiveCardsApi extends CardsApi {
               final potentialSubject = _subjectBox.get(parentId);
               if (potentialSubject != null) {
                 parentObjects.add(potentialSubject);
-                currentId = potentialSubject.uid;
+                break;
               } else {
                 break;
               }
@@ -322,17 +360,28 @@ class HiveCardsApi extends CardsApi {
     final foundCards = <SearchResult>[];
     final cardIds = id != null ? getChildrenList(id) : _cardBox.keys;
     for (final id in cardIds) {
-      final cardContent = _cardContentBox.get(id);
+      var cardContent = _cardContentBox.get(id);
+      final card = _cardBox.get(id);
+      try {
+        if (cardContent != null && card != null) {
+          cardContent = cardContent.cast<EditorTileDC>().toList();
+        } else if (card == null) {
+          continue;
+        }
+      } catch (e) {
+        continue;
+      }
       if (cardContent is List<EditorTileDC>) {
         final textList = DataClassHelper.getFrontAndBackText(
-          cardContent as List<EditorTileDC>,
+          cardContent,
           false,
         );
         var text = '';
         for (final element in textList) {
           text += '$element\n';
         }
-        if (text.toLowerCase().contains(searchRequest.toLowerCase())) {
+        if (card.name.toLowerCase().trim().contains(searchRequest) ||
+            text.toLowerCase().trim().contains(searchRequest)) {
           final card = _cardBox.get(id);
           if (card == null) {
             continue;
@@ -362,13 +411,13 @@ class HiveCardsApi extends CardsApi {
           foundCards.add(
             SearchResult(
               searchedObject: card,
-              parentObjects: [],
+              parentObjects: parentObjects,
             ),
           );
         }
       }
     }
-    return [];
+    return foundCards;
   }
 
   @override

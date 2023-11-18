@@ -1,6 +1,9 @@
 import 'package:cards_api/cards_api.dart';
 import 'package:flutter/material.dart' hide Card;
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/search/bloc/search_bloc.dart';
 import 'package:learning_app/search/view/parentObjects.dart';
+import 'package:markdown_editor/markdown_editor.dart';
 import 'package:ui_components/ui_components.dart';
 
 class CardsSearchResults extends StatelessWidget {
@@ -59,8 +62,6 @@ class CardsSearchResults extends StatelessWidget {
   }
 }
 
-
-
 class _CardListTileSearch extends StatelessWidget {
   const _CardListTileSearch({
     required this.card,
@@ -72,47 +73,61 @@ class _CardListTileSearch extends StatelessWidget {
   final List<Object> parentObjects;
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const SizedBox(
-          height: UIConstants.itemPadding / 4,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const SizedBox(
-              width: UIConstants.itemPadding * 0.75,
-            ),
-            UIIcons.card,
-            const SizedBox(
-              width: UIConstants.itemPadding,
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // card.front was there before
-                  Text(card.uid, style: UIText.labelBold),
-                  const SizedBox(
-                    height: UIConstants.itemPadding / 4,
-                  ),
-                  // _HitText(searchRequest: searchRequest, text: card.front + card.back)
-                  ParentObjects(
-                    parentObjects: parentObjects,
-                  ),
-                ],
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        UIBottomSheet.showUIBottomSheet(
+          context: context,
+          builder: (_) {
+            return CardPreviewBottomSheet(
+              card: card,
+              cardsRepository: context.read<SearchBloc>().cardsRepository,
+            );
+          },
+        );
+      },
+      child: Column(
+        children: [
+          const SizedBox(
+            height: UIConstants.itemPadding / 4,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const SizedBox(
+                width: UIConstants.itemPadding * 0.75,
               ),
-            ),
-            const SizedBox(
-              width: UIConstants.itemPadding,
-            ),
-            UIIcons.arrowForwardMedium.copyWith(color: UIColors.smallText),
-          ],
-        ),
-        const SizedBox(
-          height: UIConstants.itemPadding / 4,
-        ),
-      ],
+              UIIcons.card,
+              const SizedBox(
+                width: UIConstants.itemPadding,
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // card.front was there before
+                    Text(card.name, style: UIText.labelBold),
+                    const SizedBox(
+                      height: UIConstants.itemPadding / 4,
+                    ),
+                    // _HitText(searchRequest: searchRequest, text: card.front + card.back)
+                    ParentObjects(
+                      parentObjects: parentObjects,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                width: UIConstants.itemPadding,
+              ),
+              UIIcons.arrowForwardMedium.copyWith(color: UIColors.smallText),
+            ],
+          ),
+          const SizedBox(
+            height: UIConstants.itemPadding / 4,
+          ),
+        ],
+      ),
     );
   }
 }
