@@ -8,11 +8,11 @@ part 'search_event.dart';
 part 'search_state.dart';
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
-  SearchBloc(this._cardsRepository) : super(SearchInitial()) {
+  SearchBloc(this.cardsRepository) : super(SearchInitial()) {
     on<SearchRequest>(request);
   }
 
-  final CardsRepository _cardsRepository;
+  final CardsRepository cardsRepository;
   String lastSearch = '';
   String? searchId;
 
@@ -25,17 +25,20 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     if (event.searchRequest.isEmpty) {
       emit(SearchInitial());
     }
-    cardSearchResults =
-        _cardsRepository.searchCard(event.searchRequest, searchId);
+    cardSearchResults = cardsRepository.searchCard(
+      event.searchRequest.trim().toLowerCase(),
+      searchId,
+    );
     if (searchId == null || searchId!.isEmpty) {
-      subjectSearchResults =
-          _cardsRepository.searchSubject(event.searchRequest);
-      
-    }else{
+      subjectSearchResults = cardsRepository
+          .searchSubject(event.searchRequest.trim().toLowerCase());
+    } else {
       subjectSearchResults = [];
     }
-    folderSearchResults =
-        _cardsRepository.searchFolder(event.searchRequest, searchId);
+    folderSearchResults = cardsRepository.searchFolder(
+      event.searchRequest.trim().toLowerCase(),
+      searchId,
+    );
 
     if (cardSearchResults.isNotEmpty ||
         folderSearchResults.isNotEmpty ||

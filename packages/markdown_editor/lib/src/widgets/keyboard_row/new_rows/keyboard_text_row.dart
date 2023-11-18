@@ -89,14 +89,14 @@ class KeyboardTextRow extends StatelessWidget {
                             context.read<KeyboardRowCubit>().expandText();
                           }
                         },
-                        onDoubleTap: () {
-                          context
-                              .read<KeyboardRowCubit>()
-                              .changeBackgroundColor(
-                                Colors.transparent,
-                                textEditorBloc,
-                              );
-                        },
+                        // onDoubleTap: () {
+                        //   context
+                        //       .read<KeyboardRowCubit>()
+                        //       .changeBackgroundColor(
+                        //         Colors.transparent,
+                        //         textEditorBloc,
+                        //       );
+                        // },
                       ),
                       KeyboardButton(
                         icon: UIIcons.formatColorText.copyWith(
@@ -111,14 +111,14 @@ class KeyboardTextRow extends StatelessWidget {
                             context.read<KeyboardRowCubit>().expandText();
                           }
                         },
-                        onDoubleTap: () {
-                          context.read<KeyboardRowCubit>().changeTextColor(
-                              UIColors.textLight,
-                              context.read<TextEditorBloc>(),);
-                          context
-                              .read<KeyboardRowCubit>()
-                              .defaultTextColor(textEditorBloc);
-                        },
+                        // onDoubleTap: () {
+                        //   context.read<KeyboardRowCubit>().changeTextColor(
+                        //       UIColors.textLight,
+                        //       context.read<TextEditorBloc>(),);
+                        //   context
+                        //       .read<KeyboardRowCubit>()
+                        //       .defaultTextColor(textEditorBloc);
+                        // },
                       ),
                       const SizedBox(
                         width: 2,

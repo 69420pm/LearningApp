@@ -52,22 +52,21 @@ class ListEditorTile extends StatelessWidget implements EditorTile {
                   context: context,
                 ),
               );
-        }else{
-context.read<TextEditorBloc>().add(
-              orderNumber == 0
-                  ? TextEditorAddEditorTile(
-                      newEditorTile: ListEditorTile(),
-                      context: context,
-                    )
-                  : TextEditorAddEditorTile(
-                      newEditorTile: ListEditorTile(
-                        orderNumber: orderNumber + 1,
+        } else {
+          context.read<TextEditorBloc>().add(
+                orderNumber == 0
+                    ? TextEditorAddEditorTile(
+                        newEditorTile: ListEditorTile(),
+                        context: context,
+                      )
+                    : TextEditorAddEditorTile(
+                        newEditorTile: ListEditorTile(
+                          orderNumber: orderNumber + 1,
+                        ),
+                        context: context,
                       ),
-                      context: context,
-                    ),
-            );
+              );
         }
-        
       }
       ..onBackspaceDoubleClick = () {
         _textTile.focusNode = FocusNode();

@@ -2,20 +2,47 @@ import 'package:cards_api/cards_api.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_card/cubit/add_card_cubit.dart';
+import 'package:markdown_editor/markdown_editor.dart';
 import 'package:ui_components/ui_components.dart';
 
-class AddCardSettingsBottomSheet extends StatelessWidget {
-  AddCardSettingsBottomSheet(
-      {super.key, required this.card, required this.parentId,});
+class CardSettingsPage extends StatelessWidget {
+  CardSettingsPage(
+      {super.key,
+      required this.card,
+      required this.parentId,
+      required this.editorTiles});
   Card card;
   String? parentId;
+  List<EditorTile> editorTiles;
+  final nameController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    return UIBottomSheet(
-      title: const Text('Card Settings', style: UIText.label),
-      child: Column(
+    if (card.name.isEmpty) {
+      nameController.text =
+          context.read<AddCardCubit>().getCardName(editorTiles);
+    } else {
+      nameController.text = card.name;
+    }
+    return UIPage(
+      appBar: const UIAppBar(
+        leadingBackButton: true,
+        title: 'Card Settings',
+      ),
+      body: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          UITextFieldLarge(
+            controller: nameController,
+            onChanged: (p0) {
+              if (p0 == null || p0.isEmpty) return;
+              card.name = p0;
+              context.read<AddCardCubit>().saveCard(card, parentId, null);
+            },
+          ),
+          const SizedBox(
+            height: UIConstants.itemPaddingLarge,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -65,22 +92,24 @@ class AddCardSettingsBottomSheet extends StatelessWidget {
             text:
                 'For vocabulary learning, type translations using the keyboard to improve spelling',
           ),
-          const SizedBox(
-            height: UIConstants.itemPaddingLarge,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('Suggested Title', style: UIText.label),
-              UIIconButton(
-                onPressed: () {},
-                alignment: Alignment.centerRight,
-                icon: UIIcons.arrowForwardSmall
-                    .copyWith(color: UIColors.smallText),
-                text: 'add title here',
-              ),
-            ],
-          ),
+          // const SizedBox(
+          //   height: UIConstants.itemPaddingLarge,
+          // ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [
+          //     const Text('Suggested Title', style: UIText.label),
+          //     UIIconButton(
+          //       onPressed: () {
+
+          //       },
+          //       alignment: Alignment.centerRight,
+          //       icon: UIIcons.arrowForwardSmall
+          //           .copyWith(color: UIColors.smallText),
+          //       text: card.name,
+          //     ),
+          //   ],
+          // ),
         ],
       ),
     );

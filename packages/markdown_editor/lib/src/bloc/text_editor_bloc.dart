@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart' hide Card;
-import 'package:markdown_editor/src/helper/data_class_helper.dart';
+import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/models/editor_tile.dart';
 import 'package:markdown_editor/src/models/text_field_constants.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/list_editor_tile.dart';
@@ -19,7 +19,6 @@ part 'text_editor_state.dart';
 class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
   /// constructor
   TextEditorBloc(
-    this._cardsRepository,
     this._saveEditorTilesCallback,
     this.editorTiles,
     this.parentId, {
@@ -37,11 +36,11 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     on<TextEditorFocusLastWidget>(_focusLastWidget);
     on<TextEditorNextCard>(_nextCard);
     on<TextEditorSetFocusedWidget>(_setFocusedWidget);
+    on<TextEditorAddWidgetAboveSeparator>(_addWidgetAboveSeparator);
+    on<TextEditorFocusWidgetAfterSeparator>(_focusWidgetAfterSeparator);
   }
 
   final String? parentId;
-
-  final CardsRepository _cardsRepository;
 
   /// list of all editorTiles (textWidgets, Images, etc.) of text editor
   List<EditorTile> editorTiles;
@@ -93,8 +92,8 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     TextEditorAddEditorTile event,
     Emitter<TextEditorState> emit,
   ) {
-    _addEditorTile(event.newEditorTile, event.context);
-    if(event.newEditorTile.focusNode == null){
+    _addEditorTile(event.newEditorTile, event.context, null);
+    if (event.newEditorTile.focusNode == null) {
       FocusManager.instance.primaryFocus?.unfocus();
     }
     if (event.emitState) {
@@ -135,11 +134,12 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     _saveEditorTiles();
   }
 
-  void _addEditorTile(EditorTile toAdd, BuildContext context) {
+  void _addEditorTile(EditorTile toAdd, BuildContext context, int? indexToAdd) {
     for (var i = 0; i < editorTiles.length; i++) {
       // get focused/current editorTile,
       // or the last one when no tile is focused
-      if ((_focusedWidget != null &&
+      if (indexToAdd == i ||
+          (_focusedWidget != null &&
               editorTiles[i].focusNode == _focusedWidget) ||
           (editorTiles[i].focusNode == FocusManager.instance.primaryFocus ||
               i == editorTiles.length - 1)) {
@@ -356,7 +356,54 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
   }
 
   FutureOr<void> _setFocusedWidget(
-      TextEditorSetFocusedWidget event, Emitter<TextEditorState> emit) {
+    TextEditorSetFocusedWidget event,
+    Emitter<TextEditorState> emit,
+  ) {
     _focusedWidget = event.focusedWidget;
+  }
+
+  FutureOr<void> _addWidgetAboveSeparator(
+    TextEditorAddWidgetAboveSeparator event,
+    Emitter<TextEditorState> emit,
+  ) {
+    for (var i = 0; i < editorTiles.length; i++) {
+      if (editorTiles[i] is FrontBackSeparatorTile) {
+        if (i > 0) {
+          final textTile = TextTile(textStyle: TextFieldConstants.normal);
+          // all editorTiles behind focused tile
+          final sublist = editorTiles.sublist(i);
+          editorTiles
+            ..removeRange(i, editorTiles.length)
+            ..add(textTile);
+          textTile.focusNode!.requestFocus();
+          for (var j = 0; j < sublist.length; j++) {
+            editorTiles.add(sublist[j]);
+          }
+          // _addEditorTile(
+          //   TextTile(textStyle: TextFieldConstants.normal),
+          //   event.context,
+          //   i - 1,
+          // );
+          emit(TextEditorEditorTilesChanged(tiles: List.of(editorTiles)));
+        }
+        return null;
+      }
+    }
+  }
+
+  FutureOr<void> _focusWidgetAfterSeparator(
+    TextEditorFocusWidgetAfterSeparator event,
+    Emitter<TextEditorState> emit,
+  ) {
+    for (var i = 0; i < editorTiles.length; i++) {
+      if (editorTiles[i] is FrontBackSeparatorTile) {
+        if (editorTiles.length > i + 1) {
+          if (editorTiles[i + 1].focusNode != null) {
+            editorTiles[i + 1].focusNode!.requestFocus();
+          }
+        }
+        return null;
+      }
+    }
   }
 }

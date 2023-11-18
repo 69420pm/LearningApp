@@ -12,7 +12,6 @@ class AddCardCubit extends Cubit<AddCardState> {
   AddCardCubit(this.cardsRepository) : super(AddCardInitial());
 
   final CardsRepository cardsRepository;
-  bool _editMarkDownMode = false;
 
   Future<void> saveCard(
     Card card,
@@ -21,23 +20,13 @@ class AddCardCubit extends Cubit<AddCardState> {
   ) async {
     emit(AddCardLoading());
     if (editorTiles != null) {
-      final frontText =
-          DataClassHelper.getFrontAndBackTextFromEditorTiles(editorTiles, true);
-      if (frontText.isNotEmpty && frontText[0].trim().isNotEmpty) {
-        final newlineIndex = frontText[0].indexOf("\n");
-        if (newlineIndex != -1) {
-          card.name = frontText[0].substring(0,newlineIndex);
-        } else {
-          card.name = frontText[0];
-        }
-      } else {
-        card.name =
-            "created on ${DateFormat('EEE dd.MM yyyy HH:mm').format(DateTime.now())}";
+      if ((card.name.isEmpty && card.name.trim().isEmpty) ||
+          card.name.startsWith('created on ') && card.name.length == 31) {
+        card.name = getCardName(editorTiles);
       }
-      await cardsRepository.saveCard(card, editorTiles, parentId);
-
-      emit(AddCardSuccess());
     }
+    await cardsRepository.saveCard(card, editorTiles, parentId);
+    emit(AddCardSuccess());
   }
 
   Future<List<EditorTile>> getSavedEditorTiles(
@@ -61,12 +50,18 @@ class AddCardCubit extends Cubit<AddCardState> {
     return loadedEditorTiles;
   }
 
-  void switchMarkdownMode() {
-    if (_editMarkDownMode) {
-      emit(AddCardRenderMode());
+  String getCardName(List<EditorTile> editorTiles) {
+    final frontText =
+        DataClassHelper.getFrontAndBackTextFromEditorTiles(editorTiles, true);
+    if (frontText.isNotEmpty && frontText[0].trim().isNotEmpty) {
+      final newlineIndex = frontText[0].indexOf("\n");
+      if (newlineIndex != -1) {
+        return frontText[0].substring(0, newlineIndex);
+      } else {
+        return frontText[0];
+      }
     } else {
-      emit(AddCardEditMode());
+      return "created on ${DateFormat('EEE dd.MM yyyy HH:mm').format(DateTime.now())}";
     }
-    _editMarkDownMode = !_editMarkDownMode;
   }
 }

@@ -4,20 +4,22 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
+import 'package:markdown_editor/src/models/read_only_interactable.dart';
 import 'package:markdown_editor/src/models/text_field_controller.dart';
 import 'package:markdown_editor/src/widgets/bottom_sheets/image_bottom_sheet.dart';
 import 'package:markdown_editor/src/widgets/image_widgets/image_full_screen.dart';
 import 'package:ui_components/ui_components.dart';
 
-class ImageTile extends StatefulWidget implements EditorTile {
+class ImageTile extends StatefulWidget
+    implements EditorTile, ReadOnlyInteractable {
   /// constructor focusNode gets focusNode of widget and [image] is a File
   /// that gets displayed
-  ImageTile({
-    super.key,
-    required this.image,
-    this.scale = 1,
-    this.alignment = Alignment.center,
-  }) {
+  ImageTile(
+      {super.key,
+      required this.image,
+      this.scale = 1,
+      this.alignment = Alignment.center,
+      this.interactable = true}) {
     // dismiss keyboard
     // FocusManager.instance.primaryFocus?.unfocus();
   }
@@ -63,6 +65,9 @@ class ImageTile extends StatefulWidget implements EditorTile {
           image == other.image &&
           alignment == other.alignment &&
           focusNode == other.focusNode;
+
+  @override
+  bool interactable;
 }
 
 class _ImageTileState extends State<ImageTile> {
@@ -89,6 +94,7 @@ class _ImageTileState extends State<ImageTile> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
+        if(!widget.interactable) return;
         setState(() {
           selected = !selected;
         });

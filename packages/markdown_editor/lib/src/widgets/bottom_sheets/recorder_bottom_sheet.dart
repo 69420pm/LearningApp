@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:intl/intl.dart';
+import 'package:learning_app/app/helper/uid.dart';
 
 class RecorderBottomSheet extends StatefulWidget {
   const RecorderBottomSheet({super.key});
@@ -19,7 +20,7 @@ class RecorderBottomSheet extends StatefulWidget {
 
 class _RecorderBottomSheetState extends State<RecorderBottomSheet> {
   bool? _microphonePermissionGranted;
-  late Timer _timer;
+  Timer? _timer;
   Duration _elapsedTime = const Duration();
 
   final _recorder = FlutterSoundRecorder();
@@ -43,7 +44,8 @@ class _RecorderBottomSheetState extends State<RecorderBottomSheet> {
           context: context,
           builder: (_) => UIDialog(
             title: 'Microphone permission denied',
-            body: 'denied',
+            body:
+                'To use the recorder feature, please grant permission for microphone',
             actions: [
               UIButton(
                 child: Text(
@@ -72,8 +74,8 @@ class _RecorderBottomSheetState extends State<RecorderBottomSheet> {
       setState(() {
         _microphonePermissionGranted = true;
       });
-      await _startRecording();
       await _recorder.openRecorder();
+      await _startRecording();
     }
   }
 
@@ -115,7 +117,9 @@ class _RecorderBottomSheetState extends State<RecorderBottomSheet> {
       });
     });
     // play
-    await _recorder.startRecorder(toFile: '${path.path}/döner.aac');
+
+    await _recorder.startRecorder(
+        toFile: '${path.path}/${Uid().uidNoSpecialCharacters()}.aac');
   }
 
   @override
@@ -151,8 +155,10 @@ class _RecorderBottomSheetState extends State<RecorderBottomSheet> {
                   style: UIText.label.copyWith(color: UIColors.smallText),
                 );
               } else {
-                return Text('00:00:00',
-                    style: UIText.label.copyWith(color: UIColors.smallText),);
+                return Text(
+                  '00:00:00',
+                  style: UIText.label.copyWith(color: UIColors.smallText),
+                );
               }
             },
           ),
@@ -196,7 +202,7 @@ class _RecorderBottomSheetState extends State<RecorderBottomSheet> {
   @override
   void dispose() {
     _recorder.closeRecorder();
-    _timer.cancel();
+    _timer?.cancel();
 
     super.dispose();
   }

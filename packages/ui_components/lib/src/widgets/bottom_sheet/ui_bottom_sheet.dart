@@ -10,7 +10,7 @@ class UIBottomSheet extends StatelessWidget {
     this.actionLeft,
     this.title,
     this.actionRight,
-    this.addPadding=false,
+    this.addPadding=true,
   });
   final Widget child;
 
@@ -30,11 +30,11 @@ class UIBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).viewInsets.bottom +
-        (addPadding?0.0: UIConstants.cardVerticalPadding);
+        (addPadding?UIConstants.cardVerticalPadding:0.0);
     return Padding(
       padding: EdgeInsets.only(
-        left: addPadding? 0:UIConstants.pageHorizontalPadding,
-        right: addPadding?0:UIConstants.pageHorizontalPadding,
+        left: addPadding? UIConstants.pageHorizontalPadding:0,
+        right: addPadding?UIConstants.pageHorizontalPadding:0,
         // bottom is static height, if bottomsheet should move with keyboard
         // use MediaQuery.of(context).viewInsets.bottom,
         // however the animation is a bit leggy and not smooth
@@ -46,10 +46,13 @@ class UIBottomSheet extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          UIBottomSheetTitleRow(
-            actionLeft: actionLeft,
-            actionRight: actionRight,
-            title: title,
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: addPadding ? 0:UIConstants.pageHorizontalPadding),
+            child: UIBottomSheetTitleRow(
+              actionLeft: actionLeft,
+              actionRight: actionRight,
+              title: title,
+            ),
           ),
           const SizedBox(
             height: UIConstants.itemPaddingLarge,
