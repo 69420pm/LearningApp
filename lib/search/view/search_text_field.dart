@@ -32,14 +32,24 @@ class SearchTextField extends StatelessWidget {
               cursorColor: UIColors.smallText,
               style: UIText.labelBold,
               autofocus: true,
-              onFieldSubmitted: (p0) {
-                context
-                    .read<SearchBloc>()
-                    .add(SearchRequest(searchController.text));
+              onChanged: (value) {
+                if (value.trim().isEmpty) {
+                    context.read<SearchBloc>().resetState();
+
+                } else {
+                  context
+                      .read<SearchBloc>()
+                      .add(SearchRequest(searchController.text));
+                }
               },
+              // onFieldSubmitted: (p0) {
+              //   context
+              //       .read<SearchBloc>()
+              //       .add(SearchRequest(searchController.text));
+              // },
               decoration: InputDecoration(
                 isDense: true,
-                hintText: 'search${searchSubject?' folder' : ''}',
+                hintText: 'search${searchSubject ? ' folder' : ''}',
                 contentPadding: const EdgeInsets.symmetric(vertical: 14),
                 prefixIcon: UIIconButton(
                   icon: UIIcons.arrowBack
