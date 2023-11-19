@@ -58,7 +58,9 @@ class _AddCardPageState extends State<AddCardPage> with WidgetsBindingObserver {
               icon: UIIcons.settings,
               onPressed: () {
                 Navigator.pushNamed(context, '/add_card/settings', arguments: [
-                  widget.card, widget.parentId, textEditorBloc!.editorTiles
+                  widget.card,
+                  widget.parentId,
+                  textEditorBloc!.editorTiles
                 ]);
                 // UIBottomSheet.showUIBottomSheet(
                 //   context: context,
@@ -80,15 +82,22 @@ class _AddCardPageState extends State<AddCardPage> with WidgetsBindingObserver {
           future: context.read<AddCardCubit>().getSavedEditorTiles(widget.card),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              textEditorBloc = TextEditorBloc(
-                (tiles) => context
-                    .read<AddCardCubit>()
-                    .saveCard(widget.card, widget.parentId, tiles),
-                snapshot.data!,
-                widget.parentId,
-              );
-              return BlocProvider.value(
-                value: textEditorBloc!,
+              final textEditorBloc = TextEditorBloc(
+                      (tiles) => context
+                          .read<AddCardCubit>()
+                          .saveCard(widget.card, widget.parentId, tiles),
+                      snapshot.data!,
+                      widget.parentId,
+                    );
+              return MultiBlocProvider(
+                providers: [
+                  BlocProvider.value(
+                    value: textEditorBloc 
+                  ),
+                  BlocProvider(
+                    create: (context) => KeyboardRowCubit(textEditorBloc),
+                  ),
+                ],
                 child: Stack(
                   children: [
                     EditorWidget(),
@@ -96,7 +105,10 @@ class _AddCardPageState extends State<AddCardPage> with WidgetsBindingObserver {
                       bottom: 0,
                       right: 0,
                       left: 0,
-                      child: KeyboardRow(),
+                      child: BlocProvider(
+                        create: (context) => KeyboardRowCubit(textEditorBloc!),
+                        child: KeyboardRow(),
+                      ),
                     ),
                   ],
                 ),

@@ -265,6 +265,27 @@ class TextFieldController extends TextEditingController {
               ),
       );
     });
+    // change state of bold, italic, underlined and colors
+    if (text == _previousText) {
+      if (selection.start > 0) {
+        final charTile = charTiles[selection.start - 1];
+        if (charTile != null) {
+          context.read<TextEditorBloc>().isBold = charTile.isBold;
+          context.read<TextEditorBloc>().isItalic = charTile.isItalic;
+          context.read<TextEditorBloc>().isUnderlined = charTile.isUnderlined;
+          if (charTile.style.color != null) {
+            context.read<TextEditorBloc>().textColor = charTile.style.color!;
+          }
+          if (charTile.style.backgroundColor != null) {
+            context.read<TextEditorBloc>().textBackgroundColor =
+                charTile.style.backgroundColor!;
+          }
+          // try {
+            context.read<KeyboardRowCubit>().expandText();
+          // } catch (e) {}
+        }
+      }
+    }
     _previousText = text;
     _previousSelection = selection;
     _previousBold = isBold;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/cubit/keyboard_row_cubit.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/new_rows/color_rows/keyboard_background_color_row.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/new_rows/color_rows/keyboard_text_color_row.dart';
@@ -8,28 +9,34 @@ import 'package:markdown_editor/src/widgets/keyboard_row/new_rows/keyboard_text_
 
 class KeyboardRow extends StatefulWidget {
   KeyboardRow({super.key});
-  bool isVisible = false;
+  // bool isVisible = false;
 
   @override
   State<KeyboardRow> createState() => _KeyboardRowState();
 }
 
 class _KeyboardRowState extends State<KeyboardRow> with WidgetsBindingObserver {
-  @override
-  void initState() {
-    WidgetsBinding.instance.addObserver(this);
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   WidgetsBinding.instance.addObserver(this);
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return Visibility(
+    return /* Visibility(
       visible: widget.isVisible,
       maintainState: true,
-      child: BlocBuilder<KeyboardRowCubit, KeyboardRowState>(
+      child:  */BlocBuilder<KeyboardRowCubit, KeyboardRowState>(
         builder: (context, state) {
           if (state is KeyboardRowText) {
-            return const KeyboardTextRow();
+            return KeyboardTextRow(
+              isBold: state.isBold,
+              isItalic: state.isItalic,
+              isUnderlined: state.isUnderlined,
+              textColor: state.textColor,
+              backgroundColor: state.backgroundColor,
+            );
           } else if (state is KeyboardRowTextColors) {
             return const KeyboardTextColorRow();
           } else if (state is KeyboardRowBackgroundColors) {
@@ -40,30 +47,30 @@ class _KeyboardRowState extends State<KeyboardRow> with WidgetsBindingObserver {
             return const Text('error');
           }
         },
-      ),
+      // ),
     );
   }
 
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   WidgetsBinding.instance.removeObserver(this);
+  //   super.dispose();
+  // }
 
-  @override
-  void didChangeMetrics() {
-    if (WidgetsBinding.instance.window.viewInsets.bottom > 0.0) {
-      setState(() {
-        widget.isVisible = true;
-      });
-    } else {
-      setState(() {
-        widget.isVisible = false;
-      });
-    }
+  // @override
+  // void didChangeMetrics() {
+  //   if (WidgetsBinding.instance.window.viewInsets.bottom > 0.0) {
+  //     setState(() {
+  //       widget.isVisible = true;
+  //     });
+  //   } else {
+  //     setState(() {
+  //       widget.isVisible = false;
+  //     });
+  //   }
 
-    super.didChangeMetrics();
-  }
+  //   super.didChangeMetrics();
+  // }
 }
 
 

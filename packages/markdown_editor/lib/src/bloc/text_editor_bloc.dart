@@ -38,6 +38,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     on<TextEditorSetFocusedWidget>(_setFocusedWidget);
     on<TextEditorAddWidgetAboveSeparator>(_addWidgetAboveSeparator);
     on<TextEditorFocusWidgetAfterSeparator>(_focusWidgetAfterSeparator);
+    // on<TextEditor
   }
 
   final String? parentId;
@@ -289,8 +290,12 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     TextEditorChangeOrderOfTile event,
     Emitter<TextEditorState> emit,
   ) {
-    editorTiles.insert(event.newIndex, editorTiles[event.oldIndex]);
-    editorTiles.removeAt(event.oldIndex);
+    if (event.oldIndex < event.newIndex) {
+      event.newIndex -= 1;
+    }
+    final item = editorTiles.removeAt(event.oldIndex);
+    editorTiles.insert(event.newIndex, item);
+    emit(TextEditorEditorTilesChanged(tiles: List.of(editorTiles)));
   }
 
   FutureOr<void> _focusLastWidget(

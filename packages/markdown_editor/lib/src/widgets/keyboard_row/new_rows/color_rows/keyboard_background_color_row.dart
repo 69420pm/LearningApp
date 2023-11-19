@@ -64,7 +64,11 @@ class _KeyboardBackgroundColorRowState
         const SizedBox(
           height: 8,
         ),
-        const KeyboardTextRow(),
+        KeyboardTextRow(isBold: textEditorBloc.isBold,
+          isItalic: textEditorBloc.isItalic,
+          isUnderlined: textEditorBloc.isUnderlined,
+          textColor: textEditorBloc.textColor,
+          backgroundColor: textEditorBloc.textBackgroundColor,),
       ],
     );
   }

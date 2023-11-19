@@ -7,8 +7,12 @@ import 'package:ui_components/ui_components.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class KeyboardTextRow extends StatelessWidget {
-  const KeyboardTextRow({super.key});
-
+  KeyboardTextRow({super.key, required this.isBold, required this.isItalic, required this.isUnderlined, required this.textColor, required this.backgroundColor});
+  bool isBold;
+  bool isItalic;
+  bool isUnderlined;
+  Color textColor;
+  Color backgroundColor;
   @override
   Widget build(BuildContext context) {
     final textEditorBloc = context.read<TextEditorBloc>();
@@ -34,7 +38,7 @@ class KeyboardTextRow extends StatelessWidget {
                       ),
                       KeyboardToggle(
                         icon: UIIcons.formatBold,
-                        initialState: textEditorBloc.isBold,
+                        initialState: isBold,
                         onPressed: (value) {
                           textEditorBloc
                               .add(TextEditorKeyboardRowChange(isBold: value));
@@ -42,7 +46,7 @@ class KeyboardTextRow extends StatelessWidget {
                       ),
                       KeyboardToggle(
                         icon: UIIcons.formatItalic,
-                        initialState: textEditorBloc.isItalic,
+                        initialState: isItalic,
                         onPressed: (value) {
                           textEditorBloc.add(
                             TextEditorKeyboardRowChange(isItalic: value),
@@ -51,7 +55,7 @@ class KeyboardTextRow extends StatelessWidget {
                       ),
                       KeyboardToggle(
                         icon: UIIcons.formatUnderline,
-                        initialState: textEditorBloc.isUnderlined,
+                        initialState: isUnderlined,
                         onPressed: (value) {
                           textEditorBloc.add(
                             TextEditorKeyboardRowChange(isUnderlined: value),
@@ -72,7 +76,7 @@ class KeyboardTextRow extends StatelessWidget {
                       ),
                       KeyboardButton(
                         icon: UIIcons.formatColorFill.copyWith(
-                          color: textEditorBloc.textBackgroundColor ==
+                          color: backgroundColor ==
                                   Colors.transparent
                               ? UIColors.textLight
                               : textEditorBloc.textBackgroundColor
@@ -100,7 +104,7 @@ class KeyboardTextRow extends StatelessWidget {
                       ),
                       KeyboardButton(
                         icon: UIIcons.formatColorText.copyWith(
-                          color: textEditorBloc.textColor,
+                          color: textColor,
                         ),
                         onPressed: () {
                           if (!context
