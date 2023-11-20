@@ -82,7 +82,7 @@ class _AddCardPageState extends State<AddCardPage> with WidgetsBindingObserver {
           future: context.read<AddCardCubit>().getSavedEditorTiles(widget.card),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              final textEditorBloc = TextEditorBloc(
+              textEditorBloc = TextEditorBloc(
                       (tiles) => context
                           .read<AddCardCubit>()
                           .saveCard(widget.card, widget.parentId, tiles),
@@ -92,10 +92,10 @@ class _AddCardPageState extends State<AddCardPage> with WidgetsBindingObserver {
               return MultiBlocProvider(
                 providers: [
                   BlocProvider.value(
-                    value: textEditorBloc 
+                    value: textEditorBloc! 
                   ),
                   BlocProvider(
-                    create: (context) => KeyboardRowCubit(textEditorBloc),
+                    create: (context) => KeyboardRowCubit(textEditorBloc!),
                   ),
                 ],
                 child: Stack(
@@ -146,7 +146,11 @@ class _AddCardPageState extends State<AddCardPage> with WidgetsBindingObserver {
       }
       if (isEmpty) {
         final frontText = DataClassHelper.getFrontAndBackTextFromEditorTiles(
-            editorTiles, true);
+            editorTiles, false);
+            if(frontText[0].trim().isEmpty && frontText[1].trim().isEmpty && leaveEditorAfterSaving){
+              Navigator.of(context).pop();
+              return;
+            }
         if (frontText.isNotEmpty &&
             frontText[0].trim().isNotEmpty &&
             editorTiles.isNotEmpty) {
