@@ -38,7 +38,7 @@ class KeyboardTextRow extends StatelessWidget {
                       ),
                       KeyboardToggle(
                         icon: UIIcons.formatBold,
-                        initialState: isBold,
+                        toggled: isBold,
                         onPressed: (value) {
                           textEditorBloc
                               .add(TextEditorKeyboardRowChange(isBold: value));
@@ -46,7 +46,7 @@ class KeyboardTextRow extends StatelessWidget {
                       ),
                       KeyboardToggle(
                         icon: UIIcons.formatItalic,
-                        initialState: isItalic,
+                        toggled: isItalic,
                         onPressed: (value) {
                           textEditorBloc.add(
                             TextEditorKeyboardRowChange(isItalic: value),
@@ -55,7 +55,7 @@ class KeyboardTextRow extends StatelessWidget {
                       ),
                       KeyboardToggle(
                         icon: UIIcons.formatUnderline,
-                        initialState: isUnderlined,
+                        toggled: isUnderlined,
                         onPressed: (value) {
                           textEditorBloc.add(
                             TextEditorKeyboardRowChange(isUnderlined: value),

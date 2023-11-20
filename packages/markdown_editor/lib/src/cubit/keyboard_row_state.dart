@@ -1,7 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'keyboard_row_cubit.dart';
 
-@immutable
 abstract class KeyboardRowState extends Equatable {}
 
 class KeyboardRowText extends KeyboardRowState {
@@ -19,7 +18,13 @@ class KeyboardRowText extends KeyboardRowState {
   });
 
   @override
-  List<Object?> get props => [textColor, backgroundColor, isBold, isItalic, isUnderlined];
+  List<Object?> get props => [
+        textColor,
+        backgroundColor,
+        isBold,
+        isItalic,
+        isUnderlined,
+      ];
 }
 
 class KeyboardRowTextColors extends KeyboardRowState {

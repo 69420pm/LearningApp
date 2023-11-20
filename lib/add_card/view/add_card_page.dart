@@ -105,10 +105,7 @@ class _AddCardPageState extends State<AddCardPage> with WidgetsBindingObserver {
                       bottom: 0,
                       right: 0,
                       left: 0,
-                      child: BlocProvider(
-                        create: (context) => KeyboardRowCubit(textEditorBloc!),
-                        child: KeyboardRow(),
-                      ),
+                      child: KeyboardRow(),
                     ),
                   ],
                 ),

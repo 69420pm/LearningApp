@@ -281,7 +281,7 @@ class TextFieldController extends TextEditingController {
                 charTile.style.backgroundColor!;
           }
           // try {
-            context.read<KeyboardRowCubit>().expandText();
+            context.read<KeyboardRowCubit>().updateTextRow();
           // } catch (e) {}
         }
       }
