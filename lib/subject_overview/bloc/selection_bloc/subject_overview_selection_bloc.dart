@@ -20,7 +20,7 @@ class SubjectOverviewSelectionBloc
     on<SubjectOverviewDraggingChange>(_toggleDragging);
     on<SubjectOverviewSetSoftSelectFile>(_setSoftSelectFile);
     on<SubjectOverviewSetHoveredFolder>(_setHoveredFolder);
-    on<SubjectOverviewSelectAll>(_seletAll);
+    on<SubjectOverviewSelectAll>(_selectAll);
   }
   final CardsRepository _cardsRepository;
 
@@ -183,9 +183,13 @@ class SubjectOverviewSelectionBloc
     if (event.inSelectMode) {
       _isInSelectMode = true;
       _fileSoftSelected = '';
+      _hoveredFoldeUID = '';
+      _isInDragging = false;
       emit(SubjectOverviewSelectionModeOn());
     } else {
       _isInSelectMode = false;
+      _hoveredFoldeUID = '';
+      _isInDragging = false;
       _clearSelectionVariables();
       emit(SubjectOverviewSelectionModeOff());
     }
@@ -233,7 +237,9 @@ class SubjectOverviewSelectionBloc
       _fileDragged = '';
       //if (_isInSelectMode) emit(SubjectOverviewSelectionModeOn());
     }
-    if (_isInSelectMode) emit(SubjectOverviewSelectionModeOn());
+    if (_isInSelectMode) {
+      emit(SubjectOverviewSelectionModeOn());
+    }
   }
 
   FutureOr<void> _setSoftSelectFile(
@@ -258,7 +264,7 @@ class SubjectOverviewSelectionBloc
     }
   }
 
-  FutureOr<void> _seletAll(SubjectOverviewSelectAll event,
+  FutureOr<void> _selectAll(SubjectOverviewSelectAll event,
       Emitter<SubjectOverviewSelectionState> emit) async {
     var childUIDs =
         await _cardsRepository.getChildrenById(event.subjectUID).value;

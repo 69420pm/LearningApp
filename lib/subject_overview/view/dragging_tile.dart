@@ -198,6 +198,8 @@ class FolderDragTarget extends StatelessWidget {
                   parentId: folderUID,
                 ),
               );
+          context.read<SubjectOverviewSelectionBloc>().add(
+              SubjectOverviewSelectionToggleSelectMode(inSelectMode: false));
         }
       },
       builder: (context, candidateData, rejectedData) {

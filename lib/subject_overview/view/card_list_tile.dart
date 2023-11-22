@@ -23,13 +23,12 @@ class CardListTile extends StatelessWidget {
       builder: (context, state) {
         final selectionBloc = context.read<SubjectOverviewSelectionBloc>();
 
-        final isSelectedWhileDraggingButIsNotDraggedTile =
-            selectionBloc.isInSelectMode &&
-                selectionBloc.isInDragging &&
-                selectionBloc.isFileSelected(card.uid) &&
-                selectionBloc.fileDragged != card.uid;
+        final isSelectedWhileDraggingOrIsDraggedTile =
+            selectionBloc.isInDragging &&
+                (selectionBloc.isFileSelected(card.uid) ||
+                    selectionBloc.fileDragged == card.uid);
 
-        if (isSelectedWhileDraggingButIsNotDraggedTile) {
+        if (isSelectedWhileDraggingOrIsDraggedTile) {
           return const InactiveListTile();
         }
         {

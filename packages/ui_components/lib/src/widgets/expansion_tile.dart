@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:ffi';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ class UIExpansionTile extends StatefulWidget {
   Color? textColor;
   Color? iconColor;
   Border? border;
+  bool changeExtentionState;
 
   UIExpansionTile({
     super.key,
@@ -30,6 +32,7 @@ class UIExpansionTile extends StatefulWidget {
     this.textColor,
     this.iconColor,
     this.border,
+    this.changeExtentionState = false,
   }) {
     iconColor ??= textColor;
   }
@@ -68,6 +71,9 @@ class _UIExpansionTileState extends State<UIExpansionTile>
 
   @override
   Widget build(BuildContext context) {
+    if (widget.changeExtentionState) {
+      changeState();
+    }
     return DecoratedBox(
       key: _key,
       decoration: BoxDecoration(
@@ -139,5 +145,14 @@ class _UIExpansionTileState extends State<UIExpansionTile>
     } else {
       _animationController.reverse();
     }
+  }
+
+  void changeState() async {
+    Future.delayed(Duration(seconds: 1), () {
+      if (widget.changeExtentionState) {
+        update();
+        widget.changeExtentionState = false;
+      }
+    });
   }
 }

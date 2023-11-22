@@ -17,11 +17,11 @@ import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:ui_components/ui_components.dart';
 
 Future<void> main() async {
-   /// Init hive
+  /// Init hive
   WidgetsFlutterBinding.ensureInitialized();
   final appDocumentDirectory =
       await path_provider.getApplicationDocumentsDirectory();
-   Hive
+  Hive
     ..init(appDocumentDirectory.path)
     ..registerAdapter(SubjectAdapter())
     ..registerAdapter(CardAdapter())
@@ -38,18 +38,21 @@ Future<void> main() async {
     ..registerAdapter(QuoteTileDCAdapter())
     ..registerAdapter(TextTileDCAdapter());
   final cardsApi = HiveCardsApi(
-      await Hive.openBox<Subject>('subjects'),
-      await Hive.openBox<Folder>('folders'),
-      await Hive.openBox<Card>('cards'),
-      await Hive.openBox<List<String>>('relations'),
-      await Hive.openBox<List<EditorTileDC>>('card_content'),);
+    await Hive.openBox<Subject>('subjects'),
+    await Hive.openBox<Folder>('folders'),
+    await Hive.openBox<Card>('cards'),
+    await Hive.openBox<List<String>>('relations'),
+    await Hive.openBox<List<EditorTileDC>>('card_content'),
+  );
 
   final cardsRepository = CardsRepository(cardsApi: cardsApi);
 
   final uiApi = HiveUIApi(await Hive.openBox('hive_ui'));
   final uiRepository = UIRepository(uiApi: uiApi);
-  await bootstrap(() => App(
-        cardsRepository: cardsRepository,
-        uiRepository: uiRepository,
-      ),);
+  await bootstrap(
+    () => App(
+      cardsRepository: cardsRepository,
+      uiRepository: uiRepository,
+    ),
+  );
 }
