@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:markdown_editor/markdown_editor.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/keyboard_row_container.dart';
 import 'package:markdown_editor/src/widgets/keyboard_row/new_rows/keyboard_text_row.dart';
 import 'package:ui_components/ui_components.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 class KeyboardTextColorRow extends StatefulWidget {
   const KeyboardTextColorRow({super.key});
 
@@ -13,6 +14,7 @@ class KeyboardTextColorRow extends StatefulWidget {
 class _KeyboardTextColorRowState extends State<KeyboardTextColorRow> {
   @override
   Widget build(BuildContext context) {
+    final textEditorBloc = context.read<TextEditorBloc>();
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -34,7 +36,11 @@ class _KeyboardTextColorRowState extends State<KeyboardTextColorRow> {
         const SizedBox(
           height: 8,
         ),
-        const KeyboardTextRow(),
+        KeyboardTextRow(isBold: textEditorBloc.isBold,
+          isItalic: textEditorBloc.isItalic,
+          isUnderlined: textEditorBloc.isUnderlined,
+          textColor: textEditorBloc.textColor,
+          backgroundColor: textEditorBloc.textBackgroundColor,),
       ],
     );
   }

@@ -25,9 +25,11 @@ class FrontBackSeparatorTile extends StatelessWidget implements EditorTile {
         ),
         SizedBox(
           height: UIConstants.pageHorizontalPadding,
-          child: GestureDetector(onTap: () {
-            context.read<TextEditorBloc>().add(TextEditorFocusLastWidget());
-          }),
+          child: GestureDetector(
+            onTap: () {
+              context.read<TextEditorBloc>().add(TextEditorFocusLastWidget());
+            },
+          ),
         ),
       ],
     );

@@ -58,7 +58,9 @@ class _AddCardPageState extends State<AddCardPage> with WidgetsBindingObserver {
               icon: UIIcons.settings,
               onPressed: () {
                 Navigator.pushNamed(context, '/add_card/settings', arguments: [
-                  widget.card, widget.parentId, textEditorBloc!.editorTiles
+                  widget.card,
+                  widget.parentId,
+                  textEditorBloc!.editorTiles
                 ]);
                 // UIBottomSheet.showUIBottomSheet(
                 //   context: context,
@@ -81,14 +83,21 @@ class _AddCardPageState extends State<AddCardPage> with WidgetsBindingObserver {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               textEditorBloc = TextEditorBloc(
-                (tiles) => context
-                    .read<AddCardCubit>()
-                    .saveCard(widget.card, widget.parentId, tiles),
-                snapshot.data!,
-                widget.parentId,
-              );
-              return BlocProvider.value(
-                value: textEditorBloc!,
+                      (tiles) => context
+                          .read<AddCardCubit>()
+                          .saveCard(widget.card, widget.parentId, tiles),
+                      snapshot.data!,
+                      widget.parentId,
+                    );
+              return MultiBlocProvider(
+                providers: [
+                  BlocProvider.value(
+                    value: textEditorBloc! 
+                  ),
+                  BlocProvider(
+                    create: (context) => KeyboardRowCubit(textEditorBloc!),
+                  ),
+                ],
                 child: Stack(
                   children: [
                     EditorWidget(),
@@ -134,7 +143,11 @@ class _AddCardPageState extends State<AddCardPage> with WidgetsBindingObserver {
       }
       if (isEmpty) {
         final frontText = DataClassHelper.getFrontAndBackTextFromEditorTiles(
-            editorTiles, true);
+            editorTiles, false);
+            if(frontText[0].trim().isEmpty && frontText[1].trim().isEmpty && leaveEditorAfterSaving){
+              Navigator.of(context).pop();
+              return;
+            }
         if (frontText.isNotEmpty &&
             frontText[0].trim().isNotEmpty &&
             editorTiles.isNotEmpty) {

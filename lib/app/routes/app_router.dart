@@ -38,7 +38,6 @@ class AppRouter {
   late final SearchBloc _searchBloc = SearchBloc(_cardsRepository);
   late final FolderListTileBloc _folderListTileBloc =
       FolderListTileBloc(_cardsRepository);
-  final KeyboardRowCubit _keyboardRowCubit = KeyboardRowCubit();
 
   Route<dynamic> onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
@@ -63,7 +62,6 @@ class AppRouter {
             providers: [
               BlocProvider.value(value: _addCardCubit),
               // BlocProvider.value(value: _editSubjectBloc),
-              BlocProvider.value(value: _keyboardRowCubit),
               // BlocProvider.value(value: _audioTileCubit)
             ],
             child: AddCardPage(

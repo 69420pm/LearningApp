@@ -20,12 +20,13 @@ class HeaderTile extends StatelessWidget implements EditorTile {
       parentEditorTile: this,
       charTiles: charTiles,
     );
+    _textFieldController = _textTile.textFieldController!;
   }
 
   final TextStyle textStyle;
   final String hintText;
   late final TextTile _textTile;
-  late TextFieldController _textFieldController;
+  TextFieldController? _textFieldController;
   @override
   FocusNode? focusNode = FocusNode();
   final Map<int, CharTile>? charTiles;
@@ -38,8 +39,8 @@ class HeaderTile extends StatelessWidget implements EditorTile {
         if (current is! TextEditorKeyboardRowChanged) {
           return false;
         }
-        if ((_textFieldController.selection.end -
-                _textFieldController.selection.start) >
+        if ((_textFieldController!.selection.end -
+                _textFieldController!.selection.start) >
             0) {
           return true;
         }

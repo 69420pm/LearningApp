@@ -44,11 +44,11 @@ import 'package:ui_components/ui_components.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 class KeyboardToggle extends StatefulWidget {
-  const KeyboardToggle(
+  KeyboardToggle(
       {super.key,
       required this.icon,
       required this.onPressed,
-      this.initialState = false,});
+      this.toggled = false,});
 
   /// displayed icon
   final UIIcon icon;
@@ -56,29 +56,22 @@ class KeyboardToggle extends StatefulWidget {
   /// callback when button gets pressed
   final void Function(bool value) onPressed;
 
-  final bool initialState;
+  bool toggled;
   @override
   State<KeyboardToggle> createState() => _KeyboardToggleState();
 }
 
 class _KeyboardToggleState extends State<KeyboardToggle> {
-  bool toggled = false;
-  @override
-  void initState() {
-    super.initState();
-    toggled = widget.initialState;
-  }
   @override
   Widget build(BuildContext context) {
-
     final startColor = widget.icon.color ?? Colors.white;
     const animateColor = UIColors.smallText;
     return GestureDetector(
       onTap: () {
         setState(() {
-          toggled = !toggled;
+          widget.toggled = !widget.toggled;
         });
-        widget.onPressed.call(toggled);
+        widget.onPressed.call(widget.toggled);
       },
       behavior: HitTestBehavior.opaque,
       // ! this container doesn't get displayed, probably bug of flutter_animate
@@ -87,7 +80,7 @@ class _KeyboardToggleState extends State<KeyboardToggle> {
         width: 48,
       )
           .animate(
-            target: toggled ? 1 : 0,
+            target: widget.toggled ? 1 : 0,
           )
           .custom(
             duration: 25.ms,

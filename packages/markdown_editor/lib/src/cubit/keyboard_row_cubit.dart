@@ -7,8 +7,16 @@ import 'package:ui_components/ui_components.dart';
 part 'keyboard_row_state.dart';
 
 class KeyboardRowCubit extends Cubit<KeyboardRowState> {
-  KeyboardRowCubit() : super(KeyboardRowText());
+  KeyboardRowCubit(this.textEditorBloc)
+      : super(KeyboardRowText(
+          isBold: textEditorBloc.isBold,
+          isItalic: textEditorBloc.isItalic,
+          isUnderlined: textEditorBloc.isUnderlined,
+          textColor: textEditorBloc.textColor,
+          backgroundColor: textEditorBloc.textBackgroundColor,
+        ),);
 
+  TextEditorBloc textEditorBloc;
   bool expandedTextColors = false;
   bool expandedBackgroundColors = false;
 
@@ -28,8 +36,25 @@ class KeyboardRowCubit extends Cubit<KeyboardRowState> {
   //       ? emit(KeyboardRowExtraFormat())
   //       : emit(KeyboardRowFavorites());
   // }
+
+  void updateTextRow() {
+    emit(KeyboardRowText(
+      isBold: textEditorBloc.isBold,
+      isItalic: textEditorBloc.isItalic,
+      isUnderlined: textEditorBloc.isUnderlined,
+      textColor: textEditorBloc.textColor,
+      backgroundColor: textEditorBloc.textBackgroundColor,
+    ),);
+  }
+
   void expandText() {
-    emit(KeyboardRowText());
+    emit(KeyboardRowText(
+      isBold: textEditorBloc.isBold,
+      isItalic: textEditorBloc.isItalic,
+      isUnderlined: textEditorBloc.isUnderlined,
+      textColor: textEditorBloc.textColor,
+      backgroundColor: textEditorBloc.textBackgroundColor,
+    ),);
     expandedTextColors = false;
     expandedBackgroundColors = false;
   }
@@ -58,7 +83,10 @@ class KeyboardRowCubit extends Cubit<KeyboardRowState> {
     expandedBackgroundColors = false;
     emit(
       KeyboardRowText(
-        textColor: color,
+        isBold: textEditorBloc.isBold,
+        isItalic: textEditorBloc.isItalic,
+        isUnderlined: textEditorBloc.isUnderlined,
+        textColor: textEditorBloc.textColor,
         backgroundColor: textEditorBloc.textBackgroundColor,
       ),
     );
@@ -67,8 +95,11 @@ class KeyboardRowCubit extends Cubit<KeyboardRowState> {
   void defaultTextColor(TextEditorBloc textEditorBloc) {
     emit(
       KeyboardRowText(
-        textColor: UIColors.textLight,
+        isBold: textEditorBloc.isBold,
+        isItalic: textEditorBloc.isItalic,
+        isUnderlined: textEditorBloc.isUnderlined,
         backgroundColor: textEditorBloc.textBackgroundColor,
+        textColor: UIColors.textLight,
       ),
     );
   }
@@ -79,6 +110,9 @@ class KeyboardRowCubit extends Cubit<KeyboardRowState> {
     expandedBackgroundColors = false;
     emit(
       KeyboardRowText(
+        isBold: textEditorBloc.isBold,
+        isItalic: textEditorBloc.isItalic,
+        isUnderlined: textEditorBloc.isUnderlined,
         textColor: textEditorBloc.textColor,
         backgroundColor: color,
       ),
