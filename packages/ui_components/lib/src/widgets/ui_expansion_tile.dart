@@ -17,6 +17,7 @@ class UIExpansionTile extends StatefulWidget {
   Color? backgroundColor;
   Color? textColor;
   Color? iconColor;
+  bool iconOnTheRight;
   Border? border;
   bool changeExtentionState;
 
@@ -32,6 +33,7 @@ class UIExpansionTile extends StatefulWidget {
     this.backgroundColor,
     this.textColor,
     this.iconColor,
+    this.iconOnTheRight = false,
     this.border,
     this.changeExtentionState = false,
   }) {
@@ -70,6 +72,19 @@ class _UIExpansionTileState extends State<UIExpansionTile>
     super.dispose();
   }
 
+  GestureDetector expansionIcon() => GestureDetector(
+        onTap: update,
+        child: AnimatedBuilder(
+          animation: _animation,
+          builder: (context, _) {
+            return Transform.rotate(
+              angle: pi * _animation.value / 2 - pi / 2,
+              child: UIIcons.expandMore.copyWith(color: widget.iconColor),
+            );
+          },
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
@@ -89,20 +104,9 @@ class _UIExpansionTileState extends State<UIExpansionTile>
             decoration: const BoxDecoration(color: Colors.transparent),
             child: Row(
               children: [
-                GestureDetector(
-                  onTap: update,
-                  child: AnimatedBuilder(
-                    animation: _animation,
-                    builder: (context, _) {
-                      return Transform.rotate(
-                        angle: pi * _animation.value / 2 - pi / 2,
-                        child: UIIcons.expandMore
-                            .copyWith(color: widget.iconColor),
-                      );
-                    },
-                  ),
-                ),
-                SizedBox(width: widget.titleSpacing),
+                if (!widget.iconOnTheRight) expansionIcon(),
+                if (!widget.iconOnTheRight)
+                  SizedBox(width: widget.titleSpacing),
                 Expanded(
                   child: Text(
                     widget.title,
@@ -113,6 +117,7 @@ class _UIExpansionTileState extends State<UIExpansionTile>
                 const SizedBox(width: UIConstants.defaultSize),
                 if (widget.trailing != null) widget.trailing!,
                 const SizedBox(width: UIConstants.defaultSize),
+                if (widget.iconOnTheRight) expansionIcon(),
               ],
             ),
           ),
