@@ -25,15 +25,15 @@ class OverviewPage extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: const SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const LearnAllCard(),
-            const SizedBox(height: UIConstants.itemPaddingLarge),
-            const CalendarCard(),
-            const SizedBox(height: UIConstants.itemPaddingLarge * 2),
-            const SubjectList(),
+            LearnAllCard(),
+            SizedBox(height: UIConstants.itemPaddingLarge),
+            CalendarCard(),
+            SizedBox(height: UIConstants.itemPaddingLarge * 2),
+            SubjectList(),
           ],
         ),
       ),

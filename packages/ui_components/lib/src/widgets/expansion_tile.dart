@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:ui_components/ui_components.dart';
 
 class UIExpansionTile extends StatefulWidget {
@@ -71,9 +72,6 @@ class _UIExpansionTileState extends State<UIExpansionTile>
 
   @override
   Widget build(BuildContext context) {
-    if (widget.changeExtentionState) {
-      changeState();
-    }
     return DecoratedBox(
       key: _key,
       decoration: BoxDecoration(
@@ -133,7 +131,22 @@ class _UIExpansionTileState extends State<UIExpansionTile>
             ),
         ],
       ),
-    );
+    )
+        .animate(
+            delay: const Duration(milliseconds: 100),
+            target: widget.changeExtentionState == true ? 1 : 0,
+            onComplete: (controller) => controller.reset(),
+            onPlay: (controller) => controller.reset(),
+            autoPlay: false)
+        .shake(
+            delay: const Duration(milliseconds: 800),
+            duration: const Duration(milliseconds: 800),
+            hz: 3,
+            rotation: .02,
+            curve: Curves.easeIn)
+        .callback(callback: (value) {
+      changeState();
+    });
   }
 
   void update() {
@@ -148,11 +161,9 @@ class _UIExpansionTileState extends State<UIExpansionTile>
   }
 
   void changeState() async {
-    Future.delayed(Duration(seconds: 1), () {
-      if (widget.changeExtentionState) {
-        update();
-        widget.changeExtentionState = false;
-      }
-    });
+    if (widget.changeExtentionState) {
+      widget.changeExtentionState = false;
+      update();
+    }
   }
 }
