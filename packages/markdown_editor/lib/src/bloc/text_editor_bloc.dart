@@ -19,6 +19,7 @@ part 'text_editor_state.dart';
 class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
   /// constructor
   TextEditorBloc(
+    this.cardsRepository,
     this._saveEditorTilesCallback,
     this.editorTiles,
     this.parentId, {
@@ -62,6 +63,8 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
 
   /// background color of text
   Color textBackgroundColor;
+
+  CardsRepository cardsRepository;
 
   FocusNode? _focusedWidget;
 
@@ -211,9 +214,9 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
     bool changeFocus = true,
     bool handOverText = false,
   }) {
-    if (editorTiles[0] == toRemove && handOverText == true) {
-      return;
-    }
+    // if (editorTiles[0] == toRemove && handOverText == true) {
+    //   return;
+    // }
     var highestFocusNodeTile = -1;
     for (var i = 0; i < editorTiles.length; i++) {
       if (editorTiles[i] == toRemove) {
@@ -373,7 +376,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
   ) {
     for (var i = 0; i < editorTiles.length; i++) {
       if (editorTiles[i] is FrontBackSeparatorTile) {
-        if (i > 0) {
+        // if (i > 0) {
           final textTile = TextTile(textStyle: TextFieldConstants.normal);
           // all editorTiles behind focused tile
           final sublist = editorTiles.sublist(i);
@@ -390,7 +393,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
           //   i - 1,
           // );
           emit(TextEditorEditorTilesChanged(tiles: List.of(editorTiles)));
-        }
+        // }
         return null;
       }
     }

@@ -6,9 +6,11 @@ import 'package:ui_components/ui_components.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CardPreviewBottomSheet extends StatelessWidget {
-  CardPreviewBottomSheet(
-      {super.key, required this.card, required CardsRepository cardsRepository})
-      : _cardsRepository = cardsRepository;
+  CardPreviewBottomSheet({
+    super.key,
+    required this.card,
+    required CardsRepository cardsRepository,
+  }) : _cardsRepository = cardsRepository;
 
   final Card card;
   final CardsRepository _cardsRepository;
@@ -32,10 +34,16 @@ class CardPreviewBottomSheet extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return ConstrainedBox(
-                constraints: BoxConstraints(maxHeight: maxHeight),
-                child: Column(children: [
-                  CardContentWidget(editorTiles: snapshot.data!)
-                ]));
+              constraints: BoxConstraints(maxHeight: maxHeight),
+              child: Column(
+                children: [
+                  CardContentWidget(
+                    editorTiles: snapshot.data!,
+                    cardsRepository: _cardsRepository,
+                  ),
+                ],
+              ),
+            );
           }
           return const Text("loading");
         },

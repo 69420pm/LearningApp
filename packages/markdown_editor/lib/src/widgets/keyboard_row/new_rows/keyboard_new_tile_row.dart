@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
+import 'package:markdown_editor/src/cubit/link_tile_bottom_sheet_cubit.dart';
 import 'package:markdown_editor/src/widgets/bottom_sheets/add_audio_bottom_sheet.dart';
 import 'package:markdown_editor/src/widgets/bottom_sheets/add_image_bottom_sheet.dart';
 import 'package:markdown_editor/src/widgets/bottom_sheets/latex_bottom_sheet.dart';
+import 'package:markdown_editor/src/widgets/bottom_sheets/link_tile_bottom_sheet.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/callout_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/divider_tile.dart';
 import 'package:markdown_editor/src/widgets/editor_tiles/latex_tile.dart';
@@ -61,7 +63,34 @@ class KeyboardNewTileRow extends StatelessWidget {
                   children: [
                     KeyboardButton(
                       icon: UIIcons.alternateEmail,
-                      onPressed: () {},
+                      onPressed: () {
+                        UIBottomSheet.showUIBottomSheet(
+                          context: context,
+                          builder: (_) {
+                            final cardsRepository =
+                                context.read<TextEditorBloc>().cardsRepository;
+                            context.read<TextEditorBloc>().add(
+                                  TextEditorSetFocusedWidget(
+                                    focusedWidget:
+                                        FocusManager.instance.primaryFocus,
+                                  ),
+                                );
+                            return MultiBlocProvider(
+                              providers: [
+                                BlocProvider(
+                                  create: (context) => LinkTileBottomSheetCubit(
+                                    cardsRepository,
+                                  ),
+                                ),
+                                BlocProvider.value(
+                                  value: context.read<TextEditorBloc>(),
+                                ),
+                              ],
+                              child: LinkTileBottomSheet(),
+                            );
+                          },
+                        );
+                      },
                     ),
                   ],
                 ),

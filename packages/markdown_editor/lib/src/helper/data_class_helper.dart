@@ -116,6 +116,14 @@ class DataClassHelper {
         case FrontBackSeparatorTile:
           dataClassTiles.add(FrontBackSeparatorTileDC(uid: Uid().uid()));
           break;
+        case LinkTile:
+          final linkTile = editorTile as LinkTile;
+          dataClassTiles.add(
+            LinkTileDC(
+              uid: Uid().uid(),
+              cardId: linkTile.cardId,
+            ),
+          );
         default:
       }
     }
@@ -228,6 +236,14 @@ class DataClassHelper {
         case FrontBackSeparatorTileDC:
           dataClassTiles.add(FrontBackSeparatorTile());
           break;
+
+        case LinkTileDC:
+          final linkTile = editorTileDC as LinkTileDC;
+          dataClassTiles.add(
+            LinkTile(
+              cardId: linkTile.cardId,
+            ),
+          );
         // Add more cases for other tile types if needed
         default:
         // Handle the default case, if any
