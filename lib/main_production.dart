@@ -36,6 +36,7 @@ Future<void> main() async {
     ..registerAdapter(LatexTileDCAdapter())
     ..registerAdapter(ListEditorTileDCAdapter())
     ..registerAdapter(QuoteTileDCAdapter())
+    ..registerAdapter(LinkTileDCAdapter())
     ..registerAdapter(TextTileDCAdapter());
   final cardsApi = HiveCardsApi(
       await Hive.openBox<Subject>('subjects'),

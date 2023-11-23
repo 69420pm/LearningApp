@@ -83,6 +83,7 @@ class _AddCardPageState extends State<AddCardPage> with WidgetsBindingObserver {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               textEditorBloc = TextEditorBloc(
+                context.read<AddCardCubit>().cardsRepository,
                       (tiles) => context
                           .read<AddCardCubit>()
                           .saveCard(widget.card, widget.parentId, tiles),

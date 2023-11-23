@@ -5,7 +5,6 @@ import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:intl/intl.dart';
 import 'package:markdown_editor/markdown_editor.dart';
-import 'package:meta/meta.dart';
 
 part 'add_card_state.dart';
 

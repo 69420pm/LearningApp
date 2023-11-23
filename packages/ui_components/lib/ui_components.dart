@@ -35,3 +35,4 @@ export 'src/widgets/ui_icon_row.dart';
 export 'src/widgets/ui_label_row.dart';
 export 'src/widgets/ui_page.dart';
 export 'src/widgets/ui_switch.dart';
+export 'src/widgets/text_fields/ui_search_text_field.dart';

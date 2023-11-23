@@ -37,6 +37,7 @@ Future<void> main() async {
     ..registerAdapter(ListEditorTileDCAdapter())
     ..registerAdapter(QuoteTileDCAdapter())
     ..registerAdapter(TextTileDCAdapter())
+    ..registerAdapter(LinkTileDCAdapter())
     ..registerAdapter(FrontBackSeparatorTileDCAdapter());
 
   final cardsApi = HiveCardsApi(

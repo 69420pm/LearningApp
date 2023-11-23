@@ -111,6 +111,11 @@ class HiveCardsApi extends CardsApi {
   }
 
   @override
+  Card? getCardById(String cardUID) {
+    return _cardBox.get(cardUID);
+  }
+
+  @override
   Future<void> saveSubject(Subject subject) async {
     await _subjectBox.put(subject.uid, subject);
   }

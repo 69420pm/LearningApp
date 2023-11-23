@@ -95,6 +95,7 @@ class UIIcons {
       const UIIcon(Icons.chevron_left_outlined, size: 36);
   static UIIcon debug = const UIIcon(Icons.flutter_dash_rounded, size: 36);
   static UIIcon selectAll = const UIIcon(Icons.select_all_rounded, size: 36);
+  static UIIcon link = const UIIcon(Icons.link, size: 32);
 }
 
 class UIIcon extends Icon {
