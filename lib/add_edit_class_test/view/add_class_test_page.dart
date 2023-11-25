@@ -14,7 +14,11 @@ class AddClassTestPage extends StatelessWidget {
       canSave = true;
     } else {
       classTest = ClassTest(
-          uid: Uid().uid(), name: '', date: DateTime.now(), folderIds: const [],);
+        uid: Uid().uid(),
+        name: '',
+        date: DateTime.now(),
+        folderIds: const [],
+      );
     }
   }
 
@@ -199,7 +203,12 @@ class AddClassTestPage extends StatelessWidget {
             actionWidgets: [
               UIIconButton(
                 icon: UIIcons.add.copyWith(color: UIColors.smallText),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).pushNamed(
+                      '/subject_overview/edit_subject/add_class_test/relevant_folders', arguments: 
+                        [context.read<EditSubjectCubit>().subject, classTest]
+                      );
+                },
               ),
             ],
           ),

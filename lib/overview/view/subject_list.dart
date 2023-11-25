@@ -51,6 +51,7 @@ class SubjectList extends StatelessWidget {
             ...subjects.where((element) => element.subject.disabled == false),
             const SizedBox(height: UIConstants.itemPadding * 2),
             UIExpansionTile(
+              iconOnTheRight: true,
               title: 'Disabled Subjects',
               textColor: UIColors.smallText,
               childSpacing: UIConstants.itemPadding,

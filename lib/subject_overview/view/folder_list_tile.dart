@@ -29,13 +29,12 @@ class FolderListTileParent extends StatelessWidget {
       builder: (context, value, child) {
         final selectionBloc = context.read<SubjectOverviewSelectionBloc>();
 
-        final isSelectedWhileDraggingButIsNotDraggedTile =
-            selectionBloc.isInSelectMode &&
-                selectionBloc.isInDragging &&
-                selectionBloc.isFileSelected(folder.uid) &&
-                selectionBloc.fileDragged != folder.uid;
+        final isSelectedWhileDraggingOrIsDraggedTile =
+            selectionBloc.isInDragging &&
+                (selectionBloc.isFileSelected(folder.uid) ||
+                    selectionBloc.fileDragged == folder.uid);
 
-        if (isSelectedWhileDraggingButIsNotDraggedTile) {
+        if (isSelectedWhileDraggingOrIsDraggedTile) {
           return const InactiveListTile();
         } else {
           return BlocBuilder<SubjectOverviewSelectionBloc,
@@ -50,7 +49,9 @@ class FolderListTileParent extends StatelessWidget {
                     (e) {
                       if (e is Folder) {
                         return FolderListTileParent(
-                            folder: e, cardsRepository: cardsRepository,);
+                          folder: e,
+                          cardsRepository: cardsRepository,
+                        );
                       } else {
                         return CardListTile(
                           card: e as Card,

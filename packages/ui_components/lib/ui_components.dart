@@ -19,7 +19,7 @@ export 'src/widgets/color_picker.dart';
 export 'src/widgets/dialogs/ui_deletion_dialog.dart';
 export 'src/widgets/dialogs/ui_dialog.dart';
 export 'src/widgets/emoji_picker/emoji_picker.dart';
-export 'src/widgets/expansion_tile.dart';
+export 'src/widgets/ui_expansion_tile.dart';
 export 'src/widgets/gradient_text.dart';
 export 'src/widgets/progress_indicators/ui_circular_progress_indicator.dart';
 export 'src/widgets/progress_indicators/ui_linear_progress_indicator.dart';

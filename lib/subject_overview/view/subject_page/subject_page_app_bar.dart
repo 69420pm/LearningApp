@@ -41,6 +41,7 @@ class SubjectPageAppBar extends StatelessWidget implements PreferredSizeWidget {
                   UIIconButton(
                     icon: UIIcons.settings,
                     onPressed: () {
+                      cardsRepository.disposeNotifier(subjectToEdit.uid);
                       Navigator.of(context).pushNamed(
                         '/subject_overview/edit_subject',
                         arguments: subjectToEdit,
