@@ -15,46 +15,43 @@ class SelectableCardListTile extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: UIConstants.defaultSize),
       child: Container(
         height: UIConstants.defaultSize * 5,
-        child: Padding(
-          padding: const EdgeInsets.only(left: UIConstants.defaultSize),
-          child: Row(
-            children: [
-              BlocBuilder<RelevantFoldersCubit, RelevantFoldersState>(
-                buildWhen: (previous, current) {
-                  if (current is RelevantFoldersUpdateCheckbox) {
-                    if (current.files[card.uid] != ticked) {
-                      return true;
-                    }
+        child: Row(
+          children: [
+            BlocBuilder<RelevantFoldersCubit, RelevantFoldersState>(
+              buildWhen: (previous, current) {
+                if (current is RelevantFoldersUpdateCheckbox) {
+                  if (current.files[card.uid] != ticked) {
+                    return true;
                   }
-                  return false;
-                },
-                builder: (context, state) {
-                  if (state is RelevantFoldersUpdateCheckbox) {
-                    ticked = state.files[card.uid];
-                  }
-                  return Checkbox(
-                    value: ticked,
-                    tristate: true,
-                    onChanged: (value) {
-                      context.read<RelevantFoldersCubit>().changeCheckbox(
-                            card.uid,
-                            value ?? false,
-                          );
-                    },
-                  );
-                },
+                }
+                return false;
+              },
+              builder: (context, state) {
+                if (state is RelevantFoldersUpdateCheckbox) {
+                  ticked = state.files[card.uid];
+                }
+                return Checkbox(
+                  value: ticked,
+                  tristate: true,
+                  onChanged: (value) {
+                    context.read<RelevantFoldersCubit>().changeCheckbox(
+                          card.uid,
+                          value ?? false,
+                        );
+                  },
+                );
+              },
+            ),
+            UIIcons.card,
+            const SizedBox(width: UIConstants.defaultSize * 2),
+            Expanded(
+              child: Text(
+                card.name,
+                overflow: TextOverflow.ellipsis,
+                style: UIText.label,
               ),
-              UIIcons.card,
-              const SizedBox(width: UIConstants.defaultSize * 2),
-              Expanded(
-                child: Text(
-                  card.name,
-                  overflow: TextOverflow.ellipsis,
-                  style: UIText.label,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

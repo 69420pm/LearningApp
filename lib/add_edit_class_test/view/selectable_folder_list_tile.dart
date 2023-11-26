@@ -7,8 +7,11 @@ import 'package:learning_app/add_edit_class_test/view/selectable_card_list_tile.
 import 'package:ui_components/ui_components.dart';
 
 class SelectableFolderListTile extends StatelessWidget {
-  const SelectableFolderListTile(
-      {super.key, required this.cardsRepository, required this.folder});
+  const SelectableFolderListTile({
+    super.key,
+    required this.cardsRepository,
+    required this.folder,
+  });
   final CardsRepository cardsRepository;
   final Folder folder;
   @override
@@ -17,11 +20,12 @@ class SelectableFolderListTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: UIConstants.defaultSize),
       child: ValueListenableBuilder(
-          valueListenable: cardsRepository.getChildrenById(folder.uid),
-          builder: (context, value, child) {
-            return Row(
-              children: [
-                BlocBuilder<RelevantFoldersCubit, RelevantFoldersState>(
+        valueListenable: cardsRepository.getChildrenById(folder.uid),
+        builder: (context, value, child) {
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              BlocBuilder<RelevantFoldersCubit, RelevantFoldersState>(
                 buildWhen: (previous, current) {
                   if (current is RelevantFoldersUpdateCheckbox) {
                     if (current.files[folder.uid] != ticked) {
@@ -46,33 +50,39 @@ class SelectableFolderListTile extends StatelessWidget {
                   );
                 },
               ),
-                UIExpansionTile(title: folder.name, children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: UIConstants.defaultSize * 4,
+              Expanded(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 8),
+                    UIExpansionTile(
+                      title: folder.name,
+                      children: [
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: value.map(
+                            (e) {
+                              if (e is Folder) {
+                                return SelectableFolderListTile(
+                                  folder: e,
+                                  cardsRepository: cardsRepository,
+                                );
+                              } else {
+                                return SelectableCardListTile(
+                                  card: e as Card,
+                                );
+                              }
+                            },
+                          ).toList().reversed.toList(),
+                        ),
+                      ],
                     ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: value.map(
-                        (e) {
-                          if (e is Folder) {
-                            return SelectableFolderListTile(
-                              folder: e,
-                              cardsRepository: cardsRepository,
-                            );
-                          } else {
-                            return SelectableCardListTile(
-                              card: e as Card,
-                            );
-                          }
-                        },
-                      ).toList(),
-                    ),
-                  )
-                ]),
-              ],
-            );
-          }),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }
