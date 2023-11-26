@@ -11,12 +11,12 @@ import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
 import 'package:ui_components/ui_components.dart';
 
 class RelevantFoldersPage extends StatelessWidget {
-  const RelevantFoldersPage({
-    Key? key,
-    required this.cardsRepository,
-    required this.subjectToEdit,
-    required this.classTest
-  }) : super(key: key);
+  const RelevantFoldersPage(
+      {Key? key,
+      required this.cardsRepository,
+      required this.subjectToEdit,
+      required this.classTest})
+      : super(key: key);
 
   final CardsRepository cardsRepository;
   final Subject subjectToEdit;
@@ -25,8 +25,13 @@ class RelevantFoldersPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => RelevantFoldersCubit(cardsRepository, subjectToEdit, classTest),
+      create: (context) =>
+          RelevantFoldersCubit(cardsRepository, subjectToEdit, classTest),
       child: UIPage(
+        appBar: const UIAppBar(
+          title: 'Add Relevant Cards',
+          leadingBackButton: true,
+        ),
         body: Column(
           children: [
             ValueListenableBuilder(

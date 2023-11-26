@@ -13,13 +13,12 @@ class RelevantFoldersCubit extends Cubit<RelevantFoldersState> {
 
     for (final id in ids) {
       if (_classTest.folderIds.contains(id)) {
-        files[id] = true;
+        _updateParentFolders(id, true);
       } else {
-        files[id] = false;
+        _updateParentFolders(id, false);
       }
     }
     emit(RelevantFoldersUpdateCheckbox(files: Map.of(files)));
-
   }
 
   final Subject _subject;
@@ -35,10 +34,11 @@ class RelevantFoldersCubit extends Cubit<RelevantFoldersState> {
     _saveSubject();
     emit(RelevantFoldersUpdateCheckbox(files: Map.of(files)));
   }
+
   void _saveSubject() {
     final storeList = <String>[];
     files.forEach((key, value) {
-      if (value==true && _cardsRepository.objectFromId(key) is Card) {
+      if (value == true && _cardsRepository.objectFromId(key) is Card) {
         storeList.add(key);
       }
     });
@@ -58,7 +58,7 @@ class RelevantFoldersCubit extends Cubit<RelevantFoldersState> {
       for (final childrenId in parentChildrenIds) {
         if (files[childrenId] == false) {
           allTrue = false;
-        } else if(files[childrenId] == true){
+        } else if (files[childrenId] == true) {
           allFalse = false;
         }
       }
