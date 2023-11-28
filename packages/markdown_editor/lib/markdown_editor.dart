@@ -30,3 +30,4 @@ export 'src/widgets/editor_tiles/image_tile.dart';
 export 'src/widgets/editor_tiles/audio_tile.dart';
 export 'src/widgets/editor_tiles/latex_tile.dart';
 export 'src/card_preview_bottom_sheet.dart';
+export 'src/editor_reorder_view.dart';

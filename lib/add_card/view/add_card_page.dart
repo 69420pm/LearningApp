@@ -55,25 +55,23 @@ class _AddCardPageState extends State<AddCardPage> with WidgetsBindingObserver {
           // leadingBackButtonPressed: _saveEditorTiles,
           actions: [
             UIIconButton(
+              icon: UIIcons.reorder,
+              onPressed: () {
+                
+              },
+            ),
+            UIIconButton(
               icon: UIIcons.settings,
               onPressed: () {
-                Navigator.pushNamed(context, '/add_card/settings', arguments: [
-                  widget.card,
-                  widget.parentId,
-                  textEditorBloc!.editorTiles
-                ]);
-                // UIBottomSheet.showUIBottomSheet(
-                //   context: context,
-                //   builder: (_) {
-                //     return BlocProvider.value(
-                //       value: context.read<AddCardCubit>(),
-                //       child: CardSettingsPage(
-                //         card: widget.card,
-                //         parentId: widget.parentId,
-                //       ),
-                //     );
-                //   },
-                // );
+                Navigator.pushNamed(
+                  context,
+                  '/add_card/settings',
+                  arguments: [
+                    widget.card,
+                    widget.parentId,
+                    textEditorBloc!.editorTiles,
+                  ],
+                );
               },
             ),
           ],
@@ -84,16 +82,16 @@ class _AddCardPageState extends State<AddCardPage> with WidgetsBindingObserver {
             if (snapshot.hasData) {
               textEditorBloc = TextEditorBloc(
                 context.read<AddCardCubit>().cardsRepository,
-                      (tiles) => context
-                          .read<AddCardCubit>()
-                          .saveCard(widget.card, widget.parentId, tiles),
-                      snapshot.data!,
-                      widget.parentId,
-                    );
+                (tiles) => context
+                    .read<AddCardCubit>()
+                    .saveCard(widget.card, widget.parentId, tiles),
+                snapshot.data!,
+                widget.parentId,
+              );
               return MultiBlocProvider(
                 providers: [
                   BlocProvider.value(
-                    value: textEditorBloc! 
+                    value: textEditorBloc!,
                   ),
                   BlocProvider(
                     create: (context) => KeyboardRowCubit(textEditorBloc!),
@@ -101,6 +99,7 @@ class _AddCardPageState extends State<AddCardPage> with WidgetsBindingObserver {
                 ],
                 child: Stack(
                   children: [
+                    // EditorReorderView(),
                     EditorWidget(),
                     Positioned(
                       bottom: 0,
@@ -120,8 +119,10 @@ class _AddCardPageState extends State<AddCardPage> with WidgetsBindingObserver {
     );
   }
 
-  Future<void> _saveEditorTiles(
-      {bool emptyWarning = true, bool leaveEditorAfterSaving = true}) async {
+  Future<void> _saveEditorTiles({
+    bool emptyWarning = true,
+    bool leaveEditorAfterSaving = true,
+  }) async {
     if (textEditorBloc != null) {
       final editorTiles = textEditorBloc!.editorTiles;
       var isEmpty = true;
@@ -144,11 +145,15 @@ class _AddCardPageState extends State<AddCardPage> with WidgetsBindingObserver {
       }
       if (isEmpty) {
         final frontText = DataClassHelper.getFrontAndBackTextFromEditorTiles(
-            editorTiles, false);
-            if(frontText[0].trim().isEmpty && frontText[1].trim().isEmpty && leaveEditorAfterSaving){
-              Navigator.of(context).pop();
-              return;
-            }
+          editorTiles,
+          false,
+        );
+        if (frontText[0].trim().isEmpty &&
+            frontText[1].trim().isEmpty &&
+            leaveEditorAfterSaving) {
+          Navigator.of(context).pop();
+          return;
+        }
         if (frontText.isNotEmpty &&
             frontText[0].trim().isNotEmpty &&
             editorTiles.isNotEmpty) {
@@ -179,8 +184,10 @@ class _AddCardPageState extends State<AddCardPage> with WidgetsBindingObserver {
                   'This card can not be saved, please add some content to the front of the card.',
               actions: [
                 UIButton(
-                  child: Text('Leave without saving',
-                      style: UIText.labelBold.copyWith(color: UIColors.delete)),
+                  child: Text(
+                    'Leave without saving',
+                    style: UIText.labelBold.copyWith(color: UIColors.delete),
+                  ),
                   onPressed: () {
                     Navigator.of(context).pop();
                     leaveEditor = true;
