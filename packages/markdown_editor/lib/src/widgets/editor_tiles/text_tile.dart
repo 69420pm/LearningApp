@@ -71,20 +71,16 @@ class TextTile extends StatelessWidget implements EditorTile {
   @override
   FocusNode? focusNode;
 
-  final Map<int, CharTile>? charTiles;
-
   bool isInit = true;
 
-  bool visible = false;
+  final Map<int, CharTile>? charTiles;
 
   final FocusNode _rawKeyboardListenerNode = FocusNode();
 
-  // @override
   @override
   Widget build(BuildContext context) {
     if (charTiles != null && isInit == true) {
-      textFieldController!
-          .addText(charTiles!.values.toList(), context);
+      textFieldController!.addText(charTiles!.values.toList(), context);
     }
     isInit = false;
     return BlocBuilder<TextEditorBloc, TextEditorState>(
@@ -123,7 +119,7 @@ class TextTile extends StatelessWidget implements EditorTile {
                 textFieldController!.charTiles.forEach((key, value) {
                   tiles.add(value);
                 });
-                textFieldController!.addText(tiles, context);
+                replacingTextTile.textFieldController!.addText(tiles, context);
                 textEditorBloc.add(
                   TextEditorReplaceEditorTile(
                     tileToRemove: parentEditorTile!,
@@ -167,99 +163,84 @@ class TextTile extends StatelessWidget implements EditorTile {
             // }
           },
           child: Padding(
-            padding: EdgeInsets.only(
-              left: padding ? UIConstants.pageHorizontalPadding : 0,
+            padding: EdgeInsets.symmetric(
+              horizontal: padding ? UIConstants.pageHorizontalPadding : 0,
             ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    // autofocus: true,
-                    controller: textFieldController,
-                    focusNode: focusNode,
-                    textInputAction: TextInputAction.next,
-                    // textfield gets pushed 80 above keyboard, that textfield
-                    // doesn't get hided by keyboard row, standard is 20
-                    scrollPadding: const EdgeInsets.all(50),
-
-                    onSubmitted: (value) {
-                      if (onSubmit != null) {
-                        onSubmit?.call();
-                      } else {
-                        context.read<TextEditorBloc>().add(
-                              TextEditorAddEditorTile(
-                                newEditorTile: TextTile(
-                                  key: ValueKey(DateTime.now()),
-                                  isDefaultOnBackgroundTextColor:
-                                      isDefaultOnBackgroundTextColor,
-                                  textStyle: TextFieldConstants.normal,
-                                ),
-                                context: context,
-                              ),
-                            );
-                      }
-                    },
-                    onTap: () async {
-                      if (textFieldController == null ||
-                          textFieldController!.hyperLinks.isEmpty) {
-                        return;
-                      }
-                      final entry = HyperLinkEntry.checkHyperLink(
-                        textFieldController!.selection.start,
-                        textFieldController!.hyperLinks,
+            child: TextField(
+              // autofocus: true,
+              controller: textFieldController,
+              focusNode: focusNode,
+              textInputAction: TextInputAction.next,
+              // textfield gets pushed 80 above keyboard, that textfield
+              // doesn't get hided by keyboard row, standard is 20
+              scrollPadding: const EdgeInsets.all(50),
+              
+              onSubmitted: (value) {
+                if (onSubmit != null) {
+                  onSubmit?.call();
+                } else {
+                  context.read<TextEditorBloc>().add(
+                        TextEditorAddEditorTile(
+                          newEditorTile: TextTile(
+                            key: ValueKey(DateTime.now()),
+                            isDefaultOnBackgroundTextColor:
+                                isDefaultOnBackgroundTextColor,
+                            textStyle: TextFieldConstants.normal,
+                          ),
+                          context: context,
+                        ),
                       );
-                      if (textFieldController!.selection.end -
-                                  textFieldController!.selection.start ==
-                              0 &&
-                          entry != null &&
-                          entry.start !=
-                              textFieldController!.selection.start) {
-                        var url = textFieldController!.text
-                            .substring(entry.start, entry.end + 1);
-                        if (!(url.contains('https') || url.contains('www'))) {
-                          url = 'https://www.$url';
-                        } else if (url[0] != 'h') {
-                          url = 'https://$url';
-                        }
-                        // final Uri uri = Uri(scheme: "https", host:'www.youtube.com');
-                        final uri = Uri.parse(url);
-                        if (!await launchUrl(
-                          uri,
-                          mode: LaunchMode.externalApplication,
-                        )) {
-                          throw Exception('Could not launch url');
-                        }
-                      }
-                    },
-                    onEditingComplete: () {},
-                    maxLines: null,
-                    keyboardType: TextInputType.multiline,
-                    style: isDefaultOnBackgroundTextColor
-                        ? textStyle.copyWith(
-                            color: Theme.of(context).colorScheme.onBackground,
-                          )
-                        : textStyle,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: hintText,
-                      isDense: isDense,
-                      hintStyle: textStyle
-                          .copyWith(color: UIColors.smallTextDark),
-                      contentPadding: contentPadding,
-                      labelStyle: TextFieldConstants.zero,
-                      labelText: '',
-                      // floatingLabelBehavior:  FloatingLabelBehavior.always
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: padding ? UIConstants.pageHorizontalPadding : 0,
-                  child: Visibility(
-                      visible: visible,
-                      child: UIIcons.dragIndicator
-                          .copyWith(color: UIColors.smallTextDark)),
-                )
-              ],
+                }
+              },
+              onTap: () async {
+                if (textFieldController == null ||
+                    textFieldController!.hyperLinks.isEmpty) {
+                  return;
+                }
+                final entry = HyperLinkEntry.checkHyperLink(
+                  textFieldController!.selection.start,
+                  textFieldController!.hyperLinks,
+                );
+                if (textFieldController!.selection.end -
+                            textFieldController!.selection.start ==
+                        0 &&
+                    entry != null &&
+                    entry.start != textFieldController!.selection.start) {
+                  var url = textFieldController!.text
+                      .substring(entry.start, entry.end + 1);
+                  if (!(url.contains('https') || url.contains('www'))) {
+                    url = 'https://www.$url';
+                  } else if (url[0] != 'h') {
+                    url = 'https://$url';
+                  }
+                  // final Uri uri = Uri(scheme: "https", host:'www.youtube.com');
+                  final uri = Uri.parse(url);
+                  if (!await launchUrl(
+                    uri,
+                    mode: LaunchMode.externalApplication,
+                  )) {
+                    throw Exception('Could not launch url');
+                  }
+                }
+              },
+              onEditingComplete: () {},
+              maxLines: null,
+              keyboardType: TextInputType.multiline,
+              style: isDefaultOnBackgroundTextColor
+                  ? textStyle.copyWith(
+                      color: Theme.of(context).colorScheme.onBackground,
+                    )
+                  : textStyle,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                hintText: hintText,
+                isDense: isDense,
+                hintStyle: textStyle.copyWith(color: UIColors.smallTextDark),
+                contentPadding: contentPadding,
+                labelStyle: TextFieldConstants.zero,
+                labelText: '',
+                // floatingLabelBehavior:  FloatingLabelBehavior.always
+              ),
             ),
           ),
         );
@@ -271,6 +252,6 @@ class TextTile extends StatelessWidget implements EditorTile {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is TextTile &&
-          textFieldController == textFieldController &&
-          focusNode == focusNode;
+          textFieldController == other.textFieldController &&
+          focusNode == other.focusNode;
 }

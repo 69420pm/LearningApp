@@ -1,17 +1,15 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:cards_repository/cards_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart' hide Card;
-import 'package:markdown_editor/markdown_editor.dart';
-import 'package:markdown_editor/src/models/editor_tile.dart';
-import 'package:markdown_editor/src/models/text_field_constants.dart';
-import 'package:markdown_editor/src/widgets/editor_tiles/list_editor_tile.dart';
-import 'package:markdown_editor/src/widgets/editor_tiles/text_tile.dart';
-import 'package:ui_components/ui_components.dart';
-import 'package:cards_repository/cards_repository.dart';
-import 'package:markdown_editor/src/models/char_tile.dart';
 import 'package:learning_app/app/helper/uid.dart';
+import 'package:markdown_editor/markdown_editor.dart';
+import 'package:markdown_editor/src/models/char_tile.dart';
+import 'package:markdown_editor/src/widgets/editor_tiles/list_editor_tile.dart';
+import 'package:ui_components/ui_components.dart';
+
 part 'text_editor_event.dart';
 part 'text_editor_state.dart';
 
@@ -376,7 +374,15 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
   ) {
     for (var i = 0; i < editorTiles.length; i++) {
       if (editorTiles[i] is FrontBackSeparatorTile) {
-        // if (i > 0) {
+        if (i > 0 &&
+            editorTiles[i - 1] is TextTile &&
+            editorTiles[i - 1].focusNode != null &&
+            (editorTiles[i - 1] as TextTile)
+                .textFieldController!
+                .charTiles
+                .isEmpty) {
+          editorTiles[i - 1].focusNode!.requestFocus();
+        } else {
           final textTile = TextTile(textStyle: TextFieldConstants.normal);
           // all editorTiles behind focused tile
           final sublist = editorTiles.sublist(i);
@@ -387,13 +393,8 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
           for (var j = 0; j < sublist.length; j++) {
             editorTiles.add(sublist[j]);
           }
-          // _addEditorTile(
-          //   TextTile(textStyle: TextFieldConstants.normal),
-          //   event.context,
-          //   i - 1,
-          // );
-          emit(TextEditorEditorTilesChanged(tiles: List.of(editorTiles)));
-        // }
+        }
+        emit(TextEditorEditorTilesChanged(tiles: List.of(editorTiles)));
         return null;
       }
     }
@@ -405,7 +406,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
   ) {
     for (var i = 0; i < editorTiles.length; i++) {
       if (editorTiles[i] is FrontBackSeparatorTile) {
-        if (editorTiles.length > i + 1) {
+        if (editorTiles.length > i) {
           if (editorTiles[i + 1].focusNode != null) {
             editorTiles[i + 1].focusNode!.requestFocus();
           }
