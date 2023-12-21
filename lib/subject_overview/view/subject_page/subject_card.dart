@@ -1,10 +1,14 @@
-import 'package:cards_api/cards_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/card_backend/cards_api/helper/subject_helper.dart';
+import 'package:learning_app/card_backend/cards_api/models/subject.dart';
 import 'package:learning_app/edit_subject/cubit/edit_subject_cubit.dart';
-import 'package:ui_components/ui_components.dart';
-
-class SubjectCard extends StatelessWidget {
+import 'package:learning_app/ui_components/ui_colors.dart';
+import 'package:learning_app/ui_components/ui_constants.dart';
+import 'package:learning_app/ui_components/ui_icons.dart';
+import 'package:learning_app/ui_components/ui_text.dart';
+import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
+import 'package:learning_app/ui_components/widgets/ui_card.dart';class SubjectCard extends StatelessWidget {
   SubjectCard({super.key, required this.subject});
   Subject subject;
   @override

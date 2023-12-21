@@ -1,12 +1,14 @@
-import 'package:cards_api/cards_api.dart';
-import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_edit_class_test/cubit/relevant_folders_cubit.dart';
 import 'package:learning_app/add_edit_class_test/view/selectable_card_list_tile.dart';
-import 'package:ui_components/ui_components.dart';
-
-class SelectableFolderListTile extends StatelessWidget {
+import 'package:learning_app/card_backend/cards_api/models/card.dart';
+import 'package:learning_app/card_backend/cards_api/models/folder.dart';
+import 'package:learning_app/card_backend/cards_repository.dart';
+import 'package:learning_app/ui_components/ui_colors.dart';
+import 'package:learning_app/ui_components/ui_constants.dart';
+import 'package:learning_app/ui_components/ui_icons.dart';
+import 'package:learning_app/ui_components/ui_text.dart';class SelectableFolderListTile extends StatelessWidget {
   const SelectableFolderListTile({
     super.key,
     required this.cardsRepository,
@@ -59,20 +61,24 @@ class SelectableFolderListTile extends StatelessWidget {
                       children: [
                         Column(
                           mainAxisSize: MainAxisSize.min,
-                          children: value.map(
-                            (e) {
-                              if (e is Folder) {
-                                return SelectableFolderListTile(
-                                  folder: e,
-                                  cardsRepository: cardsRepository,
-                                );
-                              } else {
-                                return SelectableCardListTile(
-                                  card: e as Card,
-                                );
-                              }
-                            },
-                          ).toList().reversed.toList(),
+                          children: value
+                              .map(
+                                (e) {
+                                  if (e is Folder) {
+                                    return SelectableFolderListTile(
+                                      folder: e,
+                                      cardsRepository: cardsRepository,
+                                    );
+                                  } else {
+                                    return SelectableCardListTile(
+                                      card: e as Card,
+                                    );
+                                  }
+                                },
+                              )
+                              .toList()
+                              .reversed
+                              .toList(),
                         ),
                       ],
                     ),

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:learning_app/overview/view/day_tile.dart';
-import 'package:ui_components/ui_components.dart';
-
-class CalendarCard extends StatelessWidget {
+import 'package:learning_app/ui_components/ui_colors.dart';
+import 'package:learning_app/ui_components/ui_constants.dart';
+import 'package:learning_app/ui_components/ui_icons.dart';
+import 'package:learning_app/ui_components/ui_text.dart';class CalendarCard extends StatelessWidget {
   const CalendarCard({super.key});
 
   @override

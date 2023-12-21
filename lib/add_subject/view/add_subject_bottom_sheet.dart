@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_subject/cubit/add_subject_cubit.dart';
 import 'package:learning_app/add_subject/view/weekday_picker.dart';
-import 'package:ui_components/ui_components.dart';
-
-class AddSubjectBottomSheet extends StatefulWidget {
+import 'package:learning_app/ui_components/ui_colors.dart';
+import 'package:learning_app/ui_components/ui_constants.dart';
+import 'package:learning_app/ui_components/ui_icons.dart';
+import 'package:learning_app/ui_components/ui_text.dart';class AddSubjectBottomSheet extends StatefulWidget {
   const AddSubjectBottomSheet({
     super.key,
     this.recommendedSubjectParentId,

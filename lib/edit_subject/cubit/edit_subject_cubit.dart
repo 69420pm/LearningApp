@@ -1,7 +1,8 @@
 import 'package:bloc/bloc.dart';
-import 'package:cards_api/cards_api.dart';
-import 'package:cards_repository/cards_repository.dart';
 import 'package:equatable/equatable.dart';
+import 'package:learning_app/card_backend/cards_api/models/class_test.dart';
+import 'package:learning_app/card_backend/cards_api/models/subject.dart';
+import 'package:learning_app/card_backend/cards_repository.dart';
 
 part 'edit_subject_state.dart';
 

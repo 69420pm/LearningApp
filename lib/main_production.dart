@@ -5,16 +5,31 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-import 'package:cards_api/cards_api.dart';
-import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:hive/hive.dart';
-import 'package:hive_cards_api/hive_cards_api.dart';
 import 'package:learning_app/app/app.dart';
 import 'package:learning_app/bootstrap.dart';
-import 'package:markdown_editor/markdown_editor.dart';
+import 'package:learning_app/card_backend/cards_api/models/card.dart';
+import 'package:learning_app/card_backend/cards_api/models/class_test.dart';
+import 'package:learning_app/card_backend/cards_api/models/folder.dart';
+import 'package:learning_app/card_backend/cards_api/models/subject.dart';
+import 'package:learning_app/card_backend/cards_repository.dart';
+import 'package:learning_app/card_backend/hive_cards_api.dart';
+import 'package:learning_app/editor/models/editor_data_classes/audio_tile_dc.dart';
+import 'package:learning_app/editor/models/editor_data_classes/callout_tile_dc.dart';
+import 'package:learning_app/editor/models/editor_data_classes/char_tile_dc.dart';
+import 'package:learning_app/editor/models/editor_data_classes/divider_tile_dc.dart';
+import 'package:learning_app/editor/models/editor_data_classes/editor_tile_dc.dart';
+import 'package:learning_app/editor/models/editor_data_classes/header_tile_dc.dart';
+import 'package:learning_app/editor/models/editor_data_classes/image_tile_dc.dart';
+import 'package:learning_app/editor/models/editor_data_classes/latex_tile_dc.dart';
+import 'package:learning_app/editor/models/editor_data_classes/link_tile_dc.dart';
+import 'package:learning_app/editor/models/editor_data_classes/list_editor_tile_dc.dart';
+import 'package:learning_app/editor/models/editor_data_classes/quote_tile_dc.dart';
+import 'package:learning_app/editor/models/editor_data_classes/text_tile_dc.dart';
+import 'package:learning_app/ui_components/backend/hive_ui_api.dart';
+import 'package:learning_app/ui_components/backend/ui_repository.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
-import 'package:ui_components/ui_components.dart';
 
 Future<void> main() async {
   /// Init hive

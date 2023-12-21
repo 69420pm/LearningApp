@@ -1,10 +1,11 @@
-import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/card_backend/cards_api/models/card.dart';
 import 'package:learning_app/learn/cubit/learn_cubit.dart';
-import 'package:ui_components/ui_components.dart';
-
-class LearningCard extends StatelessWidget {
+import 'package:learning_app/ui_components/ui_colors.dart';
+import 'package:learning_app/ui_components/ui_constants.dart';
+import 'package:learning_app/ui_components/ui_icons.dart';
+import 'package:learning_app/ui_components/ui_text.dart';class LearningCard extends StatelessWidget {
   const LearningCard({super.key, required this.card});
 
   final Card card;

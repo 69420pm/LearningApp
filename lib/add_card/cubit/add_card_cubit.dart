@@ -1,10 +1,16 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:cards_repository/cards_repository.dart';
+import 'package:learning_app/card_backend/cards_api/models/card.dart';
+import 'package:learning_app/card_backend/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:intl/intl.dart';
-import 'package:markdown_editor/markdown_editor.dart';
+import 'package:learning_app/editor/helper/data_class_helper.dart';
+import 'package:learning_app/editor/models/editor_tile.dart';
+import 'package:learning_app/editor/models/text_field_constants.dart';
+import 'package:learning_app/editor/widgets/editor_tiles/front_back_seperator_tile.dart';
+import 'package:learning_app/editor/widgets/editor_tiles/header_tile.dart';
+import 'package:learning_app/editor/widgets/editor_tiles/text_tile.dart';
 
 part 'add_card_state.dart';
 

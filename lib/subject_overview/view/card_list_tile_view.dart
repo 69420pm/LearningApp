@@ -1,9 +1,11 @@
-import 'package:cards_api/cards_api.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/card_backend/cards_api/models/card.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
-import 'package:ui_components/ui_components.dart';
-
+import 'package:learning_app/ui_components/ui_colors.dart';
+import 'package:learning_app/ui_components/ui_constants.dart';
+import 'package:learning_app/ui_components/ui_icons.dart';
+import 'package:learning_app/ui_components/ui_text.dart';
 class CardListTileView extends StatelessWidget {
   const CardListTileView({
     super.key,

@@ -1,9 +1,10 @@
-import 'package:cards_api/cards_api.dart' hide Card;
 import 'package:flutter/material.dart';
+import 'package:learning_app/card_backend/cards_api/models/subject.dart';
 import 'package:learning_app/overview/view/subject_list_tile.dart';
-import 'package:ui_components/ui_components.dart';
-
-class SubjectsSearchResults extends StatelessWidget {
+import 'package:learning_app/ui_components/ui_colors.dart';
+import 'package:learning_app/ui_components/ui_constants.dart';
+import 'package:learning_app/ui_components/ui_text.dart';
+import 'package:learning_app/ui_components/widgets/ui_label_row.dart';class SubjectsSearchResults extends StatelessWidget {
   SubjectsSearchResults({super.key, required this.foundSubjects}) {
     if (foundSubjects.isNotEmpty) {
       var i = 0;

@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:cards_api/cards_api.dart';
-import 'package:cards_repository/cards_repository.dart';
+import 'package:learning_app/card_backend/cards_api/models/search_result.dart';
+import 'package:learning_app/card_backend/cards_api/models/subject.dart';import 'package:learning_app/card_backend/cards_repository.dart';
 
 part 'search_event.dart';
 part 'search_state.dart';

@@ -1,8 +1,10 @@
-import 'package:cards_api/cards_api.dart';
-import 'package:flutter/material.dart';
-import 'package:ui_components/ui_components.dart';
-
-class ParentObjects extends StatelessWidget {
+import 'package:learning_app/card_backend/cards_api/models/card.dart';
+import 'package:learning_app/card_backend/cards_api/models/folder.dart';
+import 'package:learning_app/card_backend/cards_api/models/subject.dart';import 'package:flutter/material.dart';
+import 'package:learning_app/ui_components/ui_colors.dart';
+import 'package:learning_app/ui_components/ui_constants.dart';
+import 'package:learning_app/ui_components/ui_icons.dart';
+import 'package:learning_app/ui_components/ui_text.dart';class ParentObjects extends StatelessWidget {
   ParentObjects({super.key, required this.parentObjects}) {
     var i = 0;
     for (final element in parentObjects) {

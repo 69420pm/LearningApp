@@ -1,9 +1,12 @@
-import 'package:cards_api/cards_api.dart';
 import 'package:flutter/material.dart' hide Card;
+import 'package:learning_app/card_backend/cards_api/models/folder.dart';
+import 'package:learning_app/card_backend/cards_api/models/search_result.dart';
 import 'package:learning_app/search/view/parentObjects.dart';
-import 'package:ui_components/ui_components.dart';
-
-class FolderSearchResults extends StatelessWidget {
+import 'package:learning_app/ui_components/ui_colors.dart';
+import 'package:learning_app/ui_components/ui_constants.dart';
+import 'package:learning_app/ui_components/ui_icons.dart';
+import 'package:learning_app/ui_components/ui_text.dart';
+import 'package:learning_app/ui_components/widgets/ui_label_row.dart';class FolderSearchResults extends StatelessWidget {
   FolderSearchResults({
     super.key,
     required this.foundFolders,

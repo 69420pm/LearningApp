@@ -1,10 +1,11 @@
 import 'dart:async';
 
-import 'package:cards_api/cards_api.dart';
-import 'package:cards_repository/cards_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/card_backend/cards_api/models/folder.dart';
+import 'package:learning_app/card_backend/cards_api/models/removed.dart';
+import 'package:learning_app/card_backend/cards_repository.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
 
 part 'folder_list_tile_event.dart';

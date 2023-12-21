@@ -1,11 +1,13 @@
-import 'package:cards_repository/cards_repository.dart';
+import 'package:learning_app/card_backend/cards_api/models/subject.dart';
+import 'package:learning_app/card_backend/cards_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/edit_subject/view/class_test_column.dart';
 import 'package:learning_app/edit_subject/view/page_weekday_picker.dart';
-import 'package:ui_components/ui_components.dart';
-
-import 'package:learning_app/edit_subject/cubit/edit_subject_cubit.dart';
+import 'package:learning_app/ui_components/ui_colors.dart';
+import 'package:learning_app/ui_components/ui_constants.dart';
+import 'package:learning_app/ui_components/ui_icons.dart';
+import 'package:learning_app/ui_components/ui_text.dart';import 'package:learning_app/edit_subject/cubit/edit_subject_cubit.dart';
 
 class EditSubjectPage extends StatelessWidget {
   EditSubjectPage({super.key, required this.subject});

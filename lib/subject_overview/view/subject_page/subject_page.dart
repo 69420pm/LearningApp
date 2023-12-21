@@ -1,7 +1,9 @@
-import 'package:cards_api/cards_api.dart';
-import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/card_backend/cards_api/models/card.dart';
+import 'package:learning_app/card_backend/cards_api/models/folder.dart';
+import 'package:learning_app/card_backend/cards_api/models/subject.dart';
+import 'package:learning_app/card_backend/cards_repository.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dart';
 import 'package:learning_app/subject_overview/view/card_list_tile.dart';
@@ -11,9 +13,8 @@ import 'package:learning_app/subject_overview/view/subject_page/subject_card.dar
 import 'package:learning_app/subject_overview/view/subject_page/subject_page_app_bar.dart';
 import 'package:learning_app/subject_overview/view/subject_page/subject_page_auto_scroller.dart';
 import 'package:learning_app/subject_overview/view/subject_page/subject_page_tool_bar.dart';
-import 'package:ui_components/ui_components.dart';
-
-class SubjectPage extends StatelessWidget {
+import 'package:learning_app/ui_components/ui_constants.dart';
+import 'package:learning_app/ui_components/widgets/ui_page.dart';class SubjectPage extends StatelessWidget {
   const SubjectPage({
     super.key,
     required this.subjectToEdit,

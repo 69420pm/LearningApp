@@ -5,9 +5,10 @@ import 'package:learning_app/add_subject/view/add_subject_bottom_sheet.dart';
 import 'package:learning_app/overview/view/calendar_card.dart';
 import 'package:learning_app/overview/view/learn_all_card.dart';
 import 'package:learning_app/overview/view/subject_list.dart';
-import 'package:ui_components/ui_components.dart';
-
-class OverviewPage extends StatelessWidget {
+import 'package:learning_app/ui_components/ui_colors.dart';
+import 'package:learning_app/ui_components/ui_constants.dart';
+import 'package:learning_app/ui_components/ui_icons.dart';
+import 'package:learning_app/ui_components/ui_text.dart';class OverviewPage extends StatelessWidget {
   const OverviewPage({super.key});
 
   @override

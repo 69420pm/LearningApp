@@ -1,10 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:cards_api/cards_api.dart';
-import 'package:cards_repository/cards_repository.dart';
+import 'package:learning_app/card_backend/cards_api/models/card.dart';
+import 'package:learning_app/card_backend/cards_api/models/folder.dart';
+import 'package:learning_app/card_backend/cards_api/models/subject.dart';import 'package:learning_app/card_backend/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
-import 'package:ui_components/ui_components.dart';
-
-class MultiDragIndicator extends StatelessWidget {
+import 'package:learning_app/ui_components/ui_colors.dart';
+import 'package:learning_app/ui_components/ui_constants.dart';
+import 'package:learning_app/ui_components/ui_icons.dart';
+import 'package:learning_app/ui_components/ui_text.dart';class MultiDragIndicator extends StatelessWidget {
   const MultiDragIndicator({
     super.key,
     required this.fileUIDs,

@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:cards_repository/cards_repository.dart';
+import 'package:learning_app/card_backend/cards_api/models/subject.dart';
+import 'package:learning_app/card_backend/cards_repository.dart';
 import 'package:learning_app/app/helper/uid.dart';
 
 part 'add_subject_state.dart';
