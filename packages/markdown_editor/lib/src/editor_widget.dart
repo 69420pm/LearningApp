@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_editor/markdown_editor.dart';
+import 'package:ui_components/ui_components.dart';
 
 class EditorWidget extends StatelessWidget {
   EditorWidget({super.key});
   bool _firstBuild = true;
+  GlobalKey<SliverReorderableListState> listKey =
+      GlobalKey<SliverReorderableListState>();
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TextEditorBloc, TextEditorState>(
@@ -21,6 +25,32 @@ class EditorWidget extends StatelessWidget {
           _firstBuild = false;
         }
         final listChildren = <Widget>[
+          
+          // SliverReorderableList(
+          //     key: listKey,
+          //     itemBuilder: (context, index) {
+          //       return ReorderableDelayedDragStartListener(
+          //         key: Key(index.toString()),
+          //         index: index,
+          //         child: MultiBlocProvider(
+          //           providers: [
+          //             BlocProvider.value(
+          //               value: context.read<TextEditorBloc>(),
+          //             ),
+          //             BlocProvider.value(
+          //                 value: context.read<KeyboardRowCubit>()),
+          //           ],
+          //           child: Material(child: editorTiles[index] as Widget),
+          //         ),
+          //       );
+          //     },
+          //     itemCount: editorTiles.length,
+          //     onReorderStart: (p0) {},
+          //     onReorder: (oldIndex, newIndex) {
+          //       context.read<TextEditorBloc>().add(TextEditorChangeOrderOfTile(
+          //           oldIndex: oldIndex, newIndex: newIndex));
+          //     }),
+
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) => editorTiles[index] as Widget,

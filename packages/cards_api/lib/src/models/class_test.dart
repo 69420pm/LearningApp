@@ -20,8 +20,8 @@ class ClassTest extends Equatable {
 
   /// ids of folder which should get asked more frequently when date gets approached
   @HiveField(3)
-  final List<String> folderIds;
-  const ClassTest({
+  List<String> folderIds;
+  ClassTest({
     required this.uid,
     required this.name,
     required this.date,

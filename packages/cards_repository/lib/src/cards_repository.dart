@@ -52,10 +52,16 @@ class CardsRepository {
   /// return Folder if one is found by its [folderUID]
   Folder? getFolderById(String folderUID) => _cardsApi.getFolderById(folderUID);
 
+  /// return Card if one is found by its [cardUID]
+  Card? getCardById(String cardUID) => _cardsApi.getCardById(cardUID);
+
   /// Saves a [card]
   /// If a [card] with same id already exists, it will be replaced
   Future<void> saveCard(
-          Card card, List<EditorTile>? editorTiles, String? parentId,) =>
+    Card card,
+    List<EditorTile>? editorTiles,
+    String? parentId,
+  ) =>
       _cardsApi.saveCard(card, editorTiles, parentId);
 
   /// Saves a [subject]

@@ -27,6 +27,7 @@ class FolderListTileView extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: UIConstants.defaultSize),
       child: UIExpansionTile(
+        changeExtentionState: isHovered,
         backgroundColor: isHovered
             ? UIColors.onOverlayCard
             : isSoftSelected || isSelected

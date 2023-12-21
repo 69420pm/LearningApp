@@ -21,42 +21,46 @@ class SubjectList extends StatelessWidget {
             .cast<Subject>()
             .map((e) => SubjectListTile(subject: e))
             .toList();
-        return Column(children: [
-          UILabelRow(
-            labelText: 'Subjects',
-            actionWidgets: [
-              UIIconButton(
-                icon: UIIcons.download.copyWith(color: UIColors.smallText),
-                onPressed: () {},
-              ),
-              UIIconButton(
-                icon: UIIcons.add.copyWith(color: UIColors.smallText),
-                onPressed: () {
-                  context.read<AddSubjectCubit>().resetWeekDays();
-                  UIBottomSheet.showUIBottomSheet(
-                    context: context,
-                    builder: (_) {
-                      return BlocProvider.value(
-                        value: context.read<AddSubjectCubit>(),
-                        child: const AddSubjectBottomSheet(),
-                      );
-                    },
-                  );
-                },
-              ),
-            ],
-          ),
-          const SizedBox(height: UIConstants.itemPadding),
-          ...subjects.where((element) => element.subject.disabled == false),
-          const SizedBox(height: UIConstants.itemPadding * 2),
-          UIExpansionTile(
-              title: "Disabled Subjects",
+        return Column(
+          children: [
+            UILabelRow(
+              labelText: 'Subjects',
+              actionWidgets: [
+                UIIconButton(
+                  icon: UIIcons.download.copyWith(color: UIColors.smallText),
+                  onPressed: () {},
+                ),
+                UIIconButton(
+                  icon: UIIcons.add.copyWith(color: UIColors.smallText),
+                  onPressed: () {
+                    context.read<AddSubjectCubit>().resetWeekDays();
+                    UIBottomSheet.showUIBottomSheet(
+                      context: context,
+                      builder: (_) {
+                        return BlocProvider.value(
+                          value: context.read<AddSubjectCubit>(),
+                          child: const AddSubjectBottomSheet(),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: UIConstants.itemPadding),
+            ...subjects.where((element) => element.subject.disabled == false),
+            const SizedBox(height: UIConstants.itemPadding * 2),
+            UIExpansionTile(
+              iconOnTheRight: true,
+              title: 'Disabled Subjects',
               textColor: UIColors.smallText,
               childSpacing: UIConstants.itemPadding,
               children: subjects
                   .where((element) => element.subject.disabled)
-                  .toList()),
-        ]);
+                  .toList(),
+            ),
+          ],
+        );
       },
     );
   }

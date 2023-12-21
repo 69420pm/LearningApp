@@ -5,7 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_card/cubit/add_card_cubit.dart';
 import 'package:learning_app/add_card/view/add_card_page.dart';
 import 'package:learning_app/add_card/view/card_settings_page.dart';
+import 'package:learning_app/add_edit_class_test/cubit/relevant_folders_cubit.dart';
 import 'package:learning_app/add_edit_class_test/view/add_class_test_page.dart';
+import 'package:learning_app/add_edit_class_test/view/relevant_folders_page.dart';
 import 'package:learning_app/add_subject/cubit/add_subject_cubit.dart';
 import 'package:learning_app/app/view/error.dart';
 import 'package:learning_app/edit_subject/cubit/edit_subject_cubit.dart';
@@ -72,19 +74,20 @@ class AppRouter {
         );
       case '/add_card/settings':
         return MaterialPageRoute(
-            builder: (_) => MultiBlocProvider(
-                  providers: [
-                    BlocProvider.value(
-                      value: _addCardCubit,
-                    ),
-                  ],
-                  child: CardSettingsPage(
-                    card: (routeSettings.arguments! as List)[0] as Card,
-                    parentId: (routeSettings.arguments! as List)[1] as String?,
-                    editorTiles: (routeSettings.arguments! as List)[2]
-                        as List<EditorTile>,
-                  ),
-                ));
+          builder: (_) => MultiBlocProvider(
+            providers: [
+              BlocProvider.value(
+                value: _addCardCubit,
+              ),
+            ],
+            child: CardSettingsPage(
+              card: (routeSettings.arguments! as List)[0] as Card,
+              parentId: (routeSettings.arguments! as List)[1] as String?,
+              editorTiles:
+                  (routeSettings.arguments! as List)[2] as List<EditorTile>,
+            ),
+          ),
+        );
       case '/search':
         return MaterialPageRoute(
           builder: (_) => MultiBlocProvider(
@@ -150,6 +153,16 @@ class AppRouter {
             child: AddClassTestPage(
               classTest: routeSettings.arguments as ClassTest?,
             ),
+          ),
+        );
+      case '/subject_overview/edit_subject/add_class_test/relevant_folders':
+        return MaterialPageRoute(
+          builder: (_) => RelevantFoldersPage(
+            cardsRepository: _cardsRepository,
+            subjectToEdit:
+                (routeSettings.arguments! as List<dynamic>)[0] as Subject,
+            classTest:
+                (routeSettings.arguments! as List<dynamic>)[1] as ClassTest,
           ),
         );
       case '/learn':

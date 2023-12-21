@@ -14,7 +14,11 @@ class AddClassTestPage extends StatelessWidget {
       canSave = true;
     } else {
       classTest = ClassTest(
-          uid: Uid().uid(), name: '', date: DateTime.now(), folderIds: const [],);
+        uid: Uid().uid(),
+        name: '',
+        date: DateTime.now(),
+        folderIds: const [],
+      );
     }
   }
 
@@ -58,6 +62,7 @@ class AddClassTestPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final foldersAreEmpty = classTest!.folderIds.isEmpty;
     return UIPage(
       dismissFocusOnTap: true,
       appBar: UIAppBar(
@@ -114,7 +119,7 @@ class AddClassTestPage extends StatelessWidget {
               Expanded(
                 child: UITextFieldLarge(
                   controller: nameController,
-                  autofocus: true,
+                  autofocus: addClassTest,
                   onChanged: (p0) {
                     classTest = classTest!.copyWith(name: p0);
                     if (!addClassTest) {
@@ -193,15 +198,65 @@ class AddClassTestPage extends StatelessWidget {
           const SizedBox(
             height: UIConstants.itemPaddingLarge,
           ),
-          UILabelRow(
-            labelText: 'Relevant Folders',
-            horizontalPadding: true,
-            actionWidgets: [
-              UIIconButton(
-                icon: UIIcons.add.copyWith(color: UIColors.smallText),
-                onPressed: () {},
-              ),
-            ],
+          BlocBuilder<EditSubjectCubit, EditSubjectState>(
+            buildWhen: (previous, current) =>
+                current is EditSubjectClassTestChanged,
+            builder: (context, state) {
+              return Column(
+                children: [
+                  UILabelRow(
+                    labelText: 'Relevant Cards',
+                    horizontalPadding: true,
+                    actionWidgets: [
+                      UIIconButton(
+                        icon: UIIcons.add.copyWith(
+                          color: foldersAreEmpty
+                              ? UIColors.primary
+                              : UIColors.smallText,
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(
+                            '/subject_overview/edit_subject/add_class_test/relevant_folders',
+                            arguments: [
+                              context.read<EditSubjectCubit>().subject,
+                              classTest,
+                            ],
+                          ).then(
+                            (value) {
+                              context
+                                  .read<EditSubjectCubit>()
+                                  .saveClassTest(classTest!);
+                            },
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  Builder(
+                    builder: (_) {
+                      if (foldersAreEmpty) {
+                        return UIContainer(
+                          child: UIDescription(
+                            text:
+                                'Add exams with date to this subject to increase test frequency when approaching an exam, that you are always well prepared for your exams',
+                          ),
+                        );
+                      }
+                      return SizedBox(
+                        width: double.infinity,
+                        child: UIContainer(
+                          child: Text(
+                            '${classTest!.folderIds.length} cards selected',
+                            style: UIText.label
+                                .copyWith(color: UIColors.smallText),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              );
+            },
           ),
           const SizedBox(
             height: UIConstants.itemPaddingLarge,

@@ -35,7 +35,10 @@ abstract class CardsApi {
   /// Saves a [card]
   /// If a [card] with same id already exists, it will be replaced
   Future<void> saveCard(
-      Card card, List<EditorTile>? editorTiles, String? parentId,);
+    Card card,
+    List<EditorTile>? editorTiles,
+    String? parentId,
+  );
 
   /// Saves a [subject]
   /// If a [subject] with same id already exists, it will be replaced
@@ -65,6 +68,9 @@ abstract class CardsApi {
 
   /// return Folder if one is found by its [folderUID]
   Folder? getFolderById(String folderUID);
+
+  /// return Card if one is found by its [cardUID]
+  Card? getCardById(String cardUID);
 
   /// get list of every children for a given [parentId]
   List<String> getChildrenList(String parentId);
