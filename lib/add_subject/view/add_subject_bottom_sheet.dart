@@ -6,7 +6,14 @@ import 'package:learning_app/add_subject/view/weekday_picker.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
-import 'package:learning_app/ui_components/ui_text.dart';class AddSubjectBottomSheet extends StatefulWidget {
+import 'package:learning_app/ui_components/ui_text.dart';
+import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.dart';
+import 'package:learning_app/ui_components/widgets/buttons/ui_button.dart';
+import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
+import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button_large.dart';
+import 'package:learning_app/ui_components/widgets/text_fields/ui_text_field_large.dart';
+import 'package:learning_app/ui_components/widgets/ui_description.dart';
+import 'package:learning_app/ui_components/widgets/ui_label_row.dart';class AddSubjectBottomSheet extends StatefulWidget {
   const AddSubjectBottomSheet({
     super.key,
     this.recommendedSubjectParentId,

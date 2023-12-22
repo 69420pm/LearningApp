@@ -1,13 +1,24 @@
-import 'package:learning_app/card_backend/cards_api/models/subject.dart';
-import 'package:learning_app/card_backend/cards_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/card_backend/cards_api/models/subject.dart';
+import 'package:learning_app/edit_subject/cubit/edit_subject_cubit.dart';
 import 'package:learning_app/edit_subject/view/class_test_column.dart';
 import 'package:learning_app/edit_subject/view/page_weekday_picker.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
-import 'package:learning_app/ui_components/ui_text.dart';import 'package:learning_app/edit_subject/cubit/edit_subject_cubit.dart';
+import 'package:learning_app/ui_components/ui_text.dart';
+import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
+import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button_large.dart';
+import 'package:learning_app/ui_components/widgets/dialogs/ui_deletion_dialog.dart';
+import 'package:learning_app/ui_components/widgets/text_fields/ui_text_field_large.dart';
+import 'package:learning_app/ui_components/widgets/ui_appbar.dart';
+import 'package:learning_app/ui_components/widgets/ui_container.dart';
+import 'package:learning_app/ui_components/widgets/ui_deletion_row.dart';
+import 'package:learning_app/ui_components/widgets/ui_description.dart';
+import 'package:learning_app/ui_components/widgets/ui_label_row.dart';
+import 'package:learning_app/ui_components/widgets/ui_page.dart';
+import 'package:learning_app/ui_components/widgets/ui_switch.dart';
 
 class EditSubjectPage extends StatelessWidget {
   EditSubjectPage({super.key, required this.subject});

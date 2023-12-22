@@ -1,13 +1,15 @@
-import 'package:learning_app/card_backend/cards_api/models/card.dart';
-import 'package:learning_app/card_backend/cards_api/models/folder.dart';
-import 'package:learning_app/card_backend/cards_api/models/subject.dart';import 'package:flutter/material.dart' hide Card;
+import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_card/cubit/add_card_cubit.dart';
+import 'package:learning_app/card_backend/cards_api/models/card.dart';
 import 'package:learning_app/editor/models/editor_tile.dart';
-import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
-import 'package:learning_app/ui_components/ui_icons.dart';
-import 'package:learning_app/ui_components/ui_text.dart';class CardSettingsPage extends StatelessWidget {
+import 'package:learning_app/ui_components/ui_text.dart';
+import 'package:learning_app/ui_components/widgets/text_fields/ui_text_field_large.dart';
+import 'package:learning_app/ui_components/widgets/ui_appbar.dart';
+import 'package:learning_app/ui_components/widgets/ui_description.dart';
+import 'package:learning_app/ui_components/widgets/ui_page.dart';
+import 'package:learning_app/ui_components/widgets/ui_switch.dart';class CardSettingsPage extends StatelessWidget {
   CardSettingsPage(
       {super.key,
       required this.card,

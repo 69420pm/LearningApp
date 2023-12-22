@@ -1,14 +1,16 @@
-import 'package:learning_app/card_backend/cards_api/models/card.dart';
-import 'package:learning_app/card_backend/cards_api/models/class_test.dart';
-import 'package:learning_app/card_backend/cards_api/models/folder.dart';
-import 'package:learning_app/card_backend/cards_api/models/subject.dart';import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:learning_app/card_backend/cards_api/models/class_test.dart';
 import 'package:learning_app/edit_subject/cubit/edit_subject_cubit.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
-import 'package:learning_app/ui_components/ui_text.dart';class ClassTestColumn extends StatelessWidget {
+import 'package:learning_app/ui_components/ui_text.dart';
+import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
+import 'package:learning_app/ui_components/widgets/ui_container.dart';
+import 'package:learning_app/ui_components/widgets/ui_description.dart';
+import 'package:learning_app/ui_components/widgets/ui_label_row.dart';class ClassTestColumn extends StatelessWidget {
   const ClassTestColumn({super.key});
 
   @override

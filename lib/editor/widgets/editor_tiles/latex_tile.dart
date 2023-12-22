@@ -7,10 +7,8 @@ import 'package:learning_app/editor/models/editor_tile.dart';
 import 'package:learning_app/editor/models/latex_text_field_controller.dart';
 import 'package:learning_app/editor/models/text_field_controller.dart';
 import 'package:learning_app/editor/widgets/bottom_sheets/latex_bottom_sheet.dart';
-import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
-import 'package:learning_app/ui_components/ui_icons.dart';
-import 'package:learning_app/ui_components/ui_text.dart';class LatexTile extends StatefulWidget implements EditorTile, Equatable {
+import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.dart';class LatexTile extends StatefulWidget implements EditorTile, Equatable {
   LatexTile({super.key, this.latexText = ''});
 
   String latexText;

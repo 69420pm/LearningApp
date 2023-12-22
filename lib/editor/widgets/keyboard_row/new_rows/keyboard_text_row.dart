@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/editor/bloc/text_editor_bloc.dart';
 import 'package:learning_app/editor/cubit/keyboard_row_cubit.dart';
 import 'package:learning_app/editor/widgets/keyboard_row/keyboard_button.dart';
 import 'package:learning_app/editor/widgets/keyboard_row/keyboard_row_container.dart';
 import 'package:learning_app/editor/widgets/keyboard_row/keyboard_toggle.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
-import 'package:learning_app/ui_components/ui_constants.dart';import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/ui_components/ui_icons.dart';
 
 class KeyboardTextRow extends StatelessWidget {
   KeyboardTextRow({super.key, required this.isBold, required this.isItalic, required this.isUnderlined, required this.textColor, required this.backgroundColor});

@@ -17,11 +17,9 @@ import 'package:learning_app/editor/widgets/editor_tiles/quote_tile.dart';
 import 'package:learning_app/editor/widgets/editor_tiles/text_tile.dart';
 import 'package:learning_app/editor/widgets/keyboard_row/keyboard_button.dart';
 import 'package:learning_app/editor/widgets/keyboard_row/keyboard_row_container.dart';
-
 import 'package:learning_app/ui_components/ui_colors.dart';
-import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
-import 'package:learning_app/ui_components/ui_text.dart';class KeyboardNewTileRow extends StatelessWidget {
+import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.dart';class KeyboardNewTileRow extends StatelessWidget {
   const KeyboardNewTileRow({super.key});
 
   @override

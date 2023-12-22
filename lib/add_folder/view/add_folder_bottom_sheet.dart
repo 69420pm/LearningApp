@@ -8,7 +8,11 @@ import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dar
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
-import 'package:learning_app/ui_components/ui_text.dart';class AddFolderBottomSheet extends StatefulWidget {
+import 'package:learning_app/ui_components/ui_text.dart';
+import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.dart';
+import 'package:learning_app/ui_components/widgets/buttons/ui_button.dart';
+import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
+import 'package:learning_app/ui_components/widgets/text_fields/ui_text_field_large.dart';class AddFolderBottomSheet extends StatefulWidget {
   const AddFolderBottomSheet({
     super.key,
     required this.parentId,

@@ -1,10 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:learning_app/card_backend/cards_api/helper/subject_helper.dart';
 import 'package:learning_app/card_backend/cards_api/models/subject.dart';
-import 'package:flutter/material.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
-import 'package:learning_app/ui_components/ui_text.dart';class SubjectListTile extends StatelessWidget {
+import 'package:learning_app/ui_components/ui_text.dart';
+import 'package:learning_app/ui_components/widgets/progress_indicators/ui_circular_progress_indicator.dart';class SubjectListTile extends StatelessWidget {
   const SubjectListTile({super.key, required this.subject});
 
   final Subject subject;

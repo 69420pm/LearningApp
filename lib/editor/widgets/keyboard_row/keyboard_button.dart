@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
-import 'package:learning_app/ui_components/ui_text.dart';class KeyboardButton extends StatelessWidget {
+import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';class KeyboardButton extends StatelessWidget {
   KeyboardButton({super.key, required this.icon, required this.onPressed, this.onDoubleTap, this.withBackgroundColor=true});
   UIIcon icon;
   void Function() onPressed;

@@ -3,10 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/editor/bloc/text_editor_bloc.dart';
 import 'package:learning_app/editor/helper/image_helper.dart';
 import 'package:learning_app/editor/widgets/editor_tiles/image_tile.dart';
-import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
-import 'package:learning_app/ui_components/ui_text.dart';class AddImageBottomSheet extends StatelessWidget {
+import 'package:learning_app/ui_components/ui_text.dart';
+import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.dart';
+import 'package:learning_app/ui_components/widgets/ui_icon_row.dart';class AddImageBottomSheet extends StatelessWidget {
   const AddImageBottomSheet({super.key});
 
   @override

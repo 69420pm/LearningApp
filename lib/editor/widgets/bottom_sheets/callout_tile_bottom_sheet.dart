@@ -6,7 +6,12 @@ import 'package:learning_app/editor/widgets/editor_tiles/callout_tile.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
-import 'package:learning_app/ui_components/ui_text.dart';class CalloutTileBottomSheet extends StatelessWidget {
+import 'package:learning_app/ui_components/ui_text.dart';
+import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.dart';
+import 'package:learning_app/ui_components/widgets/emoji_picker/emoji_picker.dart';
+import 'package:learning_app/ui_components/widgets/ui_deletion_row.dart';
+import 'package:learning_app/ui_components/widgets/ui_icon_row.dart';
+import 'package:learning_app/ui_components/widgets/ui_label_row.dart';class CalloutTileBottomSheet extends StatelessWidget {
   CalloutTileBottomSheet({super.key, required this.parentEditorTile});
   CalloutTile parentEditorTile;
 

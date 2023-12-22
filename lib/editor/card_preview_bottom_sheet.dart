@@ -2,8 +2,9 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:learning_app/card_backend/cards_api/models/card.dart';
 import 'package:learning_app/card_backend/cards_repository.dart';
 import 'package:learning_app/editor/card_content_widget.dart';
-import 'package:learning_app/ui_components/ui_colors.dart';
-import 'package:learning_app/ui_components/ui_constants.dart';import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/ui_components/ui_icons.dart';
+import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.dart';
+import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
 
 class CardPreviewBottomSheet extends StatelessWidget {
   CardPreviewBottomSheet({

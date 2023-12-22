@@ -12,7 +12,8 @@ import 'package:learning_app/editor/widgets/image_widgets/image_full_screen.dart
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
-import 'package:learning_app/ui_components/ui_text.dart';class ImageTile extends StatefulWidget
+import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.dart';
+import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';class ImageTile extends StatefulWidget
     implements EditorTile, ReadOnlyInteractable {
   /// constructor focusNode gets focusNode of widget and [image] is a File
   /// that gets displayed

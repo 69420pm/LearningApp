@@ -5,10 +5,8 @@ import 'package:learning_app/add_edit_class_test/view/selectable_card_list_tile.
 import 'package:learning_app/card_backend/cards_api/models/card.dart';
 import 'package:learning_app/card_backend/cards_api/models/folder.dart';
 import 'package:learning_app/card_backend/cards_repository.dart';
-import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
-import 'package:learning_app/ui_components/ui_icons.dart';
-import 'package:learning_app/ui_components/ui_text.dart';class SelectableFolderListTile extends StatelessWidget {
+import 'package:learning_app/ui_components/widgets/ui_expansion_tile.dart';class SelectableFolderListTile extends StatelessWidget {
   const SelectableFolderListTile({
     super.key,
     required this.cardsRepository,

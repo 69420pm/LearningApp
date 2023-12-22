@@ -40,8 +40,9 @@
 //   }
 // }
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
-import 'package:learning_app/ui_components/ui_constants.dart';import 'package:flutter_animate/flutter_animate.dart';
+import 'package:learning_app/ui_components/ui_icons.dart';
 
 class KeyboardToggle extends StatefulWidget {
   KeyboardToggle(

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/editor/bloc/text_editor_bloc.dart';
 import 'package:learning_app/editor/models/editor_tile.dart';
 import 'package:learning_app/editor/widgets/editor_tiles/callout_tile.dart';
-import 'package:ui_components/src/widgets/color_picker.dart';
+import 'package:learning_app/ui_components/widgets/color_picker.dart';
 
 class MenuBottomSheet extends StatelessWidget {
   MenuBottomSheet({super.key, required this.parentEditorTile});

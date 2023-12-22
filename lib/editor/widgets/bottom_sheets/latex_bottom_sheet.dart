@@ -4,8 +4,9 @@ import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:learning_app/editor/widgets/keyboard_row/new_rows/keyboard_latex_row.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
-import 'package:learning_app/ui_components/ui_icons.dart';
-import 'package:learning_app/ui_components/ui_text.dart';class LatexBottomSheet extends StatefulWidget {
+import 'package:learning_app/ui_components/ui_text.dart';
+import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.dart';
+import 'package:learning_app/ui_components/widgets/text_fields/ui_text_field.dart';class LatexBottomSheet extends StatefulWidget {
   LatexBottomSheet(
       {super.key,
       required this.textEditingController,

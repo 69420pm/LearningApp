@@ -6,6 +6,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/ui_components/backend/ui_repository.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
+import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.dart';
 
 class UIColorPicker extends StatefulWidget {
   UIColorPicker({
@@ -37,7 +38,6 @@ class _UIColorPickerState extends State<UIColorPicker> {
         recentColors.length,
       );
     }
-
     final colorWheel = [
       ColorPicker(
         pickerColor: currentColorInColorWheel,

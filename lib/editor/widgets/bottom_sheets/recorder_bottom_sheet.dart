@@ -1,15 +1,20 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:learning_app/editor/bloc/text_editor_bloc.dart';
-import 'package:learning_app/editor/widgets/editor_tiles/audio_tile.dart';
-import 'package:learning_app/ui_components/ui_colors.dart';
-import 'package:learning_app/ui_components/ui_constants.dart';import 'package:path_provider/path_provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:intl/intl.dart';
 import 'package:learning_app/app/helper/uid.dart';
+import 'package:learning_app/editor/bloc/text_editor_bloc.dart';
+import 'package:learning_app/editor/widgets/editor_tiles/audio_tile.dart';
+import 'package:learning_app/ui_components/ui_colors.dart';
+import 'package:learning_app/ui_components/ui_constants.dart';
+import 'package:learning_app/ui_components/ui_text.dart';
+import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.dart';
+import 'package:learning_app/ui_components/widgets/buttons/ui_button.dart';
+import 'package:learning_app/ui_components/widgets/dialogs/ui_dialog.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class RecorderBottomSheet extends StatefulWidget {
   const RecorderBottomSheet({super.key});

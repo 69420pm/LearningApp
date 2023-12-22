@@ -9,7 +9,8 @@ import 'package:learning_app/editor/models/text_field_controller.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
-import 'package:learning_app/ui_components/ui_text.dart';class AudioTile extends StatefulWidget
+import 'package:learning_app/ui_components/ui_text.dart';
+import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';class AudioTile extends StatefulWidget
     implements EditorTile, ReadOnlyInteractable {
   AudioTile({super.key, required this.filePath, this.interactable = true});
 
