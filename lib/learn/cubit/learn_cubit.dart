@@ -9,12 +9,22 @@ class LearnCubit extends Cubit<LearnState> {
 
   List<String> cardsToLearn = List.empty(growable: true);
   //how many cards got turned
-  int progress = 0;
+  int progress = -1;
   final CardsRepository _cardsRepository;
 
   void turnOverCard(int index) {
-    if (state is! BackState) emit(BackState());
-    progress = index;
+    if (state is FrontState && index > progress) {
+      emit(BackState());
+      progress = index;
+    }
+  }
+
+  void scrollToNextCard() {
+    emit(ScrollToNextCardsState());
+  }
+
+  void scrollToPreviousCard() {
+    emit(ScrollToPreviousCardsState());
   }
 
   void newCard() {

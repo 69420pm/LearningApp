@@ -7,12 +7,13 @@ import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/widgets/ui_appbar.dart';
 
 class LearningScreen extends StatelessWidget {
-  LearningScreen({super.key, required this.cardsRepository});
+  const LearningScreen({super.key, required this.cardsRepository});
   final CardsRepository cardsRepository;
-  final PageController controller = PageController(viewportFraction: 1);
 
   @override
   Widget build(BuildContext context) {
+    final controller = PageController();
+
     context.read<LearnCubit>().learnAllCards();
     final cardsToLearn = context.read<LearnCubit>().cardsToLearn;
 

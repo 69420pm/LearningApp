@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' hide Card;
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,79 +20,143 @@ class LearningCard extends StatelessWidget {
   final int indexOfCardStack;
   @override
   Widget build(BuildContext context) {
-    var controller = ScrollController();
+    final controller = ScrollController();
+    final heightOfCard = MediaQuery.of(context).size.height -
+        (Scaffold.of(context).appBarMaxHeight ?? 0);
 
-    controller.addListener(
-      () {
-        if (controller.offset == controller.position.maxScrollExtent) {
-          context.read<LearnCubit>().turnOverCard(indexOfCardStack);
-        }
-      },
-    );
+    final heightOfFrontEditorTiles = 220;
+    bool isAtBottom = false;
+    bool isAtTop = true;
 
-    return GestureDetector(
-      onHorizontalDragStart: (details) {
-        controller.animateTo(controller.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeOutQuad);
-      },
-      onTap: () {
-        // context.read<LearnCubit>().turnOverCard(indexOfCardStack);
-      },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          // horizontal: UIConstants.itemPadding,
-          vertical: UIConstants.itemPadding,
-        ),
-        child: DecoratedBox(
-          decoration: const BoxDecoration(
-              // borderRadius: const BorderRadius.all(
-              //     Radius.circular(UIConstants.cornerRadius)),
-              // border: Border.all(
-              //   color: UIColors.textLight,
-              //   width: UIConstants.borderWidth,
-              // ),
-              // color: UIColors.overlay,
-              ),
-          child: CustomScrollView(
-            physics: const NeverScrollableScrollPhysics(),
-            controller: controller,
-            slivers: [
-              SliverAppBar(
-                // title: Text('card name'),
-                expandedHeight: 400,
-                automaticallyImplyLeading: false,
-                centerTitle: true,
-                flexibleSpace: FlexibleSpaceBar(
-                  collapseMode: CollapseMode.pin,
-                  background: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      color: Colors.red,
-                      child: Text(
-                        "Dolor enim labore esse commodo sit ut dolore eiusmod quis ullamco enim adipisicing?",
-                        style: UIText.titleBig,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SliverToBoxAdapter(
-                  child: Padding(
-                padding:
-                    const EdgeInsets.only(top: UIConstants.itemPaddingLarge),
-                child: Container(
-                  height: 400,
-                  child: Text(
-                    "Qui adipisicing do ipsum ut nulla dolore quis velit reprehenderit ex adipisicing voluptate. Sit amet occaecat commodo eiusmod. Et dolor esse cillum laboris amet ex dolor. Aliquip culpa qui ut velit laboris ullamco elit incididunt nulla labore cillum exercitation labore qui. Labore consequat velit eu irure reprehenderit minim pariatur duis. Eu commodo in excepteur ad est et. Cupidatat sunt excepteur laboris Lorem pariatur est amet ullamco sit.",
-                    style: UIText.titleSmall,
-                  ),
-                ).animate(adapter: ScrollAdapter(controller)).fadeIn(),
-              )),
-            ],
+    var disableScrolling = false;
+    controller.addListener(() {
+      if (controller.offset >= controller.position.maxScrollExtent) {
+        isAtBottom = true;
+      } else if (controller.offset <= controller.position.minScrollExtent) {
+        isAtTop = true;
+      } else {
+        isAtBottom = false;
+        isAtTop = false;
+      }
+    });
+    final frontWidgets = Container(
+      // color: Colors.blue,
+      height: heightOfCard,
+      width: double.infinity,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Animate(
+              adapter: ScrollAdapter(
+            controller,
+            end: 300,
+          )).custom(
+            builder: (_, value, __) => Container(
+                height: (value) *
+                    (heightOfCard - heightOfFrontEditorTiles)
+                        .clamp(0, double.infinity)),
           ),
-        ),
+          Container(
+            height: 100,
+            width: double.infinity,
+            color: Colors.red,
+            child: Center(
+              child: Text(
+                indexOfCardStack.toString(),
+                style: UIText.titleBig,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Container(
+              height: 100,
+              color: Colors.red,
+              child: Center(child: Text("Front of Card"))),
+        ],
       ),
+    );
+    final backWidgets = Container(
+      // color: Colors.red,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            height: 100,
+            width: double.infinity,
+            color: Colors.blue,
+            child: Center(
+              child: Text(
+                indexOfCardStack.toString(),
+                style: UIText.titleBig,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Container(
+              height: 100,
+              color: Colors.blue,
+              child: Center(child: Text("Back of Card"))),
+          ...List.generate(
+              indexOfCardStack + 1,
+              (index) => Padding(
+                    padding: EdgeInsets.only(top: 20),
+                    child: Container(
+                      height: 100,
+                      color: Colors.blue,
+                    ),
+                  ))
+        ],
+      ),
+    );
+    return BlocBuilder<LearnCubit, LearnState>(
+      builder: (context, state) {
+        return GestureDetector(
+          onTap: () {
+            context.read<LearnCubit>().turnOverCard(indexOfCardStack);
+          },
+          child: NotificationListener<UserScrollNotification>(
+            onNotification: (scrollNotification) {
+              if (scrollNotification.direction == ScrollDirection.forward &&
+                  isAtTop &&
+                  indexOfCardStack != 0) {
+                context.read<LearnCubit>().scrollToPreviousCard();
+              } else if (scrollNotification.direction ==
+                      ScrollDirection.reverse &&
+                  isAtBottom &&
+                  indexOfCardStack !=
+                      context.read<LearnCubit>().cardsToLearn.length - 1) {
+                context.read<LearnCubit>().scrollToNextCard();
+              }
+
+              return false;
+            },
+            child: SingleChildScrollView(
+              controller: controller,
+              physics: state is ScrollToNextCardsState ||
+                      state is ScrollToPreviousCardsState
+                  ? NeverScrollableScrollPhysics()
+                  : ClampingScrollPhysics(),
+              child: Column(
+                children: [
+                  frontWidgets,
+                  Divider(
+                    thickness: 2,
+                  ),
+                  backWidgets
+                      .animate(
+                        adapter: ScrollAdapter(controller, end: 200),
+                      )
+                      .fadeIn(curve: Curves.easeOutQuad)
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
