@@ -1,51 +1,50 @@
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/card_backend/cards_repository.dart';
 import 'package:learning_app/learn/cubit/learn_cubit.dart';
 import 'package:learning_app/learn/view/learning_card.dart';
-import 'package:learning_app/ui_components/ui_constants.dart';
-import 'package:learning_app/ui_components/widgets/ui_appbar.dart';class LearningScreen extends StatelessWidget {
-  const LearningScreen({super.key});
+import 'package:learning_app/ui_components/ui_colors.dart';
+import 'package:learning_app/ui_components/widgets/ui_appbar.dart';
+
+class LearningScreen extends StatelessWidget {
+  LearningScreen({super.key, required this.cardsRepository});
+  final CardsRepository cardsRepository;
+  final PageController controller = PageController(viewportFraction: 1);
 
   @override
   Widget build(BuildContext context) {
     context.read<LearnCubit>().learnAllCards();
+    final cardsToLearn = context.read<LearnCubit>().cardsToLearn;
+
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: UIColors.background,
       appBar: const UIAppBar(
+        leadingBackButton: true,
         title: 'Learning Site',
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(
-            horizontal: UIConstants.cardHorizontalPadding,),
-        child: BlocBuilder<LearnCubit, LearnState>(
-          builder: (context, state) {
-            final card = context.read<LearnCubit>().getNextCard();
-            if (card == null) {
-              return const Text('all cards finished');
-            }
-            return Column(
-              children: [
-                const SizedBox(height: UIConstants.defaultSize * 2),
-                LearningCard(card: card),
-                Column(
-                  children: [
-                    Opacity(
-                      opacity: state is BackState ? 1 : 0,
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(
-                          vertical: UIConstants.defaultSize * 3,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+      body: BlocBuilder<LearnCubit, LearnState>(
+        builder: (context, state) {
+          if (state is ScrollToNextCardsState ||
+              state is ScrollToPreviousCardsState) {
+            controller.animateToPage(
+              controller.page!.round() +
+                  (state is ScrollToNextCardsState ? 1 : -1),
+              duration: const Duration(milliseconds: 700),
+              curve: Curves.easeOutQuad,
             );
-          },
-        ),
+          }
+          return PageView.builder(
+            onPageChanged: (_) => context.read<LearnCubit>().newCard(),
+            physics: state is ScrollToNextCardsState
+                ? BouncingScrollPhysics()
+                : NeverScrollableScrollPhysics(),
+            controller: controller,
+            scrollDirection: Axis.vertical,
+            itemCount: cardsToLearn.length,
+            itemBuilder: (context, index) => LearningCard(
+                cardUID: cardsToLearn[index], indexOfCardStack: index),
+          );
+        },
       ),
     );
   }

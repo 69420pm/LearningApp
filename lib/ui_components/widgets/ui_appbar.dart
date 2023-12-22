@@ -16,7 +16,7 @@ class UIAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.actions,
     this.leading,
     this.bottom,
-    this.leadingBackButton = false,
+    this.leadingBackButton = true,
     this.leadingBackButtonPressed,
   });
   final String? title;

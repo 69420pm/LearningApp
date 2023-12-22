@@ -12,6 +12,7 @@ import 'package:learning_app/ui_components/widgets/ui_card.dart';class LearnAllC
       useGradient: true,
       distanceToTop: 80,
       color: UIColors.primary,
+      onTap: () => Navigator.pushNamed(context, "/learn"),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,

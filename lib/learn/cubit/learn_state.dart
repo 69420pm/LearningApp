@@ -3,6 +3,10 @@ part of 'learn_cubit.dart';
 
 abstract class LearnState {}
 
+class ScrollToNextCardsState extends LearnState {}
+
+class ScrollToPreviousCardsState extends LearnState {}
+
 class FrontState extends LearnState {}
 
 class BackState extends LearnState {}

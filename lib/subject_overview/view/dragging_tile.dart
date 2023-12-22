@@ -38,7 +38,7 @@ class DraggingTile extends StatelessWidget {
     final isSelected = !isRootFolder && selectionBloc.isFileSelected(fileUID);
 
     return GestureDetector(
-      behavior: HitTestBehavior.translucent,
+      behavior: isCard ? HitTestBehavior.opaque : HitTestBehavior.translucent,
       onTap: () {
         if (isInSelectMode) {
           //change file selection

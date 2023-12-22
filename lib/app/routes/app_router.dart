@@ -205,7 +205,9 @@ class AppRouter {
                 value: _learnCubit,
               ),
             ],
-            child: const LearningScreen(),
+            child: LearningScreen(
+              cardsRepository: _cardsRepository,
+            ),
           ),
         );
       // error route
