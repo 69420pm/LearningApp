@@ -5,20 +5,22 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-import 'package:learning_app/card_backend/cards_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:learning_app/app/routes/app_router.dart';
+import 'package:learning_app/card_backend/cards_repository.dart';
 import 'package:learning_app/l10n/l10n.dart';
 import 'package:learning_app/ui_components/backend/ui_repository.dart';
-import 'package:learning_app/ui_components/ui_colors.dart';
-import 'package:learning_app/ui_components/ui_constants.dart';
-import 'package:learning_app/ui_components/ui_icons.dart';
-import 'package:learning_app/ui_components/ui_text.dart';class App extends StatelessWidget {
-  const App(
-      {super.key, required this.cardsRepository, required this.uiRepository,});
+import 'package:learning_app/ui_components/color_schemes.g.dart';
+
+class App extends StatelessWidget {
+  const App({
+    super.key,
+    required this.cardsRepository,
+    required this.uiRepository,
+  });
 
   final CardsRepository cardsRepository;
   final UIRepository uiRepository;
@@ -83,15 +85,16 @@ class AppView extends StatelessWidget {
     }
 
     return ThemeData(
-        brightness: isLightMode ? Brightness.light : Brightness.dark,
-        colorScheme: colorScheme,
-        scaffoldBackgroundColor: colorScheme.background,
-        bottomSheetTheme: const BottomSheetThemeData(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-        ),
-        useMaterial3: true,
-        fontFamily: 'Inter',
-        textTheme: const TextTheme(),);
+      brightness: isLightMode ? Brightness.light : Brightness.dark,
+      colorScheme: colorScheme,
+      scaffoldBackgroundColor: colorScheme.background,
+      bottomSheetTheme: const BottomSheetThemeData(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      useMaterial3: true,
+      fontFamily: 'Inter',
+      textTheme: const TextTheme(),
+    );
   }
 }

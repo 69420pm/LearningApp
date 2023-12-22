@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/ui_components/backend/ui_repository.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.dart';
+import 'package:learning_app/ui_components/color_schemes.g.dart';
 
 class UIColorPicker extends StatefulWidget {
   UIColorPicker({
@@ -138,8 +139,12 @@ class _UIColorPickerState extends State<UIColorPicker> {
                         child: ShaderMask(
                           blendMode: BlendMode.srcIn,
                           shaderCallback: (bounds) => gradient.createShader(
-                            Rect.fromLTRB(bounds.width / 2 - 1, 0,
-                                bounds.width / 2, bounds.height,),
+                            Rect.fromLTRB(
+                              bounds.width / 2 - 1,
+                              0,
+                              bounds.width / 2,
+                              bounds.height,
+                            ),
                           ),
                           child: Container(
                             decoration: const BoxDecoration(
@@ -151,13 +156,15 @@ class _UIColorPickerState extends State<UIColorPicker> {
                     ),
                     Container(
                       decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(UIConstants.cornerRadius),
-                          ),
-                          border: Border.all(
-                              color: Theme.of(context).colorScheme.primary,
-                              width: UIConstants.borderWidth * 2,),),
+                        color: Colors.transparent,
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(UIConstants.cornerRadius),
+                        ),
+                        border: Border.all(
+                          color: Theme.of(context).colorScheme.primary,
+                          width: UIConstants.borderWidth * 2,
+                        ),
+                      ),
                     ),
                   ],
                 ),
