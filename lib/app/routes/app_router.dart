@@ -1,7 +1,11 @@
+import 'package:learning_app/calendar/cubit/calendar_cubit.dart';
+import 'package:learning_app/calendar/view/calendar_page.dart';
+import 'package:learning_app/calendar_backend/calendar_repository.dart';
 import 'package:learning_app/card_backend/cards_api/models/card.dart';
 import 'package:learning_app/card_backend/cards_api/models/class_test.dart';
 import 'package:learning_app/card_backend/cards_api/models/folder.dart';
-import 'package:learning_app/card_backend/cards_api/models/subject.dart';import 'package:learning_app/card_backend/cards_repository.dart';
+import 'package:learning_app/card_backend/cards_api/models/subject.dart';
+import 'package:learning_app/card_backend/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_card/cubit/add_card_cubit.dart';
@@ -28,9 +32,10 @@ import 'package:learning_app/subject_overview/view/subject_page/subject_page.dar
 
 /// Handles complete app routing and is injected in MaterialApp()
 class AppRouter {
-  AppRouter(this._cardsRepository);
+  AppRouter(this._cardsRepository, this._calendarRepository);
 
   final CardsRepository _cardsRepository;
+  final CalendarRepository _calendarRepository;
 
   late final SubjectBloc _editSubjectBloc = SubjectBloc(_cardsRepository);
   late final AddCardCubit _addCardCubit = AddCardCubit(_cardsRepository);
@@ -43,6 +48,11 @@ class AppRouter {
   late final FolderListTileBloc _folderListTileBloc =
       FolderListTileBloc(_cardsRepository);
 
+  late final _calendarCubit = CalendarCubit(
+    calendarRepository: _calendarRepository,
+    cardsRepository: _cardsRepository,
+  );
+
   Route<dynamic> onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
       // home page, with bottom navigation bar
@@ -52,6 +62,9 @@ class AppRouter {
             providers: [
               BlocProvider.value(
                 value: _overviewCubit,
+              ),
+              BlocProvider.value(
+                value: _calendarCubit,
               ),
               BlocProvider(
                 create: (context) => AddSubjectCubit(_cardsRepository),
@@ -88,6 +101,23 @@ class AppRouter {
               editorTiles:
                   (routeSettings.arguments! as List)[2] as List<EditorTile>,
             ),
+          ),
+        );
+      case '/calendar':
+        return MaterialPageRoute(
+          builder: (_) => MultiBlocProvider(
+            providers: [
+              BlocProvider.value(
+                value: _calendarCubit,
+              ),
+              // BlocProvider(
+              //   create: (context) => SubjectBloc(),
+              // ),
+              // BlocProvider(
+              //   create: (context) => SubjectBloc(),
+              // ),
+            ],
+            child: CalendarPage(),
           ),
         );
       case '/search':

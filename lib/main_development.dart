@@ -9,6 +9,10 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:hive/hive.dart';
 import 'package:learning_app/app/app.dart';
 import 'package:learning_app/bootstrap.dart';
+import 'package:learning_app/calendar_backend/calendar_api/calendar_api.dart';
+import 'package:learning_app/calendar_backend/calendar_api/models/calendar_day.dart';
+import 'package:learning_app/calendar_backend/calendar_repository.dart';
+import 'package:learning_app/calendar_backend/hive_calendar_api.dart';
 import 'package:learning_app/card_backend/cards_api/models/card.dart';
 import 'package:learning_app/card_backend/cards_api/models/class_test.dart';
 import 'package:learning_app/card_backend/cards_api/models/folder.dart';
@@ -30,6 +34,7 @@ import 'package:learning_app/editor/models/editor_data_classes/link_tile_dc.dart
 import 'package:learning_app/editor/models/editor_data_classes/list_editor_tile_dc.dart';
 import 'package:learning_app/editor/models/editor_data_classes/quote_tile_dc.dart';
 import 'package:learning_app/editor/models/editor_data_classes/text_tile_dc.dart';
+
 Future<void> main() async {
   /// Init hive
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,22 +57,27 @@ Future<void> main() async {
     ..registerAdapter(QuoteTileDCAdapter())
     ..registerAdapter(TextTileDCAdapter())
     ..registerAdapter(LinkTileDCAdapter())
-    ..registerAdapter(FrontBackSeparatorTileDCAdapter());
+    ..registerAdapter(FrontBackSeparatorTileDCAdapter())
+    ..registerAdapter(CalendarDayAdapter());
 
   final cardsApi = HiveCardsApi(
-      await Hive.openBox<Subject>('subjects'),
-      await Hive.openBox<Folder>('folders'),
-      await Hive.openBox<Card>('cards'),
-      await Hive.openBox<List<String>>('relations'),
-      await Hive.openBox<List<dynamic>>('card_content'),);
+    await Hive.openBox<Subject>('subjects'),
+    await Hive.openBox<Folder>('folders'),
+    await Hive.openBox<Card>('cards'),
+    await Hive.openBox<List<String>>('relations'),
+    await Hive.openBox<List<dynamic>>('card_content'),
+    await Hive.openBox<List<ClassTest>>('class_tests')
+  );
   final cardsRepository = CardsRepository(cardsApi: cardsApi);
 
-  final uiApi = HiveUIApi(await Hive.openBox('hive_ui'));
-  final uiRepository = UIRepository(uiApi: uiApi);
+  final calendarApi =
+      HiveCalendarApi(await Hive.openBox<CalendarDay>('calendar'));
+  final calendarRepository = CalendarRepository(calendarApi: calendarApi);
+
   await bootstrap(
     () => App(
       cardsRepository: cardsRepository,
-      uiRepository: uiRepository,
+      calendarRepository: calendarRepository,
     ),
   );
 }

@@ -10,29 +10,33 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:learning_app/app/routes/app_router.dart';
+import 'package:learning_app/calendar_backend/calendar_repository.dart';
 import 'package:learning_app/card_backend/cards_repository.dart';
 import 'package:learning_app/l10n/l10n.dart';
 import 'package:learning_app/ui_components/backend/ui_repository.dart';
 import 'package:learning_app/ui_components/color_schemes.g.dart';
 
 class App extends StatelessWidget {
-  const App({
-    super.key,
-    required this.cardsRepository,
-    required this.uiRepository,
-  });
+  const App(
+      {super.key,
+      required this.cardsRepository,
+      required this.calendarRepository});
 
   final CardsRepository cardsRepository;
-  final UIRepository uiRepository;
+  final CalendarRepository calendarRepository;
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider.value(
-      value: cardsRepository,
-      child: RepositoryProvider.value(
-        value: uiRepository,
-        child: const AppView(),
-      ),
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider.value(
+          value: cardsRepository,
+        ),
+        RepositoryProvider.value(
+          value: calendarRepository
+        ),
+      ],
+      child: const AppView(),
     );
   }
 }
@@ -43,7 +47,8 @@ class AppView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cardsRepository = context.read<CardsRepository>();
-    final appRouter = AppRouter(cardsRepository);
+    final calendarRepository = context.read<CalendarRepository>();
+    final appRouter = AppRouter(cardsRepository, calendarRepository);
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
