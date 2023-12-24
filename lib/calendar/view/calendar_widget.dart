@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/calendar/cubit/calendar_cubit.dart';
 import 'package:learning_app/calendar/view/day.dart';
 import 'package:learning_app/calendar_backend/calendar_api/models/calendar_day.dart';
+import 'package:learning_app/card_backend/cards_api/models/class_test.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
@@ -19,14 +20,27 @@ class CalendarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currentDateTime = DateTime.now();
+    final classTests = context.read<CalendarCubit>().getClassTests();
     return UIContainer(
       child: BlocBuilder<CalendarCubit, CalendarState>(
         builder: (context, state) {
           final calendarDateTime = (state as CalendarShowMonth).dateTime;
+          final classTestsThisMonth = <ClassTest>[];
+          classTests.forEach(
+            (classTest) {
+              if (classTest.date.year == calendarDateTime.year &&
+                      classTest.date.month == calendarDateTime.month ||
+                  classTest.date.month == calendarDateTime.month - 1 ||
+                  classTest.date.month == calendarDateTime.month + 1) {
+                classTestsThisMonth.add(classTest);
+              }
+            },
+          );
           return FutureBuilder(
             future: _getDaysInMonth(
               calendarDateTime.year,
               calendarDateTime.month,
+              classTestsThisMonth,
               context,
             ),
             builder: (context, snapshot) {
@@ -180,6 +194,7 @@ class CalendarWidget extends StatelessWidget {
   Future<List<Day>> _getDaysInMonth(
     int year,
     int month,
+    List<ClassTest> classTestsThisMonth,
     BuildContext context,
   ) async {
     final currentDate = DateTime(year, month);
@@ -234,11 +249,19 @@ class CalendarWidget extends StatelessWidget {
           }
         }
       }
+      final classTests = <ClassTest>[];
+      for (final classTest in classTestsThisMonth) {
+        if (classTest.date.day == iterableDate.day &&
+            classTest.date.month == iterableDate.month) {
+          classTests.add(classTest);
+        }
+      }
       days.add(
         Day(
           dateTime: iterableDate,
-          active: currentDate.month == iterableDate.month,
+          isActive: currentDate.month == iterableDate.month,
           streakType: streakType,
+          classTest: classTests,
         ),
       );
       iterableDate = iterableDate.add(const Duration(days: 1));

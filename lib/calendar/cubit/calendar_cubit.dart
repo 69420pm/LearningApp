@@ -41,7 +41,12 @@ class CalendarCubit extends Cubit<CalendarState> {
     return await calendarRepository.getCalendarDayByDate(dateTime);
   }
 
-  // Future<List<ClassTest>> getClassTests(){
-  //   // return cardsRepository.getClassTests
-  // }
+  List<ClassTest> getClassTests() {
+    final classTests = <ClassTest>[];
+    final subjects = cardsRepository.getSubjects().value.values.toList();
+    for (final element in subjects) {
+      classTests.addAll(element.classTests);
+    }
+    return classTests;
+  }
 }

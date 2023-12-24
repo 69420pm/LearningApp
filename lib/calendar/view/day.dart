@@ -1,113 +1,147 @@
 import 'package:flutter/material.dart';
 import 'package:learning_app/calendar/view/calendar_widget.dart';
+import 'package:learning_app/calendar/view/day_bottom_sheet.dart';
+import 'package:learning_app/card_backend/cards_api/models/class_test.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_text.dart';
+import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.dart';
 
 class Day extends StatelessWidget {
   Day({
     super.key,
     required this.dateTime,
-    required this.active,
+    required this.isActive,
     required this.streakType,
+    required this.classTest,
   });
   DateTime dateTime;
-  bool active;
+  bool isActive;
   StreakType streakType;
+  List<ClassTest>? classTest;
 
   @override
   Widget build(BuildContext context) {
     final currentDate = DateTime.now();
-    bool today = dateTime.year == currentDate.year &&
+    bool isToday = dateTime.year == currentDate.year &&
         dateTime.month == currentDate.month &&
         dateTime.day == currentDate.day;
     // Size size = (context.findRenderObject() as RenderBox).size;
     // Size size = const Size(43, 43);
 
-    if (today) {
-      return LayoutBuilder(
-
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        UIBottomSheet.showUIBottomSheet(
+            context: context,
+            builder: (context) => DayBottomSheet(dateTime: dateTime, classTests: classTest,));
+      },
+      child: LayoutBuilder(
         builder: (context, constraints) {
-          return Stack(
-            children: [
-              Positioned(
-                top: constraints.maxHeight / 2 - 18,
-                left: constraints.maxWidth / 2 - 18,
-                child: Container(
-                  height: 36,
-                  width: 36,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(100),
-                    color: UIColors.primary,
-                  ),
-                ),
-              ),
-              Positioned(
-                top: constraints.maxHeight / 2 - 15,
-                left: constraints.maxWidth / 2 - 15,
-                child: Container(
-                  height: 30,
-                  width: 30,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const SizedBox(
-                        height: 7,
-                      ),
-                      Text(
-                        dateTime.day.toString(),
-                        style:
-                            UIText.normalBold.copyWith(color: UIColors.background),
-                      ),
-                      Container(
-                        height: 4,
-                        width: 4,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: UIColors.textDark,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
-      );
-    } else {
-      return LayoutBuilder(
-        builder: (context, constraints) {
-          return Stack(
-            children: [
-              Positioned(
-                top: constraints.maxHeight / 2 - 15,
-                left: constraints.maxWidth / 2 - 15,
-                child: SizedBox(
-                  height: 30,
-                  width: 30,
-                  child: Center(
-                    child: Text(
-                      dateTime.day.toString(),
-                      style: active
-                          ? UIText.normal
-                          : UIText.normal.copyWith(color: UIColors.smallText),
+          if (isToday) {
+            return Stack(
+              children: [
+                Positioned(
+                  top: constraints.maxHeight / 2 - 18,
+                  left: constraints.maxWidth / 2 - 18,
+                  child: Container(
+                    height: 36,
+                    width: 36,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100),
+                      color: UIColors.primary,
                     ),
                   ),
                 ),
-              ),
-              Positioned(
-                top: constraints.maxHeight / 2 - 15,
-                left: 0,
-                right: 0,
-                child: _StreakBorder(
-                  streakType: streakType,
+                Positioned(
+                  top: constraints.maxHeight / 2 - 15,
+                  left: constraints.maxWidth / 2 - 15,
+                  child: Container(
+                    height: 30,
+                    width: 30,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const SizedBox(
+                          height: 4,
+                        ),
+                        Text(
+                          dateTime.day.toString(),
+                          style: UIText.normalBold
+                              .copyWith(color: UIColors.background),
+                        ),
+                        Container(
+                          height: 4,
+                          width: 4,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                            color: UIColors.textDark,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ],
-          );
+              ],
+            );
+          } else {
+            bool isClassTest = classTest != null && classTest!.isNotEmpty;
+            var textColor = UIColors.textLight;
+            if (isActive && isClassTest) {
+              textColor = UIColors.textDark;
+            } else if (!isActive) {
+              if (isClassTest) {
+                textColor = UIColors.textDark;
+              } else {
+                textColor = UIColors.smallText;
+              }
+            }
+            return Stack(
+              children: [
+                Visibility(
+                  visible: isClassTest,
+                  child: Positioned(
+                    top: constraints.maxHeight / 2 - 11,
+                    left: constraints.maxWidth / 2 - 11,
+                    child: Container(
+                      height: 22,
+                      width: 22,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        color: isActive
+                            ? UIColors.primary
+                            : UIColors.primaryDisabled,
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: constraints.maxHeight / 2 - 15,
+                  left: constraints.maxWidth / 2 - 15,
+                  child: SizedBox(
+                    height: 30,
+                    width: 30,
+                    child: Center(
+                      child: Text(
+                        dateTime.day.toString(),
+                        style: UIText.normal.copyWith(color: textColor),
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: constraints.maxHeight / 2 - 15,
+                  left: 0,
+                  right: 0,
+                  child: _StreakBorder(
+                    streakType: streakType,
+                  ),
+                ),
+              ],
+            );
+          }
         },
-      );
-    }
+      ),
+    );
   }
 }
 

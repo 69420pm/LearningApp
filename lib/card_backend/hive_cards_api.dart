@@ -10,7 +10,6 @@ import 'dart:developer';
 
 import 'package:learning_app/card_backend/cards_api/cards_api.dart';
 import 'package:learning_app/card_backend/cards_api/models/card.dart';
-import 'package:learning_app/card_backend/cards_api/models/class_test.dart';
 import 'package:learning_app/card_backend/cards_api/models/file.dart';
 import 'package:learning_app/card_backend/cards_api/models/folder.dart';
 import 'package:learning_app/card_backend/cards_api/models/search_result.dart';
@@ -32,7 +31,6 @@ class HiveCardsApi extends CardsApi {
     this._cardBox,
     this._relationsBox,
     this._cardContentBox,
-    this._classTestBox
   ) {
     _init();
   }
@@ -42,7 +40,6 @@ class HiveCardsApi extends CardsApi {
   final Box<Card> _cardBox;
   final Box<List<String>> _relationsBox;
   final Box<List<dynamic>> _cardContentBox;
-  final Box<List<ClassTest>> _classTestBox;
 
   final Map<String, ValueNotifier<List<File>>> _notifiers = {};
   ValueListenable<Box<Subject>>? _subjectStreamController;
@@ -124,7 +121,6 @@ class HiveCardsApi extends CardsApi {
 
   @override
   Future<void> saveSubject(Subject subject) async {
-    await _classTestBox.put(subject.uid, subject.classTests);
     await _subjectBox.put(subject.uid, subject);
   }
 
