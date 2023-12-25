@@ -13,7 +13,8 @@ import 'package:learning_app/card_backend/cards_api/models/card.dart';
 import 'package:learning_app/card_backend/cards_api/models/file.dart';
 import 'package:learning_app/card_backend/cards_api/models/folder.dart';
 import 'package:learning_app/card_backend/cards_api/models/search_result.dart';
-import 'package:learning_app/card_backend/cards_api/models/subject.dart';import 'package:flutter/foundation.dart';
+import 'package:learning_app/card_backend/cards_api/models/subject.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:learning_app/editor/helper/data_class_helper.dart';
@@ -54,8 +55,7 @@ class HiveCardsApi extends CardsApi {
 
   @override
   List<Card> learnAllCards() {
-    // TODO: implement learnAllCards
-    throw UnimplementedError();
+    return _cardBox.values.toList();
   }
 
   @override
