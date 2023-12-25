@@ -1,4 +1,3 @@
-import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 
 class LearningCardBack extends StatelessWidget {

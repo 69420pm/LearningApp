@@ -32,7 +32,7 @@ class LearnCubit extends Cubit<LearnState> {
   }
 
   void learnAllCards() {
-    cardsToLearn = _cardsRepository.learnAllCards();
+    cardsToLearn = _cardsRepository.learnAllCards().map((e) => e.uid).toList();
 
     // cardsToLearn.sort(
     //   (a, b) => a.dateToReview.compareTo(b.dateToReview),
