@@ -10,7 +10,9 @@ import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
 import 'package:learning_app/ui_components/ui_text.dart';
-import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';class AudioTile extends StatefulWidget
+import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
+
+class AudioTile extends StatefulWidget
     implements EditorTile, ReadOnlyInteractable {
   AudioTile({super.key, required this.filePath, this.interactable = true});
 
@@ -181,7 +183,7 @@ class _AudioTileState extends State<AudioTile> with TickerProviderStateMixin {
                     .copyWith(color: UIColors.background, size: 28),
                 animateToWhite: true,
                 onPressed: () {
-                  if(!widget.interactable) return;
+                  if (!widget.interactable) return;
                   context.read<TextEditorBloc>().add(
                         TextEditorRemoveEditorTile(
                           tileToRemove: widget,

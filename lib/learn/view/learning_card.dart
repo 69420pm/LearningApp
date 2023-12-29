@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/card_backend/cards_api/models/card.dart';
+import 'package:learning_app/card_backend/cards_repository.dart';
+import 'package:learning_app/editor/models/read_only_interactable.dart';
 import 'package:learning_app/learn/cubit/learn_cubit.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
@@ -15,20 +17,18 @@ class LearningCard extends StatelessWidget {
     super.key,
     required this.cardUID,
     required this.indexOfCardStack,
+    required this.cardsRepository,
   });
   final String cardUID;
   final int indexOfCardStack;
+  final CardsRepository cardsRepository;
+
   @override
   Widget build(BuildContext context) {
-    final controller = ScrollController();
-    final heightOfCard = MediaQuery.of(context).size.height -
-        (Scaffold.of(context).appBarMaxHeight ?? 0);
-
-    final heightOfFrontEditorTiles = 220;
     bool isAtBottom = false;
     bool isAtTop = true;
 
-    var disableScrolling = false;
+    final controller = ScrollController();
     controller.addListener(() {
       if (controller.offset >= controller.position.maxScrollExtent) {
         isAtBottom = true;
@@ -39,44 +39,11 @@ class LearningCard extends StatelessWidget {
         isAtTop = false;
       }
     });
-    final frontWidgets = Container(
-      // color: Colors.blue,
-      height: heightOfCard,
-      width: double.infinity,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Animate(
-              adapter: ScrollAdapter(
-            controller,
-            end: 300,
-          )).custom(
-            builder: (_, value, __) => Container(
-                height: (value) *
-                    (heightOfCard - heightOfFrontEditorTiles)
-                        .clamp(0, double.infinity)),
-          ),
-          Container(
-            height: 100,
-            width: double.infinity,
-            color: Colors.red,
-            child: Center(
-              child: Text(
-                indexOfCardStack.toString(),
-                style: UIText.titleBig,
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Container(
-              height: 100,
-              color: Colors.red,
-              child: Center(child: Text("Front of Card"))),
-        ],
-      ),
-    );
+    final heightOfCard = MediaQuery.of(context).size.height -
+        (Scaffold.of(context).appBarMaxHeight ?? 0);
+    final heightOfFrontEditorTiles = 220;
+    final frontWidgets = cardsRepository.getCardContent(cardUID);
+
     final backWidgets = Container(
       // color: Colors.red,
       child: Column(
@@ -140,18 +107,36 @@ class LearningCard extends StatelessWidget {
                       state is ScrollToPreviousCardsState
                   ? NeverScrollableScrollPhysics()
                   : ClampingScrollPhysics(),
-              child: Column(
-                children: [
-                  frontWidgets,
-                  Divider(
-                    thickness: 2,
-                  ),
-                  backWidgets
-                      .animate(
-                        adapter: ScrollAdapter(controller, end: 200),
-                      )
-                      .fadeIn(curve: Curves.easeOutQuad)
-                ],
+              child: FutureBuilder(
+                future: frontWidgets,
+                initialData: [],
+                builder: (context, snapshot) {
+                  return Column(
+                    children: [
+                      ...snapshot.data!.map(
+                        (e) {
+                          if (e is ReadOnlyInteractable) {
+                            (e as ReadOnlyInteractable)..interactable = false;
+                            return e as Widget;
+                          } else {
+                            // bloc touch input, when not audio tile
+                            return Placeholder(
+                              fallbackHeight: 200,
+                            );
+                          }
+                        },
+                      ).toList(),
+                      Divider(
+                        thickness: 2,
+                      ),
+                      backWidgets
+                          .animate(
+                            adapter: ScrollAdapter(controller, end: 200),
+                          )
+                          .fadeIn(curve: Curves.easeOutQuad)
+                    ],
+                  );
+                },
               ),
             ),
           ),

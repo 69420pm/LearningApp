@@ -43,7 +43,10 @@ class LearningScreen extends StatelessWidget {
             scrollDirection: Axis.vertical,
             itemCount: cardsToLearn.length,
             itemBuilder: (context, index) => LearningCard(
-                cardUID: cardsToLearn[index], indexOfCardStack: index),
+              cardUID: cardsToLearn[index],
+              indexOfCardStack: index,
+              cardsRepository: cardsRepository,
+            ),
           );
         },
       ),
