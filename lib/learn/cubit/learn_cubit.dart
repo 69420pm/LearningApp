@@ -15,26 +15,73 @@ class LearnCubit extends Cubit<LearnCubitState> {
   List<RenderCard> _cardsToLearn = List.empty(growable: true);
   List<RenderCard> get cardsToLearn => _cardsToLearn;
 
-  int currendIndex = 0;
+  int currentIndex = 0;
 
-  updateCurrendIndex(int newIndex) {
-    currendIndex = newIndex;
-    emit(NewCardState());
+  void setHeight(int index, double height) {
+    if (height != _cardsToLearn[index].cardHeight) {
+      _cardsToLearn[index].cardHeight = height;
+      emit(UpdateHeightState());
+    }
   }
 
-  setFrontHeight(int index, double height) {
-    _cardsToLearn[index].heightFront = height;
+  double getOffsetOfCardByIndex(int index) {
+    final offset =
+        _cardsToLearn.sublist(0, index).map((e) => e.cardHeight).fold<double>(
+              0,
+              (previousValue, element) => previousValue + (element ?? 0),
+            );
+    return offset;
   }
 
-  setBackHeight(int index, double height) {
-    _cardsToLearn[index].heightBack = height;
+  void _updateCurrentIndex(int newIndex) {
+    if (currentIndex != newIndex) {
+      currentIndex = newIndex;
+      emit(NewCardState());
+    }
+  }
+
+  double? getOffsetToAnimate(double offset, double screenHeight) {
+    double height = 0;
+    for (var i = 0; i < _cardsToLearn.length; i++) {
+      if (_cardsToLearn[i].cardHeight == null) {
+        throw Exception("Height of $i Card not calculated. Try to restart");
+      } else {
+        height += _cardsToLearn[i].cardHeight!;
+      }
+      if (height >= offset) {
+        final border = ((height - offset) / screenHeight).clamp(0, 1);
+
+        if (border == 1) {
+          _updateCurrentIndex(i);
+          return null;
+        } else if (border < 0.5) {
+          _updateCurrentIndex(i + 1);
+
+          return height;
+        } else {
+          _updateCurrentIndex(i);
+          return height - screenHeight;
+        }
+      }
+    }
+    return null;
+  }
+
+  void startAnimation() {
+    emit(StartAnimationState());
+  }
+
+  void endAnimation() {
+    emit(FinishedAnimationState());
   }
 
   final CardsRepository _cardsRepository;
 
   void turnOverCard(int index) {
-    _cardsToLearn[index].turnedOver = true;
-    emit(CardTurnedState());
+    if (index == currentIndex) {
+      _cardsToLearn[index].turnedOver = true;
+      emit(CardTurnedState());
+    }
   }
 
   void learnAllCards() {

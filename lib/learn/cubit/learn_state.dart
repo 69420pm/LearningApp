@@ -7,6 +7,12 @@ class LoadingCardsState extends LearnCubitState {}
 
 class FinishedLoadingCardsState extends LearnCubitState {}
 
+class UpdateHeightState extends LearnCubitState {}
+
 class CardTurnedState extends LearnCubitState {}
 
 class NewCardState extends LearnCubitState {}
+
+class StartAnimationState extends LearnCubitState {}
+
+class FinishedAnimationState extends LearnCubitState {}

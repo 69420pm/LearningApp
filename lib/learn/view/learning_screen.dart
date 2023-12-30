@@ -11,17 +11,11 @@ import 'package:learning_app/learn/view/learning_card.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_text.dart';
 import 'package:learning_app/ui_components/widgets/ui_appbar.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-class LearningScreen extends StatefulWidget {
-  const LearningScreen({super.key, required this.cardsRepository});
+class LearningScreen extends StatelessWidget {
+  LearningScreen({super.key, required this.cardsRepository});
   final CardsRepository cardsRepository;
 
-  @override
-  State<LearningScreen> createState() => _LearningScreenState();
-}
-
-class _LearningScreenState extends State<LearningScreen> {
   final controller = ScrollController();
   List<RenderCard> cardsToLearn = List.empty(growable: true);
 
@@ -31,6 +25,12 @@ class _LearningScreenState extends State<LearningScreen> {
 
     return Scaffold(
       backgroundColor: UIColors.background,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          controller
+              .jumpTo(context.read<LearnCubit>().getOffsetOfCardByIndex(10));
+        },
+      ),
       appBar: UIAppBar(),
       body: SafeArea(
         child: LayoutBuilder(
@@ -42,10 +42,26 @@ class _LearningScreenState extends State<LearningScreen> {
                 cardsToLearn = context.read<LearnCubit>().cardsToLearn;
                 return NotificationListener<UserScrollNotification>(
                   onNotification: (notification) {
-                    var scrollRatio = 0;
+                    if (notification.direction == ScrollDirection.idle) {
+                      var offsetToAnimate =
+                          context.read<LearnCubit>().getOffsetToAnimate(
+                                controller.offset,
+                                constraints.maxHeight,
+                              );
 
-                    if (scrollRatio > 0.5) {
-                    } else {}
+                      if (offsetToAnimate != null) {
+                        context.read<LearnCubit>().startAnimation();
+                        controller
+                            .animateTo(
+                          offsetToAnimate,
+                          duration: Duration(milliseconds: 400),
+                          curve: Curves.easeOut,
+                        )
+                            .then((value) {
+                          context.read<LearnCubit>().endAnimation();
+                        });
+                      }
+                    }
                     return false;
                   },
                   child: CustomScrollView(
@@ -54,13 +70,10 @@ class _LearningScreenState extends State<LearningScreen> {
                       SliverList(
                         delegate: SliverChildBuilderDelegate(
                           childCount: cardsToLearn.length,
-                          (context, index) => Padding(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: LearningCard(
-                              card: cardsToLearn[index],
-                              index: index,
-                              screenHeight: constraints.maxHeight,
-                            ),
+                          (context, index) => LearningCard(
+                            card: cardsToLearn[index],
+                            index: index,
+                            screenHeight: constraints.maxHeight,
                           ),
                         ),
                       )

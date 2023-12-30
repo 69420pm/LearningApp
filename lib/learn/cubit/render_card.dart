@@ -5,8 +5,7 @@ class RenderCard extends Card {
   RenderCard({
     required Card card,
     this.turnedOver = false,
-    this.heightFront,
-    this.heightBack,
+    this.cardHeight,
     this.frontTiles,
     this.backTiles,
   }) : super(
@@ -20,8 +19,8 @@ class RenderCard extends Card {
         );
 
   bool turnedOver;
-  double? heightFront;
-  double? heightBack;
+  double? cardHeight;
+
   List<Widget>? frontTiles;
   List<Widget>? backTiles;
 }
