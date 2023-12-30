@@ -4,7 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
-import 'package:learning_app/ui_components/ui_text.dart';import 'package:learning_app/ui_components/ui_icons.dart';
+import 'package:learning_app/ui_components/ui_text.dart';
+import 'package:learning_app/ui_components/ui_icons.dart';
 import 'package:learning_app/ui_components/ui_text.dart';
 import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
 
@@ -30,6 +31,7 @@ class UIAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      scrolledUnderElevation: 0,
       leading: Padding(
         padding: const EdgeInsets.only(left: UIConstants.cardHorizontalPadding),
         child: leadingBackButton

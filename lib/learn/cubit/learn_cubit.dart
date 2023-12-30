@@ -1,38 +1,80 @@
+import 'dart:math';
+
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:learning_app/card_backend/cards_api/models/card.dart';
 import 'package:learning_app/card_backend/cards_repository.dart';
+import 'package:learning_app/learn/cubit/render_card.dart';
+import 'package:learning_app/ui_components/ui_text.dart';
 
 part 'learn_state.dart';
 
-class LearnCubit extends Cubit<LearnState> {
-  LearnCubit(this._cardsRepository) : super(FrontState());
+class LearnCubit extends Cubit<LearnCubitState> {
+  LearnCubit(this._cardsRepository) : super(NewCardState());
 
-  List<String> cardsToLearn = List.empty(growable: true);
-  //how many cards got turned
-  int progress = -1;
+  List<RenderCard> _cardsToLearn = List.empty(growable: true);
+  List<RenderCard> get cardsToLearn => _cardsToLearn;
+
+  int currendIndex = 0;
+
+  updateCurrendIndex(int newIndex) {
+    currendIndex = newIndex;
+    emit(NewCardState());
+  }
+
+  setFrontHeight(int index, double height) {
+    _cardsToLearn[index].heightFront = height;
+  }
+
+  setBackHeight(int index, double height) {
+    _cardsToLearn[index].heightBack = height;
+  }
+
   final CardsRepository _cardsRepository;
 
   void turnOverCard(int index) {
-    if (state is FrontState && index > progress) {
-      emit(BackState());
-      progress = index;
-    }
-  }
-
-  void scrollToNextCard() {
-    emit(ScrollToNextCardsState());
-  }
-
-  void scrollToPreviousCard() {
-    emit(ScrollToPreviousCardsState());
-  }
-
-  void newCard() {
-    emit(FrontState());
+    _cardsToLearn[index].turnedOver = true;
+    emit(CardTurnedState());
   }
 
   void learnAllCards() {
-    cardsToLearn = _cardsRepository.learnAllCards().map((e) => e.uid).toList();
+    _cardsToLearn = _cardsRepository
+        .learnAllCards()
+        .map(
+          (e) => RenderCard(
+            card: e,
+            frontTiles: List.generate(
+              Random().nextInt(4) + 1,
+              (index) => Placeholder(
+                fallbackHeight: 10 + 500 * Random().nextDouble(),
+                color: Colors.red,
+                child: Center(
+                  child: Text(
+                    "Editor Tile on Front",
+                    style: UIText.titleBig,
+                  ),
+                ),
+              ),
+            ),
+            backTiles: List.generate(
+              Random().nextInt(4) + 1,
+              (index) => Placeholder(
+                color: Colors.blue,
+                fallbackHeight: 10 + 500 * Random().nextDouble(),
+                child: Center(
+                  child: Text(
+                    "Editor Tile on Back",
+                    style: UIText.titleBig,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        )
+        .toList()
+      ..sort(
+        (a, b) => b.dateCreated.compareTo(a.dateCreated),
+      );
 
     // cardsToLearn.sort(
     //   (a, b) => a.dateToReview.compareTo(b.dateToReview),

@@ -5,7 +5,7 @@ import 'package:learning_app/card_backend/cards_api/models/file.dart';
 
 part 'card.g.dart';
 
-@HiveType(typeId:4)
+@HiveType(typeId: 4)
 class Card extends File implements Equatable {
   /// unique never changing id
   @HiveField(0)

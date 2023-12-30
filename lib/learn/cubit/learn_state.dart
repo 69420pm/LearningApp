@@ -1,12 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'learn_cubit.dart';
 
-abstract class LearnState {}
+abstract class LearnCubitState {}
 
-class ScrollToNextCardsState extends LearnState {}
+class LoadingCardsState extends LearnCubitState {}
 
-class ScrollToPreviousCardsState extends LearnState {}
+class FinishedLoadingCardsState extends LearnCubitState {}
 
-class FrontState extends LearnState {}
+class CardTurnedState extends LearnCubitState {}
 
-class BackState extends LearnState {}
+class NewCardState extends LearnCubitState {}
