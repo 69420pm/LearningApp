@@ -16,6 +16,7 @@ class LearnCubit extends Cubit<LearnCubitState> {
   List<RenderCard> get cardsToLearn => _cardsToLearn;
 
   int currentIndex = 0;
+  double screenHeight = 0;
 
   void setHeight(int index, double height) {
     if (height != _cardsToLearn[index].cardHeight) {

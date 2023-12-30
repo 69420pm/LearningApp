@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,6 +40,7 @@ class LearningScreen extends StatelessWidget {
               buildWhen: (previous, current) =>
                   current is FinishedLoadingCardsState,
               builder: (context, state) {
+                var lastPixel = 0.0;
                 cardsToLearn = context.read<LearnCubit>().cardsToLearn;
                 return NotificationListener<UserScrollNotification>(
                   onNotification: (notification) {
@@ -49,12 +51,14 @@ class LearningScreen extends StatelessWidget {
                                 constraints.maxHeight,
                               );
 
-                      if (offsetToAnimate != null) {
+                      if (offsetToAnimate != null &&
+                          controller.position.activity is IdleScrollActivity) {
                         context.read<LearnCubit>().startAnimation();
+
                         controller
                             .animateTo(
                           offsetToAnimate,
-                          duration: Duration(milliseconds: 400),
+                          duration: const Duration(milliseconds: 300),
                           curve: Curves.easeOut,
                         )
                             .then((value) {

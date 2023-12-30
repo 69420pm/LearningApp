@@ -28,7 +28,7 @@ class LearningCard extends StatelessWidget {
       ),
       child: BlocBuilder<LearnCubit, LearnCubitState>(
         builder: (context, state) {
-          // Save to avoid unsave Warnings
+          // Save to avoid unsafe Warnings
           final learnCubit = context.read<LearnCubit>();
 
           SchedulerBinding.instance.addPostFrameCallback((duration) {
@@ -43,6 +43,7 @@ class LearningCard extends StatelessWidget {
           });
 
           return GestureDetector(
+            behavior: HitTestBehavior.opaque,
             onTap: () => context.read<LearnCubit>().turnOverCard(index),
             child: DecoratedBox(
               decoration: BoxDecoration(
