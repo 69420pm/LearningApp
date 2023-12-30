@@ -4,6 +4,8 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:learning_app/card_backend/cards_api/models/card.dart';
 import 'package:learning_app/card_backend/cards_repository.dart';
+import 'package:learning_app/editor/models/editor_tile.dart';
+import 'package:learning_app/editor/widgets/editor_tiles/front_back_seperator_tile.dart';
 import 'package:learning_app/learn/cubit/render_card.dart';
 import 'package:learning_app/ui_components/ui_text.dart';
 
@@ -25,12 +27,23 @@ class LearnCubit extends Cubit<LearnCubitState> {
     }
   }
 
-  double getOffsetOfCardByIndex(int index) {
-    final offset =
-        _cardsToLearn.sublist(0, index).map((e) => e.cardHeight).fold<double>(
+  double getBottomLimit(
+      double screenHeight, double currentOffset, bool startScroll) {
+    var offset = _cardsToLearn
+            .sublist(0, currentIndex + 1)
+            .map((e) => e.cardHeight)
+            .fold<double>(
               0,
               (previousValue, element) => previousValue + (element ?? 0),
-            );
+            ) -
+        screenHeight;
+    if (_cardsToLearn[currentIndex].turnedOver &&
+        currentOffset - offset == 0 &&
+        startScroll) {
+      print("moin");
+      offset += screenHeight;
+    }
+
     return offset;
   }
 
@@ -39,6 +52,10 @@ class LearnCubit extends Cubit<LearnCubitState> {
       currentIndex = newIndex;
       emit(NewCardState());
     }
+  }
+
+  void stopScrolling() {
+    emit(StopScrollingState());
   }
 
   double? getOffsetToAnimate(double offset, double screenHeight) {
@@ -85,48 +102,30 @@ class LearnCubit extends Cubit<LearnCubitState> {
     }
   }
 
-  void learnAllCards() {
+  void learnAllCards() async {
+    print("lololo1");
     _cardsToLearn = _cardsRepository
         .learnAllCards()
-        .map(
-          (e) => RenderCard(
-            card: e,
-            frontTiles: List.generate(
-              Random().nextInt(4) + 1,
-              (index) => Placeholder(
-                fallbackHeight: 10 + 500 * Random().nextDouble(),
-                color: Colors.red,
-                child: Center(
-                  child: Text(
-                    "Editor Tile on Front",
-                    style: UIText.titleBig,
-                  ),
-                ),
-              ),
-            ),
-            backTiles: List.generate(
-              Random().nextInt(4) + 1,
-              (index) => Placeholder(
-                color: Colors.blue,
-                fallbackHeight: 10 + 500 * Random().nextDouble(),
-                child: Center(
-                  child: Text(
-                    "Editor Tile on Back",
-                    style: UIText.titleBig,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        )
+        .map((e) => RenderCard(card: e))
         .toList()
       ..sort(
         (a, b) => b.dateCreated.compareTo(a.dateCreated),
       );
+    ;
 
-    // cardsToLearn.sort(
-    //   (a, b) => a.dateToReview.compareTo(b.dateToReview),
-    // );
+    for (var i = 0; i < cardsToLearn.length; i++) {
+      final tiles = await _cardsRepository.getCardContent(cardsToLearn[i].uid);
+      var indexSpacer =
+          tiles.indexWhere((element) => element is FrontBackSeparatorTile);
+      if (indexSpacer == -1) {
+        indexSpacer = tiles.length;
+      }
+
+      cardsToLearn[i].frontTiles = tiles.sublist(0, indexSpacer);
+      cardsToLearn[i].backTiles = tiles.sublist(indexSpacer, tiles.length);
+    }
+
+    emit(FinishedLoadingCardsState());
   }
 
   // void newCard(LearnFeedback feedbackLastCard, String cardUID) {

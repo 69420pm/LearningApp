@@ -1,8 +1,12 @@
+// ignore_for_file: require_trailing_commas
+
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Card;
+import 'package:flutter/physics.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/card_backend/cards_repository.dart';
@@ -26,62 +30,82 @@ class LearningScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: UIColors.background,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          controller
-              .jumpTo(context.read<LearnCubit>().getOffsetOfCardByIndex(10));
-        },
-      ),
       appBar: UIAppBar(),
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
+            final screenHeight = constraints.maxHeight;
             return BlocBuilder<LearnCubit, LearnCubitState>(
-              buildWhen: (previous, current) =>
-                  current is FinishedLoadingCardsState,
+              // buildWhen: (previous, current) =>
+
               builder: (context, state) {
-                var lastPixel = 0.0;
                 cardsToLearn = context.read<LearnCubit>().cardsToLearn;
-                return NotificationListener<UserScrollNotification>(
-                  onNotification: (notification) {
-                    if (notification.direction == ScrollDirection.idle) {
-                      var offsetToAnimate =
-                          context.read<LearnCubit>().getOffsetToAnimate(
-                                controller.offset,
-                                constraints.maxHeight,
-                              );
+                return NotificationListener<ScrollNotification>(
+                  // onNotification: (notification) {
+                  //   if (notification is! ScrollEndNotification) {
+                  //     var bottomLimit = context
+                  //         .read<LearnCubit>()
+                  //         .getBottomLimit(screenHeight, controller.offset,
+                  //             notification is ScrollStartNotification);
 
-                      if (offsetToAnimate != null &&
-                          controller.position.activity is IdleScrollActivity) {
-                        context.read<LearnCubit>().startAnimation();
+                  //     if (notification.metrics.pixels > bottomLimit &&
+                  //         state is! StopScrollingState) {
+                  //       context.read<LearnCubit>().stopScrolling();
+                  //       controller
+                  //           .animateTo(bottomLimit,
+                  //               duration: Duration(milliseconds: 300),
+                  //               curve: Curves.easeInOut)
+                  //           .then((value) =>
+                  //               context.read<LearnCubit>().endAnimation());
+                  //     }
+                  //   }
+                  //   return false;
+                  // },
+                  child: NotificationListener<UserScrollNotification>(
+                    onNotification: (notification) {
+                      if (notification.direction == ScrollDirection.idle) {
+                        var offsetToAnimate =
+                            context.read<LearnCubit>().getOffsetToAnimate(
+                                  controller.offset,
+                                  screenHeight,
+                                );
 
-                        controller
-                            .animateTo(
-                          offsetToAnimate,
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeOut,
-                        )
-                            .then((value) {
-                          context.read<LearnCubit>().endAnimation();
-                        });
+                        if (offsetToAnimate != null &&
+                            controller.position.activity
+                                is IdleScrollActivity &&
+                            state is! StopScrollingState &&
+                            state is! StartAnimationState) {
+                          context.read<LearnCubit>().startAnimation();
+
+                          controller
+                              .animateTo(
+                            offsetToAnimate,
+                            duration: const Duration(milliseconds: 200),
+                            curve: Curves.easeInOut,
+                          )
+                              .then((value) {
+                            context.read<LearnCubit>().endAnimation();
+                          });
+                        }
                       }
-                    }
-                    return false;
-                  },
-                  child: CustomScrollView(
-                    controller: controller,
-                    slivers: [
-                      SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          childCount: cardsToLearn.length,
-                          (context, index) => LearningCard(
-                            card: cardsToLearn[index],
-                            index: index,
-                            screenHeight: constraints.maxHeight,
+                      return false;
+                    },
+                    child: CustomScrollView(
+                      controller: controller,
+                      slivers: [
+                        SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            childCount: cardsToLearn.length,
+                            (context, index) => LearningCard(
+                              cardsRepository: cardsRepository,
+                              card: cardsToLearn[index],
+                              index: index,
+                              screenHeight: screenHeight,
+                            ),
                           ),
-                        ),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                 );
               },

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart' hide Card;
 import 'package:learning_app/card_backend/cards_api/models/card.dart';
+import 'package:learning_app/card_backend/cards_repository.dart';
+import 'package:learning_app/editor/models/editor_tile.dart';
 
 class RenderCard extends Card {
   RenderCard({
@@ -20,7 +22,6 @@ class RenderCard extends Card {
 
   bool turnedOver;
   double? cardHeight;
-
-  List<Widget>? frontTiles;
-  List<Widget>? backTiles;
+  List<EditorTile>? frontTiles;
+  List<EditorTile>? backTiles;
 }
