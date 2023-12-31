@@ -111,18 +111,10 @@ class LearnCubit extends Cubit<LearnCubitState> {
       ..sort(
         (a, b) => b.dateCreated.compareTo(a.dateCreated),
       );
-    ;
 
     for (var i = 0; i < cardsToLearn.length; i++) {
-      final tiles = await _cardsRepository.getCardContent(cardsToLearn[i].uid);
-      var indexSpacer =
-          tiles.indexWhere((element) => element is FrontBackSeparatorTile);
-      if (indexSpacer == -1) {
-        indexSpacer = tiles.length;
-      }
-
-      cardsToLearn[i].frontTiles = tiles.sublist(0, indexSpacer);
-      cardsToLearn[i].backTiles = tiles.sublist(indexSpacer, tiles.length);
+      cardsToLearn[i].editorTiles =
+          await _cardsRepository.getCardContent(cardsToLearn[i].uid);
     }
 
     emit(FinishedLoadingCardsState());

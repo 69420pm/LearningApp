@@ -105,6 +105,11 @@ class _AudioTileState extends State<AudioTile> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    if (!widget.interactable) {
+      return const Placeholder(
+        child: Text("Audiotile"),
+      );
+    }
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: UIConstants.pageHorizontalPadding,
@@ -183,7 +188,6 @@ class _AudioTileState extends State<AudioTile> with TickerProviderStateMixin {
                     .copyWith(color: UIColors.background, size: 28),
                 animateToWhite: true,
                 onPressed: () {
-                  if (!widget.interactable) return;
                   context.read<TextEditorBloc>().add(
                         TextEditorRemoveEditorTile(
                           tileToRemove: widget,

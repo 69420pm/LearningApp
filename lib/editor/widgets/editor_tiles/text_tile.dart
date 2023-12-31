@@ -95,16 +95,15 @@ class TextTile extends StatelessWidget
     }
     isInit = false;
     if (!interactable) {
-      String text = "";
-      charTiles!.values.forEach(
-        (element) {
-          text += element.text;
-        },
-      );
-      print(text);
-      return Text(
-        text,
-        style: textStyle,
+      return RichText(
+        text: TextSpan(
+          style: textStyle,
+          children: charTiles!.values
+              .map(
+                (e) => TextSpan(text: e.text, style: e.style),
+              )
+              .toList(),
+        ),
       );
     } else {
       return BlocBuilder<TextEditorBloc, TextEditorState>(

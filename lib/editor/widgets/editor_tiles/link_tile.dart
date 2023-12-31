@@ -25,6 +25,11 @@ class LinkTile extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
+    if (!interactable) {
+      return const Placeholder(
+        child: Text("Linktile"),
+      );
+    }
     final card =
         context.read<TextEditorBloc>().cardsRepository.getCardById(cardId);
     return Align(
@@ -74,7 +79,6 @@ class LinkTile extends StatelessWidget
                         .copyWith(color: UIColors.background, size: 28),
                     animateToWhite: true,
                     onPressed: () {
-                      if (!interactable) return;
                       context.read<TextEditorBloc>().add(
                             TextEditorRemoveEditorTile(
                               tileToRemove: this,

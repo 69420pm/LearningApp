@@ -62,17 +62,12 @@ class LearningCard extends StatelessWidget {
                     Radius.circular(UIConstants.cornerRadius),
                   ),
                 ),
-                child: BlocProvider(
-                  create: (context) => TextEditorBloc(
-                      cardsRepository, (_) {}, card.frontTiles ?? [], null),
-                  child: Column(
-                    children: [
-                      Text(card.name),
-                      ...(card.frontTiles ?? []).map((e) => e as Widget),
-                      if (card.turnedOver)
-                        ...(card.backTiles ?? []).map((e) => e as Widget)
-                    ],
-                  ),
+                child: Column(
+                  children: [
+                    Text(card.name),
+                    ...card.frontWidgets,
+                    if (card.turnedOver) ...card.backWidgets,
+                  ],
                 ),
               ),
             );
