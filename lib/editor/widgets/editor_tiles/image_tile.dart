@@ -87,7 +87,14 @@ class _ImageTileState extends State<ImageTile> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        if (widget.inRenderMode) return;
+        if (widget.inRenderMode) {
+          showDialog(
+            context: context,
+            builder: (_) => ImageFullScreen(image: widget.image),
+            barrierDismissible: true,
+          );
+          return;
+        }
         setState(() {
           selected = !selected;
         });
@@ -97,11 +104,13 @@ class _ImageTileState extends State<ImageTile> {
         // print(selected);
       },
       onDoubleTap: () {
-        showDialog(
-          context: context,
-          builder: (_) => ImageFullScreen(image: widget.image),
-          barrierDismissible: true,
-        );
+        if (!widget.inRenderMode) {
+          showDialog(
+            context: context,
+            builder: (_) => ImageFullScreen(image: widget.image),
+            barrierDismissible: true,
+          );
+        }
       },
       child: Stack(
         children: [

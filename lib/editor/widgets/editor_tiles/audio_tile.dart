@@ -108,11 +108,6 @@ class _AudioTileState extends State<AudioTile> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.inRenderMode) {
-      return const Placeholder(
-        child: Text("Audiotile"),
-      );
-    }
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: UIConstants.pageHorizontalPadding,
@@ -186,19 +181,20 @@ class _AudioTileState extends State<AudioTile> with TickerProviderStateMixin {
                   ),
                 ),
               ),
-              UIIconButton(
-                icon: UIIcons.cancel
-                    .copyWith(color: UIColors.background, size: 28),
-                animateToWhite: true,
-                onPressed: () {
-                  context.read<TextEditorBloc>().add(
-                        TextEditorRemoveEditorTile(
-                          tileToRemove: widget,
-                          context: context,
-                        ),
-                      );
-                },
-              ),
+              if (!widget.inRenderMode)
+                UIIconButton(
+                  icon: UIIcons.cancel
+                      .copyWith(color: UIColors.background, size: 28),
+                  animateToWhite: true,
+                  onPressed: () {
+                    context.read<TextEditorBloc>().add(
+                          TextEditorRemoveEditorTile(
+                            tileToRemove: widget,
+                            context: context,
+                          ),
+                        );
+                  },
+                ),
             ],
           ),
         ),

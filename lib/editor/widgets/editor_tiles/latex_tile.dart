@@ -93,7 +93,9 @@ class _LatexTileState extends State<LatexTile> {
           vertical: UIConstants.itemPadding),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: showLatexBottomSheet,
+        onTap: () {
+          if (!widget.inRenderMode) showLatexBottomSheet();
+        },
         child: Math.tex(
           widget.latexText,
           textStyle: TextStyle(
