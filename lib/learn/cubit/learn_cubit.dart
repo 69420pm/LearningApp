@@ -103,10 +103,9 @@ class LearnCubit extends Cubit<LearnCubitState> {
   }
 
   void learnAllCards() async {
-    print("lololo1");
     _cardsToLearn = _cardsRepository
         .learnAllCards()
-        .map((e) => RenderCard(card: e))
+        .map((e) => RenderCard(card: e, cardsRepository: _cardsRepository))
         .toList()
       ..sort(
         (a, b) => b.dateCreated.compareTo(a.dateCreated),

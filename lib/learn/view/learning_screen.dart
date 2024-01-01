@@ -1,20 +1,11 @@
-// ignore_for_file: require_trailing_commas
-
-import 'dart:async';
-import 'dart:math';
-
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Card;
-import 'package:flutter/physics.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/card_backend/cards_repository.dart';
 import 'package:learning_app/learn/cubit/learn_cubit.dart';
 import 'package:learning_app/learn/cubit/render_card.dart';
-import 'package:learning_app/learn/view/learning_card.dart';
+import 'package:learning_app/learn/view/learning_card_page.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
-import 'package:learning_app/ui_components/ui_text.dart';
 import 'package:learning_app/ui_components/widgets/ui_appbar.dart';
 
 class LearningScreen extends StatelessWidget {
@@ -36,8 +27,8 @@ class LearningScreen extends StatelessWidget {
           builder: (context, constraints) {
             final screenHeight = constraints.maxHeight;
             return BlocBuilder<LearnCubit, LearnCubitState>(
-              // buildWhen: (previous, current) =>
-
+              buildWhen: (previous, current) =>
+                  current is FinishedLoadingCardsState,
               builder: (context, state) {
                 cardsToLearn = context.read<LearnCubit>().cardsToLearn;
                 return NotificationListener<ScrollNotification>(
@@ -96,7 +87,7 @@ class LearningScreen extends StatelessWidget {
                         SliverList(
                           delegate: SliverChildBuilderDelegate(
                             childCount: cardsToLearn.length,
-                            (context, index) => LearningCard(
+                            (context, index) => LearningCardPage(
                               cardsRepository: cardsRepository,
                               card: cardsToLearn[index],
                               index: index,

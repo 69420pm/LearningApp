@@ -7,7 +7,7 @@ import 'package:learning_app/editor/models/char_tile.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
-import 'package:learning_app/ui_components/ui_text.dart';// https://medium.com/dartlang/dart-string-manipulation-done-right-5abd0668ba3e
+import 'package:learning_app/ui_components/ui_text.dart'; // https://medium.com/dartlang/dart-string-manipulation-done-right-5abd0668ba3e
 
 class TextFieldController extends TextEditingController {
   TextFieldController({
@@ -250,21 +250,25 @@ class TextFieldController extends TextEditingController {
       hyperLinks.add(HyperLinkEntry(start: match.start, end: match.end - 1));
     }
     charTiles.forEach((key, value) {
-      children.add(
-        HyperLinkEntry.checkHyperLink(key, hyperLinks) != null
-            ? TextSpan(
-                text: value.text,
-                style: value.style.copyWith(
-                  color: UIColors.focused,
-                  decoration: TextDecoration.underline,
-                  decorationColor: UIColors.focused,
-                ),
-              )
-            : TextSpan(
-                text: value.text,
-                style: value.style,
-              ),
-      );
+      if (HyperLinkEntry.checkHyperLink(key, hyperLinks) != null) {
+        children.add(
+          TextSpan(
+            text: value.text,
+            style: value.style.copyWith(
+              color: UIColors.focused,
+              decoration: TextDecoration.underline,
+              decorationColor: UIColors.focused,
+            ),
+          ),
+        );
+      } else {
+        children.add(
+          TextSpan(
+            text: value.text,
+            style: value.style,
+          ),
+        );
+      }
     });
     // change state of bold, italic, underlined and colors
     if (text == _previousText) {

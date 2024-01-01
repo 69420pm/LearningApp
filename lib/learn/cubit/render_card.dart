@@ -4,11 +4,13 @@ import 'package:learning_app/card_backend/cards_repository.dart';
 import 'package:learning_app/editor/models/editor_tile.dart';
 import 'package:learning_app/editor/widgets/editor_tiles/front_back_seperator_tile.dart';
 import 'package:learning_app/editor/widgets/editor_tiles/header_tile.dart';
+import 'package:learning_app/editor/widgets/editor_tiles/link_tile.dart';
 import 'package:learning_app/editor/widgets/editor_tiles/text_tile.dart';
 
 class RenderCard extends Card {
   RenderCard({
     required Card card,
+    required this.cardsRepository,
     this.turnedOver = false,
     this.cardHeight,
   }) : super(
@@ -23,6 +25,8 @@ class RenderCard extends Card {
 
   bool turnedOver;
   double? cardHeight;
+
+  final CardsRepository cardsRepository;
 
   List<Widget> _frontWidgets = [];
   List<Widget> get frontWidgets => _frontWidgets;
@@ -39,6 +43,9 @@ class RenderCard extends Card {
     }
 
     final widgets = editorTiles.map((e) {
+      if (e is LinkTile) {
+        e.cardsRepository = cardsRepository;
+      }
       e.inRenderMode = true;
       return e as Widget;
     }).toList();

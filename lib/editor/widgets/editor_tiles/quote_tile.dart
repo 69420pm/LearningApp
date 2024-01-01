@@ -1,14 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:learning_app/editor/models/char_tile.dart';
 import 'package:learning_app/editor/models/editor_tile.dart';
 import 'package:learning_app/editor/models/text_field_constants.dart';
-import 'package:learning_app/editor/models/text_field_controller.dart';
 import 'package:learning_app/editor/widgets/editor_tiles/text_tile.dart';
-
-import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
-import 'package:learning_app/ui_components/ui_icons.dart';
-import 'package:learning_app/ui_components/ui_text.dart';
 
 class QuoteTile extends TextTile implements EditorTile {
   QuoteTile({

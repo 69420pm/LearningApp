@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/card_backend/cards_repository.dart';
 import 'package:learning_app/editor/bloc/text_editor_bloc.dart';
 import 'package:learning_app/editor/card_preview_bottom_sheet.dart';
 import 'package:learning_app/editor/models/editor_tile.dart';
@@ -12,8 +13,17 @@ import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.
 import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
 
 class LinkTile extends StatelessWidget implements EditorTile {
-  LinkTile({super.key, required this.cardId, this.inRenderMode = false});
+  LinkTile({
+    super.key,
+    required this.cardId,
+    this.inRenderMode = false,
+    this.cardsRepository,
+  });
+
   String cardId;
+
+  ///used if inRenderMode to avoid TextEditorBloc
+  CardsRepository? cardsRepository;
 
   @override
   FocusNode? focusNode;
@@ -26,13 +36,9 @@ class LinkTile extends StatelessWidget implements EditorTile {
 
   @override
   Widget build(BuildContext context) {
-    if (inRenderMode) {
-      return const Placeholder(
-        child: Text("Linktile"),
-      );
-    }
-    final card =
-        context.read<TextEditorBloc>().cardsRepository.getCardById(cardId);
+    final card = inRenderMode
+        ? cardsRepository!.getCardById(cardId)
+        : context.read<TextEditorBloc>().cardsRepository.getCardById(cardId);
     return Align(
       alignment: Alignment.centerLeft,
       child: GestureDetector(
@@ -42,7 +48,9 @@ class LinkTile extends StatelessWidget implements EditorTile {
             builder: (_) {
               return CardPreviewBottomSheet(
                 card: card,
-                cardsRepository: context.read<TextEditorBloc>().cardsRepository,
+                cardsRepository: inRenderMode
+                    ? cardsRepository!
+                    : context.read<TextEditorBloc>().cardsRepository,
               );
             },
           );
@@ -75,19 +83,20 @@ class LinkTile extends StatelessWidget implements EditorTile {
                     overflow: TextOverflow.ellipsis,
                     style: UIText.label.copyWith(color: UIColors.smallText),
                   ),
-                  UIIconButton(
-                    icon: UIIcons.cancel
-                        .copyWith(color: UIColors.background, size: 28),
-                    animateToWhite: true,
-                    onPressed: () {
-                      context.read<TextEditorBloc>().add(
-                            TextEditorRemoveEditorTile(
-                              tileToRemove: this,
-                              context: context,
-                            ),
-                          );
-                    },
-                  ),
+                  if (!inRenderMode)
+                    UIIconButton(
+                      icon: UIIcons.cancel
+                          .copyWith(color: UIColors.background, size: 28),
+                      animateToWhite: true,
+                      onPressed: () {
+                        context.read<TextEditorBloc>().add(
+                              TextEditorRemoveEditorTile(
+                                tileToRemove: this,
+                                context: context,
+                              ),
+                            );
+                      },
+                    ),
                 ],
               ),
             ),

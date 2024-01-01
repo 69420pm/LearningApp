@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart' hide Card;
 import 'package:learning_app/card_backend/cards_api/models/card.dart';
 import 'package:learning_app/card_backend/cards_repository.dart';
-import 'package:learning_app/editor/card_content_widget.dart';
+import 'package:learning_app/learn/cubit/render_card.dart';
+import 'package:learning_app/learn/view/learning_card.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
 import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.dart';
 import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
@@ -18,7 +19,6 @@ class CardPreviewBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final maxHeight = MediaQuery.of(context).size.height * 0.7;
     return UIBottomSheet(
       addPadding: false,
       actionRight: UIIconButton(
@@ -34,16 +34,12 @@ class CardPreviewBottomSheet extends StatelessWidget {
         future: _cardsRepository.getCardContent(card.uid),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return ConstrainedBox(
-              constraints: BoxConstraints(maxHeight: maxHeight),
-              child: Column(
-                children: [
-                  CardContentWidget(
-                    editorTiles: snapshot.data!,
-                    cardsRepository: _cardsRepository,
-                  ),
-                ],
-              ),
+            return LearningCard(
+              card: RenderCard(
+                  card: card,
+                  turnedOver: true,
+                  cardsRepository: _cardsRepository)
+                ..editorTiles = snapshot.requireData,
             );
           }
           return const Text("loading");

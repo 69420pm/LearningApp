@@ -6,9 +6,9 @@ import 'package:learning_app/editor/models/char_tile.dart';
 import 'package:learning_app/editor/models/editor_tile.dart';
 import 'package:learning_app/editor/models/text_field_constants.dart';
 import 'package:learning_app/editor/models/text_field_controller.dart';
-
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
+import 'package:learning_app/ui_components/ui_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class TextTile extends StatelessWidget implements EditorTile {
@@ -96,7 +96,21 @@ class TextTile extends StatelessWidget implements EditorTile {
           style: textStyle,
           children: charTiles!.values
               .map(
-                (e) => TextSpan(text: e.text, style: e.style),
+                (e) => TextSpan(
+                  text: e.text,
+                  style: e.isHyperlink
+                      ? e.style.copyWith(
+                          color: UIColors.focused,
+                          decoration: TextDecoration.underline,
+                          decorationColor: UIColors.focused,
+                        )
+                      : e.style.copyWith(
+                          fontWeight: e.isBold ? FontWeight.bold : null,
+                          decoration:
+                              e.isUnderlined ? TextDecoration.underline : null,
+                          fontStyle: e.isItalic ? FontStyle.italic : null,
+                        ),
+                ),
               )
               .toList(),
         ),

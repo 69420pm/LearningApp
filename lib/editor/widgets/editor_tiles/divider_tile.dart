@@ -28,13 +28,15 @@ class DividerTile extends StatelessWidget implements EditorTile {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        UIBottomSheet.showUIBottomSheet(
-          context: context,
-          builder: (_) => BlocProvider.value(
-            value: context.read<TextEditorBloc>(),
-            child: DividerBottomSheet(parentTile: this),
-          ),
-        );
+        if (!inRenderMode) {
+          UIBottomSheet.showUIBottomSheet(
+            context: context,
+            builder: (_) => BlocProvider.value(
+              value: context.read<TextEditorBloc>(),
+              child: DividerBottomSheet(parentTile: this),
+            ),
+          );
+        }
       },
       child: const Padding(
         padding:
