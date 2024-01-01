@@ -68,7 +68,7 @@ class _ImageTileState extends State<ImageTile> {
 
   @override
   void initState() {
-    FocusManager.instance.addListener(focusChanged);
+    if (!widget.inRenderMode) FocusManager.instance.addListener(focusChanged);
     super.initState();
   }
 
@@ -112,158 +112,155 @@ class _ImageTileState extends State<ImageTile> {
           );
         }
       },
-      child: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
-                vertical: UIConstants.itemPadding / 2),
-            child: Container(
-              alignment: widget.alignment,
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final maxWidth = constraints.maxWidth -
-                      (2 * UIConstants.pageHorizontalPadding);
-                  return Stack(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          left: UIConstants.pageHorizontalPadding,
-                          right: UIConstants.pageHorizontalPadding,
-                          bottom: 17,
+      child: Padding(
+        padding:
+            const EdgeInsets.symmetric(vertical: UIConstants.itemPadding / 2),
+        child: Container(
+          alignment: widget.alignment,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final maxWidth = constraints.maxWidth -
+                  (2 * UIConstants.pageHorizontalPadding);
+              return Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: UIConstants.pageHorizontalPadding,
+                      right: UIConstants.pageHorizontalPadding,
+                      bottom: 17,
+                    ),
+                    child: SizedBox(
+                      width: maxWidth * widget.scale,
+                      child: DecoratedBox(
+                        decoration: const BoxDecoration(
+                          color: UIColors.focused,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(
+                              UIConstants.cornerRadiusSmall,
+                            ),
+                          ),
                         ),
-                        child: SizedBox(
-                          width: maxWidth * widget.scale,
-                          child: DecoratedBox(
-                            decoration: const BoxDecoration(
-                              color: UIColors.focused,
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(
-                                  UIConstants.cornerRadiusSmall,
-                                ),
+                        child: Padding(
+                          padding: EdgeInsets.all(selected ? 4 : 0),
+                          child: ClipRRect(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(
+                                UIConstants.cornerRadiusSmall - 6,
                               ),
                             ),
-                            child: Padding(
-                              padding: EdgeInsets.all(selected ? 4 : 0),
-                              child: ClipRRect(
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(
-                                    UIConstants.cornerRadiusSmall - 6,
-                                  ),
-                                ),
-                                child: Image.file(
-                                  widget.image,
-                                ),
-                              ),
+                            child: Image.file(
+                              widget.image,
                             ),
                           ),
                         ),
                       ),
-                      // three dot menu
-                      Visibility(
-                        visible: selected,
-                        child: Positioned(
-                          top: 6,
-                          right: UIConstants.pageHorizontalPadding + 6,
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                right: 6,
-                                top: 6,
-                                child: Container(
-                                  height: 32,
-                                  width: 32,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(
-                                      UIConstants.cornerRadius,
-                                    ),
-                                    color: UIColors.smallTextLight,
-                                  ),
-                                ),
-                              ),
-                              UIIconButton(
-                                icon: UIIcons.moreHoriz
-                                    .copyWith(color: UIColors.smallTextDark),
-                                onPressed: () =>
-                                    UIBottomSheet.showUIBottomSheet(
-                                  context: context,
-                                  builder: (context) => BlocProvider.value(
-                                    value: this.context.read<TextEditorBloc>(),
-                                    child: ImageBottomSheet(
-                                      parentEditorTile: widget,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      // drag handle
-                      Visibility(
-                        visible: selected,
-                        child: Positioned(
-                          bottom: 0,
-                          right: UIConstants.pageHorizontalPadding - 17,
-                          child: GestureDetector(
-                            behavior: HitTestBehavior.translucent,
-                            onVerticalDragUpdate: (details) {
-                              var newScale = widget.scale;
-                              newScale += details.delta.dy / maxWidth;
-                              if (newScale < 0.3) {
-                                newScale = 0.3;
-                              } else if (newScale > 1) {
-                                newScale = 1;
-                              }
-                              setState(() {
-                                widget.scale = newScale;
-                              });
-                            },
-                            onHorizontalDragUpdate: (details) {
-                              var newScale = widget.scale;
-                              newScale += details.delta.dx / maxWidth;
-                              if (newScale < 0.3) {
-                                newScale = 0.3;
-                              } else if (newScale > 1) {
-                                newScale = 1;
-                              }
-                              setState(() {
-                                widget.scale = newScale;
-                              });
-                            },
-                            child: Padding(
-                              padding: EdgeInsets.all(10 / handleScale),
+                    ),
+                  ),
+                  if (!widget.inRenderMode)
+                    // three dot menu
+                    Visibility(
+                      visible: selected,
+                      child: Positioned(
+                        top: 6,
+                        right: UIConstants.pageHorizontalPadding + 6,
+                        child: Stack(
+                          children: [
+                            Positioned(
+                              right: 6,
+                              top: 6,
                               child: Container(
-                                width: 24 * handleScale,
-                                height: 24 * handleScale,
-                                alignment: Alignment.center,
+                                height: 32,
+                                width: 32,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(
                                     UIConstants.cornerRadius,
                                   ),
-                                  color: UIColors.focused,
+                                  color: UIColors.smallTextLight,
                                 ),
-                                child: Container(
-                                  width: 16 * handleScale,
-                                  height: 16 * handleScale,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(
-                                      UIConstants.cornerRadius,
-                                    ),
-                                    color: UIColors.overlay,
+                              ),
+                            ),
+                            UIIconButton(
+                              icon: UIIcons.moreHoriz
+                                  .copyWith(color: UIColors.smallTextDark),
+                              onPressed: () => UIBottomSheet.showUIBottomSheet(
+                                context: context,
+                                builder: (context) => BlocProvider.value(
+                                  value: this.context.read<TextEditorBloc>(),
+                                  child: ImageBottomSheet(
+                                    parentEditorTile: widget,
                                   ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  if (!widget.inRenderMode)
+                    // drag handle
+                    Visibility(
+                      visible: selected,
+                      child: Positioned(
+                        bottom: 0,
+                        right: UIConstants.pageHorizontalPadding - 17,
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onVerticalDragUpdate: (details) {
+                            var newScale = widget.scale;
+                            newScale += details.delta.dy / maxWidth;
+                            if (newScale < 0.3) {
+                              newScale = 0.3;
+                            } else if (newScale > 1) {
+                              newScale = 1;
+                            }
+                            setState(() {
+                              widget.scale = newScale;
+                            });
+                          },
+                          onHorizontalDragUpdate: (details) {
+                            var newScale = widget.scale;
+                            newScale += details.delta.dx / maxWidth;
+                            if (newScale < 0.3) {
+                              newScale = 0.3;
+                            } else if (newScale > 1) {
+                              newScale = 1;
+                            }
+                            setState(() {
+                              widget.scale = newScale;
+                            });
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.all(10 / handleScale),
+                            child: Container(
+                              width: 24 * handleScale,
+                              height: 24 * handleScale,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                  UIConstants.cornerRadius,
+                                ),
+                                color: UIColors.focused,
+                              ),
+                              child: Container(
+                                width: 16 * handleScale,
+                                height: 16 * handleScale,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(
+                                    UIConstants.cornerRadius,
+                                  ),
+                                  color: UIColors.overlay,
                                 ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ],
-                  );
-                },
-              ),
-            ),
+                    ),
+                ],
+              );
+            },
           ),
-        ],
+        ),
       ),
     );
   }

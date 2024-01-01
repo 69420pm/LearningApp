@@ -23,6 +23,8 @@ class FrontBackSeparatorTile extends StatelessWidget implements EditorTile {
 
   @override
   Widget build(BuildContext context) {
+    //not shown in renderMode
+    if (inRenderMode) return const SizedBox();
     return Column(
       children: [
         SizedBox(
