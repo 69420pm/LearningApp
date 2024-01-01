@@ -14,9 +14,7 @@ class QuoteTile extends TextTile implements EditorTile {
   QuoteTile({
     super.key,
     super.charTiles,
-  }) : super(textStyle: TextFieldConstants.quote) {
-    super.padding = false;
-  }
+  }) : super(textStyle: TextFieldConstants.quote, padding: false);
 
   @override
   Widget build(BuildContext context) {
@@ -39,12 +37,4 @@ class QuoteTile extends TextTile implements EditorTile {
       ),
     );
   }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is QuoteTile &&
-          runtimeType == other.runtimeType &&
-          super.charTiles == other.charTiles &&
-          focusNode == other.focusNode;
 }

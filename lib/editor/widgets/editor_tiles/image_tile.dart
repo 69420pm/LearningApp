@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/editor/bloc/text_editor_bloc.dart';
 import 'package:learning_app/editor/models/editor_tile.dart';
-import 'package:learning_app/editor/models/read_only_interactable.dart';
 import 'package:learning_app/editor/models/text_field_controller.dart';
 import 'package:learning_app/editor/widgets/bottom_sheets/image_bottom_sheet.dart';
 import 'package:learning_app/editor/widgets/image_widgets/image_full_screen.dart';
@@ -13,8 +12,9 @@ import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
 import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.dart';
-import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';class ImageTile extends StatefulWidget
-    implements EditorTile, ReadOnlyInteractable {
+import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
+
+class ImageTile extends StatefulWidget implements EditorTile {
   /// constructor focusNode gets focusNode of widget and [image] is a File
   /// that gets displayed
   ImageTile(
@@ -22,7 +22,7 @@ import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
       required this.image,
       this.scale = 1,
       this.alignment = Alignment.center,
-      this.interactable = true}) {
+      this.inRenderMode = false}) {
     // dismiss keyboard
     // FocusManager.instance.primaryFocus?.unfocus();
   }
@@ -36,10 +36,10 @@ import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
   /// whether the image should get centered or left bound
   Alignment alignment;
 
+  final FocusNode _noFocus = FocusNode();
+
   @override
   FocusNode? focusNode;
-
-  final FocusNode _noFocus = FocusNode();
 
   @override
   State<ImageTile> createState() => _ImageTileState();
@@ -47,7 +47,9 @@ import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
   @override
   TextFieldController? textFieldController;
 
-  /// copy with method
+  @override
+  bool inRenderMode;
+
   ImageTile copyWith({File? image, double? scale, Alignment? alignment}) {
     return ImageTile(
       image: image ?? this.image,
@@ -59,18 +61,6 @@ import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
   double scaleToHandleScale(double scale) {
     return pow(scale + 0.1, 0.2) - 0.00899;
   }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is ImageTile &&
-          runtimeType == other.runtimeType &&
-          image == other.image &&
-          alignment == other.alignment &&
-          focusNode == other.focusNode;
-
-  @override
-  bool interactable;
 }
 
 class _ImageTileState extends State<ImageTile> {
@@ -97,7 +87,7 @@ class _ImageTileState extends State<ImageTile> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        if(!widget.interactable) return;
+        if (widget.inRenderMode) return;
         setState(() {
           selected = !selected;
         });

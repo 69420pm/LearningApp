@@ -9,10 +9,19 @@ import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.dart';
 
 class DividerTile extends StatelessWidget implements EditorTile {
-  DividerTile({super.key});
+  DividerTile({
+    super.key,
+    this.inRenderMode = false,
+  });
 
   @override
   FocusNode? focusNode;
+
+  @override
+  TextFieldController? textFieldController;
+
+  @override
+  bool inRenderMode;
 
   @override
   Widget build(BuildContext context) {
@@ -37,14 +46,4 @@ class DividerTile extends StatelessWidget implements EditorTile {
       ),
     );
   }
-
-  @override
-  TextFieldController? textFieldController;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is DividerTile &&
-          runtimeType == other.runtimeType &&
-          focusNode == other.focusNode;
 }

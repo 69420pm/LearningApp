@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/editor/bloc/text_editor_bloc.dart';
 import 'package:learning_app/editor/card_preview_bottom_sheet.dart';
 import 'package:learning_app/editor/models/editor_tile.dart';
-import 'package:learning_app/editor/models/read_only_interactable.dart';
 import 'package:learning_app/editor/models/text_field_controller.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
@@ -12,20 +11,22 @@ import 'package:learning_app/ui_components/ui_text.dart';
 import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.dart';
 import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
 
-class LinkTile extends StatelessWidget
-    implements EditorTile, ReadOnlyInteractable {
-  LinkTile({super.key, required this.cardId, this.interactable = true});
+class LinkTile extends StatelessWidget implements EditorTile {
+  LinkTile({super.key, required this.cardId, this.inRenderMode = false});
+  String cardId;
+
   @override
   FocusNode? focusNode;
 
   @override
   TextFieldController? textFieldController;
 
-  String cardId;
+  @override
+  bool inRenderMode;
 
   @override
   Widget build(BuildContext context) {
-    if (!interactable) {
+    if (inRenderMode) {
       return const Placeholder(
         child: Text("Linktile"),
       );
@@ -95,7 +96,4 @@ class LinkTile extends StatelessWidget
       ),
     );
   }
-
-  @override
-  bool interactable;
 }

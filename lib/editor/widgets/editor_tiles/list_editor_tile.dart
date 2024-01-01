@@ -11,10 +11,14 @@ import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
 import 'package:learning_app/ui_components/ui_text.dart';
+
 class ListEditorTile extends StatelessWidget implements EditorTile {
-  /// initialize ListEditorTile
   ListEditorTile(
-      {super.key, this.orderNumber = 0, TextTile? textTile, this.charTiles}) {
+      {super.key,
+      this.orderNumber = 0,
+      TextTile? textTile,
+      this.charTiles,
+      this.inRenderMode = false}) {
     _textTile = textTile ??
         TextTile(
           textStyle: TextFieldConstants.normal,
@@ -26,14 +30,19 @@ class ListEditorTile extends StatelessWidget implements EditorTile {
     focusNode = _textTile.focusNode;
     textFieldController = _textTile.textFieldController;
   }
+
+  final Map<int, CharTile>? charTiles;
   late final TextTile _textTile;
   int orderNumber;
+
   @override
   FocusNode? focusNode = FocusNode();
-  final Map<int, CharTile>? charTiles;
 
   @override
   TextFieldController? textFieldController;
+
+  @override
+  bool inRenderMode;
 
   @override
   Widget build(BuildContext context) {
@@ -121,13 +130,4 @@ class ListEditorTile extends StatelessWidget implements EditorTile {
       textTile: textTile ?? _textTile,
     );
   }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is ListEditorTile &&
-          runtimeType == other.runtimeType &&
-          _textTile == other._textTile &&
-          orderNumber == other.orderNumber &&
-          focusNode == other.focusNode;
 }

@@ -11,13 +11,16 @@ import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
 import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.dart';
 import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
-import 'package:learning_app/ui_components/widgets/emoji_picker/emoji_picker.dart';class CalloutTile extends StatelessWidget implements EditorTile {
+import 'package:learning_app/ui_components/widgets/emoji_picker/emoji_picker.dart';
+
+class CalloutTile extends StatelessWidget implements EditorTile {
   /// initialize CalloutTile
   CalloutTile({
     super.key,
     this.tileColor = UIColors.smallTextDark,
     TextTile? textTile,
     this.iconString = '🤪',
+    this.inRenderMode = false,
   }) {
     this.textTile = textTile ??
         TextTile(
@@ -31,7 +34,6 @@ import 'package:learning_app/ui_components/widgets/emoji_picker/emoji_picker.dar
 
   Color tileColor;
   String iconString;
-
   late final TextTile textTile;
 
   @override
@@ -42,31 +44,17 @@ import 'package:learning_app/ui_components/widgets/emoji_picker/emoji_picker.dar
   final TextEditingController emojiController = TextEditingController();
 
   @override
+  bool inRenderMode;
+
+  @override
   Widget build(BuildContext context) {
     emojiController.text = iconString;
-    // textTile
-    //   .onBackspaceDoubleClick = () {
-    //     textTile.focusNode = FocusNode();
-    //     final tiles = <CharTile>[];
-    //     textTile.textFieldController!.charTiles.forEach((key, value) {
-    //       tiles.add(value);
-    //     });
-    //     replacingTextTile.textFieldController!.addText(
-    //       tiles,
-    //       context,
-    //     );
-    //     context.read<TextEditorBloc>().add(
-    //           TextEditorReplaceEditorTile(
-    //             tileToRemove: this,
-    //             newEditorTile: replacingTextTile,
-    //             handOverText: true,
-    //             context: context,
-    //           ),
-    //         );
-    //   };
 
     return Padding(
-      padding: const EdgeInsets.only(top: 4, left: UIConstants.pageHorizontalPadding, right: UIConstants.pageHorizontalPadding),
+      padding: const EdgeInsets.only(
+          top: 4,
+          left: UIConstants.pageHorizontalPadding,
+          right: UIConstants.pageHorizontalPadding),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: tileColor,
@@ -128,11 +116,15 @@ import 'package:learning_app/ui_components/widgets/emoji_picker/emoji_picker.dar
                   context: context,
                   builder: (_) => BlocProvider.value(
                     value: context.read<TextEditorBloc>(),
-                    child: CalloutTileBottomSheet(parentEditorTile: this,),
+                    child: CalloutTileBottomSheet(
+                      parentEditorTile: this,
+                    ),
                   ),
                 ),
               ),
-              const SizedBox(width: 4,),
+              const SizedBox(
+                width: 4,
+              ),
             ],
           ),
         ),
@@ -152,12 +144,4 @@ import 'package:learning_app/ui_components/widgets/emoji_picker/emoji_picker.dar
       iconString: iconString ?? this.iconString,
     );
   }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is CalloutTile &&
-          runtimeType == other.runtimeType &&
-          textTile == other.textTile &&
-          focusNode == other.focusNode;
 }

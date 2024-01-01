@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/editor/bloc/text_editor_bloc.dart';
 import 'package:learning_app/editor/models/char_tile.dart';
 import 'package:learning_app/editor/models/editor_tile.dart';
-import 'package:learning_app/editor/models/read_only_interactable.dart';
 import 'package:learning_app/editor/models/text_field_constants.dart';
 import 'package:learning_app/editor/models/text_field_controller.dart';
 
@@ -12,9 +11,7 @@ import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class TextTile extends StatelessWidget
-    implements EditorTile, ReadOnlyInteractable {
-  /// constructor
+class TextTile extends StatelessWidget implements EditorTile {
   TextTile({
     super.key,
     required this.textStyle,
@@ -28,7 +25,7 @@ class TextTile extends StatelessWidget
     this.onSubmit,
     this.isDefaultOnBackgroundTextColor = true,
     this.charTiles,
-    this.interactable = true,
+    this.inRenderMode = false,
   }) {
     focusNode ??= FocusNode();
     textFieldController = TextFieldController(standardStyle: textStyle);
@@ -69,6 +66,12 @@ class TextTile extends StatelessWidget
   /// when empty a new textfield gets created below
   Function? onSubmit;
 
+  bool isInit = true;
+
+  final Map<int, CharTile>? charTiles;
+
+  final FocusNode _rawKeyboardListenerNode = FocusNode();
+
   /// text field controller for text field which is responsible
   /// for text formatting such as bold, italic, etc.
   @override
@@ -79,14 +82,7 @@ class TextTile extends StatelessWidget
   FocusNode? focusNode;
 
   @override
-  bool isInit = true;
-
-  @override
-  bool interactable;
-
-  final Map<int, CharTile>? charTiles;
-
-  final FocusNode _rawKeyboardListenerNode = FocusNode();
+  bool inRenderMode;
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +90,7 @@ class TextTile extends StatelessWidget
       textFieldController!.addText(charTiles!.values.toList(), context);
     }
     isInit = false;
-    if (!interactable) {
+    if (inRenderMode) {
       return RichText(
         text: TextSpan(
           style: textStyle,
@@ -272,11 +268,4 @@ class TextTile extends StatelessWidget
       );
     }
   }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is TextTile &&
-          textFieldController == other.textFieldController &&
-          focusNode == other.focusNode;
 }

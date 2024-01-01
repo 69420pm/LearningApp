@@ -2,7 +2,6 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:learning_app/card_backend/cards_api/models/card.dart';
 import 'package:learning_app/card_backend/cards_repository.dart';
 import 'package:learning_app/editor/models/editor_tile.dart';
-import 'package:learning_app/editor/models/read_only_interactable.dart';
 import 'package:learning_app/editor/widgets/editor_tiles/front_back_seperator_tile.dart';
 import 'package:learning_app/editor/widgets/editor_tiles/header_tile.dart';
 import 'package:learning_app/editor/widgets/editor_tiles/text_tile.dart';
@@ -40,24 +39,8 @@ class RenderCard extends Card {
     }
 
     final widgets = editorTiles.map((e) {
-      if (e is HeaderTile) {
-        e = TextTile(
-          textStyle: e.textStyle,
-          charTiles: e.charTiles,
-        );
-      }
-      if (e is ReadOnlyInteractable) {
-        (e as ReadOnlyInteractable).interactable = false;
-        return e as Widget;
-      } else {
-        print(e);
-        return Placeholder(
-          child: Text(e.toString()),
-        );
-        return AbsorbPointer(
-          child: e as Widget,
-        );
-      }
+      e.inRenderMode = true;
+      return e as Widget;
     }).toList();
 
     _frontWidgets = widgets.sublist(0, indexSpacer);

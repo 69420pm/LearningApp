@@ -3,10 +3,23 @@ import 'package:learning_app/editor/bloc/text_editor_bloc.dart';
 import 'package:learning_app/editor/models/editor_tile.dart';
 import 'package:learning_app/editor/models/text_field_controller.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
-import 'package:learning_app/ui_components/ui_constants.dart';import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/ui_components/ui_constants.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FrontBackSeparatorTile extends StatelessWidget implements EditorTile {
-  FrontBackSeparatorTile({super.key});
+  FrontBackSeparatorTile({
+    super.key,
+    this.inRenderMode = false,
+  });
+
+  @override
+  FocusNode? focusNode;
+
+  @override
+  TextFieldController? textFieldController;
+
+  @override
+  bool inRenderMode;
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +50,4 @@ class FrontBackSeparatorTile extends StatelessWidget implements EditorTile {
       ],
     );
   }
-
-  @override
-  FocusNode? focusNode;
-
-  @override
-  TextFieldController? textFieldController;
 }

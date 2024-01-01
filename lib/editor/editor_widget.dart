@@ -5,7 +5,9 @@ import 'package:learning_app/editor/widgets/editor_tiles/header_tile.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
-import 'package:learning_app/ui_components/ui_text.dart';class EditorWidget extends StatelessWidget {
+import 'package:learning_app/ui_components/ui_text.dart';
+
+class EditorWidget extends StatelessWidget {
   EditorWidget({super.key});
   bool _firstBuild = true;
   GlobalKey<SliverReorderableListState> listKey =
@@ -27,7 +29,6 @@ import 'package:learning_app/ui_components/ui_text.dart';class EditorWidget exte
           _firstBuild = false;
         }
         final listChildren = <Widget>[
-          
           // SliverReorderableList(
           //     key: listKey,
           //     itemBuilder: (context, index) {
