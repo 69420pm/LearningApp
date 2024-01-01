@@ -12,6 +12,8 @@ class RenderCard extends Card {
     required Card card,
     required this.cardsRepository,
     this.turnedOver = false,
+    this.gotRatedBad = false,
+    this.finishedToday = false,
     this.cardHeight,
   }) : super(
           uid: card.uid,
@@ -25,6 +27,8 @@ class RenderCard extends Card {
 
   bool turnedOver;
   double? cardHeight;
+  bool gotRatedBad;
+  bool finishedToday;
 
   final CardsRepository cardsRepository;
 

@@ -50,6 +50,10 @@ class CalloutTile extends StatelessWidget implements EditorTile {
   Widget build(BuildContext context) {
     emojiController.text = iconString;
 
+    return Placeholder(
+      child: Text("Callouttile "),
+    );
+
     return Padding(
       padding: const EdgeInsets.only(
           top: 4,

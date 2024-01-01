@@ -25,7 +25,7 @@ abstract class CardsApi {
   ValueListenable<Box<Subject>> getSubjects();
 
   /// return all cards which should get learned
-  List<Card> learnAllCards();
+  List<Card> getAllCardsToLearnForToday();
 
   /// search for cards
   List<SearchResult> searchCard(String searchRequest, String? id);

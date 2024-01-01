@@ -9,19 +9,13 @@ class LearningCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(
-          Radius.circular(UIConstants.cornerRadius),
-        ),
-      ),
-      child: Column(
-        children: [
-          Text(card.name),
-          ...card.frontWidgets,
-          if (card.turnedOver) ...card.backWidgets,
-        ],
-      ),
+    return Column(
+      children: [
+        Text(card.name),
+        Text(card.dateToReview.toString()),
+        ...card.frontWidgets,
+        if (card.turnedOver) ...card.backWidgets,
+      ],
     );
   }
 }

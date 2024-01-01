@@ -6,6 +6,8 @@ import 'package:learning_app/learn/cubit/learn_cubit.dart';
 import 'package:learning_app/learn/cubit/render_card.dart';
 import 'package:learning_app/learn/view/learning_card_page.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
+import 'package:learning_app/ui_components/ui_icons.dart';
+import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
 import 'package:learning_app/ui_components/widgets/ui_appbar.dart';
 
 class LearningScreen extends StatelessWidget {
@@ -15,9 +17,28 @@ class LearningScreen extends StatelessWidget {
   final controller = ScrollController();
   List<RenderCard> cardsToLearn = List.empty(growable: true);
 
+  OverlayEntry? overlayEntry;
+
+  void showRatingButtons(BuildContext context) {
+    final overlay = Overlay.of(context);
+    overlayEntry = OverlayEntry(builder: (context) {
+      return UIIconButton(
+          icon: UIIcons.add,
+          onPressed: () =>
+              context.read<LearnCubit>().rateCard(LearnFeedback.good));
+    });
+    overlay.insert(overlayEntry!);
+  }
+
+  void hideRatingButtons(BuildContext context) {
+    overlayEntry!.remove();
+    overlayEntry!.dispose();
+    overlayEntry = null;
+  }
+
   @override
   Widget build(BuildContext context) {
-    context.read<LearnCubit>().learnAllCards();
+    context.read<LearnCubit>().loadTodaysCards();
 
     return Scaffold(
       backgroundColor: UIColors.background,
@@ -27,9 +48,24 @@ class LearningScreen extends StatelessWidget {
           builder: (context, constraints) {
             final screenHeight = constraints.maxHeight;
             return BlocBuilder<LearnCubit, LearnCubitState>(
-              buildWhen: (previous, current) =>
-                  current is FinishedLoadingCardsState,
+              buildWhen: (previous, current) {
+                if (current is CardTurnedState) {
+                  return true;
+                }
+                if (current is CardRatedState) {
+                  return true;
+                }
+                return current is FinishedLoadingCardsState;
+              },
               builder: (context, state) {
+                if (state is CardTurnedState) {
+                  WidgetsBinding.instance
+                      .addPostFrameCallback((_) => showRatingButtons(context));
+                }
+                if (state is CardRatedState) {
+                  WidgetsBinding.instance
+                      .addPostFrameCallback((_) => hideRatingButtons(context));
+                }
                 cardsToLearn = context.read<LearnCubit>().cardsToLearn;
                 return NotificationListener<ScrollNotification>(
                   // onNotification: (notification) {

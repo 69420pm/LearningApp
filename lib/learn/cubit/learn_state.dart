@@ -18,3 +18,5 @@ class StartAnimationState extends LearnCubitState {}
 class FinishedAnimationState extends LearnCubitState {}
 
 class StopScrollingState extends LearnCubitState {}
+
+class CardRatedState extends LearnCubitState {}

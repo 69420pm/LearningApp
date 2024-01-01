@@ -8,6 +8,8 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:flutter/material.dart' hide Card;
+import 'package:intl/intl.dart';
 import 'package:learning_app/card_backend/cards_api/cards_api.dart';
 import 'package:learning_app/card_backend/cards_api/models/card.dart';
 import 'package:learning_app/card_backend/cards_api/models/file.dart';
@@ -54,8 +56,13 @@ class HiveCardsApi extends CardsApi {
   }
 
   @override
-  List<Card> learnAllCards() {
-    return _cardBox.values.toList();
+  List<Card> getAllCardsToLearnForToday() {
+    final now = DateUtils.dateOnly(DateTime.now());
+    var a = _cardBox.values.where((element) {
+      final dateToReview = DateUtils.dateOnly(element.dateToReview);
+      return dateToReview.isBefore(now) || dateToReview.isAtSameMomentAs(now);
+    }).toList();
+    return a;
   }
 
   @override

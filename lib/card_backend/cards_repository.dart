@@ -28,7 +28,8 @@ class CardsRepository {
   ValueListenable<Box<Subject>> getSubjects() => _cardsApi.getSubjects();
 
   /// return all cards to learn
-  List<Card> learnAllCards() => _cardsApi.learnAllCards();
+  List<Card> getAllCardsToLearnForToday() =>
+      _cardsApi.getAllCardsToLearnForToday();
 
   /// search request to search in all cards, give parent[id] only search
   /// everything saved in this id or below, e.g. when only searched all
