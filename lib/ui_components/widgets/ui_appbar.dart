@@ -41,7 +41,7 @@ class UIAppBar extends StatelessWidget implements PreferredSizeWidget {
                   if (leadingBackButtonPressed != null) {
                     leadingBackButtonPressed?.call();
                   }
-                  Navigator.pop(context);
+                  Navigator.maybePop(context);
                 },
               )
             : Align(alignment: Alignment.centerLeft, child: leading),

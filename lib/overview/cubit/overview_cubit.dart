@@ -4,8 +4,12 @@ import 'package:meta/meta.dart';
 
 part 'overview_state.dart';
 
-class OverviewCubit extends Cubit<OverviewState> {
-  OverviewCubit(this.cardsRepository) : super(OverviewInitial());
+class OverviewCubit extends Cubit<OverviewCubitState> {
+  OverviewCubit(this.cardsRepository) : super(OverviewInitialState());
 
   final CardsRepository cardsRepository;
+
+  void updateLearnAllButton() {
+    emit(UpdateLearnAllButtonState());
+  }
 }

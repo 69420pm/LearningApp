@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart' hide SearchBar;
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/overview/cubit/overview_cubit.dart';
 import 'package:learning_app/overview/view/calendar_card.dart';
 import 'package:learning_app/overview/view/learn_all_card.dart';
 import 'package:learning_app/overview/view/subject_list.dart';
@@ -8,12 +10,16 @@ import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
 import 'package:learning_app/ui_components/widgets/ui_appbar.dart';
 import 'package:learning_app/ui_components/widgets/ui_page.dart';
 
-class OverviewPage extends StatelessWidget {
+class OverviewPage extends StatefulWidget {
   const OverviewPage({super.key});
 
   @override
+  State<OverviewPage> createState() => _OverviewPageState();
+}
+
+class _OverviewPageState extends State<OverviewPage> {
+  @override
   Widget build(BuildContext context) {
-    print("moin");
     return UIPage(
       appBar: UIAppBar(
         leadingBackButton: false,
@@ -25,19 +31,21 @@ class OverviewPage extends StatelessWidget {
         actions: [
           UIIconButton(
             icon: UIIcons.search,
-            onPressed: () => Navigator.of(context).pushNamed('/search'),
+            onPressed: () => Navigator.of(context).pushNamed('/search').then(
+                (value) =>
+                    context.read<OverviewCubit>().updateLearnAllButton()),
           ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: const SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             LearnAllCard(),
-            const SizedBox(height: UIConstants.itemPaddingLarge),
-            const CalendarCard(),
-            const SizedBox(height: UIConstants.itemPaddingLarge * 2),
-            const SubjectList(),
+            SizedBox(height: UIConstants.itemPaddingLarge),
+            CalendarCard(),
+            SizedBox(height: UIConstants.itemPaddingLarge * 2),
+            SubjectList(),
           ],
         ),
       ),

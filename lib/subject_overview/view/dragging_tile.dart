@@ -94,7 +94,6 @@ class DraggingTile extends StatelessWidget {
               );
         },
         onDraggableCanceled: (_, __) {
-          print("cancle");
           //Start SelectionMode
           if (isInSelectMode) {
             context.read<SubjectOverviewSelectionBloc>().add(

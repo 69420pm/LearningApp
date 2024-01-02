@@ -40,7 +40,6 @@ class LearnCubit extends Cubit<LearnCubitState> {
     if (_cardsToLearn[currentIndex].turnedOver &&
         currentOffset - offset == 0 &&
         startScroll) {
-      print("moin");
       offset += screenHeight;
     }
 
@@ -103,7 +102,6 @@ class LearnCubit extends Cubit<LearnCubitState> {
   }
 
   Future<List<RenderCard>> loadTodaysCards() async {
-    print("moin");
     _cardsToLearn = _cardsRepository
         .getAllCardsToLearnForToday()
         .map((e) => RenderCard(card: e, cardsRepository: _cardsRepository))
@@ -112,8 +110,6 @@ class LearnCubit extends Cubit<LearnCubitState> {
         (a, b) => b.dateCreated.compareTo(a.dateCreated),
       );
     // _cardsToLearn = _cardsToLearn.sublist(0, 4);
-
-    print(_cardsToLearn.length);
 
     //TODO Only load CardContent to display
     for (var i = 0; i < cardsToLearn.length; i++) {
@@ -177,7 +173,6 @@ class LearnCubit extends Cubit<LearnCubitState> {
 
         //first try right
         else {
-          print(nextDateToReview[_cardsToLearn[currentIndex].recallScore]);
           _cardsToLearn[currentIndex].dateToReview = _cardsToLearn[currentIndex]
               .dateToReview
               .add(nextDateToReview[_cardsToLearn[currentIndex].recallScore]);
@@ -193,7 +188,6 @@ class LearnCubit extends Cubit<LearnCubitState> {
         // _cardsToLearn.add(_cardsToLearn[currentIndex]..turnedOver = false);
       }
     }
-    print(currentIndex);
     _cardsToLearn[currentIndex].gotRatedInThisSession = true;
     _checkIfAllCardsRated();
     emit(CardRatedState());
