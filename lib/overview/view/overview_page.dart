@@ -6,13 +6,18 @@ import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
 import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
 import 'package:learning_app/ui_components/widgets/ui_appbar.dart';
-import 'package:learning_app/ui_components/widgets/ui_page.dart';class OverviewPage extends StatelessWidget {
+import 'package:learning_app/ui_components/widgets/ui_page.dart';
+
+class OverviewPage extends StatelessWidget {
   const OverviewPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    print("moin");
     return UIPage(
       appBar: UIAppBar(
+        leadingBackButton: false,
+        automaticallyImplyLeading: false,
         leading: UIIconButton(
           icon: UIIcons.account,
           onPressed: () {},
@@ -24,15 +29,15 @@ import 'package:learning_app/ui_components/widgets/ui_page.dart';class OverviewP
           ),
         ],
       ),
-      body: const SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             LearnAllCard(),
-            SizedBox(height: UIConstants.itemPaddingLarge),
-            CalendarCard(),
-            SizedBox(height: UIConstants.itemPaddingLarge * 2),
-            SubjectList(),
+            const SizedBox(height: UIConstants.itemPaddingLarge),
+            const CalendarCard(),
+            const SizedBox(height: UIConstants.itemPaddingLarge * 2),
+            const SubjectList(),
           ],
         ),
       ),

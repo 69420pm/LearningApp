@@ -102,7 +102,8 @@ class LearnCubit extends Cubit<LearnCubitState> {
     }
   }
 
-  Future<void> loadTodaysCards() async {
+  Future<List<RenderCard>> loadTodaysCards() async {
+    print("moin");
     _cardsToLearn = _cardsRepository
         .getAllCardsToLearnForToday()
         .map((e) => RenderCard(card: e, cardsRepository: _cardsRepository))
@@ -110,7 +111,7 @@ class LearnCubit extends Cubit<LearnCubitState> {
       ..sort(
         (a, b) => b.dateCreated.compareTo(a.dateCreated),
       );
-    _cardsToLearn = _cardsToLearn.sublist(0, 4);
+    // _cardsToLearn = _cardsToLearn.sublist(0, 4);
 
     print(_cardsToLearn.length);
 
@@ -121,35 +122,80 @@ class LearnCubit extends Cubit<LearnCubitState> {
     }
 
     emit(FinishedLoadingCardsState());
+    return _cardsToLearn;
+  }
+
+  void _checkIfAllCardsRated() {
+    //check if all got rated
+    if (_cardsToLearn
+        .where((element) => !element.gotRatedInThisSession)
+        .isEmpty) {
+      //get all bad rated Cards
+      final gotBadCards = _cardsToLearn
+          .where((element) => element.gotRatedBad && !element.finishedToday);
+
+      //all cards good
+      if (gotBadCards.isEmpty) {
+        emit(FinishedLearningState());
+      }
+
+      //some bad
+      else {
+        _cardsToLearn = gotBadCards.map(
+          (e) {
+            e
+              ..turnedOver = false
+              ..gotRatedInThisSession = false;
+            return e;
+          },
+        ).toList();
+        emit(NextLearningSessionState());
+      }
+    }
   }
 
   void rateCard(LearnFeedback feedbackCard) {
-    const nextDateToReview = <Duration>[Duration(days: 1), Duration(days: 2)];
+    const nextDateToReview = <Duration>[
+      Duration(days: 1),
+      Duration(days: 2),
+      Duration(days: 3),
+      Duration(days: 4),
+      Duration(days: 5),
+      Duration(days: 6),
+    ];
 
-    if (feedbackCard == LearnFeedback.good) {
-      if (_cardsToLearn[currentIndex].gotRatedBad) {
-        _cardsToLearn[currentIndex].dateToReview.subtract(nextDateToReview[
-            (_cardsToLearn[currentIndex].recallScore - 2)
-                .clamp(0, nextDateToReview.length - 1)]);
-        if (_cardsToLearn[currentIndex].recallScore > 0) {
-          _cardsToLearn[currentIndex].recallScore--;
+    if (!_cardsToLearn[currentIndex].gotRatedInThisSession) {
+      if (feedbackCard == LearnFeedback.good) {
+        //first try/tries wrong, but now right
+        if (_cardsToLearn[currentIndex].gotRatedBad) {
+          _cardsToLearn[currentIndex].dateToReview =
+              _cardsToLearn[currentIndex].dateToReview.add(Duration(days: 1));
+          if (_cardsToLearn[currentIndex].recallScore > 0) {
+            _cardsToLearn[currentIndex].recallScore--;
+          }
         }
-      } else {
-        _cardsToLearn[currentIndex].dateToReview.add(nextDateToReview[
-            _cardsToLearn[currentIndex]
-                .recallScore
-                .clamp(0, nextDateToReview.length - 1)]);
-        _cardsToLearn[currentIndex].recallScore += 1;
-      }
-      _cardsToLearn[currentIndex].finishedToday = true;
-      _cardsRepository.saveCard(_cardsToLearn[currentIndex], null, null);
-    }
-    // MEDIUM
-    else {
-      _cardsToLearn[currentIndex].gotRatedBad = true;
-      _cardsToLearn.add(_cardsToLearn[currentIndex]..turnedOver = false);
-    }
 
+        //first try right
+        else {
+          print(nextDateToReview[_cardsToLearn[currentIndex].recallScore]);
+          _cardsToLearn[currentIndex].dateToReview = _cardsToLearn[currentIndex]
+              .dateToReview
+              .add(nextDateToReview[_cardsToLearn[currentIndex].recallScore]);
+          _cardsToLearn[currentIndex].recallScore += 1;
+        }
+        _cardsToLearn[currentIndex].finishedToday = true;
+        _cardsRepository.saveCard(_cardsToLearn[currentIndex], null, null);
+      }
+
+      //bad
+      else {
+        _cardsToLearn[currentIndex].gotRatedBad = true;
+        // _cardsToLearn.add(_cardsToLearn[currentIndex]..turnedOver = false);
+      }
+    }
+    print(currentIndex);
+    _cardsToLearn[currentIndex].gotRatedInThisSession = true;
+    _checkIfAllCardsRated();
     emit(CardRatedState());
   }
 }

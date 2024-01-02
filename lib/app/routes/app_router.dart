@@ -60,12 +60,9 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => MultiBlocProvider(
             providers: [
-              BlocProvider.value(
-                value: _overviewCubit,
-              ),
-              BlocProvider.value(
-                value: _calendarCubit,
-              ),
+              BlocProvider.value(value: _overviewCubit),
+              BlocProvider.value(value: _calendarCubit),
+              BlocProvider.value(value: _learnCubit),
               BlocProvider(
                 create: (context) => AddSubjectCubit(_cardsRepository),
               ),

@@ -20,3 +20,7 @@ class FinishedAnimationState extends LearnCubitState {}
 class StopScrollingState extends LearnCubitState {}
 
 class CardRatedState extends LearnCubitState {}
+
+class NextLearningSessionState extends LearnCubitState {}
+
+class FinishedLearningState extends LearnCubitState {}

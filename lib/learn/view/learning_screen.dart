@@ -17,25 +17,6 @@ class LearningScreen extends StatelessWidget {
   final controller = ScrollController();
   List<RenderCard> cardsToLearn = List.empty(growable: true);
 
-  OverlayEntry? overlayEntry;
-
-  void showRatingButtons(BuildContext context) {
-    final overlay = Overlay.of(context);
-    overlayEntry = OverlayEntry(builder: (context) {
-      return UIIconButton(
-          icon: UIIcons.add,
-          onPressed: () =>
-              context.read<LearnCubit>().rateCard(LearnFeedback.good));
-    });
-    overlay.insert(overlayEntry!);
-  }
-
-  void hideRatingButtons(BuildContext context) {
-    overlayEntry!.remove();
-    overlayEntry!.dispose();
-    overlayEntry = null;
-  }
-
   @override
   Widget build(BuildContext context) {
     context.read<LearnCubit>().loadTodaysCards();
@@ -49,24 +30,23 @@ class LearningScreen extends StatelessWidget {
             final screenHeight = constraints.maxHeight;
             return BlocBuilder<LearnCubit, LearnCubitState>(
               buildWhen: (previous, current) {
-                if (current is CardTurnedState) {
-                  return true;
+                if (current is FinishedLoadingCardsState) return true;
+                if (current is UpdateHeightState) return true;
+                if (current is NextLearningSessionState) return true;
+
+                if (current is FinishedLearningState) {
+                  Navigator.of(context).pop();
                 }
-                if (current is CardRatedState) {
-                  return true;
-                }
-                return current is FinishedLoadingCardsState;
+
+                return false;
               },
               builder: (context, state) {
-                if (state is CardTurnedState) {
-                  WidgetsBinding.instance
-                      .addPostFrameCallback((_) => showRatingButtons(context));
-                }
-                if (state is CardRatedState) {
-                  WidgetsBinding.instance
-                      .addPostFrameCallback((_) => hideRatingButtons(context));
-                }
                 cardsToLearn = context.read<LearnCubit>().cardsToLearn;
+                if (state is NextLearningSessionState) {
+                  controller.animateTo(0,
+                      duration: Duration(milliseconds: 400),
+                      curve: Curves.easeInOut);
+                }
                 return NotificationListener<ScrollNotification>(
                   // onNotification: (notification) {
                   //   if (notification is! ScrollEndNotification) {

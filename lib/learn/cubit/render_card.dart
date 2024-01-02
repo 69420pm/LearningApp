@@ -13,6 +13,7 @@ class RenderCard extends Card {
     required this.cardsRepository,
     this.turnedOver = false,
     this.gotRatedBad = false,
+    this.gotRatedInThisSession = false,
     this.finishedToday = false,
     this.cardHeight,
   }) : super(
@@ -28,6 +29,7 @@ class RenderCard extends Card {
   bool turnedOver;
   double? cardHeight;
   bool gotRatedBad;
+  bool gotRatedInThisSession;
   bool finishedToday;
 
   final CardsRepository cardsRepository;
