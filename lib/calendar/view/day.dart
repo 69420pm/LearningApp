@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/calendar/cubit/calendar_cubit.dart';
 import 'package:learning_app/calendar/view/calendar_widget.dart';
 import 'package:learning_app/calendar/view/day_bottom_sheet.dart';
 import 'package:learning_app/card_backend/cards_api/models/class_test.dart';
+import 'package:learning_app/card_backend/cards_api/models/subject.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_text.dart';
 import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.dart';
@@ -12,12 +15,14 @@ class Day extends StatelessWidget {
     required this.dateTime,
     required this.isActive,
     required this.streakType,
-    required this.classTest,
+    required this.classTests,
+    required this.subjects
   });
   DateTime dateTime;
   bool isActive;
   StreakType streakType;
-  List<ClassTest>? classTest;
+  Map<Subject, List<ClassTest>> classTests;
+  List<Subject> subjects;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +38,20 @@ class Day extends StatelessWidget {
       onTap: () {
         UIBottomSheet.showUIBottomSheet(
             context: context,
-            builder: (context) => DayBottomSheet(dateTime: dateTime, classTests: classTest,));
+            builder: (_) => BlocProvider.value(
+                  value: context.read<CalendarCubit>(),
+                  child: DayBottomSheet(
+                    dateTime: dateTime,
+                    classTests: classTests,
+                    subjects: subjects
+                  ),
+                )).then(
+          (value) {
+            // context
+            //     .read<CalendarCubit>()
+            //     .changeDate(dateTime.add(const Duration(seconds: 1)));
+          },
+        );
       },
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -84,7 +102,7 @@ class Day extends StatelessWidget {
               ],
             );
           } else {
-            bool isClassTest = classTest != null && classTest!.isNotEmpty;
+            bool isClassTest = classTests != null && classTests!.isNotEmpty;
             var textColor = UIColors.textLight;
             if (isActive && isClassTest) {
               textColor = UIColors.textDark;

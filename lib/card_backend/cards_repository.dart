@@ -7,10 +7,12 @@
 
 import 'package:learning_app/card_backend/cards_api/cards_api.dart';
 import 'package:learning_app/card_backend/cards_api/models/card.dart';
+import 'package:learning_app/card_backend/cards_api/models/class_test.dart';
 import 'package:learning_app/card_backend/cards_api/models/file.dart';
 import 'package:learning_app/card_backend/cards_api/models/folder.dart';
 import 'package:learning_app/card_backend/cards_api/models/search_result.dart';
-import 'package:learning_app/card_backend/cards_api/models/subject.dart';import 'package:hive_flutter/hive_flutter.dart';
+import 'package:learning_app/card_backend/cards_api/models/subject.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:learning_app/editor/models/editor_tile.dart';
 
@@ -77,6 +79,10 @@ class CardsRepository {
   Future<void> saveFolder(Folder folder, String? parentId) =>
       _cardsApi.saveFolder(folder, parentId);
 
+  /// save the [classTest]
+  Future<void> saveClassTest(String parentSubjectId, ClassTest classTest) =>
+      _cardsApi.saveClassTest(parentSubjectId, classTest);
+
   /// Deletes subject and every children with given id
   /// If no card with given id exists, a [SubjectNotFoundException] error is
   /// thrown
@@ -85,6 +91,10 @@ class CardsRepository {
   /// delete files when ids match to folder or cards and everything
   /// if you delete a folder all children get automatically deleted
   Future<void> deleteFiles(List<String> ids) => _cardsApi.deleteFiles(ids);
+
+  /// delete class test
+  Future<void> deleteClassTest(String subjectId, String classTestId) =>
+      _cardsApi.deleteClassTest(subjectId, classTestId);
 
   /// Move folder and every children to [newParentId]
   Future<void> moveFiles(List<String> fileIds, String newParentId) =>
@@ -105,6 +115,10 @@ class CardsRepository {
   /// get parent ids to a given child id
   List<String> getParentIdsFromChildId(String id) =>
       _cardsApi.getParentIdsFromChildId(id);
+
+  /// get classTests from subject
+  List<ClassTest>? getClassTests(String subjectId) =>
+      _cardsApi.getClassTestsBySubject(subjectId);
 
   /// folder subject or card form id
   Object? objectFromId(String id) => _cardsApi.objectFromId(id);

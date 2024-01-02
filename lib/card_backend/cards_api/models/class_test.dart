@@ -12,11 +12,11 @@ class ClassTest extends Equatable {
 
   /// possibly changing name
   @HiveField(1)
-  final String name;
+  String name;
 
   /// date of the classTest
   @HiveField(2)
-  final DateTime date;
+  DateTime date;
 
   /// ids of folder which should get asked more frequently when date gets approached
   @HiveField(3)
@@ -47,5 +47,5 @@ class ClassTest extends Equatable {
   bool get stringify => true;
 
   @override
-  List<Object> get props => [uid, name, date, folderIds];
+  List<Object> get props => [uid, name, date, folderIds, folderIds.length];
 }

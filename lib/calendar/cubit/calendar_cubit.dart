@@ -3,12 +3,14 @@ import 'package:equatable/equatable.dart';
 import 'package:learning_app/calendar_backend/calendar_api/models/calendar_day.dart';
 import 'package:learning_app/calendar_backend/calendar_repository.dart';
 import 'package:learning_app/card_backend/cards_api/models/class_test.dart';
+import 'package:learning_app/card_backend/cards_api/models/subject.dart';
 import 'package:learning_app/card_backend/cards_repository.dart';
 
 part 'calendar_state.dart';
 
 class CalendarCubit extends Cubit<CalendarState> {
-  CalendarCubit({required this.calendarRepository, required this.cardsRepository})
+  CalendarCubit(
+      {required this.calendarRepository, required this.cardsRepository})
       : super(CalendarShowMonth(dateTime: DateTime.now()));
 
   CalendarRepository calendarRepository;
@@ -33,20 +35,41 @@ class CalendarCubit extends Cubit<CalendarState> {
     emit(CalendarShowMonth(dateTime: currentMonth));
   }
 
+  void changeClassTest(ClassTest classTest) {
+    emit(ClassTestChanged(classTest: classTest));
+  }
+
   Future<void> saveCalendarDay(CalendarDay calendarDay) {
     return calendarRepository.saveCalendarDay(calendarDay);
   }
 
-  Future<CalendarDay?> getCalendarDay(DateTime dateTime) async {
-    return await calendarRepository.getCalendarDayByDate(dateTime);
+  Future<CalendarDay?> getCalendarDay(DateTime dateTime) {
+    return calendarRepository.getCalendarDayByDate(dateTime);
   }
 
-  List<ClassTest> getClassTests() {
-    final classTests = <ClassTest>[];
+  Map<Subject, List<ClassTest>> getClassTests() {
     final subjects = cardsRepository.getSubjects().value.values.toList();
-    for (final element in subjects) {
-      classTests.addAll(element.classTests);
+    final classTestMap = <Subject, List<ClassTest>>{};
+    for (var subject in subjects) {
+      classTestMap[subject] = cardsRepository.getClassTests(subject.uid) ?? [];
     }
-    return classTests;
+    return classTestMap;
+  }
+
+  Map<int, List<Subject>> getSubjectsMappedToWeekday(){
+    final subjects = cardsRepository.getSubjects().value.values.toList();
+    final subjectsToWeekday = <int,List<Subject>>{};
+    for (final subject in subjects) {
+      for (int i = 0; i<subject.scheduledDays.length; i++) {
+        if(subject.scheduledDays[i] == true){
+          if(subjectsToWeekday[i+1] != null){
+            subjectsToWeekday[i+1]!.add(subject);
+          }else{
+            subjectsToWeekday[i+1] = [subject];
+          }
+        }
+      }
+    }
+    return subjectsToWeekday;
   }
 }

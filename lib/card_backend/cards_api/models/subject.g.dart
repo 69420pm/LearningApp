@@ -22,7 +22,6 @@ class SubjectAdapter extends TypeAdapter<Subject> {
       dateCreated: fields[2] as DateTime,
       icon: fields[3] as int,
       scheduledDays: (fields[4] as List).cast<bool>(),
-      classTests: (fields[5] as List).cast<ClassTest>(),
       streakRelevant: fields[6] as bool,
       disabled: fields[7] as bool,
     );
@@ -31,7 +30,7 @@ class SubjectAdapter extends TypeAdapter<Subject> {
   @override
   void write(BinaryWriter writer, Subject obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.uid)
       ..writeByte(1)
@@ -42,8 +41,6 @@ class SubjectAdapter extends TypeAdapter<Subject> {
       ..write(obj.icon)
       ..writeByte(4)
       ..write(obj.scheduledDays)
-      ..writeByte(5)
-      ..write(obj.classTests)
       ..writeByte(6)
       ..write(obj.streakRelevant)
       ..writeByte(7)

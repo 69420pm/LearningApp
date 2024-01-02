@@ -10,10 +10,12 @@ import 'dart:developer';
 
 import 'package:learning_app/card_backend/cards_api/cards_api.dart';
 import 'package:learning_app/card_backend/cards_api/models/card.dart';
+import 'package:learning_app/card_backend/cards_api/models/class_test.dart';
 import 'package:learning_app/card_backend/cards_api/models/file.dart';
 import 'package:learning_app/card_backend/cards_api/models/folder.dart';
 import 'package:learning_app/card_backend/cards_api/models/search_result.dart';
-import 'package:learning_app/card_backend/cards_api/models/subject.dart';import 'package:flutter/foundation.dart';
+import 'package:learning_app/card_backend/cards_api/models/subject.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:learning_app/editor/helper/data_class_helper.dart';
@@ -25,13 +27,8 @@ import 'package:learning_app/editor/models/editor_tile.dart';
 /// {@endtemplate}
 class HiveCardsApi extends CardsApi {
   /// {@macro hive_cards_api}
-  HiveCardsApi(
-    this._subjectBox,
-    this._folderBox,
-    this._cardBox,
-    this._relationsBox,
-    this._cardContentBox,
-  ) {
+  HiveCardsApi(this._subjectBox, this._folderBox, this._cardBox,
+      this._relationsBox, this._cardContentBox, this._classTestBox) {
     _init();
   }
 
@@ -40,6 +37,7 @@ class HiveCardsApi extends CardsApi {
   final Box<Card> _cardBox;
   final Box<List<String>> _relationsBox;
   final Box<List<dynamic>> _cardContentBox;
+  final Box<List<dynamic>> _classTestBox;
 
   final Map<String, ValueNotifier<List<File>>> _notifiers = {};
   ValueListenable<Box<Subject>>? _subjectStreamController;
@@ -577,5 +575,45 @@ class HiveCardsApi extends CardsApi {
       }
     }
     return childrenIds;
+  }
+
+  @override
+  List<ClassTest>? getClassTestsBySubject(String subjectId) {
+    return _classTestBox.get(subjectId, defaultValue: [])!.map((classTest) {
+      return classTest as ClassTest;
+    }).toList();
+  }
+
+  @override
+  Future<void> saveClassTest(String parentSubjectId, ClassTest classTest) {
+    final savedClassTests = _classTestBox.get(parentSubjectId);
+    if (savedClassTests != null && savedClassTests.isNotEmpty) {
+      for (var i = 0; i < savedClassTests.length; i++) {
+        if (savedClassTests[i].uid == classTest.uid) {
+          savedClassTests[i] = classTest;
+          break;
+        }
+        if (i == savedClassTests.length - 1) {
+          savedClassTests.add(classTest);
+        }
+      }
+      return _classTestBox.put(parentSubjectId, savedClassTests);
+    } else {
+      return _classTestBox.put(parentSubjectId, [classTest]);
+    }
+  }
+
+  @override
+  Future<void> deleteClassTest(String subjectId, String classTestId) {
+    final classTests = _classTestBox.get(subjectId);
+    if (classTests != null) {
+      for (final element in classTests) {
+        if (element.uid == classTestId) {
+          classTests.remove(element);
+          return _classTestBox.put(subjectId, classTests);
+        }
+      }
+    }
+    throw ParentNotFoundException();
   }
 }

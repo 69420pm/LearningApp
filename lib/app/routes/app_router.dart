@@ -1,3 +1,4 @@
+import 'package:learning_app/add_edit_class_test/cubit/add_edit_class_test_cubit.dart';
 import 'package:learning_app/calendar/cubit/calendar_cubit.dart';
 import 'package:learning_app/calendar/view/calendar_page.dart';
 import 'package:learning_app/calendar_backend/calendar_repository.dart';
@@ -176,25 +177,88 @@ class AppRouter {
         );
       case '/subject_overview/edit_subject/add_class_test':
         return MaterialPageRoute(
-          builder: (_) => MultiBlocProvider(
-            providers: [
-              BlocProvider.value(
-                value: _editSubjectCubit,
+          builder: (_) {
+            // ClassTest? classTest;
+            // if (routeSettings.arguments is List<dynamic> &&
+            //     (routeSettings.arguments! as List<dynamic>)[1] is Subject) {
+            //   _editSubjectCubit.init(
+            //     (routeSettings.arguments! as List<dynamic>)[1] as Subject,
+            //   );
+            //   classTest =
+            //       (routeSettings.arguments! as List<dynamic>)[0] as ClassTest;
+            // } else {
+            //   classTest = (routeSettings.arguments as ClassTest?);
+            // }
+
+            return MultiBlocProvider(
+              providers: [
+                // BlocProvider.value(
+                //   value: _editSubjectCubit,
+                // ),
+                BlocProvider(
+                  create: (context) => AddEditClassTestCubit(
+                    parentSubject: routeSettings.arguments! as Subject,
+                    cardsRepository: _cardsRepository,
+                  ),
+                ),
+              ],
+              child: AddClassTestPage(
+                addClassTest: true,
               ),
-            ],
-            child: AddClassTestPage(
-              classTest: routeSettings.arguments as ClassTest?,
-            ),
-          ),
+            );
+          },
+        );
+      case '/subject_overview/edit_subject/edit_class_test':
+        return MaterialPageRoute(
+          builder: (_) {
+            // ClassTest? classTest;
+            // if (routeSettings.arguments is List<dynamic> &&
+            //     (routeSettings.arguments! as List<dynamic>)[1] is Subject) {
+            //   _editSubjectCubit.init(
+            //     (routeSettings.arguments! as List<dynamic>)[1] as Subject,
+            //   );
+            //   classTest =
+            //       (routeSettings.arguments! as List<dynamic>)[0] as ClassTest;
+            // } else {
+            //   classTest = (routeSettings.arguments as ClassTest?);
+            // }
+
+            return MultiBlocProvider(
+              providers: [
+                // BlocProvider.value(
+                //   value: _editSubjectCubit,
+                // ),
+                BlocProvider(
+                  create: (context) => AddEditClassTestCubit(
+                    parentSubject: (routeSettings.arguments!
+                        as List<dynamic>)[1] as Subject,
+                    cardsRepository: _cardsRepository,
+                    classTest: (routeSettings.arguments! as List<dynamic>)[0]
+                        as ClassTest,
+                  ),
+                ),
+              ],
+              child: AddClassTestPage(
+                addClassTest: false,
+              ),
+            );
+          },
         );
       case '/subject_overview/edit_subject/add_class_test/relevant_folders':
         return MaterialPageRoute(
-          builder: (_) => RelevantFoldersPage(
-            cardsRepository: _cardsRepository,
-            subjectToEdit:
-                (routeSettings.arguments! as List<dynamic>)[0] as Subject,
-            classTest:
-                (routeSettings.arguments! as List<dynamic>)[1] as ClassTest,
+          builder: (_) => MultiBlocProvider(
+            providers: [
+              BlocProvider.value(
+                  value: (routeSettings.arguments!) as AddEditClassTestCubit)
+            ],
+            child: RelevantFoldersPage(
+              cardsRepository: _cardsRepository,
+              subjectToEdit:
+                  ((routeSettings.arguments!) as AddEditClassTestCubit)
+                      .parentSubject,
+              classTest: ((routeSettings.arguments!) as AddEditClassTestCubit)
+                  .classTest!,
+            ),
           ),
         );
       case '/learn':

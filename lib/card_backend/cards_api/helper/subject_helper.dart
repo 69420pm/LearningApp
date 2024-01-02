@@ -1,11 +1,15 @@
 import 'package:learning_app/card_backend/cards_api/models/card.dart';
+import 'package:learning_app/card_backend/cards_api/models/class_test.dart';
 import 'package:learning_app/card_backend/cards_api/models/folder.dart';
 import 'package:learning_app/card_backend/cards_api/models/subject.dart';
 class SubjectHelper {
-  static int daysTillNextClassTest(Subject subject, DateTime rightNow) {
+  static int daysTillNextClassTest(List<ClassTest>? classTests, DateTime rightNow) {
+    if(classTests == null){
+      return -1;
+    }
     final classTestDates = <DateTime>[];
     DateTime? nextClassTest;
-    for (final element in subject.classTests) {
+    for (final element in classTests) {
       DateTime? classTestDate;
       try {
         classTestDate = element.date;

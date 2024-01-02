@@ -19,6 +19,7 @@ class ClassTestColumn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<EditSubjectCubit, EditSubjectState>(
+      buildWhen: (previous, current) => current is EditSubjectClassTestChanged,
       builder: (context, state) {
         final classTests = context.read<EditSubjectCubit>().classTests;
         if (classTests.isEmpty) {
@@ -31,9 +32,14 @@ class ClassTestColumn extends StatelessWidget {
                   UIIconButton(
                     icon: UIIcons.add.copyWith(color: UIColors.primary),
                     onPressed: () {
-                      Navigator.of(context).pushNamed(
-                        '/subject_overview/edit_subject/add_class_test',
-                      );
+                      Navigator.of(context)
+                          .pushNamed(
+                              '/subject_overview/edit_subject/add_class_test',
+                              arguments:
+                                  context.read<EditSubjectCubit>().subject)
+                          .then((value) => context
+                              .read<EditSubjectCubit>()
+                              .changeClassTests());
                     },
                   ),
                 ],
@@ -56,9 +62,13 @@ class ClassTestColumn extends StatelessWidget {
                 UIIconButton(
                   icon: UIIcons.add.copyWith(color: UIColors.smallText),
                   onPressed: () {
-                    Navigator.of(context).pushNamed(
-                      '/subject_overview/edit_subject/add_class_test',
-                    );
+                    Navigator.of(context)
+                        .pushNamed(
+                            '/subject_overview/edit_subject/add_class_test',
+                            arguments: context.read<EditSubjectCubit>().subject)
+                        .then((value) => context
+                            .read<EditSubjectCubit>()
+                            .changeClassTests());
                   },
                 ),
               ],
@@ -68,7 +78,11 @@ class ClassTestColumn extends StatelessWidget {
                 shrinkWrap: true,
                 itemCount: classTests.length,
                 itemBuilder: (context, index) {
-                  return ClassTestListTile(classTest: classTests[index]);
+                  return ClassTestListTile(
+                    classTest: classTests[index],
+                    classTestChanged: () =>
+                        context.read<EditSubjectCubit>().changeClassTests(),
+                  );
                 },
               ),
             ),

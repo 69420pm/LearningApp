@@ -66,6 +66,7 @@ Future<void> main() async {
     await Hive.openBox<Card>('cards'),
     await Hive.openBox<List<String>>('relations'),
     await Hive.openBox<List<dynamic>>('card_content'),
+    await Hive.openBox<List<dynamic>>('class_test')
   );
   final cardsRepository = CardsRepository(cardsApi: cardsApi);
 
