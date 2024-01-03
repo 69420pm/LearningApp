@@ -478,7 +478,7 @@ class HiveCardsApi extends CardsApi {
       // get all ids of children
 
       if (file is Folder) {
-        _deleteFolder(file);
+        _deleteFolder(file.uid);
       }
 
       // remove file from folderBox or cardBox and relationBox directly
@@ -492,19 +492,20 @@ class HiveCardsApi extends CardsApi {
     }
   }
 
-  _deleteFolder(Folder parentFolder) {
-    var files = getChildrenById(parentFolder.uid).value;
+  _deleteFolder(String parentFolderUID) {
+    var files =
+        getChildrenById(parentFolderUID).value.map((e) => e.uid).toList();
 
     // iterate over all children of folder
     for (final file in files) {
       // dispose subscribed notifiers
-      disposeNotifier(file.uid);
+      disposeNotifier(file);
       // delete children in card or folder box
       if (_cardBox.get(file) != null) {
         _cardBox.delete(file);
         _cardContentBox.delete(file);
       } else if (_folderBox.get(file) != null) {
-        _deleteFolder(file as Folder); //!rekursion
+        _deleteFolder(file); //!rekursion
       } else {
         throw FolderNotFoundException();
       }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:learning_app/card_backend/cards_repository.dart';
@@ -53,46 +54,20 @@ class LearningCardPage extends StatelessWidget {
             learnCubit.setHeight(index, widgetHeight);
           });
 
-          return Slidable(
-            closeOnScroll: false,
-            enabled: !card.finishedToday && card.turnedOver,
-            startActionPane: ActionPane(
-              motion: const ScrollMotion(),
-              children: [
-                SlidableAction(
-                  onPressed: (context) {
-                    context.read<LearnCubit>().rateCard(LearnFeedback.good);
-                  },
-                  borderRadius: const BorderRadius.horizontal(
-                      right: Radius.circular(UIConstants.cornerRadius)),
-                  backgroundColor: UIColors.green,
-                  foregroundColor: UIColors.background,
-                  icon: Icons.thumb_up,
-                ),
-              ],
+          return ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: screenHeight,
+              minWidth: double.infinity,
             ),
-            endActionPane: ActionPane(
-              motion: const ScrollMotion(),
-              children: [
-                SlidableAction(
-                  onPressed: (context) {
-                    context.read<LearnCubit>().rateCard(LearnFeedback.bad);
-                  },
-                  borderRadius: const BorderRadius.horizontal(
-                      left: Radius.circular(UIConstants.cornerRadius)),
-                  backgroundColor: UIColors.red,
-                  foregroundColor: UIColors.background,
-                  icon: Icons.thumb_down,
-                ),
-              ],
-            ),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight: screenHeight,
-                minWidth: double.infinity,
-              ),
+            child: Container(
+              color: Colors.red,
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
+                onDoubleTap: () {
+                  if (card.turnedOver && !card.finishedToday) {
+                    context.read<LearnCubit>().rateCard(LearnFeedback.good);
+                  }
+                },
                 onTap: () => context.read<LearnCubit>().turnOverCard(index),
                 child: LearningCard(card: card),
               ),
