@@ -474,23 +474,13 @@ class HiveCardsApi extends CardsApi {
           }
         }
       } catch (e) {}
+
       // get all ids of children
 
-      // iterate over all children of folder
-      // for (final childrenId in childrenIds) {
-      //   // dispose subscribed notifiers
-      //   disposeNotifier(childrenId);
-      //   // delete children in card or folder box
-      //   if (_cardBox.get(childrenId) != null) {
-      //     await _cardBox.delete(childrenId);
-      //   } else if (_folderBox.get(childrenId) != null) {
-      //     await _folderBox.delete(childrenId);
-      //   } else {
-      //     throw FolderNotFoundException();
-      //   }
-      //   // delete entries of children in relations box
-      //   await _relationsBox.delete(childrenId);
-      // }
+      if (file is Folder) {
+        _deleteFolder(file);
+      }
+
       // remove file from folderBox or cardBox and relationBox directly
       // box.delete, when object not in box nothing happens
       await _folderBox.delete(fileId);
@@ -499,6 +489,27 @@ class HiveCardsApi extends CardsApi {
       await _relationsBox.delete(fileId);
 
       disposeNotifier(fileId);
+    }
+  }
+
+  _deleteFolder(Folder parentFolder) {
+    var files = getChildrenById(parentFolder.uid).value;
+
+    // iterate over all children of folder
+    for (final file in files) {
+      // dispose subscribed notifiers
+      disposeNotifier(file.uid);
+      // delete children in card or folder box
+      if (_cardBox.get(file) != null) {
+        _cardBox.delete(file);
+        _cardContentBox.delete(file);
+      } else if (_folderBox.get(file) != null) {
+        _deleteFolder(file as Folder); //!rekursion
+      } else {
+        throw FolderNotFoundException();
+      }
+      // delete entries of children in relations box
+      _relationsBox.delete(file);
     }
   }
 
