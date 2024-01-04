@@ -22,10 +22,13 @@ class ImageTile extends StatefulWidget implements EditorTile {
       required this.image,
       this.scale = 1,
       this.alignment = Alignment.center,
-      this.inRenderMode = false}) {
+      this.inRenderMode = false,
+      this.onFinishedLoading}) {
     // dismiss keyboard
     // FocusManager.instance.primaryFocus?.unfocus();
   }
+
+  void Function()? onFinishedLoading;
 
   /// image that gets displayed
   File image;
@@ -150,6 +153,14 @@ class _ImageTileState extends State<ImageTile> {
                             ),
                             child: Image.file(
                               widget.image,
+                              frameBuilder: (context, child, frame,
+                                  wasSynchronouslyLoaded) {
+                                if (!wasSynchronouslyLoaded &&
+                                    widget.onFinishedLoading != null) {
+                                  widget.onFinishedLoading!();
+                                }
+                                return child;
+                              },
                             ),
                           ),
                         ),

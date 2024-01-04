@@ -29,13 +29,14 @@ class LearningCardPage extends StatelessWidget {
       key: globalKey,
       constraints: BoxConstraints(
         minHeight: screenHeight,
-        minWidth: double.infinity,
       ),
       child: BlocBuilder<LearnCubit, LearnCubitState>(
         buildWhen: (previous, current) {
           if (current is NewCardState) return true;
           if (current is CardTurnedState) return true;
           if (current is CardRatedState) return true;
+          if (current is UpdateHeightState) return true;
+
           return false;
         },
         builder: (context, state) {
@@ -49,27 +50,22 @@ class LearningCardPage extends StatelessWidget {
             if (renderBox != null && renderBox.hasSize) {
               widgetHeight = renderBox.size.height;
             }
+
+            print(widgetHeight);
             learnCubit.setHeight(index, widgetHeight);
           });
 
-          return ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight: screenHeight,
-              minWidth: double.infinity,
-            ),
-            child: GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onDoubleTap: () {
-                if (card.turnedOver && !card.finishedToday) {
-                  context.read<LearnCubit>().rateCard(LearnFeedback.good);
-                }
-              },
-              onTap: () => context.read<LearnCubit>().turnOverCard(index),
-              child: LearningCard(
-                card: card,
-                isCurrentIndex:
-                    context.read<LearnCubit>().currentIndex == index,
-              ),
+          return GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onDoubleTap: () {
+              if (card.turnedOver && !card.finishedToday) {
+                context.read<LearnCubit>().rateCard(LearnFeedback.good);
+              }
+            },
+            onTap: () => context.read<LearnCubit>().turnOverCard(index),
+            child: LearningCard(
+              card: card,
+              isCurrentIndex: context.read<LearnCubit>().currentIndex == index,
             ),
           );
         },

@@ -4,6 +4,7 @@ import 'package:learning_app/card_backend/cards_repository.dart';
 import 'package:learning_app/editor/models/editor_tile.dart';
 import 'package:learning_app/editor/widgets/editor_tiles/front_back_seperator_tile.dart';
 import 'package:learning_app/editor/widgets/editor_tiles/header_tile.dart';
+import 'package:learning_app/editor/widgets/editor_tiles/image_tile.dart';
 import 'package:learning_app/editor/widgets/editor_tiles/link_tile.dart';
 import 'package:learning_app/editor/widgets/editor_tiles/text_tile.dart';
 
@@ -11,6 +12,7 @@ class RenderCard extends Card {
   RenderCard({
     required Card card,
     required this.cardsRepository,
+    required this.onImagesLoaded,
     this.turnedOver = false,
     this.gotRatedBad = false,
     this.gotRatedInThisSession = false,
@@ -33,6 +35,7 @@ class RenderCard extends Card {
   bool finishedToday;
 
   final CardsRepository cardsRepository;
+  final void Function() onImagesLoaded;
 
   List<Widget> _frontWidgets = [];
   List<Widget> get frontWidgets => _frontWidgets;
@@ -40,7 +43,11 @@ class RenderCard extends Card {
   List<Widget> _backWidgets = [];
   List<Widget> get backWidgets => _backWidgets;
 
+  List<EditorTile> _editorTiles = [];
+  List<EditorTile> get editorTiles => _editorTiles;
+
   set editorTiles(List<EditorTile> editorTiles) {
+    _editorTiles = editorTiles;
     var indexSpacer =
         editorTiles.indexWhere((element) => element is FrontBackSeparatorTile);
 
@@ -51,6 +58,8 @@ class RenderCard extends Card {
     final widgets = editorTiles.map((e) {
       if (e is LinkTile) {
         e.cardsRepository = cardsRepository;
+      } else if (e is ImageTile) {
+        e.onFinishedLoading = onImagesLoaded;
       }
       e.inRenderMode = true;
       return e as Widget;

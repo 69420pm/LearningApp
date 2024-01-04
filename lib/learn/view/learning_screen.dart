@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/card_backend/cards_repository.dart';
+import 'package:learning_app/editor/widgets/editor_tiles/image_tile.dart';
 import 'package:learning_app/learn/cubit/learn_cubit.dart';
 import 'package:learning_app/learn/cubit/render_card.dart';
 import 'package:learning_app/learn/view/learning_card_page.dart';
@@ -131,6 +132,7 @@ class LearningScreen extends StatelessWidget {
             },
             builder: (context, state) {
               cardsToLearn = context.read<LearnCubit>().cardsToLearn;
+
               if (state is NextLearningSessionState) {
                 controller.animateTo(0,
                     duration: Duration(milliseconds: 400),

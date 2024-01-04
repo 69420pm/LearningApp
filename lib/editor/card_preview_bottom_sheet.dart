@@ -36,6 +36,7 @@ class CardPreviewBottomSheet extends StatelessWidget {
           if (snapshot.hasData) {
             return LearningCard(
               card: RenderCard(
+                  onImagesLoaded: () {},
                   card: card,
                   turnedOver: true,
                   cardsRepository: _cardsRepository)

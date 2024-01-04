@@ -14,37 +14,18 @@ class LearningCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(UIConstants.defaultSize),
-      decoration: BoxDecoration(
-        color: UIColors.overlay,
-        borderRadius:
-            BorderRadius.all(Radius.circular(UIConstants.cornerRadius)),
-      ),
-      child: Column(
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            color: Colors.grey,
-            child: Column(
-              children: [
-                if (card.gotRatedBad) const Text('got bad'),
-                if (card.gotRatedInThisSession) const Text('got rated'),
-                if (card.finishedToday) const Text('finished today'),
-                Text(
-                  card.recallScore.toString(),
-                  style: UIText.titleBig,
-                ),
-                Text(
-                  DateUtils.dateOnly(card.dateToReview)
-                      .toString()
-                      .substring(0, 10),
-                  style: UIText.titleBig,
-                ),
-              ],
+            width: MediaQuery.sizeOf(context).width,
+            decoration: const BoxDecoration(
+              color: UIColors.overlay,
+              borderRadius:
+                  BorderRadius.all(Radius.circular(UIConstants.cornerRadius)),
             ),
-          ),
-          Container(
-            color: Colors.blue,
             child: Column(
               children: [
                 ...card.frontWidgets,
@@ -52,23 +33,20 @@ class LearningCard extends StatelessWidget {
             ),
           ),
           Container(
-            color: Colors.red,
-            child: Visibility(
-              visible: card.turnedOver,
-              child: Column(
-                children: [
-                  ...card.backWidgets,
-                ],
-              ),
+            width: MediaQuery.sizeOf(context).width,
+            decoration: const BoxDecoration(
+              color: UIColors.overlay,
+              borderRadius:
+                  BorderRadius.all(Radius.circular(UIConstants.cornerRadius)),
+            ),
+            child: Column(
+              children: [
+                ...card.backWidgets,
+              ],
             ),
           ),
         ],
       ),
     );
-    // .animate(target: card.turnedOver ? 1 : 0)
-    // .color(end: Colors.blue)
-    // .animate(
-    //     target: card.gotRatedInThisSession && card.finishedToday ? 1 : 0)
-    // .color(end: Colors.green, duration: 1.seconds);
   }
 }

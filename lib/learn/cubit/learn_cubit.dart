@@ -65,11 +65,14 @@ class LearnCubit extends Cubit<LearnCubitState> {
   }
 
   double getOffsetByIndex(int index) {
-    if (index == 1) {}
-    return _cardsToLearn.sublist(0, index).fold<double>(
-          0,
-          (previousValue, element) => previousValue + (element.cardHeight ?? 0),
-        );
+    if (index > 0) {
+      return _cardsToLearn.sublist(0, index).fold<double>(
+            0,
+            (previousValue, element) =>
+                previousValue + (element.cardHeight ?? 0),
+          );
+    }
+    return 0;
   }
 
   double? getOffsetToBiggestCard(double offset, double screenHeight) {
@@ -128,7 +131,11 @@ class LearnCubit extends Cubit<LearnCubitState> {
   Future<List<RenderCard>> loadTodaysCards() async {
     _cardsToLearn = _cardsRepository
         .getAllCardsToLearnForToday()
-        .map((e) => RenderCard(card: e, cardsRepository: _cardsRepository))
+        .map((e) => RenderCard(
+              card: e,
+              cardsRepository: _cardsRepository,
+              onImagesLoaded: () => emit(NewCardState()),
+            ))
         .toList()
       ..sort(
         (a, b) => b.dateCreated.compareTo(a.dateCreated),
