@@ -46,7 +46,7 @@ class LearnCubit extends Cubit<LearnCubitState> {
     return offset;
   }
 
-  void _updateCurrentIndex(int newIndex) {
+  void updateCurrentIndex(int newIndex) {
     if (currentIndex != newIndex) {
       currentIndex = newIndex;
       emit(NewCardState());
@@ -57,8 +57,23 @@ class LearnCubit extends Cubit<LearnCubitState> {
     emit(StopScrollingState());
   }
 
-  double? getOffsetToAnimate(double offset, double screenHeight) {
-    double height = 0;
+  double? getAmountScrolledAway(double offset, double screenHeight) {
+    var a = (getOffsetByIndex(currentIndex + 1) - offset) / screenHeight;
+    if (a > 1) a -= 1;
+    print(a);
+    return 0;
+  }
+
+  double getOffsetByIndex(int index) {
+    if (index == 1) {}
+    return _cardsToLearn.sublist(0, index).fold<double>(
+          0,
+          (previousValue, element) => previousValue + (element.cardHeight ?? 0),
+        );
+  }
+
+  double? getOffsetToBiggestCard(double offset, double screenHeight) {
+    var height = 0.0;
     for (var i = 0; i < _cardsToLearn.length; i++) {
       if (_cardsToLearn[i].cardHeight == null) {
         throw Exception("Height of $i Card not calculated. Try to restart");
@@ -69,19 +84,28 @@ class LearnCubit extends Cubit<LearnCubitState> {
         final border = ((height - offset) / screenHeight).clamp(0, 1);
 
         if (border == 1) {
-          _updateCurrentIndex(i);
+          updateCurrentIndex(i);
           return null;
         } else if (border < 0.5) {
-          _updateCurrentIndex(i + 1);
-
+          if (currentIndex == i && !_cardsToLearn[currentIndex].turnedOver) {
+            return height - screenHeight;
+          }
+          updateCurrentIndex(i + 1);
           return height;
         } else {
-          _updateCurrentIndex(i);
+          updateCurrentIndex(i);
           return height - screenHeight;
         }
       }
     }
     return null;
+  }
+
+  bool isScrollingInsideCurrentCard(double offset, double screenHeight) {
+    var offsetToCurrentCard = getOffsetByIndex(currentIndex);
+    var offsetToNextCard = getOffsetByIndex(currentIndex + 1);
+    return offset > offsetToCurrentCard &&
+        offset < offsetToNextCard - screenHeight;
   }
 
   void startAnimation() {
@@ -179,7 +203,7 @@ class LearnCubit extends Cubit<LearnCubitState> {
           _cardsToLearn[currentIndex].recallScore += 1;
         }
         _cardsToLearn[currentIndex].finishedToday = true;
-        _cardsRepository.saveCard(_cardsToLearn[currentIndex], null, null);
+        // _cardsRepository.saveCard(_cardsToLearn[currentIndex], null, null);
       }
 
       //bad

@@ -40,6 +40,7 @@ class CardPreviewBottomSheet extends StatelessWidget {
                   turnedOver: true,
                   cardsRepository: _cardsRepository)
                 ..editorTiles = snapshot.requireData,
+              isCurrentIndex: false,
             );
           }
           return const Text("loading");

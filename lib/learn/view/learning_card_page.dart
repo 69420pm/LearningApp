@@ -31,6 +31,7 @@ class LearningCardPage extends StatelessWidget {
       key: globalKey,
       constraints: BoxConstraints(
         minHeight: screenHeight,
+        minWidth: double.infinity,
       ),
       child: BlocBuilder<LearnCubit, LearnCubitState>(
         buildWhen: (previous, current) {
@@ -50,7 +51,6 @@ class LearningCardPage extends StatelessWidget {
             if (renderBox != null && renderBox.hasSize) {
               widgetHeight = renderBox.size.height;
             }
-
             learnCubit.setHeight(index, widgetHeight);
           });
 
@@ -59,17 +59,18 @@ class LearningCardPage extends StatelessWidget {
               minHeight: screenHeight,
               minWidth: double.infinity,
             ),
-            child: Container(
-              color: Colors.red,
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onDoubleTap: () {
-                  if (card.turnedOver && !card.finishedToday) {
-                    context.read<LearnCubit>().rateCard(LearnFeedback.good);
-                  }
-                },
-                onTap: () => context.read<LearnCubit>().turnOverCard(index),
-                child: LearningCard(card: card),
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onDoubleTap: () {
+                if (card.turnedOver && !card.finishedToday) {
+                  context.read<LearnCubit>().rateCard(LearnFeedback.good);
+                }
+              },
+              onTap: () => context.read<LearnCubit>().turnOverCard(index),
+              child: LearningCard(
+                card: card,
+                isCurrentIndex:
+                    context.read<LearnCubit>().currentIndex == index,
               ),
             ),
           );

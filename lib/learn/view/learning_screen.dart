@@ -1,5 +1,7 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter/rendering.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/card_backend/cards_repository.dart';
 import 'package:learning_app/learn/cubit/learn_cubit.dart';
@@ -18,6 +20,81 @@ class LearningScreen extends StatelessWidget {
   final controller = ScrollController();
   List<RenderCard> cardsToLearn = List.empty(growable: true);
 
+  bool isFlinging = false;
+  bool inAnimation = false;
+  bool isInterrupted = false;
+
+  void _animateToCurrentCard(BuildContext context) {
+    final offsetToAnimate = context
+        .read<LearnCubit>()
+        .getOffsetByIndex(context.read<LearnCubit>().currentIndex);
+
+    context.read<LearnCubit>().startAnimation();
+
+    controller
+        .animateTo(
+      offsetToAnimate,
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeInOut,
+    )
+        .then((value) {
+      context.read<LearnCubit>().endAnimation();
+    });
+  }
+
+  void _animateToBiggestCard(BuildContext context, double screenHeight) {
+    final offsetToAnimate = context.read<LearnCubit>().getOffsetToBiggestCard(
+          controller.offset,
+          screenHeight,
+        );
+
+    if (offsetToAnimate != null) {
+      context.read<LearnCubit>().startAnimation();
+
+      controller
+          .animateTo(
+        offsetToAnimate,
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
+      )
+          .then((value) {
+        context.read<LearnCubit>().endAnimation();
+      });
+    }
+  }
+
+  void _flingAnimate(BuildContext context, double vel, double screenHeight) {
+    final minFlingVel = 40;
+
+    if (vel.abs() < minFlingVel ||
+        (!context
+                .read<LearnCubit>()
+                .cardsToLearn[context.read<LearnCubit>().currentIndex]
+                .turnedOver) &&
+            vel > 0) {
+      _animateToBiggestCard(context, screenHeight);
+    } else {
+      final currentIndex = context.read<LearnCubit>().currentIndex;
+      final newIndex = vel > 0 ? (currentIndex + 1) : (currentIndex - 1);
+
+      context.read<LearnCubit>().startAnimation();
+      context.read<LearnCubit>().updateCurrentIndex(newIndex);
+
+      final offsetToAnimate =
+          context.read<LearnCubit>().getOffsetByIndex(newIndex);
+
+      controller
+          .animateTo(
+        offsetToAnimate,
+        duration: const Duration(milliseconds: 600),
+        curve: Curves.easeInOut,
+      )
+          .then((value) {
+        context.read<LearnCubit>().endAnimation();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     context.read<LearnCubit>().loadTodaysCards();
@@ -33,6 +110,12 @@ class LearningScreen extends StatelessWidget {
               if (current is FinishedLoadingCardsState) return true;
               if (current is UpdateHeightState) return true;
               if (current is NextLearningSessionState) return true;
+              if (current is StartAnimationState) inAnimation = true;
+
+              if (current is FinishedAnimationState) {
+                inAnimation = false;
+                isInterrupted = false;
+              }
 
               if (current is FinishedLearningState) {
                 Navigator.of(context).pop();
@@ -47,56 +130,62 @@ class LearningScreen extends StatelessWidget {
                     duration: Duration(milliseconds: 400),
                     curve: Curves.easeInOut);
               }
-              return NotificationListener<ScrollNotification>(
-                // onNotification: (notification) {
-                //   if (notification is! ScrollEndNotification) {
-                //     var bottomLimit = context
-                //         .read<LearnCubit>()
-                //         .getBottomLimit(screenHeight, controller.offset,
-                //             notification is ScrollStartNotification);
-
-                //     if (notification.metrics.pixels > bottomLimit &&
-                //         state is! StopScrollingState) {
-                //       context.read<LearnCubit>().stopScrolling();
-                //       controller
-                //           .animateTo(bottomLimit,
-                //               duration: Duration(milliseconds: 300),
-                //               curve: Curves.easeInOut)
-                //           .then((value) =>
-                //               context.read<LearnCubit>().endAnimation());
-                //     }
-                //   }
-                //   return false;
-                // },
-                child: NotificationListener<UserScrollNotification>(
+              return GestureDetector(
+                onTapDown: (details) {
+                  isFlinging = false;
+                  inAnimation = false;
+                  isInterrupted = true;
+                },
+                //called if card got flung, stopped, finger up without movement
+                onTapUp: (details) {
+                  print("fling, stopped, releaded");
+                  _animateToCurrentCard(context);
+                },
+                child: NotificationListener<ScrollNotification>(
                   onNotification: (notification) {
-                    if (notification.direction == ScrollDirection.idle) {
-                      var offsetToAnimate =
-                          context.read<LearnCubit>().getOffsetToAnimate(
-                                controller.offset,
-                                screenHeight,
-                              );
-
-                      if (offsetToAnimate != null &&
-                          controller.position.activity is IdleScrollActivity &&
-                          state is! StopScrollingState &&
-                          state is! StartAnimationState) {
-                        context.read<LearnCubit>().startAnimation();
-
-                        controller
-                            .animateTo(
-                          offsetToAnimate,
-                          duration: const Duration(milliseconds: 200),
-                          curve: Curves.easeInOut,
-                        )
-                            .then((value) {
-                          context.read<LearnCubit>().endAnimation();
-                        });
+                    // Check if the scroll view is being flinged (finger down, moved, finger up)
+                    if (notification is ScrollUpdateNotification &&
+                        notification.dragDetails == null &&
+                        !inAnimation) {
+                      if (isInterrupted) {
+                        _animateToCurrentCard(context);
+                      } else {
+                        if (!isFlinging) {
+                          isFlinging = true;
+                          print("fling start");
+                        }
+                        if (!context
+                            .read<LearnCubit>()
+                            .isScrollingInsideCurrentCard(
+                                controller.offset, screenHeight)) {
+                          _flingAnimate(
+                              context, notification.scrollDelta!, screenHeight);
+                        }
                       }
                     }
+
+                    // Check if Scrollview comes to an stop without getting flung (finger down, moved, stopped, finger up)
+                    else if (notification is UserScrollNotification &&
+                        notification.direction == ScrollDirection.idle &&
+                        !isFlinging &&
+                        !inAnimation &&
+                        !isInterrupted) {
+                      print("no fling end");
+                      _animateToBiggestCard(context, screenHeight);
+                    }
+
+                    // Check if Scrollview got flung (finger down, moved, finger up, scrollview scrolles on, scrollview comes to a stop)
+                    else if (notification is UserScrollNotification &&
+                        notification.direction == ScrollDirection.idle &&
+                        isFlinging) {
+                      isFlinging = false;
+                      print("fling end");
+                    }
+
                     return false;
                   },
                   child: CustomScrollView(
+                    physics: ClampingScrollPhysics(),
                     controller: controller,
                     slivers: [
                       SliverList(
