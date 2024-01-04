@@ -7,8 +7,6 @@ import 'package:learning_app/card_backend/cards_repository.dart';
 import 'package:learning_app/learn/cubit/learn_cubit.dart';
 import 'package:learning_app/learn/cubit/render_card.dart';
 import 'package:learning_app/learn/view/learning_card.dart';
-import 'package:learning_app/ui_components/ui_colors.dart';
-import 'package:learning_app/ui_components/ui_constants.dart';
 
 class LearningCardPage extends StatelessWidget {
   LearningCardPage({

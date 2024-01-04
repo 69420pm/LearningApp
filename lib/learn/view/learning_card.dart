@@ -17,7 +17,7 @@ class LearningCard extends StatelessWidget {
     return Container(
       margin: EdgeInsets.all(UIConstants.defaultSize),
       decoration: BoxDecoration(
-        color: isCurrentIndex ? UIColors.primary : UIColors.overlay,
+        color: UIColors.overlay,
         borderRadius:
             BorderRadius.all(Radius.circular(UIConstants.cornerRadius)),
       ),

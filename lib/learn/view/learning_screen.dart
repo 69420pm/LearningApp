@@ -86,8 +86,14 @@ class LearningScreen extends StatelessWidget {
       controller
           .animateTo(
         offsetToAnimate,
-        duration: const Duration(milliseconds: 600),
-        curve: Curves.easeInOut,
+        duration: Duration(
+            milliseconds: ((2 *
+                        (offsetToAnimate - controller.offset) /
+                        controller.position.activity!.velocity) *
+                    1000)
+                .round()
+                .abs()),
+        curve: Curves.linear,
       )
           .then((value) {
         context.read<LearnCubit>().endAnimation();
