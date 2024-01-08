@@ -29,7 +29,7 @@ class UICard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: double.infinity,
+        // width: double.infinity,
         decoration: BoxDecoration(
           color: color ?? UIColors.overlay,
           borderRadius: const BorderRadius.all(

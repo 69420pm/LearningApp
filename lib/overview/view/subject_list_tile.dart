@@ -20,7 +20,7 @@ class SubjectListTile extends StatelessWidget {
     classTests ??= context
         .read<OverviewCubit>()
         .cardsRepository
-        .getClassTests(subject.uid);
+        .getClassTestsBySubjectId(subject.uid);
     final nextClassTestInDays = SubjectHelper.daysTillNextClassTest(
       classTests,
       DateTime.now(),

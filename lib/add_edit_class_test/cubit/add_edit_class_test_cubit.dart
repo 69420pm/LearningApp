@@ -49,6 +49,6 @@ class AddEditClassTestCubit extends Cubit<AddEditClassTestState> {
   }
 
   Future<void> deleteClassTest() async {
-    await cardsRepository.deleteClassTest(parentSubject.uid, classTest!.uid);
+    await cardsRepository.deleteClassTest(parentSubject.uid);
   }
 }

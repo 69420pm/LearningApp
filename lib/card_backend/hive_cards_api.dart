@@ -27,8 +27,15 @@ import 'package:learning_app/editor/models/editor_tile.dart';
 /// {@endtemplate}
 class HiveCardsApi extends CardsApi {
   /// {@macro hive_cards_api}
-  HiveCardsApi(this._subjectBox, this._folderBox, this._cardBox,
-      this._relationsBox, this._cardContentBox, this._classTestBox) {
+  HiveCardsApi(
+      this._subjectBox,
+      this._folderBox,
+      this._cardBox,
+      this._relationsBox,
+      this._cardContentBox,
+      this._classTestBox,
+      this._subjectToClassTest,
+      this._dateToClassTest) {
     _init();
   }
 
@@ -37,7 +44,9 @@ class HiveCardsApi extends CardsApi {
   final Box<Card> _cardBox;
   final Box<List<String>> _relationsBox;
   final Box<List<dynamic>> _cardContentBox;
-  final Box<List<dynamic>> _classTestBox;
+  final Box<ClassTest> _classTestBox;
+  final Box<List<String>> _subjectToClassTest;
+  final Box<List<String>> _dateToClassTest;
 
   final Map<String, ValueNotifier<List<File>>> _notifiers = {};
   ValueListenable<Box<Subject>>? _subjectStreamController;
@@ -578,42 +587,103 @@ class HiveCardsApi extends CardsApi {
   }
 
   @override
-  List<ClassTest>? getClassTestsBySubject(String subjectId) {
-    return _classTestBox.get(subjectId, defaultValue: [])!.map((classTest) {
-      return classTest as ClassTest;
-    }).toList();
+  List<ClassTest>? getClassTestsBySubjectId(String subjectId) {
+    final classTestIds = _subjectToClassTest.get(subjectId);
+    final classTests = <ClassTest>[];
+    if (classTestIds == null || classTestIds.isEmpty) {
+      return [];
+    }
+    for (final id in classTestIds) {
+      final classTest = _classTestBox.get(id);
+      if (classTest != null) {
+        classTests.add(classTest);
+      }
+    }
+    return classTests;
   }
 
   @override
-  Future<void> saveClassTest(String parentSubjectId, ClassTest classTest) {
-    final savedClassTests = _classTestBox.get(parentSubjectId);
-    if (savedClassTests != null && savedClassTests.isNotEmpty) {
-      for (var i = 0; i < savedClassTests.length; i++) {
-        if (savedClassTests[i].uid == classTest.uid) {
-          savedClassTests[i] = classTest;
-          break;
-        }
-        if (i == savedClassTests.length - 1) {
-          savedClassTests.add(classTest);
+  Future<void> saveClassTest(
+      String parentSubjectId, ClassTest classTest) async {
+    final previousClassTest = _classTestBox.get(classTest.uid);
+
+    await _classTestBox.put(classTest.uid, classTest);
+
+    if (previousClassTest == null) {
+      // store in subjectClassTestBox
+      final subjectClassTests = _subjectToClassTest.get(parentSubjectId) ?? [];
+      subjectClassTests.add(classTest.uid);
+      await _subjectToClassTest.put(parentSubjectId, subjectClassTests);
+    }
+
+    if (previousClassTest == null ||
+        previousClassTest.date.toIso8601String() !=
+            classTest.date.toIso8601String()) {
+      final dateTimeDay = DateTime(
+          classTest.date.year, classTest.date.month, classTest.date.day);
+      classTest = classTest.copyWith(date: dateTimeDay);
+
+      // store in dateClassTestBox
+      final dateClassTests =
+          _dateToClassTest.get(dateTimeDay.toIso8601String()) ?? [];
+      dateClassTests.add(classTest.uid);
+      await _dateToClassTest.put(dateTimeDay.toIso8601String(), dateClassTests);
+
+       // delete old entry in dateClassTestBox
+    _dateToClassTest.toMap().forEach((key, classTestIds) {
+      for (final classTestId in classTestIds) {
+        if (classTestId == classTestId) {
+          classTestIds.remove(classTestId);
+          _dateToClassTest.put(key, classTestIds);
         }
       }
-      return _classTestBox.put(parentSubjectId, savedClassTests);
-    } else {
-      return _classTestBox.put(parentSubjectId, [classTest]);
+    });
     }
   }
 
   @override
-  Future<void> deleteClassTest(String subjectId, String classTestId) {
-    final classTests = _classTestBox.get(subjectId);
-    if (classTests != null) {
-      for (final element in classTests) {
-        if (element.uid == classTestId) {
-          classTests.remove(element);
-          return _classTestBox.put(subjectId, classTests);
+  Future<void> deleteClassTest(String classTestId) async {
+    await _classTestBox.delete(classTestId);
+    // delete in subjectClassTestBox
+    _subjectToClassTest.toMap().forEach((key, classTestIds) {
+      for (final classTestId in classTestIds) {
+        if (classTestId == classTestId) {
+          classTestIds.remove(classTestId);
+          _subjectToClassTest.put(key, classTestIds);
         }
       }
+    });
+
+    // delete in dateClassTestBox
+    _dateToClassTest.toMap().forEach((key, classTestIds) {
+      for (final classTestId in classTestIds) {
+        if (classTestId == classTestId) {
+          classTestIds.remove(classTestId);
+          _dateToClassTest.put(key, classTestIds);
+        }
+      }
+    });
+  }
+
+  @override
+  ClassTest? getClassTestById(String classTestUID) {
+    return _classTestBox.get(classTestUID);
+  }
+
+  @override
+  List<ClassTest>? getClassTestsByDate(DateTime dateTime) {
+    final dateTimeDay = DateTime(dateTime.year, dateTime.month, dateTime.day);
+    final classTestIds = _dateToClassTest.get(dateTimeDay.toIso8601String());
+    final classTests = <ClassTest>[];
+    if (classTestIds == null || classTestIds.isEmpty) {
+      return [];
     }
-    throw ParentNotFoundException();
+    for (final element in classTestIds) {
+      final classTest = _classTestBox.get(element);
+      if (classTest != null) {
+        classTests.add(classTest);
+      }
+    }
+    return classTests;
   }
 }

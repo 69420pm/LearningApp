@@ -65,7 +65,7 @@ abstract class CardsApi {
   Future<void> deleteFiles(List<String> ids);
 
   /// delete class test
-  Future<void> deleteClassTest(String subjectId, String classTestId);
+  Future<void> deleteClassTest(String classTestId);
 
   /// Move folder and every children to [newParentId]
   Future<void> moveFiles(List<String> fileIds, String newParentId);
@@ -95,7 +95,11 @@ abstract class CardsApi {
   List<String> getParentIdsFromChildId(String id);
 
   /// get classTests from subject
-  List<ClassTest>? getClassTestsBySubject(String subjectId);
+  List<ClassTest>? getClassTestsBySubjectId(String subjectId);
+
+  List<ClassTest>? getClassTestsByDate(DateTime dateTime);
+
+  ClassTest? getClassTestById(String classTestUID);
 
   /// folder, subject or card from id
   Object? objectFromId(String id);

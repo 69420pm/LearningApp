@@ -93,8 +93,8 @@ class CardsRepository {
   Future<void> deleteFiles(List<String> ids) => _cardsApi.deleteFiles(ids);
 
   /// delete class test
-  Future<void> deleteClassTest(String subjectId, String classTestId) =>
-      _cardsApi.deleteClassTest(subjectId, classTestId);
+  Future<void> deleteClassTest(String classTestId) =>
+      _cardsApi.deleteClassTest(classTestId);
 
   /// Move folder and every children to [newParentId]
   Future<void> moveFiles(List<String> fileIds, String newParentId) =>
@@ -117,8 +117,8 @@ class CardsRepository {
       _cardsApi.getParentIdsFromChildId(id);
 
   /// get classTests from subject
-  List<ClassTest>? getClassTests(String subjectId) =>
-      _cardsApi.getClassTestsBySubject(subjectId);
+  List<ClassTest>? getClassTestsBySubjectId(String subjectId) =>
+      _cardsApi.getClassTestsBySubjectId(subjectId);
 
   /// folder subject or card form id
   Object? objectFromId(String id) => _cardsApi.objectFromId(id);
@@ -129,4 +129,10 @@ class CardsRepository {
   /// get front and back in plain text
   List<String> getTextFromCard(String cardId, {bool onlyFront = false}) =>
       _cardsApi.getTextFromCard(cardId, onlyFront);
+
+  ClassTest? getClassTestById(String classTestUID) =>
+      _cardsApi.getClassTestById(classTestUID);
+
+  List<ClassTest>? getClassTestsByDate(DateTime dateTime) =>
+      _cardsApi.getClassTestsByDate(dateTime);
 }

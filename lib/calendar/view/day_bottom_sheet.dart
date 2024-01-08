@@ -16,11 +16,12 @@ import 'package:learning_app/ui_components/widgets/ui_description.dart';
 import 'package:learning_app/ui_components/widgets/ui_label_row.dart';
 
 class DayBottomSheet extends StatelessWidget {
-  const DayBottomSheet(
-      {super.key,
-      required this.dateTime,
-      required this.classTests,
-      required this.subjects});
+  const DayBottomSheet({
+    super.key,
+    required this.dateTime,
+    required this.classTests,
+    required this.subjects,
+  });
   final DateTime dateTime;
   final List<Subject> subjects;
   final Map<Subject, List<ClassTest>> classTests;
@@ -47,7 +48,8 @@ class DayBottomSheet extends StatelessWidget {
                 );
               } else {
                 return BlocBuilder<CalendarCubit, CalendarState>(
-                  buildWhen: (previous, current) => current is ClassTestChanged,
+                  buildWhen: (previous, current) =>
+                      current is CalendarClassTestChanged,
                   builder: (context, state) {
                     return ListView.builder(
                       shrinkWrap: true,
@@ -63,7 +65,9 @@ class DayBottomSheet extends StatelessWidget {
                               subject: currentKey,
                               classTestChanged: () {
                                 context.read<CalendarCubit>().changeClassTest(
-                                    classTests[currentKey]![i]);
+                                      classTests[currentKey]![i],
+                                    );
+                                    Navigator.pop(context);
                               },
                             );
                           },
@@ -104,14 +108,15 @@ class DayBottomSheet extends StatelessWidget {
             labelText: 'Subjects',
           ),
           const SizedBox(height: UIConstants.itemPadding),
-          Builder(builder: (context) {
-            if (subjects.isEmpty) {
-              return Text(
-                'no subjects scheduled on this day',
-                style: UIText.normal.copyWith(color: UIColors.smallText),
-              );
-            }
-            return ListView.builder(
+          Builder(
+            builder: (context) {
+              if (subjects.isEmpty) {
+                return Text(
+                  'no subjects scheduled on this day',
+                  style: UIText.normal.copyWith(color: UIColors.smallText),
+                );
+              }
+              return ListView.builder(
                 shrinkWrap: true,
                 itemCount: subjects.length,
                 itemBuilder: (context, index) {
@@ -121,66 +126,11 @@ class DayBottomSheet extends StatelessWidget {
                         .read<CalendarCubit>()
                         .getClassTests()[subjects[index]],
                   );
-                });
-          })
+                },
+              );
+            },
+          ),
         ],
-      ),
-    );
-  }
-}
-
-class _ClassTestListTile extends StatelessWidget {
-  _ClassTestListTile(
-      {super.key, required this.classTest, required this.subject});
-  ClassTest classTest;
-
-  /// give subject when cubit doesn't know about parent subject of classTest
-  Subject subject;
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () {
-        Navigator.of(context)
-            .pushNamed(
-              '/subject_overview/edit_subject',
-              arguments: subject,
-            )
-            .then(
-              (value) => Navigator.of(context).pushNamed(
-                  '/subject_overview/edit_subject/add_class_test',
-                  arguments: classTest),
-            );
-        // context.read<EditSubjectCubit>().init(subject);
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(UIConstants.itemPadding / 2),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                UIIcons.classTest.copyWith(size: UIConstants.iconSizeSmall),
-                const SizedBox(
-                  width: UIConstants.itemPadding / 1.6,
-                ),
-                Text(classTest.name, style: UIText.label),
-              ],
-            ),
-            Row(
-              children: [
-                Text(
-                  DateFormat('MM/dd/yyyy').format(classTest.date),
-                  style: UIText.label,
-                ),
-                const SizedBox(
-                  width: UIConstants.itemPadding * 0.5,
-                ),
-                UIIcons.arrowForwardSmall.copyWith(color: UIColors.smallText),
-              ],
-            ),
-          ],
-        ),
       ),
     );
   }

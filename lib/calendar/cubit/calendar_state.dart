@@ -21,9 +21,23 @@ final class CalendarShowMonth extends CalendarState {
       ];
 }
 
-final class ClassTestChanged extends CalendarState {
+final class CalendarClassTestChanged extends CalendarState {
   ClassTest classTest;
-  ClassTestChanged({required this.classTest});
+  CalendarClassTestChanged({required this.classTest});
   @override
   List<Object> get props => [classTest];
+}
+
+final class CalendarStreakChanged extends CalendarState {
+  int streak;
+  CalendarStreakChanged({required this.streak});
+  @override
+  List<Object> get props => [streak];
+}
+
+final class CalendarStreakSaverChanged extends CalendarState {
+  int streakSaver;
+  CalendarStreakSaverChanged({required this.streakSaver});
+  @override
+  List<Object> get props => [streakSaver];
 }

@@ -13,4 +13,11 @@ abstract class CalendarApi {
 
   /// get calendarDay by given a datetime
   Future<CalendarDay?> getCalendarDayByDate(DateTime dateTime);
+
+  Future<int> getStreakSaver();
+
+  Future<void> saveStreakSaver(int streakSaver);
+
+  /// change streak completed of calendarDay today
+  Future<void> changeStreakToday(bool streakCompleted);
 }

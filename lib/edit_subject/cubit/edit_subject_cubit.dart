@@ -17,7 +17,7 @@ class EditSubjectCubit extends Cubit<EditSubjectState> {
   void init(Subject subject) {
     selectedDays = subject.scheduledDays;
 
-    classTests = cardsRepository.getClassTests(subject.uid) ?? [];
+    classTests = cardsRepository.getClassTestsBySubjectId(subject.uid) ?? [];
     this.subject = subject;
     emit(EditSubjectUpdateWeekdays(selectedDays: selectedDays));
   }
@@ -53,7 +53,7 @@ class EditSubjectCubit extends Cubit<EditSubjectState> {
   }
 
   void changeClassTests() {
-    classTests = cardsRepository.getClassTests(subject!.uid) ?? [];
+    classTests = cardsRepository.getClassTestsBySubjectId(subject!.uid) ?? [];
     emit(EditSubjectClassTestChanged(classTests: classTests));
   }
 
