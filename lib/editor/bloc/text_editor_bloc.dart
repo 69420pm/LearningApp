@@ -15,7 +15,8 @@ import 'package:learning_app/editor/widgets/editor_tiles/text_tile.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
-import 'package:learning_app/ui_components/ui_text.dart';part 'text_editor_event.dart';
+import 'package:learning_app/ui_components/ui_text.dart';
+part 'text_editor_event.dart';
 part 'text_editor_state.dart';
 
 /// bloc for handling all text editor relevant state management
@@ -280,12 +281,13 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
           final eTi1 = editorTiles[i - 1] as ListEditorTile;
 
           if (eTi.orderNumber != eTi1.orderNumber + 1) {
-            editorTiles[i] = eTi.copyWith(orderNumber: eTi1.orderNumber + 1) as EditorTile;
+            editorTiles[i] =
+                eTi.copyWith(orderNumber: eTi1.orderNumber + 1) as EditorTile;
           }
         } else {
           if ((editorTiles[i] as ListEditorTile).orderNumber != 1) {
-            editorTiles[i] =
-                (editorTiles[i] as ListEditorTile).copyWith(orderNumber: 1) as EditorTile;
+            editorTiles[i] = (editorTiles[i] as ListEditorTile)
+                .copyWith(orderNumber: 1) as EditorTile;
           }
         }
       }
@@ -355,6 +357,7 @@ class TextEditorBloc extends Bloc<TextEditorEvent, TextEditorState> {
             askCardsInverted: false,
             typeAnswer: false,
             recallScore: 0,
+            //gets set to next learning session in learnCubit
             dateToReview: DateTime.now(),
             name: '',
           ),

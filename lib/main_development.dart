@@ -5,6 +5,8 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
+import 'dart:io';
+
 import 'package:flutter/material.dart' hide Card;
 import 'package:hive/hive.dart';
 import 'package:learning_app/app/app.dart';
@@ -23,6 +25,8 @@ import 'package:learning_app/editor/models/editor_data_classes/front_back_sepera
 import 'package:learning_app/ui_components/backend/hive_ui_api.dart';
 import 'package:learning_app/ui_components/backend/ui_repository.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
+import 'package:flutter/foundation.dart' show kIsWeb;
+
 import 'package:learning_app/editor/models/editor_data_classes/audio_tile_dc.dart';
 import 'package:learning_app/editor/models/editor_data_classes/callout_tile_dc.dart';
 import 'package:learning_app/editor/models/editor_data_classes/char_tile_dc.dart';
@@ -38,10 +42,14 @@ import 'package:learning_app/editor/models/editor_data_classes/text_tile_dc.dart
 Future<void> main() async {
   /// Init hive
   WidgetsFlutterBinding.ensureInitialized();
-  final appDocumentDirectory =
-      await path_provider.getApplicationDocumentsDirectory();
+
+  Directory? appDocumentDirectory;
+  if (!kIsWeb) {
+    appDocumentDirectory =
+        await path_provider.getApplicationDocumentsDirectory();
+  }
   Hive
-    ..init(appDocumentDirectory.path)
+    ..init(appDocumentDirectory?.path)
     ..registerAdapter(SubjectAdapter())
     ..registerAdapter(CardAdapter())
     ..registerAdapter(FolderAdapter())

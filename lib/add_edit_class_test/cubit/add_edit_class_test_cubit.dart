@@ -9,12 +9,11 @@ import 'package:learning_app/edit_subject/cubit/edit_subject_cubit.dart';
 part 'add_edit_class_test_state.dart';
 
 class AddEditClassTestCubit extends Cubit<AddEditClassTestState> {
-  AddEditClassTestCubit(
-      {required this.cardsRepository,
-      required this.parentSubject,
-      this.classTest,
-      })
-      : super(AddEditClassTestInitial(classTest: classTest)) {
+  AddEditClassTestCubit({
+    required this.cardsRepository,
+    required this.parentSubject,
+    this.classTest,
+  }) : super(AddEditClassTestInitial(classTest: classTest)) {
     classTest ??= ClassTest(
       uid: Uid().uid(),
       name: 'New Class Test',
@@ -49,6 +48,8 @@ class AddEditClassTestCubit extends Cubit<AddEditClassTestState> {
   }
 
   Future<void> deleteClassTest() async {
-    await cardsRepository.deleteClassTest(parentSubject.uid);
+    if (classTest != null) {
+      await cardsRepository.deleteClassTest(classTest!.uid);
+    }
   }
 }

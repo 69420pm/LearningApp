@@ -79,8 +79,8 @@ Future<void> main() async {
 
   await bootstrap(
     () => App(
-      cardsRepository: cardsRepository,
       calendarRepository: calendarRepository,
+      cardsRepository: cardsRepository,
     ),
   );
 }

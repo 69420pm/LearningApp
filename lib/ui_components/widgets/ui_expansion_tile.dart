@@ -20,7 +20,7 @@ class UIExpansionTile extends StatefulWidget {
   Color? iconColor;
   bool iconOnTheRight;
   Border? border;
-  bool changeExtentionState;
+  bool changeExtensionState;
 
   UIExpansionTile({
     super.key,
@@ -36,7 +36,7 @@ class UIExpansionTile extends StatefulWidget {
     this.iconColor,
     this.iconOnTheRight = false,
     this.border,
-    this.changeExtentionState = false,
+    this.changeExtensionState = false,
   }) {
     iconColor ??= textColor;
   }
@@ -140,7 +140,7 @@ class _UIExpansionTileState extends State<UIExpansionTile>
     )
         .animate(
             delay: const Duration(milliseconds: 100),
-            target: widget.changeExtentionState == true ? 1 : 0,
+            target: widget.changeExtensionState == true ? 1 : 0,
             onComplete: (controller) => controller.reset(),
             onPlay: (controller) => controller.reset(),
             autoPlay: false)
@@ -167,8 +167,8 @@ class _UIExpansionTileState extends State<UIExpansionTile>
   }
 
   void changeState() async {
-    if (widget.changeExtentionState) {
-      widget.changeExtentionState = false;
+    if (widget.changeExtensionState) {
+      widget.changeExtensionState = false;
       update();
     }
   }

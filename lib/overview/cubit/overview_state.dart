@@ -1,6 +1,8 @@
 part of 'overview_cubit.dart';
 
 @immutable
-class OverviewState {}
+class OverviewCubitState {}
 
-class OverviewInitial extends OverviewState {}
+class OverviewInitialState extends OverviewCubitState {}
+
+class UpdateLearnAllButtonState extends OverviewCubitState {}

@@ -28,7 +28,9 @@ class SubjectListTile extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => Navigator.of(context)
-          .pushNamed('/subject_overview', arguments: subject),
+          .pushNamed('/subject_overview', arguments: subject)
+          .then(
+              (value) => context.read<OverviewCubit>().updateLearnAllButton()),
       child: Padding(
         padding: const EdgeInsets.only(bottom: UIConstants.defaultSize),
         child: Row(

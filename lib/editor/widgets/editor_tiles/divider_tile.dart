@@ -9,23 +9,34 @@ import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.dart';
 
 class DividerTile extends StatelessWidget implements EditorTile {
-  DividerTile({super.key});
+  DividerTile({
+    super.key,
+    this.inRenderMode = false,
+  });
 
   @override
   FocusNode? focusNode;
+
+  @override
+  TextFieldController? textFieldController;
+
+  @override
+  bool inRenderMode;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        UIBottomSheet.showUIBottomSheet(
-          context: context,
-          builder: (_) => BlocProvider.value(
-            value: context.read<TextEditorBloc>(),
-            child: DividerBottomSheet(parentTile: this),
-          ),
-        );
+        if (!inRenderMode) {
+          UIBottomSheet.showUIBottomSheet(
+            context: context,
+            builder: (_) => BlocProvider.value(
+              value: context.read<TextEditorBloc>(),
+              child: DividerBottomSheet(parentTile: this),
+            ),
+          );
+        }
       },
       child: const Padding(
         padding:
@@ -37,14 +48,4 @@ class DividerTile extends StatelessWidget implements EditorTile {
       ),
     );
   }
-
-  @override
-  TextFieldController? textFieldController;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is DividerTile &&
-          runtimeType == other.runtimeType &&
-          focusNode == other.focusNode;
 }

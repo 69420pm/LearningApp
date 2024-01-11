@@ -4,17 +4,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:learning_app/editor/bloc/text_editor_bloc.dart';
 import 'package:learning_app/editor/models/editor_tile.dart';
-import 'package:learning_app/editor/models/read_only_interactable.dart';
 import 'package:learning_app/editor/models/text_field_controller.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
 import 'package:learning_app/ui_components/ui_text.dart';
-import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';class AudioTile extends StatefulWidget
-    implements EditorTile, ReadOnlyInteractable {
-  AudioTile({super.key, required this.filePath, this.interactable = true});
+import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
+
+class AudioTile extends StatefulWidget implements EditorTile {
+  AudioTile({
+    super.key,
+    required this.filePath,
+    this.inRenderMode = false,
+  }) : super();
 
   String filePath;
+
   @override
   FocusNode? focusNode;
 
@@ -22,10 +27,10 @@ import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
   TextFieldController? textFieldController;
 
   @override
-  State<AudioTile> createState() => _AudioTileState();
+  bool inRenderMode;
 
   @override
-  bool interactable;
+  State<AudioTile> createState() => _AudioTileState();
 }
 
 class _AudioTileState extends State<AudioTile> with TickerProviderStateMixin {
@@ -176,20 +181,20 @@ class _AudioTileState extends State<AudioTile> with TickerProviderStateMixin {
                   ),
                 ),
               ),
-              UIIconButton(
-                icon: UIIcons.cancel
-                    .copyWith(color: UIColors.background, size: 28),
-                animateToWhite: true,
-                onPressed: () {
-                  if(!widget.interactable) return;
-                  context.read<TextEditorBloc>().add(
-                        TextEditorRemoveEditorTile(
-                          tileToRemove: widget,
-                          context: context,
-                        ),
-                      );
-                },
-              ),
+              if (!widget.inRenderMode)
+                UIIconButton(
+                  icon: UIIcons.cancel
+                      .copyWith(color: UIColors.background, size: 28),
+                  animateToWhite: true,
+                  onPressed: () {
+                    context.read<TextEditorBloc>().add(
+                          TextEditorRemoveEditorTile(
+                            tileToRemove: widget,
+                            context: context,
+                          ),
+                        );
+                  },
+                ),
             ],
           ),
         ),

@@ -8,6 +8,8 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:flutter/material.dart' hide Card;
+import 'package:intl/intl.dart';
 import 'package:learning_app/card_backend/cards_api/cards_api.dart';
 import 'package:learning_app/card_backend/cards_api/models/card.dart';
 import 'package:learning_app/card_backend/cards_api/models/class_test.dart';
@@ -60,9 +62,13 @@ class HiveCardsApi extends CardsApi {
   }
 
   @override
-  List<Card> learnAllCards() {
-    // TODO: implement learnAllCards
-    throw UnimplementedError();
+  List<Card> getAllCardsToLearnForToday() {
+    final now = DateUtils.dateOnly(DateTime.now());
+    var a = _cardBox.values.where((element) {
+      final dateToReview = DateUtils.dateOnly(element.dateToReview);
+      return dateToReview.isBefore(now) || dateToReview.isAtSameMomentAs(now);
+    }).toList();
+    return a;
   }
 
   @override
@@ -474,23 +480,13 @@ class HiveCardsApi extends CardsApi {
           }
         }
       } catch (e) {}
+
       // get all ids of children
 
-      // iterate over all children of folder
-      // for (final childrenId in childrenIds) {
-      //   // dispose subscribed notifiers
-      //   disposeNotifier(childrenId);
-      //   // delete children in card or folder box
-      //   if (_cardBox.get(childrenId) != null) {
-      //     await _cardBox.delete(childrenId);
-      //   } else if (_folderBox.get(childrenId) != null) {
-      //     await _folderBox.delete(childrenId);
-      //   } else {
-      //     throw FolderNotFoundException();
-      //   }
-      //   // delete entries of children in relations box
-      //   await _relationsBox.delete(childrenId);
-      // }
+      if (file is Folder) {
+        _deleteFolder(file.uid);
+      }
+
       // remove file from folderBox or cardBox and relationBox directly
       // box.delete, when object not in box nothing happens
       await _folderBox.delete(fileId);
@@ -499,6 +495,28 @@ class HiveCardsApi extends CardsApi {
       await _relationsBox.delete(fileId);
 
       disposeNotifier(fileId);
+    }
+  }
+
+  _deleteFolder(String parentFolderUID) {
+    var files =
+        getChildrenById(parentFolderUID).value.map((e) => e.uid).toList();
+
+    // iterate over all children of folder
+    for (final file in files) {
+      // dispose subscribed notifiers
+      disposeNotifier(file);
+      // delete children in card or folder box
+      if (_cardBox.get(file) != null) {
+        _cardBox.delete(file);
+        _cardContentBox.delete(file);
+      } else if (_folderBox.get(file) != null) {
+        _deleteFolder(file); //!rekursion
+      } else {
+        throw FolderNotFoundException();
+      }
+      // delete entries of children in relations box
+      _relationsBox.delete(file);
     }
   }
 
@@ -629,40 +647,54 @@ class HiveCardsApi extends CardsApi {
       dateClassTests.add(classTest.uid);
       await _dateToClassTest.put(dateTimeDay.toIso8601String(), dateClassTests);
 
-       // delete old entry in dateClassTestBox
-    _dateToClassTest.toMap().forEach((key, classTestIds) {
-      for (final classTestId in classTestIds) {
-        if (classTestId == classTestId) {
-          classTestIds.remove(classTestId);
-          _dateToClassTest.put(key, classTestIds);
+      // delete old entry in dateClassTestBox
+      _dateToClassTest.toMap().forEach((key, classTestIds) {
+        for (final classTestId in classTestIds) {
+          if (classTestId == classTestId) {
+            classTestIds.remove(classTestId);
+            _dateToClassTest.put(key, classTestIds);
+          }
         }
-      }
-    });
+      });
     }
   }
 
   @override
   Future<void> deleteClassTest(String classTestId) async {
     await _classTestBox.delete(classTestId);
+    String? currentKey;
+    List<String>? currentClassTestIds;
     // delete in subjectClassTestBox
     _subjectToClassTest.toMap().forEach((key, classTestIds) {
-      for (final classTestId in classTestIds) {
-        if (classTestId == classTestId) {
+      for (final classTestId_ in classTestIds) {
+        if (classTestId_ == classTestId) {
           classTestIds.remove(classTestId);
-          _subjectToClassTest.put(key, classTestIds);
+          currentKey = key as String?;
+          currentClassTestIds = classTestIds;
+          break;
         }
       }
     });
+    if (currentClassTestIds != null) {
+      await _subjectToClassTest.put(currentKey, currentClassTestIds!);
+    }
 
+    String? dateKey;
+    List<String>? dateClassTestIds;
     // delete in dateClassTestBox
     _dateToClassTest.toMap().forEach((key, classTestIds) {
-      for (final classTestId in classTestIds) {
-        if (classTestId == classTestId) {
+      for (final classTestId_ in classTestIds) {
+        if (classTestId_ == classTestId) {
           classTestIds.remove(classTestId);
-          _dateToClassTest.put(key, classTestIds);
+          dateKey = key as String;
+          dateClassTestIds = classTestIds;
+          break;
         }
       }
     });
+    if (dateClassTestIds != null) {
+      await _dateToClassTest.put(dateKey, dateClassTestIds!);
+    }
   }
 
   @override

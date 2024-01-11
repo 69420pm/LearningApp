@@ -27,7 +27,7 @@ import 'package:learning_app/ui_components/widgets/ui_expansion_tile.dart';class
     return Padding(
       padding: const EdgeInsets.only(bottom: UIConstants.defaultSize),
       child: UIExpansionTile(
-        changeExtentionState: isHovered,
+        changeExtensionState: isHovered,
         backgroundColor: isHovered
             ? UIColors.onOverlayCard
             : isSoftSelected || isSelected

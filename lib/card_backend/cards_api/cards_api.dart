@@ -10,7 +10,8 @@ import 'package:learning_app/card_backend/cards_api/models/class_test.dart';
 import 'package:learning_app/card_backend/cards_api/models/file.dart';
 import 'package:learning_app/card_backend/cards_api/models/folder.dart';
 import 'package:learning_app/card_backend/cards_api/models/search_result.dart';
-import 'package:learning_app/card_backend/cards_api/models/subject.dart';import 'package:hive_flutter/hive_flutter.dart';
+import 'package:learning_app/card_backend/cards_api/models/subject.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:learning_app/editor/models/editor_tile.dart';
 
@@ -25,7 +26,7 @@ abstract class CardsApi {
   ValueListenable<Box<Subject>> getSubjects();
 
   /// return all cards which should get learned
-  List<Card> learnAllCards();
+  List<Card> getAllCardsToLearnForToday();
 
   /// search for cards
   List<SearchResult> searchCard(String searchRequest, String? id);
