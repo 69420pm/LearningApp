@@ -20,7 +20,7 @@ class TomorrowCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final subjectsMappedToWeekDay =
         context.read<CalendarCubit>().getSubjectsMappedToWeekday();
-    final tomorrow = DateTime.now().add(Duration(days: 1));
+    final tomorrow = DateTime.now().add(const Duration(days: 1));
     final subjects = subjectsMappedToWeekDay[tomorrow.weekday] ?? [];
     return UICard(
       child: BlocBuilder<CalendarCubit, CalendarState>(
@@ -40,31 +40,61 @@ class TomorrowCard extends StatelessWidget {
               const SizedBox(
                 height: UIConstants.itemPadding,
               ),
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: subjects.length,
-                itemBuilder: (context, index) {
-                  return SubjectListTile(
-                    subject: subjects[index],
-                    classTests: context
-                        .read<CalendarCubit>()
-                        .getClassTests()[subjects[index]],
-                  );
-                },
+              SizedBox(
+                height: 80,
+                child: ListView.builder(
+                  // shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: subjects.length,
+                  itemBuilder: (context, index) {
+                    return Row(
+                      children: [
+                        _SubjectTile(subject: subjects[index]),
+                        SizedBox(
+                          width: UIConstants.itemPadding,
+                        )
+                      ],
+                    );
+                  },
+                ),
               ),
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: classTestsTomorrow.length,
-                itemBuilder: (context, index) {
-                  return ClassTestListTile(
-                    classTest: classTestsTomorrow[index],
-                  );
-                },
-              ),
+              // ListView.builder(
+              //   shrinkWrap: true,
+              //   itemCount: classTestsTomorrow.length,
+              //   itemBuilder: (context, index) {
+              //     return ClassTestListTile(
+              //       classTest: classTestsTomorrow[index],
+              //     );
+              //   },
+              // ),
             ],
           );
         },
       ),
+    );
+  }
+}
+
+class _SubjectTile extends StatelessWidget {
+  _SubjectTile({super.key, required this.subject});
+  Subject subject;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            UICircularProgressIndicator(value: 1),
+            UIIcons.download.copyWith(size: 24, color: UIColors.primary),
+          ],
+        ),
+        SizedBox(
+          height: 8,
+        ),
+        Text(subject.name,
+            style: UIText.normalBold.copyWith(color: UIColors.smallText)),
+      ],
     );
   }
 }
