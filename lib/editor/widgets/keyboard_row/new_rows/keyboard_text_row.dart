@@ -9,7 +9,13 @@ import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
 
 class KeyboardTextRow extends StatelessWidget {
-  KeyboardTextRow({super.key, required this.isBold, required this.isItalic, required this.isUnderlined, required this.textColor, required this.backgroundColor});
+  KeyboardTextRow(
+      {super.key,
+      required this.isBold,
+      required this.isItalic,
+      required this.isUnderlined,
+      required this.textColor,
+      required this.backgroundColor});
   bool isBold;
   bool isItalic;
   bool isUnderlined;
@@ -78,8 +84,7 @@ class KeyboardTextRow extends StatelessWidget {
                       ),
                       KeyboardButton(
                         icon: UIIcons.formatColorFill.copyWith(
-                          color: backgroundColor ==
-                                  Colors.transparent
+                          color: backgroundColor == Colors.transparent
                               ? UIColors.textLight
                               : textEditorBloc.textBackgroundColor
                                   .withAlpha(255),
@@ -139,7 +144,9 @@ class KeyboardTextRow extends StatelessWidget {
             icon: UIIcons.done.copyWith(color: UIColors.primary),
             onPressed: () {
               // save content of card
-              context.read<TextEditorBloc>().add(TextEditorNextCard(context: context));
+              context
+                  .read<TextEditorBloc>()
+                  .add(TextEditorNextCard(context: context));
             },
           ),
         ],

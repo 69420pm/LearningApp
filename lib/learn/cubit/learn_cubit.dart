@@ -121,11 +121,9 @@ class LearnCubit extends Cubit<LearnCubitState> {
 
   final CardsRepository _cardsRepository;
 
-  void turnOverCard(int index) {
-    if (index == currentIndex) {
-      _cardsToLearn[index].turnedOver = true;
-      emit(CardTurnedState());
-    }
+  void turnOverCard() {
+    _cardsToLearn[currentIndex].turnedOver = true;
+    emit(CardTurnedState());
   }
 
   Future<List<RenderCard>> loadTodaysCards() async {
@@ -210,13 +208,13 @@ class LearnCubit extends Cubit<LearnCubitState> {
           _cardsToLearn[currentIndex].recallScore += 1;
         }
         _cardsToLearn[currentIndex].finishedToday = true;
-        // _cardsRepository.saveCard(_cardsToLearn[currentIndex], null, null);
+        _cardsRepository.saveCard(_cardsToLearn[currentIndex], null, null);
       }
 
       //bad
       else {
         _cardsToLearn[currentIndex].gotRatedBad = true;
-        // _cardsToLearn.add(_cardsToLearn[currentIndex]..turnedOver = false);
+        _cardsToLearn.add(_cardsToLearn[currentIndex]..turnedOver = false);
       }
     }
     _cardsToLearn[currentIndex].gotRatedInThisSession = true;

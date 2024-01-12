@@ -48,6 +48,7 @@ class LearningScreen extends StatelessWidget {
           controller.offset,
           screenHeight,
         );
+    print(offsetToAnimate);
 
     if (offsetToAnimate != null) {
       context.read<LearnCubit>().startAnimation();
@@ -65,7 +66,8 @@ class LearningScreen extends StatelessWidget {
   }
 
   void _flingAnimate(BuildContext context, double vel, double screenHeight) {
-    final minFlingVel = 40;
+    final minFlingVel = 10;
+    final currentIndex = context.read<LearnCubit>().currentIndex;
 
     if (vel.abs() < minFlingVel ||
         (!context
@@ -75,7 +77,6 @@ class LearningScreen extends StatelessWidget {
             vel > 0) {
       _animateToBiggestCard(context, screenHeight);
     } else {
-      final currentIndex = context.read<LearnCubit>().currentIndex;
       final newIndex = vel > 0 ? (currentIndex + 1) : (currentIndex - 1);
 
       context.read<LearnCubit>().startAnimation();
@@ -117,6 +118,8 @@ class LearningScreen extends StatelessWidget {
               if (current is FinishedLoadingCardsState) return true;
               if (current is UpdateHeightState) return true;
               if (current is NextLearningSessionState) return true;
+              // if (current is CardTurnedState) return true;
+
               if (current is StartAnimationState) inAnimation = true;
 
               if (current is FinishedAnimationState) {
@@ -151,43 +154,60 @@ class LearningScreen extends StatelessWidget {
                 },
                 child: NotificationListener<ScrollNotification>(
                   onNotification: (notification) {
-                    // Check if the scroll view is being flinged (finger down, moved, finger up)
-                    if (notification is ScrollUpdateNotification &&
-                        notification.dragDetails == null &&
-                        !inAnimation) {
-                      if (isInterrupted) {
-                        _animateToCurrentCard(context);
-                      } else {
-                        if (!isFlinging) {
-                          isFlinging = true;
-                          print("fling start");
-                        }
-                        if (!context
-                            .read<LearnCubit>()
-                            .isScrollingInsideCurrentCard(
-                                controller.offset, screenHeight)) {
-                          _flingAnimate(
-                              context, notification.scrollDelta!, screenHeight);
-                        }
+                    // check if notification comes from horizontal scroll view
+
+                    if (notification.depth == 1 &&
+                        notification is ScrollUpdateNotification) {
+                      if (!context
+                              .read<LearnCubit>()
+                              .cardsToLearn[
+                                  context.read<LearnCubit>().currentIndex]
+                              .turnedOver &&
+                          notification.metrics.pixels >
+                              MediaQuery.sizeOf(context).width / 2) {
+                        context.read<LearnCubit>().turnOverCard();
                       }
                     }
+                    // check if notification comes from vertical scroll view
+                    if (notification.depth == 0) {
+                      // Check if the scroll view is being flung (finger down, moved, finger up)
+                      if (notification is ScrollUpdateNotification &&
+                          notification.dragDetails == null &&
+                          !inAnimation) {
+                        if (isInterrupted) {
+                          _animateToCurrentCard(context);
+                        } else {
+                          if (!isFlinging) {
+                            isFlinging = true;
+                            print("fling start");
+                          }
+                          if (!context
+                              .read<LearnCubit>()
+                              .isScrollingInsideCurrentCard(
+                                  controller.offset, screenHeight)) {
+                            _flingAnimate(context, notification.scrollDelta!,
+                                screenHeight);
+                          } else {}
+                        }
+                      }
 
-                    // Check if Scrollview comes to an stop without getting flung (finger down, moved, stopped, finger up)
-                    else if (notification is UserScrollNotification &&
-                        notification.direction == ScrollDirection.idle &&
-                        !isFlinging &&
-                        !inAnimation &&
-                        !isInterrupted) {
-                      print("no fling end");
-                      _animateToBiggestCard(context, screenHeight);
-                    }
+                      // Check if Scrollview comes to an stop without getting flung (finger down, moved, stopped, finger up)
+                      else if (notification is UserScrollNotification &&
+                          notification.direction == ScrollDirection.idle &&
+                          !isFlinging &&
+                          !inAnimation &&
+                          !isInterrupted) {
+                        print("no fling end");
+                        _animateToBiggestCard(context, screenHeight);
+                      }
 
-                    // Check if Scrollview got flung (finger down, moved, finger up, scrollview scrolles on, scrollview comes to a stop)
-                    else if (notification is UserScrollNotification &&
-                        notification.direction == ScrollDirection.idle &&
-                        isFlinging) {
-                      isFlinging = false;
-                      print("fling end");
+                      // Check if Scrollview got flung (finger down, moved, finger up, scrollview scrolles on, scrollview comes to a stop)
+                      else if (notification is UserScrollNotification &&
+                          notification.direction == ScrollDirection.idle &&
+                          isFlinging) {
+                        isFlinging = false;
+                        print("fling end");
+                      }
                     }
 
                     return false;

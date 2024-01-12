@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:learning_app/card_backend/cards_repository.dart';
 import 'package:learning_app/learn/cubit/learn_cubit.dart';
 import 'package:learning_app/learn/cubit/render_card.dart';
@@ -25,51 +24,48 @@ class LearningCardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ConstrainedBox(
+    return BlocBuilder<LearnCubit, LearnCubitState>(
       key: globalKey,
-      constraints: BoxConstraints(
-        minHeight: screenHeight,
-      ),
-      child: BlocBuilder<LearnCubit, LearnCubitState>(
-        buildWhen: (previous, current) {
-          if (current is NewCardState) return true;
-          if (current is CardTurnedState) return true;
-          if (current is CardRatedState) return true;
-          if (current is UpdateHeightState) return true;
+      buildWhen: (previous, current) {
+        if (current is NewCardState) return true;
+        if (current is CardTurnedState) return true;
+        if (current is CardRatedState) return true;
+        if (current is UpdateHeightState) return true;
 
-          return false;
-        },
-        builder: (context, state) {
-          // Save to avoid unsafe Warnings
-          final learnCubit = context.read<LearnCubit>();
+        return false;
+      },
+      builder: (context, state) {
+        // Save to avoid unsafe Warnings
+        final learnCubit = context.read<LearnCubit>();
 
-          SchedulerBinding.instance.addPostFrameCallback((duration) {
-            var widgetHeight = screenHeight;
-            final renderBox =
-                globalKey.currentContext?.findRenderObject() as RenderBox?;
-            if (renderBox != null && renderBox.hasSize) {
-              widgetHeight = renderBox.size.height;
+        SchedulerBinding.instance.addPostFrameCallback((duration) {
+          var widgetHeight = screenHeight;
+          final renderBox =
+              globalKey.currentContext?.findRenderObject() as RenderBox?;
+          if (renderBox != null && renderBox.hasSize) {
+            widgetHeight = renderBox.size.height;
+          }
+
+          learnCubit.setHeight(index, widgetHeight);
+        });
+
+        return GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onDoubleTap: () {
+            if (card.turnedOver && !card.finishedToday) {
+              context.read<LearnCubit>().rateCard(LearnFeedback.good);
             }
-
-            print(widgetHeight);
-            learnCubit.setHeight(index, widgetHeight);
-          });
-
-          return GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onDoubleTap: () {
-              if (card.turnedOver && !card.finishedToday) {
-                context.read<LearnCubit>().rateCard(LearnFeedback.good);
-              }
-            },
-            onTap: () => context.read<LearnCubit>().turnOverCard(index),
-            child: LearningCard(
-              card: card,
-              isCurrentIndex: context.read<LearnCubit>().currentIndex == index,
-            ),
-          );
-        },
-      ),
+          },
+          child: LearningCard(
+            card: card,
+            screenHeight: screenHeight,
+          )
+              .animate(
+                  target:
+                      card.gotRatedInThisSession && !card.gotRatedBad ? 1 : 0)
+              .shakeX(),
+        );
+      },
     );
   }
 }
