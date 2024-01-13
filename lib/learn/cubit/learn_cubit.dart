@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:bloc/bloc.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Card;
 import 'package:learning_app/card_backend/cards_api/models/card.dart';
 import 'package:learning_app/card_backend/cards_repository.dart';
 import 'package:learning_app/editor/models/editor_tile.dart';
@@ -23,8 +23,12 @@ class LearnCubit extends Cubit<LearnCubitState> {
   void setHeight(int index, double height) {
     if (height != _cardsToLearn[index].cardHeight) {
       _cardsToLearn[index].cardHeight = height;
-      emit(UpdateHeightState());
+      emit(UpdateHeightState(index: index));
     }
+  }
+
+  bool currentCardIsTurned() {
+    return _cardsToLearn[currentIndex].turnedOver;
   }
 
   double getBottomLimit(
@@ -65,11 +69,13 @@ class LearnCubit extends Cubit<LearnCubitState> {
   }
 
   double getOffsetByIndex(int index) {
-    if (index > 0) {
-      return _cardsToLearn.sublist(0, index).fold<double>(
+    if (index > 0 && index < _cardsToLearn.length) {
+      return _cardsToLearn
+          .sublist(0, index)
+          .where((element) => element.cardHeight != null)
+          .fold<double>(
             0,
-            (previousValue, element) =>
-                previousValue + (element.cardHeight ?? 0),
+            (previousValue, element) => previousValue + element.cardHeight!,
           );
     }
     return 0;
@@ -126,14 +132,15 @@ class LearnCubit extends Cubit<LearnCubitState> {
     emit(CardTurnedState());
   }
 
-  Future<List<RenderCard>> loadTodaysCards() async {
-    _cardsToLearn = _cardsRepository
-        .getAllCardsToLearnForToday()
-        .map((e) => RenderCard(
-              card: e,
-              cardsRepository: _cardsRepository,
-              onImagesLoaded: () => emit(NewCardState()),
-            ))
+  Future<List<RenderCard>> setToLearnCards(List<Card> cards) async {
+    _cardsToLearn = cards
+        .map(
+          (e) => RenderCard(
+            card: e,
+            cardsRepository: _cardsRepository,
+            onImagesLoaded: () => emit(NewCardState()),
+          ),
+        )
         .toList()
       ..sort(
         (a, b) => b.dateCreated.compareTo(a.dateCreated),

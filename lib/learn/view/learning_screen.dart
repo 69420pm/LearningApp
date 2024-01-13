@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter/rendering.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/card_backend/cards_api/models/card.dart';
 import 'package:learning_app/card_backend/cards_repository.dart';
 import 'package:learning_app/editor/widgets/editor_tiles/image_tile.dart';
 import 'package:learning_app/learn/cubit/learn_cubit.dart';
@@ -19,7 +22,6 @@ class LearningScreen extends StatelessWidget {
   final CardsRepository cardsRepository;
 
   final controller = ScrollController();
-  List<RenderCard> cardsToLearn = List.empty(growable: true);
 
   bool isFlinging = false;
   bool inAnimation = false;
@@ -88,13 +90,15 @@ class LearningScreen extends StatelessWidget {
           .animateTo(
         offsetToAnimate,
         duration: Duration(
-            milliseconds: ((2 *
-                        (offsetToAnimate - controller.offset) /
-                        controller.position.activity!.velocity) *
-                    1000)
-                .round()
-                .abs()),
-        curve: Curves.linear,
+            milliseconds: min(
+                500,
+                ((2 *
+                            (offsetToAnimate - controller.offset) /
+                            controller.position.activity!.velocity) *
+                        1000)
+                    .round()
+                    .abs())),
+        curve: Curves.easeOut,
       )
           .then((value) {
         context.read<LearnCubit>().endAnimation();
@@ -104,18 +108,17 @@ class LearningScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.read<LearnCubit>().loadTodaysCards();
-
     return UIPage(
       addPadding: false,
-      appBar: const UIAppBar(),
+      appBar: const UIAppBar(
+        appBarColor: Colors.transparent,
+      ),
       body: LayoutBuilder(
         builder: (context, constraints) {
           final screenHeight = constraints.maxHeight;
           return BlocBuilder<LearnCubit, LearnCubitState>(
             buildWhen: (previous, current) {
               if (current is FinishedLoadingCardsState) return true;
-              if (current is UpdateHeightState) return true;
               if (current is NextLearningSessionState) return true;
               // if (current is CardTurnedState) return true;
 
@@ -133,8 +136,6 @@ class LearningScreen extends StatelessWidget {
               return false;
             },
             builder: (context, state) {
-              cardsToLearn = context.read<LearnCubit>().cardsToLearn;
-
               if (state is NextLearningSessionState) {
                 controller.animateTo(0,
                     duration: Duration(milliseconds: 400),
@@ -213,10 +214,12 @@ class LearningScreen extends StatelessWidget {
                     slivers: [
                       SliverList(
                         delegate: SliverChildBuilderDelegate(
-                          childCount: cardsToLearn.length,
+                          childCount:
+                              context.read<LearnCubit>().cardsToLearn.length,
                           (context, index) => LearningCardPage(
                             cardsRepository: cardsRepository,
-                            card: cardsToLearn[index],
+                            card:
+                                context.read<LearnCubit>().cardsToLearn[index],
                             index: index,
                             screenHeight: screenHeight,
                           ),

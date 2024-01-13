@@ -16,11 +16,21 @@ class LearningCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Widget front = CardFace(
+      height: card.cardHeight ?? screenHeight,
+      widgets: card.frontWidgets,
+    );
+    final Widget back = CardFace(
+      height: card.cardHeight ?? screenHeight,
+      widgets: card.backWidgets,
+    );
+
     final screenWidth = MediaQuery.sizeOf(context).width;
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       controller: pageController,
-      physics: PageScrollPhysics(),
+      physics: const PageScrollPhysics(),
       child: SizedBox(
         width: screenWidth * 2,
         child: Animate(
@@ -39,23 +49,17 @@ class LearningCard extends StatelessWidget {
                 children: [
                   Transform(
                     transform: Matrix4.identity()
-                      ..setEntry(3, 2, 0.0005)
+                      ..setEntry(3, 2, 0.0003)
                       ..rotateY(math.pi * value.clamp(0, .5)),
                     alignment: Alignment.center,
-                    child: CardFace(
-                      widgets: card.frontWidgets,
-                      screenHeight: screenHeight,
-                    ),
+                    child: front,
                   ),
                   Transform(
                     transform: Matrix4.identity()
-                      ..setEntry(3, 2, 0.0005)
+                      ..setEntry(3, 2, 0.0003)
                       ..rotateY(math.pi * (value.clamp(.5, 1) + 1)),
                     alignment: Alignment.center,
-                    child: CardFace(
-                      widgets: card.backWidgets,
-                      screenHeight: screenHeight,
-                    ),
+                    child: back,
                   ),
                 ],
               ),
@@ -68,21 +72,23 @@ class LearningCard extends StatelessWidget {
 }
 
 class CardFace extends StatelessWidget {
-  const CardFace(
-      {super.key, required this.widgets, required this.screenHeight});
+  const CardFace({super.key, required this.widgets, required this.height});
 
   final List<Widget> widgets;
-  final double screenHeight;
+  final double height;
 
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
       constraints: BoxConstraints(
-          minHeight: screenHeight, maxWidth: MediaQuery.sizeOf(context).width),
+        minHeight: height,
+        maxWidth: MediaQuery.sizeOf(context).width,
+      ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-            horizontal: UIConstants.defaultSize,
-            vertical: UIConstants.defaultSize * 3),
+          horizontal: UIConstants.defaultSize * 2,
+          vertical: UIConstants.defaultSize * 3,
+        ),
         child: Container(
           decoration: const BoxDecoration(
             color: UIColors.overlay,

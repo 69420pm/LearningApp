@@ -18,8 +18,10 @@ class UIAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.leading,
     this.bottom,
     this.leadingBackButton = true,
+    this.appBarColor,
     this.leadingBackButtonPressed,
   });
+  final Color? appBarColor;
   final String? title;
   final bool automaticallyImplyLeading;
   final List<Widget>? actions;
@@ -47,7 +49,7 @@ class UIAppBar extends StatelessWidget implements PreferredSizeWidget {
             : Align(alignment: Alignment.centerLeft, child: leading),
       ),
       elevation: 0,
-      backgroundColor: UIColors.background,
+      backgroundColor: appBarColor ?? UIColors.background,
       systemOverlayStyle: SystemUiOverlayStyle(
         statusBarColor: UIColors.background,
         statusBarBrightness: Theme.of(context).brightness == Brightness.light
