@@ -16,13 +16,15 @@ class Day extends StatelessWidget {
     required this.isActive,
     required this.streakType,
     required this.classTests,
-    required this.subjects
+    required this.subjects,
+    this.onLightBackground=false
   });
   DateTime dateTime;
   bool isActive;
   StreakType streakType;
   Map<Subject, List<ClassTest>> classTests;
   List<Subject> subjects;
+  bool onLightBackground;
 
   @override
   Widget build(BuildContext context) {
@@ -102,8 +104,8 @@ class Day extends StatelessWidget {
               ],
             );
           } else {
-            bool isClassTest = classTests != null && classTests!.isNotEmpty;
-            var textColor = UIColors.textLight;
+            bool isClassTest = classTests.isNotEmpty;
+            var textColor = onLightBackground?UIColors.textDark: UIColors.textLight;
             if (isActive && isClassTest) {
               textColor = UIColors.textDark;
             } else if (!isActive) {

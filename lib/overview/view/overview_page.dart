@@ -31,7 +31,9 @@ class _OverviewPageState extends State<OverviewPage> {
         automaticallyImplyLeading: false,
         leading: UIIconButton(
           icon: UIIcons.account,
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).pushNamed('/settings');
+          },
         ),
         actions: [
           UIIconButton(

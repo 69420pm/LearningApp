@@ -7,6 +7,7 @@ import 'package:learning_app/calendar/view/streak_saver_card.dart';
 import 'package:learning_app/calendar/view/tomorrow_card.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/widgets/ui_appbar.dart';
+import 'package:learning_app/ui_components/widgets/ui_container.dart';
 import 'package:learning_app/ui_components/widgets/ui_page.dart';
 
 class CalendarPage extends StatelessWidget {
@@ -16,15 +17,15 @@ class CalendarPage extends StatelessWidget {
   Widget build(BuildContext context) {
     context.read<CalendarCubit>().updateStreak();
     context.read<CalendarCubit>().updateStreakSaver();
-    return const UIPage(
-      appBar: UIAppBar(
+    return UIPage(
+      appBar: const UIAppBar(
         title: 'Calendar',
         leadingBackButton: true,
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(child: StreakCard()),
@@ -32,10 +33,10 @@ class CalendarPage extends StatelessWidget {
                 Expanded(child: StreakSaverCard()),
               ],
             ),
-            SizedBox(height: UIConstants.itemPaddingLarge),
-            CalendarWidget(),
-            SizedBox(height: UIConstants.itemPaddingLarge),
-            TomorrowCard()
+            const SizedBox(height: UIConstants.itemPaddingLarge),
+            UIContainer(child: CalendarWidget()),
+            const SizedBox(height: UIConstants.itemPaddingLarge),
+            const TomorrowCard()
           ],
         ),
       ),

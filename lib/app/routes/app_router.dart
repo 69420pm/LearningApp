@@ -27,6 +27,8 @@ import 'package:learning_app/overview/cubit/overview_cubit.dart';
 import 'package:learning_app/overview/view/overview_page.dart';
 import 'package:learning_app/search/bloc/search_bloc.dart';
 import 'package:learning_app/search/view/search_page.dart';
+import 'package:learning_app/settings/cubit/settings_cubit.dart';
+import 'package:learning_app/settings/view/settings_page.dart';
 import 'package:learning_app/subject_overview/bloc/folder_bloc/folder_list_tile_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dart';
@@ -49,6 +51,8 @@ class AppRouter {
   late final SearchBloc _searchBloc = SearchBloc(_cardsRepository);
   late final FolderListTileBloc _folderListTileBloc =
       FolderListTileBloc(_cardsRepository);
+
+  late final SettingsCubit _settingsCubit = SettingsCubit();
 
   late final _calendarCubit = CalendarCubit(
     calendarRepository: _calendarRepository,
@@ -100,6 +104,13 @@ class AppRouter {
               editorTiles:
                   (routeSettings.arguments! as List)[2] as List<EditorTile>,
             ),
+          ),
+        );
+      case '/settings':
+        return MaterialPageRoute(
+          builder: (_) => MultiBlocProvider(
+            providers: [BlocProvider.value(value: _settingsCubit)],
+            child: SettingsPage(),
           ),
         );
       case '/calendar':
@@ -247,7 +258,8 @@ class AppRouter {
           builder: (_) => MultiBlocProvider(
             providers: [
               BlocProvider.value(
-                  value: (routeSettings.arguments!) as AddEditClassTestCubit)
+                value: (routeSettings.arguments!) as AddEditClassTestCubit,
+              ),
             ],
             child: RelevantFoldersPage(
               cardsRepository: _cardsRepository,
