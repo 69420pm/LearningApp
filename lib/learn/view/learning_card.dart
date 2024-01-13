@@ -1,14 +1,10 @@
-import 'package:flutter/material.dart' hide Card;
 import 'dart:math' as math;
+
+import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_math_fork/flutter_math.dart';
-import 'package:learning_app/learn/cubit/learn_cubit.dart';
 import 'package:learning_app/learn/cubit/render_card.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
-import 'package:learning_app/ui_components/ui_icons.dart';
-import 'package:learning_app/ui_components/ui_text.dart';
 
 class LearningCard extends StatelessWidget {
   LearningCard({super.key, required this.card, required this.screenHeight});
@@ -86,7 +82,7 @@ class CardFace extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(
             horizontal: UIConstants.defaultSize,
-            vertical: UIConstants.defaultSize),
+            vertical: UIConstants.defaultSize * 3),
         child: Container(
           decoration: const BoxDecoration(
             color: UIColors.overlay,

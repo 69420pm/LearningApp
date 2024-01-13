@@ -48,7 +48,6 @@ class LearningScreen extends StatelessWidget {
           controller.offset,
           screenHeight,
         );
-    print(offsetToAnimate);
 
     if (offsetToAnimate != null) {
       context.read<LearnCubit>().startAnimation();
@@ -149,7 +148,6 @@ class LearningScreen extends StatelessWidget {
                 },
                 //called if card got flung, stopped, finger up without movement
                 onTapUp: (details) {
-                  print("fling, stopped, releaded");
                   _animateToCurrentCard(context);
                 },
                 child: NotificationListener<ScrollNotification>(
@@ -179,7 +177,6 @@ class LearningScreen extends StatelessWidget {
                         } else {
                           if (!isFlinging) {
                             isFlinging = true;
-                            print("fling start");
                           }
                           if (!context
                               .read<LearnCubit>()
@@ -197,7 +194,6 @@ class LearningScreen extends StatelessWidget {
                           !isFlinging &&
                           !inAnimation &&
                           !isInterrupted) {
-                        print("no fling end");
                         _animateToBiggestCard(context, screenHeight);
                       }
 
@@ -206,7 +202,6 @@ class LearningScreen extends StatelessWidget {
                           notification.direction == ScrollDirection.idle &&
                           isFlinging) {
                         isFlinging = false;
-                        print("fling end");
                       }
                     }
 
