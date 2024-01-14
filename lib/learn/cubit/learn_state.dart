@@ -7,7 +7,11 @@ class LoadingCardsState extends LearnCubitState {}
 
 class FinishedLoadingCardsState extends LearnCubitState {}
 
-class UpdateHeightState extends LearnCubitState {}
+class UpdateHeightState extends LearnCubitState {
+  UpdateHeightState({required this.index});
+
+  final int index;
+}
 
 class CardTurnedState extends LearnCubitState {}
 

@@ -66,7 +66,7 @@ class HiveCardsApi extends CardsApi {
     final now = DateUtils.dateOnly(DateTime.now());
     var a = _cardBox.values.where((element) {
       final dateToReview = DateUtils.dateOnly(element.dateToReview);
-      return dateToReview.isBefore(now) || dateToReview.isAtSameMomentAs(now);
+      return (dateToReview.isBefore(now) || dateToReview.isAtSameMomentAs(now));
     }).toList();
     return a;
   }

@@ -273,16 +273,22 @@ class AppRouter {
         );
       case '/learn':
         return MaterialPageRoute(
-          builder: (_) => MultiBlocProvider(
-            providers: [
-              BlocProvider.value(
-                value: _learnCubit,
+          builder: (_) {
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider.value(
+                  value: _learnCubit
+                    ..setToLearnCards(
+                        (routeSettings.arguments as List<dynamic>)[0] == 'today'
+                            ? _cardsRepository.getAllCardsToLearnForToday()
+                            : []),
+                ),
+              ],
+              child: LearningScreen(
+                cardsRepository: _cardsRepository,
               ),
-            ],
-            child: LearningScreen(
-              cardsRepository: _cardsRepository,
-            ),
-          ),
+            );
+          },
         );
       // error route
       default:

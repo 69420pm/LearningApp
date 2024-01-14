@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:learning_app/calendar/cubit/calendar_cubit.dart';
-import 'package:learning_app/calendar/view/calendar_content.dart';
 import 'package:learning_app/calendar/view/calendar_widget.dart';
 import 'package:learning_app/card_backend/cards_api/models/class_test.dart';
 import 'package:learning_app/card_backend/cards_api/models/subject.dart';
-import 'package:learning_app/overview/view/day_tile.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
@@ -19,9 +17,6 @@ class CalendarCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final classTests = context.read<CalendarCubit>().getClassTests();
-    final subjectsToWeekday =
-        context.read<CalendarCubit>().getSubjectsMappedToWeekday();
-    final currentDateTime = DateTime.now();
     final calendarDateTime = context.read<CalendarCubit>().currentMonth;
     final classTestsThisMonth = <Subject, List<ClassTest>>{};
     classTests.forEach((subject, classTests) {

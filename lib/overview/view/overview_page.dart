@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:learning_app/calendar/cubit/calendar_cubit.dart';
 import 'package:learning_app/overview/cubit/overview_cubit.dart';
 import 'package:learning_app/overview/view/calendar_card.dart';
 import 'package:learning_app/overview/view/class_test_tomorrow_card.dart';
@@ -12,7 +11,6 @@ import 'package:learning_app/ui_components/ui_icons.dart';
 import 'package:learning_app/ui_components/ui_text.dart';
 import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
 import 'package:learning_app/ui_components/widgets/ui_appbar.dart';
-import 'package:learning_app/ui_components/widgets/ui_card.dart';
 import 'package:learning_app/ui_components/widgets/ui_page.dart';
 
 class OverviewPage extends StatefulWidget {
@@ -39,9 +37,8 @@ class _OverviewPageState extends State<OverviewPage> {
           UIIconButton(
             icon: UIIcons.search,
             onPressed: () => Navigator.of(context).pushNamed('/search').then(
-                  (value) =>
-                      context.read<OverviewCubit>().updateLearnAllButton(),
-                ),
+                (value) =>
+                    context.read<OverviewCubit>().updateLearnAllButton()),
           ),
         ],
       ),
