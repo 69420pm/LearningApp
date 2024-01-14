@@ -17,7 +17,7 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   intl: ^0.18.0
-  path_provider: ^2.0.14
+  path_provider: ^2.1.2
   uuid: ^3.0.7
   characters: ^1.2.1
   flutter_colorpicker: ^1.0.3
