@@ -1,13 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:cards_api/cards_api.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/card_backend/cards_api/models/folder.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
-import 'package:ui_components/ui_components.dart';
-
-class FolderListTileView extends StatelessWidget {
+import 'package:learning_app/ui_components/ui_colors.dart';
+import 'package:learning_app/ui_components/ui_constants.dart';
+import 'package:learning_app/ui_components/widgets/ui_expansion_tile.dart';class FolderListTileView extends StatelessWidget {
   const FolderListTileView({
     super.key,
     required this.folder,
@@ -27,7 +27,7 @@ class FolderListTileView extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: UIConstants.defaultSize),
       child: UIExpansionTile(
-        changeExtentionState: isHovered,
+        changeExtensionState: isHovered,
         backgroundColor: isHovered
             ? UIColors.onOverlayCard
             : isSoftSelected || isSelected

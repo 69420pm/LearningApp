@@ -1,10 +1,12 @@
-import 'package:cards_api/cards_api.dart';
-import 'package:flutter/material.dart' hide Card;
+import 'package:learning_app/card_backend/cards_api/models/card.dart';
+import 'package:learning_app/card_backend/cards_api/models/folder.dart';
+import 'package:learning_app/card_backend/cards_api/models/subject.dart';import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_edit_class_test/cubit/relevant_folders_cubit.dart';
-import 'package:ui_components/ui_components.dart';
-
-class SelectableCardListTile extends StatelessWidget {
+import 'package:learning_app/ui_components/ui_colors.dart';
+import 'package:learning_app/ui_components/ui_constants.dart';
+import 'package:learning_app/ui_components/ui_icons.dart';
+import 'package:learning_app/ui_components/ui_text.dart';class SelectableCardListTile extends StatelessWidget {
   SelectableCardListTile({super.key, required this.card});
   Card card;
 
@@ -37,6 +39,7 @@ class SelectableCardListTile extends StatelessWidget {
                     context.read<RelevantFoldersCubit>().changeCheckbox(
                           card.uid,
                           value ?? false,
+                          context
                         );
                   },
                 );

@@ -1,12 +1,24 @@
-import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_card/cubit/add_card_cubit.dart';
-import 'package:learning_app/add_card/view/card_settings_page.dart';
-import 'package:markdown_editor/markdown_editor.dart';
-import 'package:ui_components/ui_components.dart';
-
-class AddCardPage extends StatefulWidget {
+import 'package:learning_app/card_backend/cards_api/models/card.dart';
+import 'package:learning_app/editor/bloc/text_editor_bloc.dart';
+import 'package:learning_app/editor/cubit/keyboard_row_cubit.dart';
+import 'package:learning_app/editor/editor_widget.dart';
+import 'package:learning_app/editor/helper/data_class_helper.dart';
+import 'package:learning_app/editor/widgets/editor_tiles/audio_tile.dart';
+import 'package:learning_app/editor/widgets/editor_tiles/front_back_seperator_tile.dart';
+import 'package:learning_app/editor/widgets/editor_tiles/image_tile.dart';
+import 'package:learning_app/editor/widgets/editor_tiles/latex_tile.dart';
+import 'package:learning_app/editor/widgets/keyboard_row/keyboard_row.dart';
+import 'package:learning_app/ui_components/ui_colors.dart';
+import 'package:learning_app/ui_components/ui_icons.dart';
+import 'package:learning_app/ui_components/ui_text.dart';
+import 'package:learning_app/ui_components/widgets/buttons/ui_button.dart';
+import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
+import 'package:learning_app/ui_components/widgets/dialogs/ui_dialog.dart';
+import 'package:learning_app/ui_components/widgets/ui_appbar.dart';
+import 'package:learning_app/ui_components/widgets/ui_page.dart';class AddCardPage extends StatefulWidget {
   AddCardPage({super.key, required this.card, required this.parentId});
 
   final Card card;

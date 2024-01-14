@@ -1,11 +1,15 @@
 import 'package:bloc/bloc.dart';
-import 'package:cards_repository/cards_repository.dart';
+import 'package:learning_app/card_backend/cards_repository.dart';
 import 'package:meta/meta.dart';
 
 part 'overview_state.dart';
 
-class OverviewCubit extends Cubit<OverviewState> {
-  OverviewCubit(this.cardsRepository) : super(OverviewInitial());
+class OverviewCubit extends Cubit<OverviewCubitState> {
+  OverviewCubit(this.cardsRepository) : super(OverviewInitialState());
 
   final CardsRepository cardsRepository;
+
+  void updateLearnAllButton() {
+    emit(UpdateLearnAllButtonState());
+  }
 }

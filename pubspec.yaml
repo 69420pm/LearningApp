@@ -18,28 +18,18 @@ dependencies:
   hive_flutter: ^1.1.0
   intl: ^0.18.0
   path_provider: ^2.0.14
-  cards_api:
-    path: packages/cards_api
-  hive_cards_api:
-    path: packages/hive_cards_api
-  cards_repository:
-    path: packages/cards_repository
-  ui_components:
-    path: packages/ui_components
-  markdown_editor:
-    path: packages/markdown_editor
   uuid: ^3.0.7
   characters: ^1.2.1
   flutter_colorpicker: ^1.0.3
   flutter_animate: ^4.3.0
   image_picker: ^1.0.2
   permission_handler: ^11.1.0
-  audioplayers: ^5.2.1
+  audioplayers: ^5.0.0
   file_picker: ^6.1.1
   flutter_math_fork: ^0.7.2
   flutter_sound: ^9.2.13
   url_launcher: ^6.2.2
-  
+  equatable: ^2.0.5
 
 dev_dependencies:
   bloc_test: ^9.1.1

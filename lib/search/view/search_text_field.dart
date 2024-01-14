@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/search/bloc/search_bloc.dart';
-import 'package:ui_components/ui_components.dart';
-
-class SearchTextField extends StatelessWidget {
+import 'package:learning_app/ui_components/widgets/text_fields/ui_search_text_field.dart';class SearchTextField extends StatelessWidget {
   SearchTextField({
     super.key,
     this.searchSubject = false,

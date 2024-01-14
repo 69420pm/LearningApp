@@ -1,7 +1,9 @@
-import 'package:cards_api/cards_api.dart';
-import 'package:cards_repository/cards_repository.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/card_backend/cards_api/models/card.dart';
+import 'package:learning_app/card_backend/cards_api/models/folder.dart';
+import 'package:learning_app/card_backend/cards_api/models/subject.dart';
+import 'package:learning_app/card_backend/cards_repository.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dart';
 import 'package:learning_app/subject_overview/view/card_list_tile.dart';
@@ -11,9 +13,8 @@ import 'package:learning_app/subject_overview/view/subject_page/subject_card.dar
 import 'package:learning_app/subject_overview/view/subject_page/subject_page_app_bar.dart';
 import 'package:learning_app/subject_overview/view/subject_page/subject_page_auto_scroller.dart';
 import 'package:learning_app/subject_overview/view/subject_page/subject_page_tool_bar.dart';
-import 'package:ui_components/ui_components.dart';
-
-class SubjectPage extends StatelessWidget {
+import 'package:learning_app/ui_components/ui_constants.dart';
+import 'package:learning_app/ui_components/widgets/ui_page.dart';class SubjectPage extends StatelessWidget {
   const SubjectPage({
     super.key,
     required this.subjectToEdit,
@@ -81,9 +82,6 @@ class _SubjectViewState extends State<SubjectView> {
             cardsRepository: widget.cardsRepository,
             subjectToEditUID: widget.subjectToEdit.uid,
           ),
-          const SizedBox(
-            height: UIConstants.itemPaddingLarge,
-          ),
           Expanded(
             child: AutoScrollView(
               globalKey: globalKey,
@@ -94,42 +92,46 @@ class _SubjectViewState extends State<SubjectView> {
                   return DraggingTile(
                     fileUID: widget.subjectToEdit.uid,
                     cardsRepository: widget.cardsRepository,
-                    child: ValueListenableBuilder(
-                      valueListenable: context
-                          .read<SubjectBloc>()
-                          .cardsRepository
-                          .getChildrenById(widget.subjectToEdit.uid),
-                      builder: (context, value, child) {
-                        final folder = value.whereType<Folder>().toList();
-                        final card = value.whereType<Card>().toList();
-                        return CustomScrollView(
-                          key: globalKey,
-                          controller: scrollController,
-                          slivers: [
-                            if (folder.isNotEmpty)
-                              SliverList(
-                                delegate: SliverChildBuilderDelegate(
-                                  (context, index) => FolderListTileParent(
-                                    folder: folder[index],
-                                    cardsRepository: widget.cardsRepository,
+                    child: Padding(
+                      padding:
+                          EdgeInsets.only(top: UIConstants.itemPaddingLarge),
+                      child: ValueListenableBuilder(
+                        valueListenable: context
+                            .read<SubjectBloc>()
+                            .cardsRepository
+                            .getChildrenById(widget.subjectToEdit.uid),
+                        builder: (context, value, child) {
+                          final folder = value.whereType<Folder>().toList();
+                          final card = value.whereType<Card>().toList();
+                          return CustomScrollView(
+                            key: globalKey,
+                            controller: scrollController,
+                            slivers: [
+                              if (folder.isNotEmpty)
+                                SliverList(
+                                  delegate: SliverChildBuilderDelegate(
+                                    (context, index) => FolderListTileParent(
+                                      folder: folder[index],
+                                      cardsRepository: widget.cardsRepository,
+                                    ),
+                                    // ..isHighlight = index.isOdd,
+                                    childCount: folder.length,
                                   ),
-                                  // ..isHighlight = index.isOdd,
-                                  childCount: folder.length,
                                 ),
-                              ),
-                            if (card.isNotEmpty)
-                              SliverList(
-                                delegate: SliverChildBuilderDelegate(
-                                  (context, index) => CardListTile(
-                                    card: card[index],
-                                    cardsRepository: widget.cardsRepository,
+                              if (card.isNotEmpty)
+                                SliverList(
+                                  delegate: SliverChildBuilderDelegate(
+                                    (context, index) => CardListTile(
+                                      card: card[index],
+                                      cardsRepository: widget.cardsRepository,
+                                    ),
+                                    childCount: card.length,
                                   ),
-                                  childCount: card.length,
                                 ),
-                              ),
-                          ],
-                        );
-                      },
+                            ],
+                          );
+                        },
+                      ),
                     ),
                   );
                 },

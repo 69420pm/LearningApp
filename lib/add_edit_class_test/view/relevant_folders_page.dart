@@ -1,16 +1,15 @@
-import 'package:cards_api/cards_api.dart';
-import 'package:cards_repository/cards_repository.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_edit_class_test/cubit/relevant_folders_cubit.dart';
 import 'package:learning_app/add_edit_class_test/view/selectable_card_list_tile.dart';
 import 'package:learning_app/add_edit_class_test/view/selectable_folder_list_tile.dart';
-import 'package:learning_app/subject_overview/view/card_list_tile.dart';
-import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
-import 'package:ui_components/ui_components.dart';
-
-class RelevantFoldersPage extends StatelessWidget {
+import 'package:learning_app/card_backend/cards_api/models/card.dart';
+import 'package:learning_app/card_backend/cards_api/models/class_test.dart';
+import 'package:learning_app/card_backend/cards_api/models/folder.dart';
+import 'package:learning_app/card_backend/cards_api/models/subject.dart';
+import 'package:learning_app/card_backend/cards_repository.dart';
+import 'package:learning_app/ui_components/widgets/ui_appbar.dart';
+import 'package:learning_app/ui_components/widgets/ui_page.dart';class RelevantFoldersPage extends StatelessWidget {
   const RelevantFoldersPage(
       {Key? key,
       required this.cardsRepository,

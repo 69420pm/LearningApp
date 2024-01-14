@@ -1,6 +1,13 @@
 import 'package:bloc/bloc.dart';
-import 'package:cards_api/cards_api.dart';
-import 'package:cards_repository/cards_repository.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/add_edit_class_test/cubit/add_edit_class_test_cubit.dart';
+import 'package:learning_app/card_backend/cards_api/models/card.dart';
+import 'package:learning_app/card_backend/cards_api/models/class_test.dart';
+import 'package:learning_app/card_backend/cards_api/models/folder.dart';
+import 'package:learning_app/card_backend/cards_api/models/subject.dart';
+import 'package:learning_app/card_backend/cards_repository.dart';
+import 'package:learning_app/edit_subject/cubit/edit_subject_cubit.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
@@ -22,29 +29,39 @@ class RelevantFoldersCubit extends Cubit<RelevantFoldersState> {
   }
 
   final Subject _subject;
-  final ClassTest _classTest;
+  ClassTest _classTest;
   final CardsRepository _cardsRepository;
 
   Map<String, bool?> files = {};
 
-  void changeCheckbox(String id, bool? value) {
+  void changeCheckbox(String id, bool? value, BuildContext context) {
     files[id] = value;
     _updateParentFolders(id, value);
     _updateChildren(id, value);
-    _saveSubject();
+    _saveClassTest(context);
     emit(RelevantFoldersUpdateCheckbox(files: Map.of(files)));
   }
 
-  void _saveSubject() {
+  void _saveClassTest(BuildContext context) {
     final storeList = <String>[];
     files.forEach((key, value) {
       if (value == true && _cardsRepository.objectFromId(key) is Card) {
         storeList.add(key);
       }
     });
-    _classTest.folderIds = storeList;
-    _cardsRepository.saveSubject(_subject);
+    _classTest = _classTest.copyWith(folderIds: storeList);
+    context.read<AddEditClassTestCubit>().changeRelevantCards(storeList);
   }
+  // void _saveSubject() {
+  //   final storeList = <String>[];
+  //   files.forEach((key, value) {
+  //     if (value == true && _cardsRepository.objectFromId(key) is Card) {
+  //       storeList.add(key);
+  //     }
+  //   });
+  //   _classTest = _classTest.copyWith(folderIds: storeList);
+  //   _cardsRepository.saveSubject(_subject);
+  // }
 
   void _updateParentFolders(String id, bool? value) {
     files[id] = value;

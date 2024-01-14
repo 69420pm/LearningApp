@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ui_components/ui_components.dart';
-
-class DayTile extends StatelessWidget {
+import 'package:learning_app/ui_components/ui_colors.dart';
+import 'package:learning_app/ui_components/ui_constants.dart';
+import 'package:learning_app/ui_components/ui_icons.dart';
+import 'package:learning_app/ui_components/ui_text.dart';class DayTile extends StatelessWidget {
   const DayTile({super.key, required this.index});
   final int index;
   @override

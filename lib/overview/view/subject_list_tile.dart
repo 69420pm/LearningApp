@@ -1,22 +1,36 @@
-import 'package:cards_api/cards_api.dart';
 import 'package:flutter/material.dart';
-import 'package:ui_components/ui_components.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/card_backend/cards_api/helper/subject_helper.dart';
+import 'package:learning_app/card_backend/cards_api/models/class_test.dart';
+import 'package:learning_app/card_backend/cards_api/models/subject.dart';
+import 'package:learning_app/overview/cubit/overview_cubit.dart';
+import 'package:learning_app/ui_components/ui_colors.dart';
+import 'package:learning_app/ui_components/ui_constants.dart';
+import 'package:learning_app/ui_components/ui_icons.dart';
+import 'package:learning_app/ui_components/ui_text.dart';
+import 'package:learning_app/ui_components/widgets/progress_indicators/ui_circular_progress_indicator.dart';
 
 class SubjectListTile extends StatelessWidget {
-  const SubjectListTile({super.key, required this.subject});
+  SubjectListTile({super.key, required this.subject, this.classTests});
 
   final Subject subject;
-
+  List<ClassTest>? classTests;
   @override
   Widget build(BuildContext context) {
+    classTests ??= context
+        .read<OverviewCubit>()
+        .cardsRepository
+        .getClassTestsBySubjectId(subject.uid);
     final nextClassTestInDays = SubjectHelper.daysTillNextClassTest(
-      subject,
+      classTests,
       DateTime.now(),
     );
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => Navigator.of(context)
-          .pushNamed('/subject_overview', arguments: subject),
+          .pushNamed('/subject_overview', arguments: subject)
+          .then(
+              (value) => context.read<OverviewCubit>().updateLearnAllButton()),
       child: Padding(
         padding: const EdgeInsets.only(bottom: UIConstants.defaultSize),
         child: Row(
