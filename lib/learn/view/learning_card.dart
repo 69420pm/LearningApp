@@ -79,6 +79,29 @@ class CardFace extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    //iterations to finish card
+    const rehearsalIterations = 5;
+
+    //minimal time it takes to finish a card if always rated good
+    const minimalAmountDaysToLearnCard = 14;
+
+    //rehearsal Curve (lots in the beginning, fewer in the end)
+    const rehearsalCurve = Curves.easeInExpo;
+
+    // generate list of time spans between rehearsals
+    final nextDateToReview = List.generate(
+      rehearsalIterations,
+      (index) {
+        return (rehearsalCurve.transform(
+              (index + 1) / rehearsalIterations,
+            ) *
+            minimalAmountDaysToLearnCard);
+      },
+    );
+
+    print(nextDateToReview);
+
     return ConstrainedBox(
       constraints: BoxConstraints(
         minHeight: height,

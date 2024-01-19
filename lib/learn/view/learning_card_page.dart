@@ -15,6 +15,7 @@ class LearningCardPage extends StatelessWidget {
     required this.screenHeight,
     required this.cardsRepository,
   });
+
   final RenderCard card;
   final int index;
   final double screenHeight;

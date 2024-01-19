@@ -79,10 +79,12 @@ Future<void> main() async {
       await Hive.openBox<List<String>>('dateToClassTest'));
   final cardsRepository = CardsRepository(cardsApi: cardsApi);
 
+
   final calendarApi = HiveCalendarApi(
     await Hive.openBox<CalendarDay>('calendar_day'),
     await Hive.openBox('calendar'),
   );
+
   final calendarRepository = CalendarRepository(calendarApi: calendarApi);
 
   await bootstrap(
