@@ -79,6 +79,7 @@ class CardFace extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     //iterations to finish card
     const rehearsalIterations = 5;
 
@@ -100,6 +101,7 @@ class CardFace extends StatelessWidget {
     );
 
     print(nextDateToReview);
+
     return ConstrainedBox(
       constraints: BoxConstraints(
         minHeight: height,

@@ -2,7 +2,9 @@ import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart' hide Card;
+
 import 'package:flutter_animate/flutter_animate.dart';
+
 import 'package:learning_app/card_backend/cards_api/models/card.dart';
 import 'package:learning_app/card_backend/cards_repository.dart';
 import 'package:learning_app/editor/models/editor_tile.dart';
@@ -56,6 +58,7 @@ class LearnCubit extends Cubit<LearnCubitState> {
       currentIndex = newIndex;
       emit(NewCardState());
     }
+
   }
 
   void stopScrolling() {
@@ -109,6 +112,7 @@ class LearnCubit extends Cubit<LearnCubitState> {
       }
     }
     return null;
+
   }
 
   bool isScrollingInsideCurrentCard(double offset, double screenHeight) {
@@ -219,7 +223,9 @@ class LearnCubit extends Cubit<LearnCubitState> {
         //first try/tries wrong, but now right
         if (_cardsToLearn[currentIndex].gotRatedBad) {
           _cardsToLearn[currentIndex].dateToReview =
+
               _cardsToLearn[currentIndex].dateToReview.add(1.days);
+
           if (_cardsToLearn[currentIndex].recallScore > 0) {
             _cardsToLearn[currentIndex].recallScore--;
           }

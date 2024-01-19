@@ -1,3 +1,4 @@
+import 'package:learning_app/add_edit_class_test/cubit/add_edit_class_test_cubit.dart';
 import 'package:learning_app/calendar/cubit/calendar_cubit.dart';
 import 'package:learning_app/calendar/view/calendar_page.dart';
 import 'package:learning_app/calendar_backend/calendar_repository.dart';
@@ -26,6 +27,8 @@ import 'package:learning_app/overview/cubit/overview_cubit.dart';
 import 'package:learning_app/overview/view/overview_page.dart';
 import 'package:learning_app/search/bloc/search_bloc.dart';
 import 'package:learning_app/search/view/search_page.dart';
+import 'package:learning_app/settings/cubit/settings_cubit.dart';
+import 'package:learning_app/settings/view/settings_page.dart';
 import 'package:learning_app/subject_overview/bloc/folder_bloc/folder_list_tile_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/selection_bloc/subject_overview_selection_bloc.dart';
 import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dart';
@@ -48,6 +51,8 @@ class AppRouter {
   late final SearchBloc _searchBloc = SearchBloc(_cardsRepository);
   late final FolderListTileBloc _folderListTileBloc =
       FolderListTileBloc(_cardsRepository);
+
+  late final SettingsCubit _settingsCubit = SettingsCubit();
 
   late final _calendarCubit = CalendarCubit(
     calendarRepository: _calendarRepository,
@@ -99,6 +104,13 @@ class AppRouter {
               editorTiles:
                   (routeSettings.arguments! as List)[2] as List<EditorTile>,
             ),
+          ),
+        );
+      case '/settings':
+        return MaterialPageRoute(
+          builder: (_) => MultiBlocProvider(
+            providers: [BlocProvider.value(value: _settingsCubit)],
+            child: SettingsPage(),
           ),
         );
       case '/calendar':
@@ -174,25 +186,89 @@ class AppRouter {
         );
       case '/subject_overview/edit_subject/add_class_test':
         return MaterialPageRoute(
-          builder: (_) => MultiBlocProvider(
-            providers: [
-              BlocProvider.value(
-                value: _editSubjectCubit,
+          builder: (_) {
+            // ClassTest? classTest;
+            // if (routeSettings.arguments is List<dynamic> &&
+            //     (routeSettings.arguments! as List<dynamic>)[1] is Subject) {
+            //   _editSubjectCubit.init(
+            //     (routeSettings.arguments! as List<dynamic>)[1] as Subject,
+            //   );
+            //   classTest =
+            //       (routeSettings.arguments! as List<dynamic>)[0] as ClassTest;
+            // } else {
+            //   classTest = (routeSettings.arguments as ClassTest?);
+            // }
+
+            return MultiBlocProvider(
+              providers: [
+                // BlocProvider.value(
+                //   value: _editSubjectCubit,
+                // ),
+                BlocProvider(
+                  create: (context) => AddEditClassTestCubit(
+                    parentSubject: routeSettings.arguments! as Subject,
+                    cardsRepository: _cardsRepository,
+                  ),
+                ),
+              ],
+              child: AddClassTestPage(
+                addClassTest: true,
               ),
-            ],
-            child: AddClassTestPage(
-              classTest: routeSettings.arguments as ClassTest?,
-            ),
-          ),
+            );
+          },
+        );
+      case '/subject_overview/edit_subject/edit_class_test':
+        return MaterialPageRoute(
+          builder: (_) {
+            // ClassTest? classTest;
+            // if (routeSettings.arguments is List<dynamic> &&
+            //     (routeSettings.arguments! as List<dynamic>)[1] is Subject) {
+            //   _editSubjectCubit.init(
+            //     (routeSettings.arguments! as List<dynamic>)[1] as Subject,
+            //   );
+            //   classTest =
+            //       (routeSettings.arguments! as List<dynamic>)[0] as ClassTest;
+            // } else {
+            //   classTest = (routeSettings.arguments as ClassTest?);
+            // }
+
+            return MultiBlocProvider(
+              providers: [
+                // BlocProvider.value(
+                //   value: _editSubjectCubit,
+                // ),
+                BlocProvider(
+                  create: (context) => AddEditClassTestCubit(
+                    parentSubject: (routeSettings.arguments!
+                        as List<dynamic>)[1] as Subject,
+                    cardsRepository: _cardsRepository,
+                    classTest: (routeSettings.arguments! as List<dynamic>)[0]
+                        as ClassTest,
+                  ),
+                ),
+              ],
+              child: AddClassTestPage(
+                addClassTest: false,
+              ),
+            );
+          },
         );
       case '/subject_overview/edit_subject/add_class_test/relevant_folders':
         return MaterialPageRoute(
-          builder: (_) => RelevantFoldersPage(
-            cardsRepository: _cardsRepository,
-            subjectToEdit:
-                (routeSettings.arguments! as List<dynamic>)[0] as Subject,
-            classTest:
-                (routeSettings.arguments! as List<dynamic>)[1] as ClassTest,
+          builder: (_) => MultiBlocProvider(
+            providers: [
+              BlocProvider.value(
+                value: (routeSettings.arguments!) as AddEditClassTestCubit,
+              ),
+            ],
+            child: RelevantFoldersPage(
+              cardsRepository: _cardsRepository,
+              subjectToEdit:
+                  ((routeSettings.arguments!) as AddEditClassTestCubit)
+                      .parentSubject,
+              classTest: ((routeSettings.arguments!) as AddEditClassTestCubit)
+                  .classTest!,
+            ),
           ),
         );
       case '/learn':

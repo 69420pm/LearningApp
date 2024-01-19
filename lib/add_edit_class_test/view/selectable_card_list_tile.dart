@@ -39,6 +39,7 @@ import 'package:learning_app/ui_components/ui_text.dart';class SelectableCardLis
                     context.read<RelevantFoldersCubit>().changeCheckbox(
                           card.uid,
                           value ?? false,
+                          context
                         );
                   },
                 );

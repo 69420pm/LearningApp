@@ -18,7 +18,6 @@ class AddSubjectCubit extends Cubit<AddSubjectState> {
       name: name,
       dateCreated: DateTime.now(),
       icon: icon,
-      classTests: const [],
       scheduledDays: daysToGetNotified,
       streakRelevant: true,
       disabled: false,

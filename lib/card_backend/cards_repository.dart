@@ -7,6 +7,7 @@
 
 import 'package:learning_app/card_backend/cards_api/cards_api.dart';
 import 'package:learning_app/card_backend/cards_api/models/card.dart';
+import 'package:learning_app/card_backend/cards_api/models/class_test.dart';
 import 'package:learning_app/card_backend/cards_api/models/file.dart';
 import 'package:learning_app/card_backend/cards_api/models/folder.dart';
 import 'package:learning_app/card_backend/cards_api/models/search_result.dart';
@@ -79,6 +80,10 @@ class CardsRepository {
   Future<void> saveFolder(Folder folder, String? parentId) =>
       _cardsApi.saveFolder(folder, parentId);
 
+  /// save the [classTest]
+  Future<void> saveClassTest(String parentSubjectId, ClassTest classTest) =>
+      _cardsApi.saveClassTest(parentSubjectId, classTest);
+
   /// Deletes subject and every children with given id
   /// If no card with given id exists, a [SubjectNotFoundException] error is
   /// thrown
@@ -87,6 +92,10 @@ class CardsRepository {
   /// delete files when ids match to folder or cards and everything
   /// if you delete a folder all children get automatically deleted
   Future<void> deleteFiles(List<String> ids) => _cardsApi.deleteFiles(ids);
+
+  /// delete class test
+  Future<void> deleteClassTest(String classTestId) =>
+      _cardsApi.deleteClassTest(classTestId);
 
   /// Move folder and every children to [newParentId]
   Future<void> moveFiles(List<String> fileIds, String newParentId) =>
@@ -108,6 +117,10 @@ class CardsRepository {
   List<String> getParentIdsFromChildId(String id) =>
       _cardsApi.getParentIdsFromChildId(id);
 
+  /// get classTests from subject
+  List<ClassTest>? getClassTestsBySubjectId(String subjectId) =>
+      _cardsApi.getClassTestsBySubjectId(subjectId);
+
   /// folder subject or card form id
   Object? objectFromId(String id) => _cardsApi.objectFromId(id);
 
@@ -117,4 +130,10 @@ class CardsRepository {
   /// get front and back in plain text
   List<String> getTextFromCard(String cardId, {bool onlyFront = false}) =>
       _cardsApi.getTextFromCard(cardId, onlyFront);
+
+  ClassTest? getClassTestById(String classTestUID) =>
+      _cardsApi.getClassTestById(classTestUID);
+
+  List<ClassTest>? getClassTestsByDate(DateTime dateTime) =>
+      _cardsApi.getClassTestsByDate(dateTime);
 }

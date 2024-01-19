@@ -28,10 +28,6 @@ class Subject extends Equatable {
   @HiveField(4)
   List<bool> scheduledDays;
 
-  /// class tests
-  @HiveField(5)
-  List<ClassTest> classTests;
-
   /// whether the subject should get considered for streak
   @HiveField(6)
   bool streakRelevant;
@@ -46,7 +42,6 @@ class Subject extends Equatable {
     required this.dateCreated,
     required this.icon,
     required this.scheduledDays,
-    required this.classTests,
     required this.streakRelevant,
     required this.disabled,
   });
@@ -130,7 +125,6 @@ class Subject extends Equatable {
     DateTime? dateCreated,
     int? icon,
     List<bool>? scheduledDays,
-    List<ClassTest>? classTests,
     bool? streakRelevant,
     bool? disabled,
   }) {
@@ -140,7 +134,6 @@ class Subject extends Equatable {
       dateCreated: dateCreated ?? this.dateCreated,
       icon: icon ?? this.icon,
       scheduledDays: scheduledDays ?? this.scheduledDays,
-      classTests: classTests ?? this.classTests,
       streakRelevant: streakRelevant ?? this.streakRelevant,
       disabled: disabled ?? this.disabled,
     );
@@ -187,7 +180,6 @@ class Subject extends Equatable {
       dateCreated,
       icon,
       scheduledDays,
-      classTests,
       streakRelevant,
       disabled,
     ];

@@ -1,8 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'edit_subject_cubit.dart';
 
-
-class EditSubjectState extends Equatable{
+class EditSubjectState extends Equatable {
   @override
   List<Object?> get props => [];
 }
@@ -25,21 +24,20 @@ class EditSubjectUpdateWeekdays extends EditSubjectState {
   EditSubjectUpdateWeekdays({
     required this.selectedDays,
   });
-   @override
+  @override
   List<Object?> get props => [selectedDays];
 }
 
 class EditSubjectClassTestChanged extends EditSubjectState {
-  bool canSave;
-  ClassTest classTest;
+  List<ClassTest> classTests;
   EditSubjectClassTestChanged({
-    required this.canSave,
-    required this.classTest
+    required this.classTests,
   });
-     @override
-  List<Object?> get props => [classTest];
+  @override
+  List<Object?> get props => [
+        classTests
+      ];
 }
-
 
 class EditSubjectFailure extends EditSubjectState {
   EditSubjectFailure({

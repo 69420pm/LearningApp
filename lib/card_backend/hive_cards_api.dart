@@ -12,6 +12,7 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:intl/intl.dart';
 import 'package:learning_app/card_backend/cards_api/cards_api.dart';
 import 'package:learning_app/card_backend/cards_api/models/card.dart';
+import 'package:learning_app/card_backend/cards_api/models/class_test.dart';
 import 'package:learning_app/card_backend/cards_api/models/file.dart';
 import 'package:learning_app/card_backend/cards_api/models/folder.dart';
 import 'package:learning_app/card_backend/cards_api/models/search_result.dart';
@@ -29,12 +30,14 @@ import 'package:learning_app/editor/models/editor_tile.dart';
 class HiveCardsApi extends CardsApi {
   /// {@macro hive_cards_api}
   HiveCardsApi(
-    this._subjectBox,
-    this._folderBox,
-    this._cardBox,
-    this._relationsBox,
-    this._cardContentBox,
-  ) {
+      this._subjectBox,
+      this._folderBox,
+      this._cardBox,
+      this._relationsBox,
+      this._cardContentBox,
+      this._classTestBox,
+      this._subjectToClassTest,
+      this._dateToClassTest) {
     _init();
   }
 
@@ -43,6 +46,9 @@ class HiveCardsApi extends CardsApi {
   final Box<Card> _cardBox;
   final Box<List<String>> _relationsBox;
   final Box<List<dynamic>> _cardContentBox;
+  final Box<ClassTest> _classTestBox;
+  final Box<List<String>> _subjectToClassTest;
+  final Box<List<String>> _dateToClassTest;
 
   final Map<String, ValueNotifier<List<File>>> _notifiers = {};
   ValueListenable<Box<Subject>>? _subjectStreamController;
@@ -596,5 +602,120 @@ class HiveCardsApi extends CardsApi {
       }
     }
     return childrenIds;
+  }
+
+  @override
+  List<ClassTest>? getClassTestsBySubjectId(String subjectId) {
+    final classTestIds = _subjectToClassTest.get(subjectId);
+    final classTests = <ClassTest>[];
+    if (classTestIds == null || classTestIds.isEmpty) {
+      return [];
+    }
+    for (final id in classTestIds) {
+      final classTest = _classTestBox.get(id);
+      if (classTest != null) {
+        classTests.add(classTest);
+      }
+    }
+    return classTests;
+  }
+
+  @override
+  Future<void> saveClassTest(
+      String parentSubjectId, ClassTest classTest) async {
+    final previousClassTest = _classTestBox.get(classTest.uid);
+
+    await _classTestBox.put(classTest.uid, classTest);
+
+    if (previousClassTest == null) {
+      // store in subjectClassTestBox
+      final subjectClassTests = _subjectToClassTest.get(parentSubjectId) ?? [];
+      subjectClassTests.add(classTest.uid);
+      await _subjectToClassTest.put(parentSubjectId, subjectClassTests);
+    }
+
+    if (previousClassTest == null ||
+        previousClassTest.date.toIso8601String() !=
+            classTest.date.toIso8601String()) {
+      final dateTimeDay = DateTime(
+          classTest.date.year, classTest.date.month, classTest.date.day);
+      classTest = classTest.copyWith(date: dateTimeDay);
+
+      // store in dateClassTestBox
+      final dateClassTests =
+          _dateToClassTest.get(dateTimeDay.toIso8601String()) ?? [];
+      dateClassTests.add(classTest.uid);
+      await _dateToClassTest.put(dateTimeDay.toIso8601String(), dateClassTests);
+
+      // delete old entry in dateClassTestBox
+      _dateToClassTest.toMap().forEach((key, classTestIds) {
+        for (final classTestId in classTestIds) {
+          if (classTestId == classTestId) {
+            classTestIds.remove(classTestId);
+            _dateToClassTest.put(key, classTestIds);
+          }
+        }
+      });
+    }
+  }
+
+  @override
+  Future<void> deleteClassTest(String classTestId) async {
+    await _classTestBox.delete(classTestId);
+    String? currentKey;
+    List<String>? currentClassTestIds;
+    // delete in subjectClassTestBox
+    _subjectToClassTest.toMap().forEach((key, classTestIds) {
+      for (final classTestId_ in classTestIds) {
+        if (classTestId_ == classTestId) {
+          classTestIds.remove(classTestId);
+          currentKey = key as String?;
+          currentClassTestIds = classTestIds;
+          break;
+        }
+      }
+    });
+    if (currentClassTestIds != null) {
+      await _subjectToClassTest.put(currentKey, currentClassTestIds!);
+    }
+
+    String? dateKey;
+    List<String>? dateClassTestIds;
+    // delete in dateClassTestBox
+    _dateToClassTest.toMap().forEach((key, classTestIds) {
+      for (final classTestId_ in classTestIds) {
+        if (classTestId_ == classTestId) {
+          classTestIds.remove(classTestId);
+          dateKey = key as String;
+          dateClassTestIds = classTestIds;
+          break;
+        }
+      }
+    });
+    if (dateClassTestIds != null) {
+      await _dateToClassTest.put(dateKey, dateClassTestIds!);
+    }
+  }
+
+  @override
+  ClassTest? getClassTestById(String classTestUID) {
+    return _classTestBox.get(classTestUID);
+  }
+
+  @override
+  List<ClassTest>? getClassTestsByDate(DateTime dateTime) {
+    final dateTimeDay = DateTime(dateTime.year, dateTime.month, dateTime.day);
+    final classTestIds = _dateToClassTest.get(dateTimeDay.toIso8601String());
+    final classTests = <ClassTest>[];
+    if (classTestIds == null || classTestIds.isEmpty) {
+      return [];
+    }
+    for (final element in classTestIds) {
+      final classTest = _classTestBox.get(element);
+      if (classTest != null) {
+        classTests.add(classTest);
+      }
+    }
+    return classTests;
   }
 }

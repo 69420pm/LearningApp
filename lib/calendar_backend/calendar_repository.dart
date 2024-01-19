@@ -9,11 +9,23 @@ class CalendarRepository {
   final CalendarApi _calendarApi;
 
   /// saves a [day]
-  Future<void> saveCalendarDay(CalendarDay day) => _calendarApi.saveCalendarDay(day);
+  Future<void> saveCalendarDay(CalendarDay day) =>
+      _calendarApi.saveCalendarDay(day);
 
   /// returns all streaks
-   ValueListenable<Box<CalendarDay>> getStreaks() => _calendarApi.getCalendarDay();
+  ValueListenable<Box<CalendarDay>> getStreaks() =>
+      _calendarApi.getCalendarDay();
 
-   /// get calendarDay by given a datetime
-  Future<CalendarDay?> getCalendarDayByDate(DateTime dateTime) => _calendarApi.getCalendarDayByDate(dateTime);
+  /// get calendarDay by given a datetime
+  Future<CalendarDay?> getCalendarDayByDate(DateTime dateTime) =>
+      _calendarApi.getCalendarDayByDate(dateTime);
+
+  Future<int> getStreakSaver() => _calendarApi.getStreakSaver();
+
+  Future<void> saveStreakSaver(int streakSaver) =>
+      _calendarApi.saveStreakSaver(streakSaver);
+
+  /// change streak completed of calendarDay today
+  Future<void> changeStreakToday(bool streakCompleted) =>
+      _calendarApi.changeStreakToday(streakCompleted);
 }

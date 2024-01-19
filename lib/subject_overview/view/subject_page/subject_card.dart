@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/card_backend/cards_api/helper/subject_helper.dart';
 import 'package:learning_app/card_backend/cards_api/models/subject.dart';
 import 'package:learning_app/edit_subject/cubit/edit_subject_cubit.dart';
+import 'package:learning_app/overview/cubit/overview_cubit.dart';
+import 'package:learning_app/subject_overview/bloc/subject_bloc/subject_bloc.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
@@ -16,9 +18,9 @@ import 'package:learning_app/ui_components/widgets/ui_card.dart';class SubjectCa
     return UICard(
       useGradient: true,
       distanceToTop: 80,
-      child: Stack(
-        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        // crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           BlocBuilder<EditSubjectCubit, EditSubjectState>(
             buildWhen: (previous, current) => current is EditSubjectSuccess,
@@ -27,7 +29,7 @@ import 'package:learning_app/ui_components/widgets/ui_card.dart';class SubjectCa
                 subject = state.subject;
               }
               final nextClassTestInDays = SubjectHelper.daysTillNextClassTest(
-                subject,
+                context.read<SubjectBloc>().cardsRepository.getClassTestsBySubjectId(subject.uid),
                 DateTime.now(),
               );
               return Column(
@@ -65,21 +67,17 @@ import 'package:learning_app/ui_components/widgets/ui_card.dart';class SubjectCa
               );
             },
           ),
-          Positioned(
-            right: 0,
-            top: 0,
-            child: Row(
-              children: [
-                
-                UIIconButton(
-                  icon: UIIcons.arrowForwardNormal
-                      .copyWith(color: UIColors.overlay),
-                  onPressed: () {},
-                  alignment: Alignment.topRight,
-                  animateToWhite: true,
-                ),
-              ],
-            ),
+          Row(
+            children: [
+              
+              UIIconButton(
+                icon: UIIcons.arrowForwardNormal
+                    .copyWith(color: UIColors.overlay),
+                onPressed: () {},
+                alignment: Alignment.topRight,
+                animateToWhite: true,
+              ),
+            ],
           ),
         ],
       ),

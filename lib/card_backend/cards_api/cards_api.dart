@@ -6,6 +6,7 @@
 // https://opensource.org/licenses/MIT.
 
 import 'package:learning_app/card_backend/cards_api/models/card.dart';
+import 'package:learning_app/card_backend/cards_api/models/class_test.dart';
 import 'package:learning_app/card_backend/cards_api/models/file.dart';
 import 'package:learning_app/card_backend/cards_api/models/folder.dart';
 import 'package:learning_app/card_backend/cards_api/models/search_result.dart';
@@ -52,6 +53,9 @@ abstract class CardsApi {
   /// If a [folder] with same id already exists, it will be replaced
   Future<void> saveFolder(Folder folder, String? parentId);
 
+  /// save the [classTest]
+  Future<void> saveClassTest(String parentSubjectId, ClassTest classTest);
+
   /// Deletes subject and every children with given id
   /// If no card with given id exists, a [SubjectNotFoundException] error is
   /// thrown
@@ -60,6 +64,9 @@ abstract class CardsApi {
   /// delete files when ids match to folder or cards and everything
   /// if you delete a folder all children get automatically deleted
   Future<void> deleteFiles(List<String> ids);
+
+  /// delete class test
+  Future<void> deleteClassTest(String classTestId);
 
   /// Move folder and every children to [newParentId]
   Future<void> moveFiles(List<String> fileIds, String newParentId);
@@ -87,6 +94,13 @@ abstract class CardsApi {
 
   /// get parent ids to a given child id
   List<String> getParentIdsFromChildId(String id);
+
+  /// get classTests from subject
+  List<ClassTest>? getClassTestsBySubjectId(String subjectId);
+
+  List<ClassTest>? getClassTestsByDate(DateTime dateTime);
+
+  ClassTest? getClassTestById(String classTestUID);
 
   /// folder, subject or card from id
   Object? objectFromId(String id);

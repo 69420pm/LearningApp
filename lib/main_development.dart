@@ -69,16 +69,22 @@ Future<void> main() async {
     ..registerAdapter(CalendarDayAdapter());
 
   final cardsApi = HiveCardsApi(
-    await Hive.openBox<Subject>('subjects'),
-    await Hive.openBox<Folder>('folders'),
-    await Hive.openBox<Card>('cards'),
-    await Hive.openBox<List<String>>('relations'),
-    await Hive.openBox<List<dynamic>>('card_content'),
-  );
+      await Hive.openBox<Subject>('subjects'),
+      await Hive.openBox<Folder>('folders'),
+      await Hive.openBox<Card>('cards'),
+      await Hive.openBox<List<String>>('relations'),
+      await Hive.openBox<List<dynamic>>('card_content'),
+      await Hive.openBox<ClassTest>('class_tests'),
+      await Hive.openBox<List<String>>('subject_to_class_test'),
+      await Hive.openBox<List<String>>('dateToClassTest'));
   final cardsRepository = CardsRepository(cardsApi: cardsApi);
 
-  final calendarApi =
-      HiveCalendarApi(await Hive.openBox<CalendarDay>('calendar'));
+
+  final calendarApi = HiveCalendarApi(
+    await Hive.openBox<CalendarDay>('calendar_day'),
+    await Hive.openBox('calendar'),
+  );
+
   final calendarRepository = CalendarRepository(calendarApi: calendarApi);
 
   await bootstrap(
