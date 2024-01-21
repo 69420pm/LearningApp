@@ -62,13 +62,11 @@ class LearningScreen extends StatelessWidget {
     final currentIndex = context.read<LearnCubit>().currentIndex;
 
     if (vel.abs() < minFlingVel ||
-        (!context
-                .read<LearnCubit>()
-                .cardsToLearn[context.read<LearnCubit>().currentIndex]
-                .turnedOver) &&
-            vel > 0) {
+        (!context.read<LearnCubit>().currentCardIsTurned())) {
+      print("moin");
       _animateToBiggestCard(context, screenHeight);
     } else {
+      print(context.read<LearnCubit>().currentCardIsTurned());
       final newIndex = vel > 0 ? (currentIndex + 1) : (currentIndex - 1);
 
       context.read<LearnCubit>().startAnimation();
@@ -110,14 +108,11 @@ class LearningScreen extends StatelessWidget {
           return BlocBuilder<LearnCubit, LearnCubitState>(
             buildWhen: (previous, current) {
               if (current is FinishedLoadingCardsState) return true;
-              if (current is NextLearningSessionState) return true;
+              // if (current is NextLearningSessionState) return true;
               // if (current is CardTurnedState) return true;
 
               if (current is StartAnimationState) inAnimation = true;
-
-              if (current is FinishedAnimationState) {
-                inAnimation = false;
-              }
+              if (current is FinishedAnimationState) inAnimation = false;
 
               if (current is FinishedLearningState) {
                 Navigator.of(context).pop();
@@ -128,7 +123,7 @@ class LearningScreen extends StatelessWidget {
             builder: (context, state) {
               if (state is NextLearningSessionState) {
                 controller.animateTo(0,
-                    duration: Duration(milliseconds: 400),
+                    duration: const Duration(milliseconds: 400),
                     curve: Curves.easeInOut);
               }
               return GestureDetector(
@@ -142,20 +137,6 @@ class LearningScreen extends StatelessWidget {
                 },
                 child: NotificationListener<ScrollNotification>(
                   onNotification: (notification) {
-                    // check if notification comes from horizontal scroll view
-
-                    if (notification.depth == 1 &&
-                        notification is ScrollUpdateNotification) {
-                      if (!context
-                              .read<LearnCubit>()
-                              .cardsToLearn[
-                                  context.read<LearnCubit>().currentIndex]
-                              .turnedOver &&
-                          notification.metrics.pixels >
-                              MediaQuery.sizeOf(context).width / 2) {
-                        context.read<LearnCubit>().turnOverCard();
-                      }
-                    }
                     // check if notification comes from vertical scroll view
                     if (notification.depth == 0) {
                       // Check if the scroll view is being flung (finger down, moved, finger up)

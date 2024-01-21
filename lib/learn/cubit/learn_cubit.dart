@@ -16,12 +16,40 @@ part 'learn_state.dart';
 
 class LearnCubit extends Cubit<LearnCubitState> {
   LearnCubit(this._cardsRepository) : super(LoadingCardsState());
+  final CardsRepository _cardsRepository;
 
   List<RenderCard> _cardsToLearn = List.empty(growable: true);
   List<RenderCard> get cardsToLearn => _cardsToLearn;
 
   int currentIndex = 0;
   double screenHeight = 0;
+
+  Future<List<RenderCard>> setToLearnCards(List<Card> cards) async {
+    _cardsToLearn = cards
+        .map(
+          (e) => RenderCard(
+            card: e,
+            cardsRepository: _cardsRepository,
+            onImagesLoaded: () => emit(NewCardState()),
+          ),
+        )
+        .toList()
+      ..sort(
+        (a, b) => b.dateCreated.compareTo(a.dateCreated),
+      );
+    // _cardsToLearn = _cardsToLearn.sublist(0, 4);
+
+    //TODO Only load CardContent to display
+    for (var i = 0; i < cardsToLearn.length; i++) {
+      cardsToLearn[i].editorTiles =
+          await _cardsRepository.getCardContent(cardsToLearn[i].uid);
+    }
+
+    currentIndex = 0;
+
+    emit(FinishedLoadingCardsState());
+    return _cardsToLearn;
+  }
 
   void setHeight(int index, double height) {
     if (height != _cardsToLearn[index].cardHeight) {
@@ -32,6 +60,22 @@ class LearnCubit extends Cubit<LearnCubitState> {
 
   bool currentCardIsTurned() {
     return _cardsToLearn[currentIndex].turnedOver;
+  }
+
+  void updateCurrentIndex(int newIndex) {
+    if (currentIndex != newIndex) {
+      currentIndex = newIndex;
+      emit(NewCardState());
+    }
+  }
+
+  void turnOverCurrentCard() {
+    _cardsToLearn[currentIndex].turnedOver = true;
+    emit(CardTurnedState());
+  }
+
+  void stopScrolling() {
+    emit(StopScrollingState());
   }
 
   double getBottomLimit(
@@ -53,21 +97,9 @@ class LearnCubit extends Cubit<LearnCubitState> {
     return offset;
   }
 
-  void updateCurrentIndex(int newIndex) {
-    if (currentIndex != newIndex) {
-      currentIndex = newIndex;
-      emit(NewCardState());
-    }
-  }
-
-  void stopScrolling() {
-    emit(StopScrollingState());
-  }
-
   double? getAmountScrolledAway(double offset, double screenHeight) {
     var a = (getOffsetByIndex(currentIndex + 1) - offset) / screenHeight;
     if (a > 1) a -= 1;
-    print(a);
     return 0;
   }
 
@@ -94,12 +126,13 @@ class LearnCubit extends Cubit<LearnCubitState> {
       }
       if (height >= offset) {
         final border = ((height - offset) / screenHeight).clamp(0, 1);
-
         if (border == 1) {
           updateCurrentIndex(i);
           return null;
         } else if (border < 0.5) {
           if (currentIndex == i && !_cardsToLearn[currentIndex].turnedOver) {
+            print("back");
+            updateCurrentIndex(i);
             return height - screenHeight;
           }
           updateCurrentIndex(i + 1);
@@ -126,40 +159,6 @@ class LearnCubit extends Cubit<LearnCubitState> {
 
   void endAnimation() {
     emit(FinishedAnimationState());
-  }
-
-  final CardsRepository _cardsRepository;
-
-  void turnOverCard() {
-    _cardsToLearn[currentIndex].turnedOver = true;
-    emit(CardTurnedState());
-  }
-
-  Future<List<RenderCard>> setToLearnCards(List<Card> cards) async {
-    _cardsToLearn = cards
-        .map(
-          (e) => RenderCard(
-            card: e,
-            cardsRepository: _cardsRepository,
-            onImagesLoaded: () => emit(NewCardState()),
-          ),
-        )
-        .toList()
-      ..sort(
-        (a, b) => b.dateCreated.compareTo(a.dateCreated),
-      );
-    // _cardsToLearn = _cardsToLearn.sublist(0, 4);
-
-    //TODO Only load CardContent to display
-    for (var i = 0; i < cardsToLearn.length; i++) {
-      cardsToLearn[i].editorTiles =
-          await _cardsRepository.getCardContent(cardsToLearn[i].uid);
-    }
-
-    print(cardsToLearn.map((e) => e.frontWidgets));
-
-    emit(FinishedLoadingCardsState());
-    return _cardsToLearn;
   }
 
   void _checkIfAllCardsRated() {

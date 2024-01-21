@@ -64,10 +64,13 @@ class HiveCardsApi extends CardsApi {
   @override
   List<Card> getAllCardsToLearnForToday() {
     final now = DateUtils.dateOnly(DateTime.now());
-    var a = _cardBox.values.where((element) {
-      final dateToReview = DateUtils.dateOnly(element.dateToReview);
-      return (dateToReview.isBefore(now) || dateToReview.isAtSameMomentAs(now));
-    }).toList();
+    var a = _cardBox.values
+        .where((element) =>
+            DateUtils.dateOnly(DateTime.now())
+                .difference(DateUtils.dateOnly(element.dateToReview))
+                .inDays <=
+            0)
+        .toList();
     return a;
   }
 

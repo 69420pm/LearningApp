@@ -6,6 +6,7 @@ import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
 import 'package:learning_app/ui_components/ui_text.dart';
+
 class CardListTileView extends StatelessWidget {
   const CardListTileView({
     super.key,
@@ -19,6 +20,9 @@ class CardListTileView extends StatelessWidget {
     final selectionBloc = context.read<SubjectOverviewSelectionBloc>();
     final isSelected = selectionBloc.isFileSelected(card.uid);
     final isSoftSelected = selectionBloc.fileSoftSelected == card.uid;
+
+    final daysToNextReview =
+        DateTime.now().difference(card.dateToReview).inDays;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: UIConstants.defaultSize),
@@ -45,10 +49,21 @@ class CardListTileView extends StatelessWidget {
               UIIcons.card,
               const SizedBox(width: UIConstants.defaultSize * 2),
               Expanded(
-                child: Text(
-                  card.name,
-                  overflow: TextOverflow.ellipsis,
-                  style: UIText.label,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      card.name,
+                      overflow: TextOverflow.ellipsis,
+                      style: UIText.label,
+                    ),
+                    Text(
+                      daysToNextReview > 0 ? "$daysToNextReview days" : "today",
+                      overflow: TextOverflow.ellipsis,
+                      style: UIText.small,
+                    ),
+                  ],
                 ),
               ),
             ],

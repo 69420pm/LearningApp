@@ -60,6 +60,8 @@ class LearningCardPage extends StatelessWidget {
           child: LearningCard(
             card: card,
             screenHeight: screenHeight,
+            relativeToCurrentIndex:
+                index - context.read<LearnCubit>().currentIndex,
           )
               .animate(
                   target:
