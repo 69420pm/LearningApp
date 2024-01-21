@@ -11,6 +11,7 @@ import 'package:learning_app/ui_components/ui_icons.dart';
 import 'package:learning_app/ui_components/ui_text.dart';
 import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.dart';
 import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
+import 'package:learning_app/ui_components/widgets/dialogs/ui_dialog.dart';
 
 class LinkTile extends StatelessWidget implements EditorTile {
   LinkTile({
@@ -43,6 +44,16 @@ class LinkTile extends StatelessWidget implements EditorTile {
       alignment: Alignment.centerLeft,
       child: GestureDetector(
         onTap: () {
+          if (card == null) {
+            showDialog(
+                context: context,
+                builder: (_) => UIDialog(
+                    title: 'Link Error',
+                    body: "The linked card isn't anymore accessible",
+                    actions: []));
+            return;
+          }
+
           UIBottomSheet.showUIBottomSheet(
             context: context,
             builder: (_) {
@@ -78,15 +89,17 @@ class LinkTile extends StatelessWidget implements EditorTile {
                   UIIcons.link.copyWith(color: UIColors.smallText),
                   const SizedBox(width: UIConstants.itemPadding / 2),
                   Text(
-                    card!.name,
+                    card != null ? card.name : 'Linked card got deleted',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: UIText.label.copyWith(color: UIColors.smallText),
+                    style: card != null
+                        ? UIText.label.copyWith(color: UIColors.smallText)
+                        : UIText.code.copyWith(color: UIColors.red),
                   ),
                   if (!inRenderMode)
                     UIIconButton(
                       icon: UIIcons.cancel
-                          .copyWith(color: UIColors.background, size: 28),
+                          .copyWith(color: card!=null? UIColors.background : UIColors.red, size: 28),
                       animateToWhite: true,
                       onPressed: () {
                         context.read<TextEditorBloc>().add(
