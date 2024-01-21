@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:learning_app/app/helper/uid.dart';
 import 'package:learning_app/editor/models/char_tile.dart';
 import 'package:learning_app/editor/models/editor_data_classes/audio_tile_dc.dart';
-import 'package:learning_app/editor/models/editor_data_classes/callout_tile_dc.dart';
 import 'package:learning_app/editor/models/editor_data_classes/char_tile_dc.dart';
 import 'package:learning_app/editor/models/editor_data_classes/divider_tile_dc.dart';
 import 'package:learning_app/editor/models/editor_data_classes/editor_tile_dc.dart';
@@ -19,7 +18,6 @@ import 'package:learning_app/editor/models/editor_data_classes/text_tile_dc.dart
 import 'package:learning_app/editor/models/editor_tile.dart';
 import 'package:learning_app/editor/models/text_field_constants.dart';
 import 'package:learning_app/editor/widgets/editor_tiles/audio_tile.dart';
-import 'package:learning_app/editor/widgets/editor_tiles/callout_tile.dart';
 import 'package:learning_app/editor/widgets/editor_tiles/divider_tile.dart';
 import 'package:learning_app/editor/widgets/editor_tiles/front_back_seperator_tile.dart';
 import 'package:learning_app/editor/widgets/editor_tiles/header_tile.dart';
@@ -33,7 +31,9 @@ import 'package:learning_app/editor/widgets/editor_tiles/text_tile.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
-import 'package:learning_app/ui_components/ui_text.dart';class DataClassHelper {
+import 'package:learning_app/ui_components/ui_text.dart';
+
+class DataClassHelper {
   static List<EditorTileDC> convertToDataClass(List<EditorTile> editorTiles) {
     final dataClassTiles = <EditorTileDC>[];
     for (final editorTile in editorTiles) {
@@ -43,19 +43,6 @@ import 'package:learning_app/ui_components/ui_text.dart';class DataClassHelper {
             AudioTileDC(
               uid: Uid().uid(),
               filePath: (editorTile as AudioTile).filePath,
-            ),
-          );
-          break;
-        case CalloutTile:
-          final calloutTile = editorTile as CalloutTile;
-          dataClassTiles.add(
-            CalloutTileDC(
-              uid: Uid().uid(),
-              charTiles: _charTileToCharTileDC(
-                calloutTile.textFieldController!.charTiles,
-              ),
-              tileColor: _colorToInt(calloutTile.tileColor),
-              iconString: calloutTile.iconString,
             ),
           );
           break;
@@ -159,22 +146,6 @@ import 'package:learning_app/ui_components/ui_text.dart';class DataClassHelper {
         case AudioTileDC:
           final audioTile = editorTileDC as AudioTileDC;
           dataClassTiles.add(AudioTile(filePath: audioTile.filePath));
-          break;
-        case CalloutTileDC:
-          final calloutTileDC = editorTileDC as CalloutTileDC;
-          dataClassTiles.add(
-            CalloutTile(
-              textTile: TextTile(
-                textStyle: TextFieldConstants.normal,
-                charTiles: _charTileDCToCharTile(
-                  calloutTileDC.charTiles,
-                  TextFieldConstants.normal,
-                ),
-              ),
-              tileColor: _intToColor(calloutTileDC.tileColor),
-              iconString: calloutTileDC.iconString,
-            ),
-          );
           break;
         case DividerTileDC:
           dataClassTiles.add(DividerTile());
@@ -286,9 +257,6 @@ import 'package:learning_app/ui_components/ui_text.dart';class DataClassHelper {
       } else if (tile is HeaderTileDC) {
         final text = _charTilesDCToText(tile.charTiles);
         addFront ? front += '$text\n' : back += '$text\n';
-      } else if (tile is CalloutTileDC) {
-        final text = _charTilesDCToText(tile.charTiles);
-        addFront ? front += '$text\n' : back += '$text\n';
       } else if (tile is ListEditorTileDC) {
         final text = _charTilesDCToText(tile.charTiles);
         addFront ? front += '$text\n' : back += '$text\n';
@@ -319,11 +287,6 @@ import 'package:learning_app/ui_components/ui_text.dart';class DataClassHelper {
         );
         addFront ? front += '$text\n' : back += '$text\n';
       } else if (tile is HeaderTile) {
-        final text = _charTilesToText(
-          tile.textFieldController!.charTiles.values.toList(),
-        );
-        addFront ? front += '$text\n' : back += '$text\n';
-      } else if (tile is CalloutTile) {
         final text = _charTilesToText(
           tile.textFieldController!.charTiles.values.toList(),
         );

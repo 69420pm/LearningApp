@@ -8,7 +8,6 @@ import 'package:learning_app/editor/widgets/bottom_sheets/add_audio_bottom_sheet
 import 'package:learning_app/editor/widgets/bottom_sheets/add_image_bottom_sheet.dart';
 import 'package:learning_app/editor/widgets/bottom_sheets/latex_bottom_sheet.dart';
 import 'package:learning_app/editor/widgets/bottom_sheets/link_tile_bottom_sheet.dart';
-import 'package:learning_app/editor/widgets/editor_tiles/callout_tile.dart';
 import 'package:learning_app/editor/widgets/editor_tiles/divider_tile.dart';
 import 'package:learning_app/editor/widgets/editor_tiles/header_tile.dart';
 import 'package:learning_app/editor/widgets/editor_tiles/latex_tile.dart';
@@ -41,16 +40,6 @@ import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.
                       onPressed: () {
                         context.read<KeyboardRowCubit>().addNewTile(
                               QuoteTile(),
-                              textEditorBloc,
-                              context,
-                            );
-                      },
-                    ),
-                    KeyboardButton(
-                      icon: UIIcons.calloutTile,
-                      onPressed: () {
-                        context.read<KeyboardRowCubit>().addNewTile(
-                              CalloutTile(),
                               textEditorBloc,
                               context,
                             );
