@@ -222,7 +222,6 @@ class LearnCubit extends Cubit<LearnCubitState> {
           }
       }
       _cardsRepository.saveCard(_cardsToLearn[i], null, null);
-      print(_cardsToLearn[i]);
     }
 
     emit(FinishedLearningState());

@@ -6,6 +6,7 @@ import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
 import 'package:learning_app/ui_components/ui_text.dart';
+
 class UICard extends StatelessWidget {
   const UICard({
     super.key,
@@ -14,12 +15,16 @@ class UICard extends StatelessWidget {
     required this.child,
     this.useGradient = false,
     this.distanceToTop = 0,
+    this.disabled = false,
   });
 
   final void Function()? onTap;
   final Color? color;
   final Widget child;
   final bool useGradient;
+  final bool disabled;
+
+  /// offset for gradient
   final double distanceToTop;
 
   @override
@@ -29,7 +34,7 @@ class UICard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        // width: double.infinity,
+        width: double.infinity,
         decoration: BoxDecoration(
           color: color ?? UIColors.overlay,
           borderRadius: const BorderRadius.all(
@@ -38,17 +43,24 @@ class UICard extends StatelessWidget {
           image: useGradient
               ? DecorationImage(
                   image: const AssetImage('assets/gradient.png'),
-                  alignment: Alignment.lerp(Alignment.topCenter,
-                          Alignment.bottomCenter, relativeGradientPos,) ??
+                  alignment: Alignment.lerp(
+                        Alignment.topCenter,
+                        Alignment.bottomCenter,
+                        relativeGradientPos,
+                      ) ??
                       Alignment.center,
                   fit: BoxFit.cover,
-                )
+                  colorFilter: disabled
+                      ? ColorFilter.mode(
+                          Colors.black.withOpacity(.6), BlendMode.multiply)
+                      : null)
               : null,
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(
-              horizontal: UIConstants.cardHorizontalPadding,
-              vertical: UIConstants.cardVerticalPaddingLarge,),
+            horizontal: UIConstants.cardHorizontalPadding,
+            vertical: UIConstants.cardVerticalPaddingLarge,
+          ),
           child: child,
         ),
       ),
