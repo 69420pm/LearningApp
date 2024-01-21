@@ -41,7 +41,7 @@ class LearnAllCard extends StatelessWidget {
                     height: UIConstants.defaultSize,
                   ),
                   Text(
-                    '? Cards remaining',
+                    '${context.read<OverviewCubit>().cardsRepository.getAllCardsToLearnForToday().length ?? "?"} cards remaining',
                     style: UIText.label.copyWith(
                       color: UIColors.textDark,
                     ),

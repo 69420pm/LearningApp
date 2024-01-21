@@ -58,7 +58,6 @@ class LearnCubit extends Cubit<LearnCubitState> {
       currentIndex = newIndex;
       emit(NewCardState());
     }
-
   }
 
   void stopScrolling() {
@@ -112,7 +111,6 @@ class LearnCubit extends Cubit<LearnCubitState> {
       }
     }
     return null;
-
   }
 
   bool isScrollingInsideCurrentCard(double offset, double screenHeight) {
@@ -157,6 +155,8 @@ class LearnCubit extends Cubit<LearnCubitState> {
       cardsToLearn[i].editorTiles =
           await _cardsRepository.getCardContent(cardsToLearn[i].uid);
     }
+
+    print(cardsToLearn.map((e) => e.frontWidgets));
 
     emit(FinishedLoadingCardsState());
     return _cardsToLearn;
@@ -223,7 +223,6 @@ class LearnCubit extends Cubit<LearnCubitState> {
         //first try/tries wrong, but now right
         if (_cardsToLearn[currentIndex].gotRatedBad) {
           _cardsToLearn[currentIndex].dateToReview =
-
               _cardsToLearn[currentIndex].dateToReview.add(1.days);
 
           if (_cardsToLearn[currentIndex].recallScore > 0) {
