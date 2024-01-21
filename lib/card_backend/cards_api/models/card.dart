@@ -32,9 +32,9 @@ class Card extends File implements Equatable {
   @HiveField(4)
   int recallScore;
 
-  /// date when the card should get learned again
+  /// date when the card should get learned again, null if finished
   @HiveField(5)
-  DateTime dateToReview;
+  DateTime? dateToReview;
 
   @HiveField(6)
   String name;
@@ -87,7 +87,7 @@ class Card extends File implements Equatable {
       askCardsInverted,
       typeAnswer,
       recallScore,
-      dateToReview,
+      dateToReview ?? DateTime(0),
     ];
   }
 }

@@ -122,10 +122,10 @@ class _UIIconButtonState extends State<UIIconButton> {
                         widget.text!,
                         style: UIText.label.copyWith(
                           color: Color.lerp(
-                          startColorText ?? startColor,
-                          animateTextColor ?? animateColor,
-                          value,
-                        ),
+                            startColorText ?? startColor,
+                            animateTextColor ?? animateColor,
+                            value,
+                          ),
                         ),
                       ),
                     ],

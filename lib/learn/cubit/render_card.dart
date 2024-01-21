@@ -7,6 +7,7 @@ import 'package:learning_app/editor/widgets/editor_tiles/header_tile.dart';
 import 'package:learning_app/editor/widgets/editor_tiles/image_tile.dart';
 import 'package:learning_app/editor/widgets/editor_tiles/link_tile.dart';
 import 'package:learning_app/editor/widgets/editor_tiles/text_tile.dart';
+import 'package:learning_app/learn/cubit/learn_cubit.dart';
 
 class RenderCard extends Card {
   RenderCard({
@@ -14,10 +15,8 @@ class RenderCard extends Card {
     required this.cardsRepository,
     required this.onImagesLoaded,
     this.turnedOver = false,
-    this.gotRatedBad = false,
-    this.gotRatedInThisSession = false,
-    this.finishedToday = false,
     this.cardHeight,
+    this.feedback,
   }) : super(
           uid: card.uid,
           dateCreated: card.dateCreated,
@@ -30,9 +29,7 @@ class RenderCard extends Card {
 
   bool turnedOver;
   double? cardHeight;
-  bool gotRatedBad;
-  bool gotRatedInThisSession;
-  bool finishedToday;
+  LearnFeedback? feedback;
 
   final CardsRepository cardsRepository;
   final void Function() onImagesLoaded;

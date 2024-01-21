@@ -21,13 +21,14 @@ class CardListTileView extends StatelessWidget {
     final isSelected = selectionBloc.isFileSelected(card.uid);
     final isSoftSelected = selectionBloc.fileSoftSelected == card.uid;
 
-    final daysToNextReview =
-        DateTime.now().difference(card.dateToReview).inDays;
+    final daysToNextReview = card.dateToReview
+        ?.difference(DateUtils.dateOnly(DateTime.now()))
+        .inDays;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: UIConstants.defaultSize),
       child: Container(
-        height: UIConstants.defaultSize * 5,
+        height: UIConstants.defaultSize * 6,
         decoration: BoxDecoration(
           color: isSoftSelected || isSelected
               ? UIColors.overlay
@@ -58,10 +59,28 @@ class CardListTileView extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: UIText.label,
                     ),
-                    Text(
-                      daysToNextReview > 0 ? "$daysToNextReview days" : "today",
-                      overflow: TextOverflow.ellipsis,
-                      style: UIText.small,
+                    Row(
+                      children: [
+                        Text(
+                          daysToNextReview == null
+                              ? 'finished'
+                              : daysToNextReview > 1
+                                  ? 'due in $daysToNextReview days'
+                                  : daysToNextReview == 1
+                                      ? 'due tomorrow'
+                                      : 'due today',
+                          overflow: TextOverflow.ellipsis,
+                          style: UIText.small,
+                        ),
+                        const SizedBox(
+                          width: UIConstants.defaultSize * 3,
+                        ),
+                        Text(
+                          'recall score: ${card.recallScore}',
+                          overflow: TextOverflow.ellipsis,
+                          style: UIText.small,
+                        ),
+                      ],
                     ),
                   ],
                 ),

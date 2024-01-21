@@ -62,8 +62,7 @@ class LearningScreen extends StatelessWidget {
     final currentIndex = context.read<LearnCubit>().currentIndex;
 
     if (vel.abs() < minFlingVel ||
-        (!context.read<LearnCubit>().currentCardIsTurned())) {
-      print("moin");
+        (!context.read<LearnCubit>().currentCardIsTurned() && vel > 0)) {
       _animateToBiggestCard(context, screenHeight);
     } else {
       print(context.read<LearnCubit>().currentCardIsTurned());
@@ -80,7 +79,7 @@ class LearningScreen extends StatelessWidget {
         offsetToAnimate,
         duration: Duration(
             milliseconds: min(
-                500,
+                200,
                 ((2 *
                             (offsetToAnimate - controller.offset) /
                             controller.position.activity!.velocity) *

@@ -6,6 +6,7 @@ import 'package:learning_app/card_backend/cards_repository.dart';
 import 'package:learning_app/learn/cubit/learn_cubit.dart';
 import 'package:learning_app/learn/cubit/render_card.dart';
 import 'package:learning_app/learn/view/learning_card.dart';
+import 'package:learning_app/learn/view/rate_bar.dart';
 
 class LearningCardPage extends StatelessWidget {
   LearningCardPage({
@@ -50,23 +51,17 @@ class LearningCardPage extends StatelessWidget {
           learnCubit.setHeight(index, widgetHeight);
         });
 
-        return GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          onDoubleTap: () {
-            if (card.turnedOver && !card.finishedToday) {
-              context.read<LearnCubit>().rateCard(LearnFeedback.good);
-            }
-          },
-          child: LearningCard(
-            card: card,
-            screenHeight: screenHeight,
-            relativeToCurrentIndex:
-                index - context.read<LearnCubit>().currentIndex,
-          )
-              .animate(
-                  target:
-                      card.gotRatedInThisSession && !card.gotRatedBad ? 1 : 0)
-              .shakeX(),
+        return Stack(
+          alignment: Alignment.bottomRight,
+          children: [
+            LearningCard(
+              card: card,
+              screenHeight: screenHeight,
+              relativeToCurrentIndex:
+                  index - context.read<LearnCubit>().currentIndex,
+            ),
+            if (card.turnedOver) RateBar(index: index),
+          ],
         );
       },
     );

@@ -1,16 +1,9 @@
-import 'dart:math';
-
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart' hide Card;
-
 import 'package:flutter_animate/flutter_animate.dart';
-
 import 'package:learning_app/card_backend/cards_api/models/card.dart';
 import 'package:learning_app/card_backend/cards_repository.dart';
-import 'package:learning_app/editor/models/editor_tile.dart';
-import 'package:learning_app/editor/widgets/editor_tiles/front_back_seperator_tile.dart';
 import 'package:learning_app/learn/cubit/render_card.dart';
-import 'package:learning_app/ui_components/ui_text.dart';
 
 part 'learn_state.dart';
 
@@ -131,7 +124,6 @@ class LearnCubit extends Cubit<LearnCubitState> {
           return null;
         } else if (border < 0.5) {
           if (currentIndex == i && !_cardsToLearn[currentIndex].turnedOver) {
-            print("back");
             updateCurrentIndex(i);
             return height - screenHeight;
           }
@@ -163,93 +155,86 @@ class LearnCubit extends Cubit<LearnCubitState> {
 
   void _checkIfAllCardsRated() {
     //check if all got rated
-    if (_cardsToLearn
-        .where((element) => !element.gotRatedInThisSession)
-        .isEmpty) {
-      //get all bad rated Cards
-      final gotBadCards = _cardsToLearn
-          .where((element) => element.gotRatedBad && !element.finishedToday);
-
-      //all cards good
-      if (gotBadCards.isEmpty) {
-        emit(FinishedLearningState());
-      }
-
-      //some bad
-      else {
-        _cardsToLearn = gotBadCards.map(
-          (e) {
-            e
-              ..turnedOver = false
-              ..gotRatedInThisSession = false;
-            return e;
-          },
-        ).toList();
-        emit(NextLearningSessionState());
-      }
+    if (_cardsToLearn.where((element) => element.feedback == null).isEmpty) {
+      _updateAllCards();
     }
   }
 
-  void rateCard(LearnFeedback feedbackCard) {
+  void _updateAllCards() {
     //"finish a card" means, that this card doesn't get a new dateToReview;
     //We might add random "finished" cards to a daily session, if there are for
     //example only a few cards on that day.
 
-    //iterations to finish card
-    const rehearsalIterations = 5;
+    // //iterations to finish card
+    // const rehearsalIterations = 5;
 
-    //minimal time it takes to finish a card if always rated good
-    const minimalAmountDaysToLearnCard = 14;
+    // //minimal time it takes to finish a card if always rated good
+    // const minimalAmountDaysToLearnCard = 14;
 
-    //rehearsal Curve (lots in the beginning, fewer in the end)
-    const rehearsalCurve = Curves.easeInExpo;
+    // //rehearsal Curve (lots in the beginning, fewer in the end)
+    // const rehearsalCurve = Curves.easeInExpo;
 
-    // generate list of time spans between rehearsals
-    final nextDateToReview = List.generate(
-      rehearsalIterations,
-      (index) {
-        return (rehearsalCurve.transform(
-                  rehearsalIterations / minimalAmountDaysToLearnCard,
-                ) *
-                minimalAmountDaysToLearnCard)
-            .round()
-            .days;
-      },
-    );
+    // // generate list of time spans between rehearsals
+    // final nextDateToReview = List.generate(
+    //   rehearsalIterations,
+    //   (index) {
+    //     return (rehearsalCurve.transform(
+    //               rehearsalIterations / minimalAmountDaysToLearnCard,
+    //             ) *
+    //             minimalAmountDaysToLearnCard)
+    //         .round()
+    //         .days;
+    //   },
+    // );
 
-    if (!_cardsToLearn[currentIndex].gotRatedInThisSession) {
-      if (feedbackCard == LearnFeedback.good) {
-        //first try/tries wrong, but now right
-        if (_cardsToLearn[currentIndex].gotRatedBad) {
-          _cardsToLearn[currentIndex].dateToReview =
-              _cardsToLearn[currentIndex].dateToReview.add(1.days);
+    final nextDateToReview = [
+      0.days,
+      1.days,
+      2.days,
+      3.days,
+      5.days,
+      8.days,
+      10.days,
+      30.days,
+    ];
 
-          if (_cardsToLearn[currentIndex].recallScore > 0) {
-            _cardsToLearn[currentIndex].recallScore--;
+    for (var i = 0; i < _cardsToLearn.length; i++) {
+      switch (_cardsToLearn[i].feedback!) {
+        case LearnFeedback.good:
+          _cardsToLearn[i].recallScore += 1;
+          if (_cardsToLearn[i].recallScore < nextDateToReview.length) {
+            _cardsToLearn[i].dateToReview = DateUtils.dateOnly(DateTime.now())
+                .add(nextDateToReview[_cardsToLearn[i].recallScore]);
+          } else {
+            // card is finished
+            _cardsToLearn[i].dateToReview = null;
           }
-        }
 
-        //first try right
-        else {
-          _cardsToLearn[currentIndex].dateToReview = _cardsToLearn[currentIndex]
-              .dateToReview
-              .add(nextDateToReview[_cardsToLearn[currentIndex].recallScore]);
-          _cardsToLearn[currentIndex].recallScore += 1;
-        }
-        _cardsToLearn[currentIndex].finishedToday = true;
-        _cardsRepository.saveCard(_cardsToLearn[currentIndex], null, null);
-      }
+        case LearnFeedback.medium:
+          _cardsToLearn[i].recallScore += 0;
+          _cardsToLearn[i].dateToReview =
+              DateUtils.dateOnly(DateTime.now()).add(1.days);
 
-      //bad
-      else {
-        _cardsToLearn[currentIndex].gotRatedBad = true;
-        _cardsToLearn.add(_cardsToLearn[currentIndex]..turnedOver = false);
+        case LearnFeedback.bad:
+          if (_cardsToLearn[i].recallScore > 0) {
+            _cardsToLearn[i].recallScore -= 2;
+            _cardsToLearn[i].dateToReview = DateUtils.dateOnly(DateTime.now());
+          }
       }
+      _cardsRepository.saveCard(_cardsToLearn[i], null, null);
+      print(_cardsToLearn[i]);
     }
-    _cardsToLearn[currentIndex].gotRatedInThisSession = true;
-    _checkIfAllCardsRated();
-    emit(CardRatedState());
+
+    emit(FinishedLearningState());
+  }
+
+  void rateCard(LearnFeedback feedbackCard, int index) {
+    if (_cardsToLearn[index].feedback != feedbackCard) {
+      _cardsToLearn[index].feedback = feedbackCard;
+      emit(CardRatedState());
+      _checkIfAllCardsRated();
+    }
   }
 }
 
-enum LearnFeedback { good, bad }
+enum LearnFeedback { good, medium, bad }

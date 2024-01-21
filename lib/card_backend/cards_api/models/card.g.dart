@@ -22,7 +22,7 @@ class CardAdapter extends TypeAdapter<Card> {
       askCardsInverted: fields[2] as bool,
       typeAnswer: fields[3] as bool,
       recallScore: fields[4] as int,
-      dateToReview: fields[5] as DateTime,
+      dateToReview: fields[5] as DateTime?,
       name: fields[6] as String,
     );
   }
