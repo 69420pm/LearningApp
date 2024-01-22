@@ -127,13 +127,16 @@ class AppRouter {
               //   create: (context) => SubjectBloc(),
               // ),
             ],
-            child: CalendarPage(),
+            child: const CalendarPage(),
           ),
         );
       case '/search':
         return MaterialPageRoute(
           builder: (_) => MultiBlocProvider(
-            providers: [BlocProvider.value(value: _searchBloc)],
+            providers: [
+              BlocProvider.value(value: _searchBloc),
+              BlocProvider.value(value: _overviewCubit)
+            ],
             child: SearchPage(
               searchId: routeSettings.arguments as String?,
             ),
