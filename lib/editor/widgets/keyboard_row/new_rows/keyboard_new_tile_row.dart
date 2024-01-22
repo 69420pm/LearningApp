@@ -61,8 +61,8 @@ import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.
                           context: context,
                           builder: (_) {
                             final cardsRepository =
-                                context.read<TextEditorBloc>().cardsRepository;
-                            context.read<TextEditorBloc>().add(
+                                textEditorBloc.cardsRepository;
+                            textEditorBloc.add(
                                   TextEditorSetFocusedWidget(
                                     focusedWidget:
                                         FocusManager.instance.primaryFocus,
@@ -76,7 +76,7 @@ import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.
                                   ),
                                 ),
                                 BlocProvider.value(
-                                  value: context.read<TextEditorBloc>(),
+                                  value: textEditorBloc,
                                 ),
                               ],
                               child: LinkTileBottomSheet(),
@@ -97,7 +97,7 @@ import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.
                     KeyboardButton(
                       icon: UIIcons.functions,
                       onPressed: () {
-                        context.read<TextEditorBloc>().add(
+                        textEditorBloc.add(
                               TextEditorSetFocusedWidget(
                                 focusedWidget:
                                     FocusManager.instance.primaryFocus,
@@ -110,7 +110,7 @@ import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.
                           builder: (_) => Wrap(
                             children: [
                               BlocProvider.value(
-                                value: context.read<TextEditorBloc>(),
+                                value: textEditorBloc,
                                 child: LatexBottomSheet(
                                   textEditingController:
                                       newLatexTile.textEditingController,
@@ -131,7 +131,7 @@ import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.
                                 );
                             FocusManager.instance.primaryFocus?.unfocus();
                           } else {
-                            context.read<TextEditorBloc>().add(
+                            textEditorBloc.add(
                                   TextEditorRemoveEditorTile(
                                     tileToRemove: newLatexTile,
                                     context: context,
@@ -154,7 +154,7 @@ import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.
                     KeyboardButton(
                       icon: UIIcons.image,
                       onPressed: () {
-                        context.read<TextEditorBloc>().add(
+                        textEditorBloc.add(
                               TextEditorSetFocusedWidget(
                                 focusedWidget:
                                     FocusManager.instance.primaryFocus,
@@ -163,7 +163,7 @@ import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.
                         UIBottomSheet.showUIBottomSheet(
                           context: context,
                           builder: (_) => BlocProvider.value(
-                            value: context.read<TextEditorBloc>(),
+                            value: textEditorBloc,
                             child: const AddImageBottomSheet(),
                           ),
                         ).whenComplete(
@@ -174,7 +174,7 @@ import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.
                     KeyboardButton(
                       icon: UIIcons.audio,
                       onPressed: () {
-                        context.read<TextEditorBloc>().add(
+                        textEditorBloc.add(
                               TextEditorSetFocusedWidget(
                                 focusedWidget:
                                     FocusManager.instance.primaryFocus,
@@ -183,7 +183,7 @@ import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.
                         UIBottomSheet.showUIBottomSheet(
                           context: context,
                           builder: (_) => BlocProvider.value(
-                            value: context.read<TextEditorBloc>(),
+                            value: textEditorBloc,
                             child: const AddAudioBottomSheet(),
                           ),
                         ).whenComplete(
