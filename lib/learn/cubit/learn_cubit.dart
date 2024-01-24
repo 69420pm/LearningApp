@@ -45,8 +45,13 @@ class LearnCubit extends Cubit<LearnCubitState> {
   }
 
   void setHeight(int index, double height) {
-    if (height != _cardsToLearn[index].cardHeight) {
+    if (height != _cardsToLearn[index].cardHeight &&
+        // Workaround for cards magically getting larger due to the flutter_animate package
+        !(_cardsToLearn[index].cardHeight != null &&
+            height == (_cardsToLearn[index].cardHeight! + 1))) {
+      // Workaround for cards magically getting larger due to the flutter_animate package
       _cardsToLearn[index].cardHeight = height;
+
       emit(UpdateHeightState(index: index));
     }
   }
@@ -153,13 +158,6 @@ class LearnCubit extends Cubit<LearnCubitState> {
     emit(FinishedAnimationState());
   }
 
-  void _checkIfAllCardsRated() {
-    //check if all got rated
-    if (_cardsToLearn.where((element) => element.feedback == null).isEmpty) {
-      _updateAllCards();
-    }
-  }
-
   void _updateAllCards() {
     //"finish a card" means, that this card doesn't get a new dateToReview;
     //We might add random "finished" cards to a daily session, if there are for
@@ -231,7 +229,6 @@ class LearnCubit extends Cubit<LearnCubitState> {
     if (_cardsToLearn[index].feedback != feedbackCard) {
       _cardsToLearn[index].feedback = feedbackCard;
       emit(CardRatedState());
-      _checkIfAllCardsRated();
     }
   }
 }

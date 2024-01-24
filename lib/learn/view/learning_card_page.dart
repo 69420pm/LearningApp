@@ -51,17 +51,11 @@ class LearningCardPage extends StatelessWidget {
           learnCubit.setHeight(index, widgetHeight);
         });
 
-        return Stack(
-          alignment: Alignment.bottomRight,
-          children: [
-            LearningCard(
-              card: card,
-              screenHeight: screenHeight,
-              relativeToCurrentIndex:
-                  index - context.read<LearnCubit>().currentIndex,
-            ),
-            if (card.turnedOver) RateBar(index: index),
-          ],
+        return LearningCard(
+          card: card,
+          screenHeight: screenHeight,
+          relativeToCurrentIndex:
+              index - context.read<LearnCubit>().currentIndex,
         );
       },
     );

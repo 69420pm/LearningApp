@@ -4,53 +4,60 @@ import 'package:learning_app/learn/cubit/learn_cubit.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
+import 'package:learning_app/ui_components/ui_text.dart';
 import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
 
-class RateBar extends StatelessWidget {
-  const RateBar({super.key, required this.index});
+class RateBar extends StatefulWidget {
+  RateBar({super.key, required this.index, required this.feedback});
 
   final int index;
+  LearnFeedback feedback;
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        RateButton(
-          feedback: LearnFeedback.good,
-          index: index,
-        ),
-        RateButton(
-          feedback: LearnFeedback.medium,
-          index: index,
-        ),
-        RateButton(
-          feedback: LearnFeedback.bad,
-          index: index,
-        ),
-      ],
-    );
-  }
+  State<RateBar> createState() => _RateBarState();
 }
 
-class RateButton extends StatelessWidget {
-  RateButton({super.key, required this.feedback, required this.index});
-  final int index;
-  final LearnFeedback feedback;
-
-  final icons = [UIIcons.add, UIIcons.curlyBraces, UIIcons.debug];
-  final colors = [UIColors.green, UIColors.yellow, UIColors.red];
-
+class _RateBarState extends State<RateBar> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: UIConstants.defaultSize * 8,
-      width: UIConstants.defaultSize * 8,
-      decoration: BoxDecoration(color: colors[feedback.index]),
-      child: UIIconButton(
-        textColor: UIColors.textDark,
-        icon: icons[feedback.index].copyWith(color: UIColors.textDark),
-        onPressed: () {
-          context.read<LearnCubit>().rateCard(feedback, index);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: UIConstants.defaultSize),
+      child: SegmentedButton<LearnFeedback>(
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.resolveWith<Color>(
+            (Set<MaterialState> states) {
+              if (states.contains(MaterialState.selected)) {
+                return UIColors.onOverlayCard;
+              }
+              return UIColors.overlay;
+            },
+          ),
+          textStyle: MaterialStateProperty.resolveWith<TextStyle>(
+            (Set<MaterialState> states) {
+              return UIText.label;
+            },
+          ),
+        ),
+        segments: const <ButtonSegment<LearnFeedback>>[
+          ButtonSegment<LearnFeedback>(
+              value: LearnFeedback.good,
+              label: Text('good'),
+              icon: Icon(Icons.calendar_view_day)),
+          ButtonSegment<LearnFeedback>(
+              value: LearnFeedback.medium,
+              label: Text('medium'),
+              icon: Icon(Icons.calendar_view_week)),
+          ButtonSegment<LearnFeedback>(
+              value: LearnFeedback.bad,
+              label: Text('bad'),
+              icon: Icon(Icons.calendar_view_month)),
+        ],
+        selected: <LearnFeedback>{widget.feedback},
+        onSelectionChanged: (Set<LearnFeedback> newSelection) {
+          setState(() {
+            widget.feedback = newSelection.first;
+          });
+          context.read<LearnCubit>().rateCard(newSelection.first, widget.index);
         },
       ),
     );

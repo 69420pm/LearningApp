@@ -16,7 +16,7 @@ class RenderCard extends Card {
     required this.onImagesLoaded,
     this.turnedOver = false,
     this.cardHeight,
-    this.feedback,
+    this.feedback = LearnFeedback.good,
   }) : super(
           uid: card.uid,
           dateCreated: card.dateCreated,
@@ -29,7 +29,7 @@ class RenderCard extends Card {
 
   bool turnedOver;
   double? cardHeight;
-  LearnFeedback? feedback;
+  LearnFeedback feedback;
 
   final CardsRepository cardsRepository;
   final void Function() onImagesLoaded;
