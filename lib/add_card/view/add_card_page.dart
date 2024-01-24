@@ -67,12 +67,6 @@ class _AddCardPageState extends State<AddCardPage> with WidgetsBindingObserver {
           // leadingBackButtonPressed: _saveEditorTiles,
           actions: [
             UIIconButton(
-              icon: UIIcons.reorder,
-              onPressed: () {
-                
-              },
-            ),
-            UIIconButton(
               icon: UIIcons.settings,
               onPressed: () {
                 Navigator.pushNamed(
