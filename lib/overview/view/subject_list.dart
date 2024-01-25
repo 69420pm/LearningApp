@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/add_subject/cubit/add_subject_cubit.dart';
 import 'package:learning_app/add_subject/view/add_subject_bottom_sheet.dart';
 import 'package:learning_app/card_backend/cards_api/models/subject.dart';
+import 'package:learning_app/editor/widgets/editor_tiles/divider_tile.dart';
 import 'package:learning_app/overview/cubit/overview_cubit.dart';
 import 'package:learning_app/overview/view/subject_list_tile.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
@@ -32,10 +33,10 @@ class SubjectList extends StatelessWidget {
             UILabelRow(
               labelText: 'Subjects',
               actionWidgets: [
-                UIIconButton(
-                  icon: UIIcons.download.copyWith(color: UIColors.smallText),
-                  onPressed: () {},
-                ),
+                // UIIconButton(
+                //   icon: UIIcons.download.copyWith(color: UIColors.smallText),
+                //   onPressed: () {},
+                // ),
                 UIIconButton(
                   icon: UIIcons.add.copyWith(color: UIColors.smallText),
                   onPressed: () {

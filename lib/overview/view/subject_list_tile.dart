@@ -23,7 +23,7 @@ class SubjectListTile extends StatelessWidget {
         .getClassTestsBySubjectId(subject.uid);
     final nextClassTestInDays = SubjectHelper.daysTillNextClassTest(
       classTests,
-      DateTime.now(),
+      DateUtils.dateOnly(DateTime.now()),
     );
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -32,7 +32,10 @@ class SubjectListTile extends StatelessWidget {
           .then(
               (value) => context.read<OverviewCubit>().updateLearnAllButton()),
       child: Padding(
-        padding: const EdgeInsets.only(bottom: UIConstants.defaultSize),
+        padding: const EdgeInsets.only(
+          bottom: UIConstants.defaultSize * 2,
+          right: UIConstants.defaultSize,
+        ),
         child: Row(
           children: [
             // Icon with progress indicator
@@ -45,7 +48,11 @@ class SubjectListTile extends StatelessWidget {
                       ? UIColors.primaryDisabled
                       : UIColors.green,
                 ),
-                UIIcons.download.copyWith(size: 24, color: UIColors.primary),
+                UIIcons.download.copyWith(
+                    size: 24,
+                    color: subject.disabled
+                        ? UIColors.primaryDisabled
+                        : UIColors.green),
               ],
             ),
             const SizedBox(
@@ -57,7 +64,9 @@ class SubjectListTile extends StatelessWidget {
                 Text(
                   subject.name,
                   style: UIText.labelBold.copyWith(
-                    color: UIColors.textLight,
+                    color: subject.disabled
+                        ? UIColors.smallText
+                        : UIColors.textLight,
                   ),
                 ),
                 if (nextClassTestInDays > -1 && nextClassTestInDays < 15)
@@ -86,18 +95,6 @@ class SubjectListTile extends StatelessWidget {
                       ),
                     ],
                   ),
-                // RichText(
-                //   text: TextSpan(
-                //     style: UIText.normal.copyWith(color: UIColors.smallText),
-                //     children: <TextSpan>[
-                //       const TextSpan(text: 'class test in '),
-                //       TextSpan(
-                //           text: '2 ',
-                //           style: UIText.normal.copyWith(color: UIColors.primary)),
-                //       const TextSpan(text: 'days'),
-                //     ],
-                //   ),
-                // )
               ],
             ),
             const Spacer(),

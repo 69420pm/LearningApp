@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
-import 'package:learning_app/ui_components/ui_text.dart';import 'package:learning_app/ui_components/ui_text.dart';
+import 'package:learning_app/ui_components/ui_text.dart';
+import 'package:learning_app/ui_components/ui_text.dart';
 
 /// row with a lable text on the left and icons or text on the left
 class UILabelRow extends StatelessWidget {
@@ -18,7 +19,7 @@ class UILabelRow extends StatelessWidget {
   /// when true padding is [UIConstants.cardHorizontalPadding]
   final bool horizontalPadding;
 
-  /// lable text on the beginning of the row, font is [UIText.label]
+  /// label text on the beginning of the row, font is [UIText.label]
   final String? labelText;
 
   final List<Widget>? actionWidgets;
@@ -38,9 +39,11 @@ class UILabelRow extends StatelessWidget {
               style: UIText.label.copyWith(color: UIColors.smallText),
             ),
           Expanded(
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: actionWidgets ?? [],),),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: actionWidgets ?? [],
+            ),
+          ),
         ],
       ),
     );

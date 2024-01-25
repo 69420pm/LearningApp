@@ -90,7 +90,11 @@ class _SubjectTile extends StatelessWidget {
               color:
                   subject.disabled ? UIColors.primaryDisabled : UIColors.green,
             ),
-            UIIcons.download.copyWith(size: 24, color: UIColors.primary),
+            UIIcons.download.copyWith(
+                size: 24,
+                color: subject.disabled
+                    ? UIColors.primaryDisabled
+                    : UIColors.green),
           ],
         ),
         SizedBox(
