@@ -11,7 +11,9 @@ import 'package:learning_app/ui_components/ui_icons.dart';
 import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.dart';
 import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
 import 'package:learning_app/ui_components/widgets/ui_expansion_tile.dart';
-import 'package:learning_app/ui_components/widgets/ui_label_row.dart';class SubjectList extends StatelessWidget {
+import 'package:learning_app/ui_components/widgets/ui_label_row.dart';
+
+class SubjectList extends StatelessWidget {
   const SubjectList({super.key});
 
   @override
@@ -53,16 +55,7 @@ import 'package:learning_app/ui_components/widgets/ui_label_row.dart';class Subj
             ),
             const SizedBox(height: UIConstants.itemPadding),
             ...subjects.where((element) => element.subject.disabled == false),
-            const SizedBox(height: UIConstants.itemPadding * 2),
-            UIExpansionTile(
-              iconOnTheRight: true,
-              title: 'Disabled Subjects',
-              textColor: UIColors.smallText,
-              childSpacing: UIConstants.itemPadding,
-              children: subjects
-                  .where((element) => element.subject.disabled)
-                  .toList(),
-            ),
+            ...subjects.where((element) => element.subject.disabled == true),
           ],
         );
       },

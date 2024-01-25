@@ -5,25 +5,29 @@ import 'package:flutter/material.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
 
 class UICircularProgressIndicator extends StatelessWidget {
-  double value;
-  UICircularProgressIndicator({
+  const UICircularProgressIndicator({
     super.key,
     required this.value,
+    required this.color,
   });
+  final double value;
+  final Color color;
+
   @override
   Widget build(BuildContext context) {
     return CustomCircularProgressIndicator(
       radius: 24,
       strokeWidth: 6,
       value: value,
-      color: UIColors.primary,
+      color: color,
       backgroundColor: UIColors.overlay,
     );
   }
 }
 
 class CustomCircularProgressIndicator extends StatelessWidget {
-  const CustomCircularProgressIndicator({super.key, 
+  const CustomCircularProgressIndicator({
+    super.key,
     required this.radius,
     required this.strokeWidth,
     required this.value,
@@ -62,7 +66,7 @@ class _CustomProgressPainter extends CustomPainter {
     required this.color,
     required this.backgroundColor,
   });
-  final double progressAngle;
+  double progressAngle;
   final double strokeWidth;
   final Color color;
   final Color backgroundColor;
@@ -85,19 +89,24 @@ class _CustomProgressPainter extends CustomPainter {
     final circlePaint = Paint()..color = color;
 
     // angle of start rounding
-    final startAngle =
+    var startAngle =
         math.asin((strokeWidth * 0.5) / (size.width / 2 - strokeWidth / 2));
+
+    if (progressAngle >= 2 * math.pi) {
+      progressAngle = 2 * math.pi;
+      startAngle = 0;
+    }
+
     // y of start rounding
     final startY = size.width / 2 -
         math.cos(startAngle) * (size.width / 2 - strokeWidth / 2);
     // x of end rounding
-    final endX =
-        math.sin(progressAngle) * (size.width / 2 - strokeWidth / 2);
+    final endX = math.sin(progressAngle) * (size.width / 2 - strokeWidth / 2);
     // y of end rounding
     final endY = size.width / 2 -
         math.cos(progressAngle) * (size.width / 2 - strokeWidth / 2);
     canvas
-    // background arc
+      // background arc
       ..drawArc(
         Rect.fromCircle(center: center, radius: radius),
         (-math.pi / 2) + startAngle, // Start angle (top)
@@ -105,26 +114,29 @@ class _CustomProgressPainter extends CustomPainter {
         false,
         backgroundPaint,
       )
-    // "progress" arc
+      // "progress" arc
       ..drawArc(
         Rect.fromCircle(center: center, radius: radius),
         (-math.pi / 2) + startAngle, // Start angle (top)
         progressAngle - startAngle,
         false,
         arcPaint,
-      )
-    // start rounding
-      ..drawCircle(
-        Offset(size.width / 2 + strokeWidth / 2, startY),
-        strokeWidth / 2,
-        circlePaint,
-      )
-    // end rounding
-      ..drawCircle(
-        Offset(size.width / 2 + endX, endY),
-        strokeWidth / 2,
-        circlePaint,
       );
+    if (progressAngle != 2 * math.pi) {
+      // start rounding
+      canvas
+        ..drawCircle(
+          Offset(size.width / 2 + strokeWidth / 2, startY),
+          strokeWidth / 2,
+          circlePaint,
+        )
+        // end rounding
+        ..drawCircle(
+          Offset(size.width / 2 + endX, endY),
+          strokeWidth / 2,
+          circlePaint,
+        );
+    }
   }
 
   @override

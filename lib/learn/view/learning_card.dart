@@ -97,7 +97,7 @@ class _LearningCardState extends State<LearningCard> {
                       height: widget.card.cardHeight,
                       width: screenWidth,
                       color: colorAnimation(value, UIColors.background, .4),
-                    )
+                    ),
                   ],
                 ),
               );
