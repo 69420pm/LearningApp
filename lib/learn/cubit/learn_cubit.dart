@@ -45,11 +45,7 @@ class LearnCubit extends Cubit<LearnCubitState> {
   }
 
   void setHeight(int index, double height) {
-    if (height != _cardsToLearn[index].cardHeight &&
-        // Workaround for cards magically getting larger due to the flutter_animate package
-        !(_cardsToLearn[index].cardHeight != null &&
-            height == (_cardsToLearn[index].cardHeight! + 1))) {
-      // Workaround for cards magically getting larger due to the flutter_animate package
+    if (height != _cardsToLearn[index].cardHeight) {
       _cardsToLearn[index].cardHeight = height;
 
       emit(UpdateHeightState(index: index));

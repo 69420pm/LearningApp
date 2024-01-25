@@ -33,6 +33,14 @@ class _LearningCardState extends State<LearningCard> {
     super.initState();
   }
 
+  Color colorAnimation(double x, Color color, double maxOpacity) {
+    if (x < 0.5) {
+      return color.withOpacity(x * (1 + maxOpacity));
+    } else {
+      return color.withOpacity((1 - x) * (1 + maxOpacity));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.sizeOf(context).width;
@@ -50,51 +58,52 @@ class _LearningCardState extends State<LearningCard> {
         controller: pageController,
         physics: const PageScrollPhysics(),
         child: SizedBox(
-            width: screenWidth * 2,
-            child: Animate(
-              adapter: ScrollAdapter(pageController),
-            )
-                .custom(
-                  begin: 0,
-                  end: 1,
-                  builder: (_, value, __) {
-                    if (value > .5 && !widget.card.turnedOver) {
-                      context.read<LearnCubit>().turnOverCurrentCard();
-                    }
-                    return Padding(
-                      padding: EdgeInsets.only(left: screenWidth * value),
-                      child: Stack(
-                        children: [
-                          Transform(
-                            transform: matrix.clone()
-                              ..rotateY(math.pi * value.clamp(0, .5)),
-                            alignment: Alignment.center,
-                            child: CardFace(
-                              isBack: false,
-                              card: widget.card,
-                              screenHeight: widget.screenHeight,
-                            ),
-                          ),
-                          Transform(
-                            transform: matrix.clone()
-                              ..rotateY(math.pi * (value.clamp(.5, 1) + 1)),
-                            alignment: Alignment.center,
-                            child: CardFace(
-                              isBack: true,
-                              card: widget.card,
-                              screenHeight: widget.screenHeight,
-                            ),
-                          ),
-                        ],
+          width: screenWidth * 2,
+          child: Animate(
+            adapter: ScrollAdapter(pageController),
+          ).custom(
+            begin: 0,
+            end: 1,
+            builder: (_, value, __) {
+              if (value > .5 && !widget.card.turnedOver) {
+                context.read<LearnCubit>().turnOverCurrentCard();
+              }
+              return Padding(
+                padding: EdgeInsets.only(left: screenWidth * value),
+                child: Stack(
+                  alignment: Alignment.centerLeft,
+                  children: [
+                    Transform(
+                      transform: matrix.clone()
+                        ..rotateY(math.pi * value.clamp(0, .5)),
+                      alignment: Alignment.center,
+                      child: CardFace(
+                        isBack: false,
+                        card: widget.card,
+                        screenHeight: widget.screenHeight,
                       ),
-                    );
-                  },
-                )
-                .shimmer(
-                  angle: 0,
-                  curve: Curves.easeInOut,
-                  color: UIColors.background.withOpacity(0.8),
-                )),
+                    ),
+                    Transform(
+                      transform: matrix.clone()
+                        ..rotateY(math.pi * (value.clamp(.5, 1) + 1)),
+                      alignment: Alignment.center,
+                      child: CardFace(
+                        isBack: true,
+                        card: widget.card,
+                        screenHeight: widget.screenHeight,
+                      ),
+                    ),
+                    Container(
+                      height: widget.card.cardHeight,
+                      width: screenWidth,
+                      color: colorAnimation(value, UIColors.background, .4),
+                    )
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
       ),
     );
   }
