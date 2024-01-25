@@ -10,7 +10,9 @@ import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
 import 'package:learning_app/ui_components/ui_text.dart';
 import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
-import 'package:learning_app/ui_components/widgets/ui_card.dart';class SubjectCard extends StatelessWidget {
+import 'package:learning_app/ui_components/widgets/ui_card.dart';
+
+class SubjectCard extends StatelessWidget {
   SubjectCard({super.key, required this.subject});
   Subject subject;
   @override
@@ -29,8 +31,11 @@ import 'package:learning_app/ui_components/widgets/ui_card.dart';class SubjectCa
                 subject = state.subject;
               }
               final nextClassTestInDays = SubjectHelper.daysTillNextClassTest(
-                context.read<SubjectBloc>().cardsRepository.getClassTestsBySubjectId(subject.uid),
-                DateTime.now(),
+                context
+                    .read<SubjectBloc>()
+                    .cardsRepository
+                    .getClassTestsBySubjectId(subject.uid),
+                DateUtils.dateOnly(DateTime.now()),
               );
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -40,15 +45,17 @@ import 'package:learning_app/ui_components/widgets/ui_card.dart';class SubjectCa
                     subject.name,
                     style: UIText.titleBig.copyWith(color: UIColors.textDark),
                   ),
-                  const SizedBox(
-                    height: UIConstants.itemPadding / 2,
-                  ),
-                  Text(
-                    'class test in ${nextClassTestInDays != -1 ? nextClassTestInDays.toString() : "---"} days',
-                    style: UIText.label.copyWith(
-                      color: UIColors.textDark,
+                  if (nextClassTestInDays != -1)
+                    const SizedBox(
+                      height: UIConstants.itemPadding / 2,
                     ),
-                  ),
+                  if (nextClassTestInDays != -1)
+                    Text(
+                      'class test in ${nextClassTestInDays.toString()} days',
+                      style: UIText.label.copyWith(
+                        color: UIColors.textDark,
+                      ),
+                    ),
                   if (subject.disabled)
                     Column(
                       children: [
@@ -56,20 +63,22 @@ import 'package:learning_app/ui_components/widgets/ui_card.dart';class SubjectCa
                         Row(
                           children: [
                             UIIcons.info.copyWith(color: UIColors.textDark),
-                            const SizedBox(width: UIConstants.descriptionPadding,),
-                            Text('This subject is disabled, enable in Settings', style: UIText.smallBold.copyWith(color: UIColors.textDark)),
+                            const SizedBox(
+                              width: UIConstants.descriptionPadding,
+                            ),
+                            Text('This subject is disabled, enable in Settings',
+                                style: UIText.smallBold
+                                    .copyWith(color: UIColors.textDark)),
                           ],
                         ),
                       ],
                     ),
-                  
                 ],
               );
             },
           ),
           Row(
             children: [
-              
               UIIconButton(
                 icon: UIIcons.arrowForwardNormal
                     .copyWith(color: UIColors.overlay),

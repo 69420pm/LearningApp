@@ -85,8 +85,16 @@ class _SubjectTile extends StatelessWidget {
         Stack(
           alignment: Alignment.center,
           children: [
-            UICircularProgressIndicator(value: 1),
-            UIIcons.download.copyWith(size: 24, color: UIColors.primary),
+            UICircularProgressIndicator(
+              value: 1,
+              color:
+                  subject.disabled ? UIColors.primaryDisabled : UIColors.green,
+            ),
+            UIIcons.download.copyWith(
+                size: 24,
+                color: subject.disabled
+                    ? UIColors.primaryDisabled
+                    : UIColors.green),
           ],
         ),
         SizedBox(

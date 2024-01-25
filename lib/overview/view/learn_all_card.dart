@@ -17,9 +17,41 @@ class LearnAllCard extends StatelessWidget {
     return BlocBuilder<OverviewCubit, OverviewCubitState>(
       buildWhen: (previous, current) => current is UpdateLearnAllButtonState,
       builder: (context, state) {
+        final cardsRemaining = context
+            .read<OverviewCubit>()
+            .cardsRepository
+            .getAllCardsToLearnForToday()
+            .length;
+
+        if (cardsRemaining == 0) {
+          return UICard(
+            disabled: true,
+            useGradient: true,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Finished Today',
+                  style: UIText.titleBig.copyWith(color: UIColors.textLight),
+                  overflow: TextOverflow.fade,
+                ),
+                const SizedBox(
+                  height: UIConstants.defaultSize,
+                ),
+                Text(
+                  'Have a nice day!',
+                  style: UIText.label.copyWith(
+                    color: UIColors.textLight,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
         return UICard(
           useGradient: true,
-          distanceToTop: 80,
+          distanceToTop: 30,
           color: UIColors.primary,
           onTap: () =>
               Navigator.pushNamed(context, "/learn", arguments: ["today"]).then(
@@ -41,7 +73,7 @@ class LearnAllCard extends StatelessWidget {
                     height: UIConstants.defaultSize,
                   ),
                   Text(
-                    '? Cards remaining',
+                    '${cardsRemaining ?? "?"} cards remaining',
                     style: UIText.label.copyWith(
                       color: UIColors.textDark,
                     ),

@@ -2,69 +2,111 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/learn/cubit/learn_cubit.dart';
 import 'package:learning_app/learn/cubit/render_card.dart';
+import 'package:learning_app/learn/view/rate_bar.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
 
-class LearningCard extends StatelessWidget {
-  LearningCard({super.key, required this.card, required this.screenHeight});
+class LearningCard extends StatefulWidget {
+  LearningCard(
+      {super.key,
+      required this.card,
+      required this.screenHeight,
+      required this.relativeToCurrentIndex});
 
   final RenderCard card;
   final double screenHeight;
+  final int relativeToCurrentIndex;
 
-  PageController pageController = PageController(keepPage: true);
+  @override
+  State<LearningCard> createState() => _LearningCardState();
+}
+
+class _LearningCardState extends State<LearningCard> {
+  late PageController pageController;
+
+  @override
+  void initState() {
+    pageController = PageController();
+
+    super.initState();
+  }
+
+  Color colorAnimation(double x, Color color, double maxOpacity) {
+    if (x < 0.5) {
+      return color.withOpacity(x * (1 + maxOpacity));
+    } else {
+      return color.withOpacity((1 - x) * (1 + maxOpacity));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final Widget front = CardFace(
-      height: card.cardHeight ?? screenHeight,
-      widgets: card.frontWidgets,
-    );
-    final Widget back = CardFace(
-      height: card.cardHeight ?? screenHeight,
-      widgets: card.backWidgets,
-    );
-
     final screenWidth = MediaQuery.sizeOf(context).width;
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      controller: pageController,
-      physics: const PageScrollPhysics(),
-      child: SizedBox(
-        width: screenWidth * 2,
-        child: Animate(
-          adapter: ScrollAdapter(
-            pageController,
+    final matrix = Matrix4.identity()..setEntry(3, 2, 0.0003);
+
+    return Visibility(
+      maintainSize: true,
+      maintainAnimation: true,
+      maintainState: true,
+      visible: !(widget.relativeToCurrentIndex > 0 &&
+          !context.read<LearnCubit>().currentCardIsTurned()),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        controller: pageController,
+        physics: !widget.card.isInBetweenCard
+            ? const PageScrollPhysics()
+            : const NeverScrollableScrollPhysics(),
+        child: SizedBox(
+          width: screenWidth * 2,
+          child: Animate(
+            adapter: ScrollAdapter(pageController),
+          ).custom(
+            begin: 0,
+            end: 1,
+            builder: (_, value, __) {
+              if (value > .5 && !widget.card.turnedOver) {
+                context.read<LearnCubit>().turnOverCurrentCard();
+              }
+              return Padding(
+                padding: EdgeInsets.only(left: screenWidth * value),
+                child: Stack(
+                  alignment: Alignment.centerLeft,
+                  children: [
+                    Transform(
+                      transform: matrix.clone()
+                        ..rotateY(math.pi * value.clamp(0, .5)),
+                      alignment: Alignment.center,
+                      child: CardFace(
+                        isBack: false,
+                        card: widget.card,
+                        screenHeight: widget.screenHeight,
+                      ),
+                    ),
+                    Transform(
+                      transform: matrix.clone()
+                        ..rotateY(math.pi * (value.clamp(.5, 1) + 1)),
+                      alignment: Alignment.center,
+                      child: CardFace(
+                        isBack: true,
+                        card: widget.card,
+                        screenHeight: widget.screenHeight,
+                      ),
+                    ),
+                    if (value != 0)
+                      Container(
+                        height: widget.card.cardHeight,
+                        width: screenWidth,
+                        color: colorAnimation(value, UIColors.background, .4),
+                      ),
+                  ],
+                ),
+              );
+            },
           ),
-          onPlay: (controller) => controller.repeat(reverse: true),
-        ).custom(
-          duration: 2.seconds,
-          begin: 0,
-          end: 1,
-          builder: (_, value, __) {
-            return Padding(
-              padding: EdgeInsets.only(left: screenWidth * value),
-              child: Stack(
-                children: [
-                  Transform(
-                    transform: Matrix4.identity()
-                      ..setEntry(3, 2, 0.0003)
-                      ..rotateY(math.pi * value.clamp(0, .5)),
-                    alignment: Alignment.center,
-                    child: front,
-                  ),
-                  Transform(
-                    transform: Matrix4.identity()
-                      ..setEntry(3, 2, 0.0003)
-                      ..rotateY(math.pi * (value.clamp(.5, 1) + 1)),
-                    alignment: Alignment.center,
-                    child: back,
-                  ),
-                ],
-              ),
-            );
-          },
         ),
       ),
     );
@@ -72,39 +114,22 @@ class LearningCard extends StatelessWidget {
 }
 
 class CardFace extends StatelessWidget {
-  const CardFace({super.key, required this.widgets, required this.height});
+  const CardFace({
+    super.key,
+    required this.card,
+    required this.isBack,
+    required this.screenHeight,
+  });
 
-  final List<Widget> widgets;
-  final double height;
+  final RenderCard card;
+  final bool isBack;
+  final double screenHeight;
 
   @override
   Widget build(BuildContext context) {
-
-    //iterations to finish card
-    const rehearsalIterations = 5;
-
-    //minimal time it takes to finish a card if always rated good
-    const minimalAmountDaysToLearnCard = 14;
-
-    //rehearsal Curve (lots in the beginning, fewer in the end)
-    const rehearsalCurve = Curves.easeInExpo;
-
-    // generate list of time spans between rehearsals
-    final nextDateToReview = List.generate(
-      rehearsalIterations,
-      (index) {
-        return (rehearsalCurve.transform(
-              (index + 1) / rehearsalIterations,
-            ) *
-            minimalAmountDaysToLearnCard);
-      },
-    );
-
-    print(nextDateToReview);
-
     return ConstrainedBox(
       constraints: BoxConstraints(
-        minHeight: height,
+        minHeight: card.cardHeight ?? screenHeight,
         maxWidth: MediaQuery.sizeOf(context).width,
       ),
       child: Padding(
@@ -115,14 +140,32 @@ class CardFace extends StatelessWidget {
         child: Container(
           decoration: const BoxDecoration(
             color: UIColors.overlay,
-            borderRadius:
-                BorderRadius.all(Radius.circular(UIConstants.cornerRadius)),
+            borderRadius: BorderRadius.all(
+              Radius.circular(UIConstants.cornerRadius * 1.5),
+            ),
           ),
           width: MediaQuery.sizeOf(context).width,
-          child: Column(
-            children: [
-              ...widgets,
-            ],
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(vertical: UIConstants.defaultSize),
+            child: Builder(
+              builder: (context) {
+                if (isBack) {
+                  return Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          children: card.backWidgets,
+                        ),
+                        RateBar(index: 0, feedback: card.feedback)
+                      ]);
+                } else {
+                  return Column(
+                    children: card.frontWidgets,
+                  );
+                }
+              },
+            ),
           ),
         ),
       ),
