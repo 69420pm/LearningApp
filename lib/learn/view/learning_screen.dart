@@ -18,22 +18,25 @@ class LearningScreen extends StatelessWidget {
   bool isFlinging = false;
   bool inAnimation = false;
 
-  void _animateToCurrentCard(BuildContext context) {
+  void _animateToCurrentCard(BuildContext context, double screenHeight) {
     final offsetToAnimate = context
         .read<LearnCubit>()
         .getOffsetByIndex(context.read<LearnCubit>().currentIndex);
 
-    context.read<LearnCubit>().startAnimation();
+    if (offsetToAnimate != controller.offset) {
+      print(offsetToAnimate);
+      context.read<LearnCubit>().startAnimation();
 
-    controller
-        .animateTo(
-      offsetToAnimate,
-      duration: const Duration(milliseconds: 200),
-      curve: Curves.easeInOut,
-    )
-        .then((value) {
-      context.read<LearnCubit>().endAnimation();
-    });
+      controller
+          .animateTo(
+        offsetToAnimate,
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
+      )
+          .then((value) {
+        context.read<LearnCubit>().endAnimation();
+      });
+    }
   }
 
   void _animateToBiggestCard(BuildContext context, double screenHeight) {
@@ -132,7 +135,7 @@ class LearningScreen extends StatelessWidget {
                 },
                 //called if card got flung, stopped, finger up without movement
                 onTapUp: (details) {
-                  _animateToCurrentCard(context);
+                  _animateToCurrentCard(context, screenHeight);
                 },
                 child: NotificationListener<ScrollNotification>(
                   onNotification: (notification) {

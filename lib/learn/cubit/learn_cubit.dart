@@ -3,7 +3,10 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:learning_app/card_backend/cards_api/models/card.dart';
 import 'package:learning_app/card_backend/cards_repository.dart';
+import 'package:learning_app/editor/widgets/editor_tiles/text_tile.dart';
 import 'package:learning_app/learn/cubit/render_card.dart';
+import 'package:learning_app/ui_components/ui_icons.dart';
+import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
 
 part 'learn_state.dart';
 
@@ -18,6 +21,7 @@ class LearnCubit extends Cubit<LearnCubitState> {
   double screenHeight = 0;
 
   Future<List<RenderCard>> setToLearnCards(List<Card> cards) async {
+    currentIndex = 0;
     _cardsToLearn = cards
         .map(
           (e) => RenderCard(
@@ -38,7 +42,46 @@ class LearnCubit extends Cubit<LearnCubitState> {
           await _cardsRepository.getCardContent(cardsToLearn[i].uid);
     }
 
-    currentIndex = 0;
+    final emptyCard = Card(
+        uid: "empty",
+        dateCreated: DateTime.now(),
+        askCardsInverted: false,
+        typeAnswer: false,
+        recallScore: 0,
+        dateToReview: null,
+        name: "Empty Card");
+
+    final halfFinishedCard = RenderCard(
+      card: emptyCard,
+      isInBetweenCard: true,
+      turnedOver: true,
+      cardsRepository: _cardsRepository,
+      onImagesLoaded: () => emit(NewCardState()),
+      widgetsToDisplay: [
+        Text("half finished!"),
+      ],
+    );
+    final finishedAllCardsRenderCard = RenderCard(
+      card: emptyCard,
+      isInBetweenCard: true,
+      turnedOver: true,
+      cardsRepository: _cardsRepository,
+      onImagesLoaded: () => emit(NewCardState()),
+      widgetsToDisplay: [
+        Text("finished"),
+        UIIconButton(
+            onPressed: () {
+              _updateAllCards();
+              print("moin");
+            },
+            icon: UIIcons.done),
+      ],
+    );
+    if (cardsToLearn.length > 5) {
+      cardsToLearn.insert(
+          (cardsToLearn.length / 2 + .5).toInt(), halfFinishedCard);
+    }
+    cardsToLearn.add(finishedAllCardsRenderCard);
 
     emit(FinishedLoadingCardsState());
     return _cardsToLearn;
@@ -142,8 +185,8 @@ class LearnCubit extends Cubit<LearnCubitState> {
   bool isScrollingInsideCurrentCard(double offset, double screenHeight) {
     var offsetToCurrentCard = getOffsetByIndex(currentIndex);
     var offsetToNextCard = getOffsetByIndex(currentIndex + 1);
-    return offset > offsetToCurrentCard &&
-        offset < offsetToNextCard - screenHeight;
+    return offset >= offsetToCurrentCard &&
+        offset <= offsetToNextCard - screenHeight;
   }
 
   void startAnimation() {
@@ -155,6 +198,8 @@ class LearnCubit extends Cubit<LearnCubitState> {
   }
 
   void _updateAllCards() {
+    _cardsToLearn =
+        _cardsToLearn.where((element) => !element.isInBetweenCard).toList();
     //"finish a card" means, that this card doesn't get a new dateToReview;
     //We might add random "finished" cards to a daily session, if there are for
     //example only a few cards on that day.
@@ -193,7 +238,7 @@ class LearnCubit extends Cubit<LearnCubitState> {
     ];
 
     for (var i = 0; i < _cardsToLearn.length; i++) {
-      switch (_cardsToLearn[i].feedback!) {
+      switch (_cardsToLearn[i].feedback) {
         case LearnFeedback.good:
           _cardsToLearn[i].recallScore += 1;
           if (_cardsToLearn[i].recallScore < nextDateToReview.length) {
@@ -215,6 +260,7 @@ class LearnCubit extends Cubit<LearnCubitState> {
             _cardsToLearn[i].dateToReview = DateUtils.dateOnly(DateTime.now());
           }
       }
+
       _cardsRepository.saveCard(_cardsToLearn[i], null, null);
     }
 

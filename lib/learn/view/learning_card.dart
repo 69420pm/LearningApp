@@ -30,6 +30,7 @@ class _LearningCardState extends State<LearningCard> {
   @override
   void initState() {
     pageController = PageController();
+
     super.initState();
   }
 
@@ -56,7 +57,9 @@ class _LearningCardState extends State<LearningCard> {
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         controller: pageController,
-        physics: const PageScrollPhysics(),
+        physics: !widget.card.isInBetweenCard
+            ? const PageScrollPhysics()
+            : const NeverScrollableScrollPhysics(),
         child: SizedBox(
           width: screenWidth * 2,
           child: Animate(
@@ -93,11 +96,12 @@ class _LearningCardState extends State<LearningCard> {
                         screenHeight: widget.screenHeight,
                       ),
                     ),
-                    Container(
-                      height: widget.card.cardHeight,
-                      width: screenWidth,
-                      color: colorAnimation(value, UIColors.background, .4),
-                    ),
+                    if (value != 0)
+                      Container(
+                        height: widget.card.cardHeight,
+                        width: screenWidth,
+                        color: colorAnimation(value, UIColors.background, .4),
+                      ),
                   ],
                 ),
               );

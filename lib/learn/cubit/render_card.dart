@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'package:flutter/material.dart' hide Card;
 import 'package:learning_app/card_backend/cards_api/models/card.dart';
 import 'package:learning_app/card_backend/cards_repository.dart';
@@ -17,6 +19,8 @@ class RenderCard extends Card {
     this.turnedOver = false,
     this.cardHeight,
     this.feedback = LearnFeedback.good,
+    this.isInBetweenCard = false,
+    List<Widget>? widgetsToDisplay,
   }) : super(
           uid: card.uid,
           dateCreated: card.dateCreated,
@@ -25,17 +29,27 @@ class RenderCard extends Card {
           recallScore: card.recallScore,
           dateToReview: card.dateToReview,
           name: card.name,
-        );
+        ) {
+    if (widgetsToDisplay != null) {
+      _frontWidgets = widgetsToDisplay;
+    }
+  }
 
   bool turnedOver;
   double? cardHeight;
   LearnFeedback feedback;
+
+  //for example for finished card
+  bool isInBetweenCard;
 
   final CardsRepository cardsRepository;
   final void Function() onImagesLoaded;
 
   List<Widget> _frontWidgets = [];
   List<Widget> get frontWidgets => _frontWidgets;
+  set frontWidgets(List<Widget> widgets) {
+    _frontWidgets = widgets;
+  }
 
   List<Widget> _backWidgets = [];
   List<Widget> get backWidgets => _backWidgets;
@@ -63,6 +77,7 @@ class RenderCard extends Card {
     }).toList();
 
     _frontWidgets = widgets.sublist(0, indexSpacer);
-    _backWidgets = widgets.sublist(indexSpacer, widgets.length);
+    if (!isInBetweenCard)
+      _backWidgets = widgets.sublist(indexSpacer, widgets.length);
   }
 }
