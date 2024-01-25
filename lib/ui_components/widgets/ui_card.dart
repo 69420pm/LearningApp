@@ -53,7 +53,8 @@ class UICard extends StatelessWidget {
                   colorFilter: disabled
                       ? ColorFilter.mode(
                           Colors.black.withOpacity(.6), BlendMode.multiply)
-                      : null)
+                      : null,
+                )
               : null,
         ),
         child: Padding(

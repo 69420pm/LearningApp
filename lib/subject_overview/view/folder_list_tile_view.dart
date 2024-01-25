@@ -7,7 +7,9 @@ import 'package:learning_app/subject_overview/view/card_list_tile.dart';
 import 'package:learning_app/subject_overview/view/folder_list_tile.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
-import 'package:learning_app/ui_components/widgets/ui_expansion_tile.dart';class FolderListTileView extends StatelessWidget {
+import 'package:learning_app/ui_components/widgets/ui_expansion_tile.dart';
+
+class FolderListTileView extends StatelessWidget {
   const FolderListTileView({
     super.key,
     required this.folder,
@@ -27,6 +29,7 @@ import 'package:learning_app/ui_components/widgets/ui_expansion_tile.dart';class
     return Padding(
       padding: const EdgeInsets.only(bottom: UIConstants.defaultSize),
       child: UIExpansionTile(
+        iconOnTheRight: false,
         changeExtensionState: isHovered,
         backgroundColor: isHovered
             ? UIColors.onOverlayCard
