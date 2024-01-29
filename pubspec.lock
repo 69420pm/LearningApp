@@ -354,10 +354,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_animate
-      sha256: "1dbc1aabfb8ec1e9d9feed2b675c21fb6b0a11f99be53ec3bc0f1901af6a8eb7"
+      sha256: cabe33af6201144be052352d53572a1b8a4f5782b46080be7520d95abe763715
       url: "https://pub.dev"
     source: hosted
-    version: "4.3.0"
+    version: "4.4.1"
   flutter_bloc:
     dependency: "direct main"
     description:
@@ -821,6 +821,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.7"
+  pool:
+    dependency: transitive
+    description:
+      name: pool
+      sha256: "20fe868b6314b322ea036ba325e6fc0711a22948856475e2c2b6306e8ab39c2a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.5.1"
   provider:
     dependency: transitive
     description:

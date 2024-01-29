@@ -21,7 +21,7 @@ dependencies:
   uuid: ^3.0.7
   characters: ^1.2.1
   flutter_colorpicker: ^1.0.3
-  flutter_animate: ^4.3.0
+  flutter_animate: ^4.4.1
   image_picker: ^1.0.2
   permission_handler: ^11.1.0
   audioplayers: ^5.0.0
