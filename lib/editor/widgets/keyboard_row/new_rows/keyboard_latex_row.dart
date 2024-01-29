@@ -1,11 +1,14 @@
 // ignore_for_file: public_member_api_docs
 import 'package:flutter/material.dart';
 import 'package:learning_app/editor/widgets/keyboard_row/keyboard_button.dart';
+import 'package:learning_app/editor/widgets/keyboard_row/keyboard_latex_button.dart';
 import 'package:learning_app/editor/widgets/keyboard_row/keyboard_row_container.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
+import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
 import 'package:learning_app/ui_components/ui_text.dart';
-import 'package:learning_app/ui_components/widgets/buttons/ui_button.dart';// ignore: must_be_immutable
+import 'package:learning_app/ui_components/widgets/buttons/ui_button.dart'; // ignore: must_be_immutable
+
 class KeyboardLatexRow extends StatelessWidget {
   KeyboardLatexRow({
     super.key,
@@ -26,120 +29,123 @@ class KeyboardLatexRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        Wrap(
+          spacing: UIConstants.defaultSize,
+          runSpacing: UIConstants.defaultSize,
           children: [
-            KeyboardRowContainer(
-              onBottomSheet: true,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2),
-                child: Row(
-                  children: [
-                    KeyboardButton(
-                      withBackgroundColor: false,
-                      icon: UIIcons.curlyBraces,
-                      onPressed: () {
-                        addParenthesis(r'\left\{', r'\right\}');
-                      },
-                    ),
-                    _KeyboardTextButton(
-                      text: '( )',
-                      onPressed: () {
-                        addParenthesis(r'\left(', r'\right)');
-                      },
-                    ),
-                  ],
-                ),
+            KeyboardLatexButton(
+              text: "+",
+              onPressed: () => addString(
+                '+',
               ),
             ),
-            KeyboardRowContainer(
-              onBottomSheet: true,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2),
-                child: Row(
-                  children: [
-                    KeyboardButton(
-                      icon: UIIcons.arrowRight,
-                      withBackgroundColor: false,
-                      onPressed: () => addString(
-                        r'\rightarrow ',
-                      ),
-                    ),
-                  ],
-                ),
+
+            KeyboardLatexButton(
+              text: "-",
+              onPressed: () => addString(
+                '-',
               ),
             ),
-            KeyboardRowContainer(
-              onBottomSheet: true,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2),
-                child: Row(
-                  children: [
-                    _KeyboardTextButton(
-                      text: '=',
-                      onPressed: () {
-                        addString('=');
-                      },
-                    ),
-                  ],
-                ),
+            KeyboardLatexButton(
+              text: "*",
+              onPressed: () => addString(
+                '*',
               ),
             ),
-            KeyboardRowContainer(
-              onBottomSheet: true,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2),
-                child: Row(
-                  children: [
-                    _KeyboardTextButton(
-                      text: '√',
-                      onPressed: () {
-                        addString(
-                          r'\sqrt{}',
-                          selectionStart: 6,
-                          selectionEnd: 6,
-                        );
-                      },
-                    ),
-                  ],
-                ),
+            KeyboardLatexButton(
+              text: "/",
+              onPressed: () => addString(
+                '/',
               ),
             ),
-            KeyboardRowContainer(
-              onBottomSheet: true,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2),
-                child: Row(
-                  children: [
-                    _KeyboardTextButton(
-                      text: '&',
-                      onPressed: () {
-                        addString('&');
-                      },
-                    ),
-                    _KeyboardTextButton(
-                      text: r'\vec',
-                      onPressed: () {
-                        addString(
-                          r'\vec{}',
-                          selectionStart: 5,
-                          selectionEnd: 5,
-                        );
-                      },
-                    ),
-                    _KeyboardTextButton(
-                      text: r'\frac',
-                      onPressed: () {
-                        addString(
-                          r'\frac{numerator}{}',
-                          selectionStart: 6,
-                          selectionEnd: 15,
-                        );
-                      },
-                    ),
-                  ],
-                ),
+            KeyboardLatexButton(
+              text: '=',
+              onPressed: () {
+                addString('=');
+              },
+            ),
+            KeyboardLatexButton(
+              text: '( )',
+              onPressed: () {
+                addParenthesis(r'\left( ', r' \right)');
+              },
+            ),
+            KeyboardLatexButton(
+              icon: UIIcons.curlyBraces,
+              onPressed: () {
+                addParenthesis(r'\left\{ ', r' \right\}');
+              },
+            ),
+            //
+            //
+            // KeyboardLatexButton(
+            //   text: '&',
+            //   onPressed: () {
+            //     addString('&');
+            //   },
+            // ),
+            //
+          ],
+        ),
+        const SizedBox(
+          height: 8,
+        ),
+        Wrap(
+          spacing: UIConstants.defaultSize,
+          runSpacing: UIConstants.defaultSize,
+          children: [
+            KeyboardLatexButton(
+              icon: UIIcons.superscript,
+              onPressed: () => addString(
+                '^{}',
+                selectionStart: 2,
+                selectionEnd: 2,
+              ),
+            ),
+            KeyboardLatexButton(
+              icon: UIIcons.subscript,
+              onPressed: () => addString(
+                '_{}',
+                selectionStart: 2,
+                selectionEnd: 2,
+              ),
+            ),
+            KeyboardLatexButton(
+              text: '√',
+              onPressed: () {
+                addString(
+                  r'\sqrt{}',
+                  selectionStart: 6,
+                  selectionEnd: 6,
+                );
+              },
+            ),
+            KeyboardLatexButton(
+              text: "f",
+              onPressed: () {
+                addString(
+                  r'\frac{}{}',
+                  selectionStart: 6,
+                  selectionEnd: 6,
+                );
+              },
+            ),
+            KeyboardLatexButton(
+              text: "v",
+              onPressed: () {
+                addString(
+                  r'\vec{}',
+                  selectionStart: 5,
+                  selectionEnd: 5,
+                );
+              },
+            ),
+            KeyboardLatexButton(
+              icon: UIIcons.arrowRight,
+              onPressed: () => addString(
+                r'\rightarrow ',
               ),
             ),
           ],
@@ -147,122 +153,34 @@ class KeyboardLatexRow extends StatelessWidget {
         const SizedBox(
           height: 8,
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      KeyboardRowContainer(
-                        onBottomSheet: true,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 2),
-                          child: Row(
-                            children: [
-                              KeyboardButton(
-                                icon: UIIcons.superscript,
-                                withBackgroundColor: false,
-                                onPressed: () => addString('^{}',
-                                    selectionStart: 2, selectionEnd: 2,),
-                              ),
-                              KeyboardButton(
-                                icon: UIIcons.subscript,
-                                withBackgroundColor: false,
-                                onPressed: () => addString('_{}',
-                                    selectionStart: 2, selectionEnd: 2,),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      KeyboardRowContainer(
-                        onBottomSheet: true,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 2),
-                          child: Row(
-                            children: [
-                              KeyboardButton(
-                                icon: UIIcons.spaceBar,
-                                withBackgroundColor: false,
-                                onPressed: () => addString(
-                                  r'\ ',
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      KeyboardRowContainer(
-                        onBottomSheet: true,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 2),
-                          child: Row(
-                            children: [
-                              KeyboardButton(
-                                icon: UIIcons.curlyBraces
-                                    .copyWith(color: UIColors.smallText),
-                                withBackgroundColor: false,
-                                onPressed: () => addParenthesis('{', '}'),
-                              ),
-                              _KeyboardTextButton(
-                                text: r'\',
-                                onPressed: () {
-                                  addString(
-                                    r'\',
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      KeyboardRowContainer(
-                        onBottomSheet: true,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 2),
-                          child: Row(
-                            children: [
-                              KeyboardButton(
-                                  icon: UIIcons.chevronLeft
-                                      .copyWith(color: UIColors.smallText),
-                                  withBackgroundColor: false,
-                                  onPressed: () => moveCursor(-1),),
-                              KeyboardButton(
-                                  icon: UIIcons.chevronRight
-                                      .copyWith(color: UIColors.smallText),
-                                  withBackgroundColor: false,
-                                  onPressed: () => moveCursor(1),),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+        Wrap(
+          spacing: UIConstants.defaultSize,
+          runSpacing: UIConstants.defaultSize,
+          children: [
+            KeyboardLatexButton(
+              icon: UIIcons.curlyBraces.copyWith(color: UIColors.smallText),
+              onPressed: () => addParenthesis('{', '}'),
+            ),
+            KeyboardLatexButton(
+              text: r'\',
+              onPressed: () {
+                addString(
+                  r'\',
+                );
+              },
+            ),
+            KeyboardLatexButton(
+              icon: UIIcons.chevronLeft.copyWith(color: UIColors.smallText),
+              onPressed: () => moveCursor(-1),
+            ),
+            KeyboardLatexButton(
+              icon: UIIcons.chevronRight.copyWith(color: UIColors.smallText),
+              onPressed: () => moveCursor(1),
+            ),
+          ],
         ),
       ],
     );
-    // return Row(
-    //   children: [
-    //     Expanded(
-    //       child: GridView.extent(
-    //         shrinkWrap: true,
-    //         primary: true,
-    //         crossAxisSpacing: UIConstants.defaultSize,
-    //         mainAxisSpacing: UIConstants.defaultSize * 0,
-    //         maxCrossAxisExtent: UIConstants.defaultSize * 6,
-    //         children: tiles,
-    //       ),
-    //     ),
-    //   ],
-    // );
   }
 
   void moveCursor(int amount) {
@@ -270,8 +188,9 @@ class KeyboardLatexRow extends StatelessWidget {
     if (previousSelection.end + amount <= textEditingController.text.length &&
         previousSelection.end + amount >= 0) {
       textEditingController.selection = TextSelection(
-          baseOffset: previousSelection.end + amount,
-          extentOffset: previousSelection.end + amount,);
+        baseOffset: previousSelection.end + amount,
+        extentOffset: previousSelection.end + amount,
+      );
       updateLatex(textEditingController.text);
     }
   }
@@ -309,29 +228,5 @@ class KeyboardLatexRow extends StatelessWidget {
         extentOffset: previousSelection.start + selectionEnd,
       );
     updateLatex(textEditingController.text);
-  }
-}
-
-class _KeyboardTextButton extends StatelessWidget {
-  _KeyboardTextButton({required this.text, required this.onPressed});
-  String text;
-  void Function() onPressed;
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 44,
-      width: 44,
-      child: Center(
-        child: UIButton(
-          onPressed: onPressed,
-          child: Text(
-            text,
-            style: UIText.code,
-            textAlign: TextAlign.center,
-          ),
-          // onDoubleTap: onDoubleTap,
-        ),
-      ),
-    );
   }
 }

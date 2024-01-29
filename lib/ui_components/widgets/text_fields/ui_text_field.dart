@@ -3,18 +3,20 @@ import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_text.dart';
 
 class UITextField extends StatelessWidget {
-  UITextField(
-      {super.key,
-      this.controller,
-      this.focusNode,
-      this.autofocus = false,
-      this.validator,
-      this.onFieldSubmitted,
-      this.onChanged,
-      this.hintText,
-      this.initialValue,
-      this.style,
-      this.multiline=1,});
+  UITextField({
+    super.key,
+    this.controller,
+    this.focusNode,
+    this.autofocus = false,
+    this.validator,
+    this.onFieldSubmitted,
+    this.onChanged,
+    this.hintText,
+    this.initialValue,
+    this.style,
+    this.multiline = 1,
+    this.keyboardType,
+  });
 
   /// Controls the text being edited.
   final TextEditingController? controller;
@@ -38,9 +40,12 @@ class UITextField extends StatelessWidget {
   void Function(String)? onChanged;
   int? multiline;
 
+  TextInputType? keyboardType;
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      keyboardType: keyboardType,
       controller: controller,
       initialValue: initialValue,
       focusNode: focusNode,
@@ -51,9 +56,12 @@ class UITextField extends StatelessWidget {
       cursorColor: UIColors.smallText,
       onChanged: onChanged,
       maxLines: multiline,
-      style: style?? UIText.label,
+      style: style ?? UIText.label,
       decoration: InputDecoration(
-          border: InputBorder.none, isDense: true, hintText: hintText, ),
+        border: InputBorder.none,
+        isDense: true,
+        hintText: hintText,
+      ),
     );
   }
 }
