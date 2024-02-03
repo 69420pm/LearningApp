@@ -24,7 +24,6 @@ import 'package:learning_app/ui_components/backend/hive_ui_api.dart';
 import 'package:learning_app/ui_components/backend/ui_repository.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:learning_app/editor/models/editor_data_classes/audio_tile_dc.dart';
-import 'package:learning_app/editor/models/editor_data_classes/callout_tile_dc.dart';
 import 'package:learning_app/editor/models/editor_data_classes/char_tile_dc.dart';
 import 'package:learning_app/editor/models/editor_data_classes/divider_tile_dc.dart';
 import 'package:learning_app/editor/models/editor_data_classes/header_tile_dc.dart';
@@ -47,7 +46,6 @@ Future<void> main() async {
     ..registerAdapter(FolderAdapter())
     ..registerAdapter(ClassTestAdapter())
     ..registerAdapter(AudioTileDCAdapter())
-    ..registerAdapter(CalloutTileDCAdapter())
     ..registerAdapter(CharTileDCAdapter())
     ..registerAdapter(DividerTileDCAdapter())
     ..registerAdapter(HeaderTileDCAdapter())

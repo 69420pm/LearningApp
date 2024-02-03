@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/add_card/cubit/add_card_cubit.dart';
 import 'package:learning_app/editor/bloc/text_editor_bloc.dart';
 import 'package:learning_app/editor/models/editor_tile.dart';
 import 'package:learning_app/editor/models/text_field_controller.dart';
@@ -103,6 +104,8 @@ class _ImageTileState extends State<ImageTile> {
         });
         if (selected) {
           FocusScope.of(context).requestFocus(widget._noFocus);
+              context.read<AddCardCubit>().focusEditorTile(widget);
+
         }
         // print(selected);
       },

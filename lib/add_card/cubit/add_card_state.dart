@@ -17,6 +17,10 @@ class AddCardFailure extends AddCardState {
   String errorMessage;
 }
 
-class AddCardEditMode extends AddCardState {}
+class AddCardFocusedTileChanged extends AddCardState {
+  EditorTileType type;
+  AddCardFocusedTileChanged({
+    required this.type,
+  });
 
-class AddCardRenderMode extends AddCardState {}
+}

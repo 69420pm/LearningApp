@@ -625,38 +625,39 @@ class HiveCardsApi extends CardsApi {
   @override
   Future<void> saveClassTest(
       String parentSubjectId, ClassTest classTest) async {
+    var currentClassTest = classTest;
     final previousClassTest = _classTestBox.get(classTest.uid);
 
-    await _classTestBox.put(classTest.uid, classTest);
+    await _classTestBox.put(currentClassTest.uid, currentClassTest);
 
     if (previousClassTest == null) {
       // store in subjectClassTestBox
       final subjectClassTests = _subjectToClassTest.get(parentSubjectId) ?? [];
-      subjectClassTests.add(classTest.uid);
+      subjectClassTests.add(currentClassTest.uid);
       await _subjectToClassTest.put(parentSubjectId, subjectClassTests);
     }
 
     if (previousClassTest == null ||
         previousClassTest.date.toIso8601String() !=
-            classTest.date.toIso8601String()) {
-      final dateTimeDay = DateTime(
-          classTest.date.year, classTest.date.month, classTest.date.day);
-      classTest = classTest.copyWith(date: dateTimeDay);
+            currentClassTest.date.toIso8601String()) {
+      final dateTimeDay = DateTime(currentClassTest.date.year,
+          currentClassTest.date.month, currentClassTest.date.day);
+      currentClassTest = currentClassTest.copyWith(date: dateTimeDay);
 
       // store in dateClassTestBox
       final dateClassTests =
           _dateToClassTest.get(dateTimeDay.toIso8601String()) ?? [];
-      dateClassTests.add(classTest.uid);
+      dateClassTests.add(currentClassTest.uid);
       await _dateToClassTest.put(dateTimeDay.toIso8601String(), dateClassTests);
 
       // delete old entry in dateClassTestBox
-      _dateToClassTest.toMap().forEach((key, classTestIds) {
-        for (final classTestId in classTestIds) {
-          if (classTestId == classTestId) {
-            classTestIds.remove(classTestId);
-            _dateToClassTest.put(key, classTestIds);
-          }
-        }
+      final dateToClassTestMap =
+          Map<String, List<String>>.from(_dateToClassTest.toMap());
+
+      dateToClassTestMap.forEach((key, classTestIds) {
+        classTestIds
+          ..removeWhere((classTestId) => classTestId == classTestId)
+          ..forEach((classTestId) => _dateToClassTest.put(key, classTestIds));
       });
     }
   }

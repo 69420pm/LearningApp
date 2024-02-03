@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/editor/bloc/text_editor_bloc.dart';
+import 'package:learning_app/editor/widgets/drag_and_drop/drag_wrapper.dart';
+import 'package:learning_app/editor/widgets/drag_and_drop/drop_zones.dart';
 import 'package:learning_app/editor/widgets/editor_tiles/header_tile.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_constants.dart';
@@ -56,7 +58,14 @@ class EditorWidget extends StatelessWidget {
 
           SliverList(
             delegate: SliverChildBuilderDelegate(
-              (context, index) => editorTiles[index] as Widget,
+              (context, index) {
+                return Column(
+                  children: [
+                    DragWrapper(child: editorTiles[index], index: index,),
+                    DropZones(index: index,)
+                  ],
+                );
+              },
               childCount: editorTiles.length,
             ),
           ),
@@ -83,6 +92,7 @@ class EditorWidget extends StatelessWidget {
         ];
         return CustomScrollView(
           slivers: listChildren,
+          
         );
       },
     );

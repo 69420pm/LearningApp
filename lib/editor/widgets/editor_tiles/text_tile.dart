@@ -171,30 +171,7 @@ class TextTile extends StatelessWidget implements EditorTile {
                     ),
                   );
                 }
-                /* else if (!(textEditorBloc.editorTiles.length == 1 &&
-                  textEditorBloc.editorTiles[0] ==
-                      (parentEditorTile ?? this))) {
-                textEditorBloc.add(
-                  TextEditorRemoveEditorTile(
-                    tileToRemove:
-                        parentEditorTile == null ? this : parentEditorTile!,
-                    context: context,
-                    handOverText: true,
-                  ),
-                );
-              } else if (textEditorBloc.editorTiles.length == 1 &&
-                  textEditorBloc.editorTiles[0] == (parentEditorTile ?? this)) {
-                textEditorBloc.add(TextEditorReplaceEditorTile(
-                    tileToRemove: parentEditorTile ?? this,
-                    newEditorTile:
-                        TextTile(textStyle: TextFieldConstants.normal),
-                    context: context,
-                    handOverText: true));
-              } */
               }
-              // if(event.isKeyPressed(LogicalKeyboardKey.enter)){
-              //   print("enter");
-              // }
             },
             child: Padding(
               padding: EdgeInsets.symmetric(
@@ -208,7 +185,7 @@ class TextTile extends StatelessWidget implements EditorTile {
                 // textfield gets pushed 80 above keyboard, that textfield
                 // doesn't get hided by keyboard row, standard is 20
                 scrollPadding: const EdgeInsets.all(50),
-
+      
                 onSubmitted: (value) {
                   if (onSubmit != null) {
                     onSubmit?.call();

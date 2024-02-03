@@ -12,13 +12,16 @@ import 'package:learning_app/editor/widgets/editor_tiles/image_tile.dart';
 import 'package:learning_app/editor/widgets/editor_tiles/latex_tile.dart';
 import 'package:learning_app/editor/widgets/keyboard_row/keyboard_row.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
+import 'package:learning_app/ui_components/ui_constants.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
 import 'package:learning_app/ui_components/ui_text.dart';
 import 'package:learning_app/ui_components/widgets/buttons/ui_button.dart';
 import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
 import 'package:learning_app/ui_components/widgets/dialogs/ui_dialog.dart';
 import 'package:learning_app/ui_components/widgets/ui_appbar.dart';
-import 'package:learning_app/ui_components/widgets/ui_page.dart';class AddCardPage extends StatefulWidget {
+import 'package:learning_app/ui_components/widgets/ui_page.dart';
+
+class AddCardPage extends StatefulWidget {
   AddCardPage({super.key, required this.card, required this.parentId});
 
   final Card card;
@@ -66,11 +69,57 @@ class _AddCardPageState extends State<AddCardPage> with WidgetsBindingObserver {
           // leadingBackButton: true,
           // leadingBackButtonPressed: _saveEditorTiles,
           actions: [
-            UIIconButton(
-              icon: UIIcons.reorder,
-              onPressed: () {
-                
+            BlocBuilder<AddCardCubit, AddCardState>(
+              buildWhen: (previous, current) {
+                return current is AddCardFocusedTileChanged;
               },
+              builder: (context, state) {
+                if (state is AddCardFocusedTileChanged &&
+                    (state).type != EditorTileType.none) {
+                  if (state.type == EditorTileType.image) {
+                    return Row(
+                      children: [
+                        UIIconButton(
+                          icon: UIIcons.delete.copyWith(size: 32),
+                          onPressed: () {},
+                        ),
+                        UIIconButton(
+                          icon: UIIcons.zoomIn.copyWith(size: 32),
+                          onPressed: () {},
+                        ),
+                        UIIconButton(
+                          icon: UIIcons.alignment.copyWith(size: 32),
+                          onPressed: () {},
+                        ),
+                        UIIconButton(
+                          icon: UIIcons.add.copyWith(size: 32),
+                          onPressed: () {},
+                        ),
+                      ],
+                    );
+                  } else {
+                    return Row(
+                      children: [
+                        UIIconButton(
+                          icon: UIIcons.delete.copyWith(size: 32),
+                          onPressed: () {},
+                        ),
+                        UIIconButton(
+                          icon: UIIcons.add.copyWith(size: 32),
+                          onPressed: () {},
+                        ),
+                      ],
+                    );
+                  }
+                } else {
+                  return const Row(
+                    children: [],
+                  );
+                }
+              },
+            ),
+            const SizedBox(
+              width: UIConstants.itemPadding,
             ),
             UIIconButton(
               icon: UIIcons.settings,
