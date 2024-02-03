@@ -55,6 +55,7 @@ class CardPreviewBottomSheet extends StatelessWidget {
                   height: UIConstants.itemPaddingLarge,
                 ),
               ],
+
             );
           }
           return const Text('loading');

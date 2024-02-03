@@ -10,6 +10,7 @@ import 'package:hive/hive.dart';
 import 'package:learning_app/app/app.dart';
 import 'package:learning_app/bootstrap.dart';
 import 'package:learning_app/calendar_backend/calendar_api/calendar_api.dart';
+
 import 'package:learning_app/calendar_backend/calendar_api/models/calendar_day.dart';
 import 'package:learning_app/calendar_backend/calendar_repository.dart';
 import 'package:learning_app/calendar_backend/hive_calendar_api.dart';
@@ -74,7 +75,6 @@ Future<void> main() async {
     await Hive.openBox('calendar'),
   );
   final calendarRepository = CalendarRepository(calendarApi: calendarApi);
-
   await bootstrap(
     () => App(
       calendarRepository: calendarRepository,

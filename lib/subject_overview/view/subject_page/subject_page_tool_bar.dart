@@ -13,7 +13,9 @@ import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
 import 'package:learning_app/ui_components/widgets/bottom_sheet/ui_bottom_sheet.dart';
 import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
-import 'package:learning_app/ui_components/widgets/ui_label_row.dart';class SubjectPageToolBar extends StatelessWidget {
+import 'package:learning_app/ui_components/widgets/ui_label_row.dart';
+
+class SubjectPageToolBar extends StatelessWidget {
   const SubjectPageToolBar({
     super.key,
     required this.cardsRepository,
@@ -74,6 +76,7 @@ import 'package:learning_app/ui_components/widgets/ui_label_row.dart';class Subj
               },
             ),
             UIIconButton(
+              alignment: Alignment.topRight,
               icon: UIIcons.card.copyWith(color: UIColors.smallText),
               onPressed: () {
                 Navigator.of(context).pushNamed(

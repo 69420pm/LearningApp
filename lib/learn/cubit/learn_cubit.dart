@@ -1,18 +1,18 @@
-import 'dart:math';
-
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart' hide Card;
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:learning_app/card_backend/cards_api/models/card.dart';
 import 'package:learning_app/card_backend/cards_repository.dart';
-import 'package:learning_app/editor/models/editor_tile.dart';
-import 'package:learning_app/editor/widgets/editor_tiles/front_back_seperator_tile.dart';
+import 'package:learning_app/editor/widgets/editor_tiles/text_tile.dart';
 import 'package:learning_app/learn/cubit/render_card.dart';
-import 'package:learning_app/ui_components/ui_text.dart';
+import 'package:learning_app/ui_components/ui_icons.dart';
+import 'package:learning_app/ui_components/widgets/buttons/ui_icon_button.dart';
 
 part 'learn_state.dart';
 
 class LearnCubit extends Cubit<LearnCubitState> {
   LearnCubit(this._cardsRepository) : super(LoadingCardsState());
+  final CardsRepository _cardsRepository;
 
   List<RenderCard> _cardsToLearn = List.empty(growable: true);
   List<RenderCard> get cardsToLearn => _cardsToLearn;
@@ -20,15 +20,99 @@ class LearnCubit extends Cubit<LearnCubitState> {
   int currentIndex = 0;
   double screenHeight = 0;
 
+  Future<List<RenderCard>> setToLearnCards(List<Card> cards) async {
+    currentIndex = 0;
+    _cardsToLearn = cards
+        .map(
+          (e) => RenderCard(
+            card: e,
+            cardsRepository: _cardsRepository,
+            onImagesLoaded: () => emit(NewCardState()),
+          ),
+        )
+        .toList()
+      ..sort(
+        (a, b) => b.dateCreated.compareTo(a.dateCreated),
+      );
+    // _cardsToLearn = _cardsToLearn.sublist(0, 4);
+
+    //TODO Only load CardContent to display
+    for (var i = 0; i < cardsToLearn.length; i++) {
+      cardsToLearn[i].editorTiles =
+          await _cardsRepository.getCardContent(cardsToLearn[i].uid);
+    }
+
+    final emptyCard = Card(
+        uid: "empty",
+        dateCreated: DateTime.now(),
+        askCardsInverted: false,
+        typeAnswer: false,
+        recallScore: 0,
+        dateToReview: null,
+        name: "Empty Card");
+
+    final halfFinishedCard = RenderCard(
+      card: emptyCard,
+      isInBetweenCard: true,
+      turnedOver: true,
+      cardsRepository: _cardsRepository,
+      onImagesLoaded: () => emit(NewCardState()),
+      widgetsToDisplay: [
+        Text("half finished!"),
+      ],
+    );
+    final finishedAllCardsRenderCard = RenderCard(
+      card: emptyCard,
+      isInBetweenCard: true,
+      turnedOver: true,
+      cardsRepository: _cardsRepository,
+      onImagesLoaded: () => emit(NewCardState()),
+      widgetsToDisplay: [
+        Text("finished"),
+        UIIconButton(
+            onPressed: () {
+              _updateAllCards();
+              print("moin");
+            },
+            icon: UIIcons.done),
+      ],
+    );
+    if (cardsToLearn.length > 5) {
+      cardsToLearn.insert(
+          (cardsToLearn.length / 2 + .5).toInt(), halfFinishedCard);
+    }
+    cardsToLearn.add(finishedAllCardsRenderCard);
+
+    emit(FinishedLoadingCardsState());
+    return _cardsToLearn;
+  }
+
   void setHeight(int index, double height) {
     if (height != _cardsToLearn[index].cardHeight) {
       _cardsToLearn[index].cardHeight = height;
+
       emit(UpdateHeightState(index: index));
     }
   }
 
   bool currentCardIsTurned() {
     return _cardsToLearn[currentIndex].turnedOver;
+  }
+
+  void updateCurrentIndex(int newIndex) {
+    if (currentIndex != newIndex) {
+      currentIndex = newIndex;
+      emit(NewCardState());
+    }
+  }
+
+  void turnOverCurrentCard() {
+    _cardsToLearn[currentIndex].turnedOver = true;
+    emit(CardTurnedState());
+  }
+
+  void stopScrolling() {
+    emit(StopScrollingState());
   }
 
   double getBottomLimit(
@@ -50,21 +134,9 @@ class LearnCubit extends Cubit<LearnCubitState> {
     return offset;
   }
 
-  void updateCurrentIndex(int newIndex) {
-    if (currentIndex != newIndex) {
-      currentIndex = newIndex;
-      emit(NewCardState());
-    }
-  }
-
-  void stopScrolling() {
-    emit(StopScrollingState());
-  }
-
   double? getAmountScrolledAway(double offset, double screenHeight) {
     var a = (getOffsetByIndex(currentIndex + 1) - offset) / screenHeight;
     if (a > 1) a -= 1;
-    print(a);
     return 0;
   }
 
@@ -91,12 +163,12 @@ class LearnCubit extends Cubit<LearnCubitState> {
       }
       if (height >= offset) {
         final border = ((height - offset) / screenHeight).clamp(0, 1);
-
         if (border == 1) {
           updateCurrentIndex(i);
           return null;
         } else if (border < 0.5) {
           if (currentIndex == i && !_cardsToLearn[currentIndex].turnedOver) {
+            updateCurrentIndex(i);
             return height - screenHeight;
           }
           updateCurrentIndex(i + 1);
@@ -113,8 +185,8 @@ class LearnCubit extends Cubit<LearnCubitState> {
   bool isScrollingInsideCurrentCard(double offset, double screenHeight) {
     var offsetToCurrentCard = getOffsetByIndex(currentIndex);
     var offsetToNextCard = getOffsetByIndex(currentIndex + 1);
-    return offset > offsetToCurrentCard &&
-        offset < offsetToNextCard - screenHeight;
+    return offset >= offsetToCurrentCard &&
+        offset <= offsetToNextCard - screenHeight;
   }
 
   void startAnimation() {
@@ -125,109 +197,82 @@ class LearnCubit extends Cubit<LearnCubitState> {
     emit(FinishedAnimationState());
   }
 
-  final CardsRepository _cardsRepository;
+  void _updateAllCards() {
+    _cardsToLearn =
+        _cardsToLearn.where((element) => !element.isInBetweenCard).toList();
+    //"finish a card" means, that this card doesn't get a new dateToReview;
+    //We might add random "finished" cards to a daily session, if there are for
+    //example only a few cards on that day.
 
-  void turnOverCard() {
-    _cardsToLearn[currentIndex].turnedOver = true;
-    emit(CardTurnedState());
-  }
+    // //iterations to finish card
+    // const rehearsalIterations = 5;
 
-  Future<List<RenderCard>> setToLearnCards(List<Card> cards) async {
-    _cardsToLearn = cards
-        .map(
-          (e) => RenderCard(
-            card: e,
-            cardsRepository: _cardsRepository,
-            onImagesLoaded: () => emit(NewCardState()),
-          ),
-        )
-        .toList()
-      ..sort(
-        (a, b) => b.dateCreated.compareTo(a.dateCreated),
-      );
-    // _cardsToLearn = _cardsToLearn.sublist(0, 4);
+    // //minimal time it takes to finish a card if always rated good
+    // const minimalAmountDaysToLearnCard = 14;
 
-    //TODO Only load CardContent to display
-    for (var i = 0; i < cardsToLearn.length; i++) {
-      cardsToLearn[i].editorTiles =
-          await _cardsRepository.getCardContent(cardsToLearn[i].uid);
-    }
+    // //rehearsal Curve (lots in the beginning, fewer in the end)
+    // const rehearsalCurve = Curves.easeInExpo;
 
-    emit(FinishedLoadingCardsState());
-    return _cardsToLearn;
-  }
+    // // generate list of time spans between rehearsals
+    // final nextDateToReview = List.generate(
+    //   rehearsalIterations,
+    //   (index) {
+    //     return (rehearsalCurve.transform(
+    //               rehearsalIterations / minimalAmountDaysToLearnCard,
+    //             ) *
+    //             minimalAmountDaysToLearnCard)
+    //         .round()
+    //         .days;
+    //   },
+    // );
 
-  void _checkIfAllCardsRated() {
-    //check if all got rated
-    if (_cardsToLearn
-        .where((element) => !element.gotRatedInThisSession)
-        .isEmpty) {
-      //get all bad rated Cards
-      final gotBadCards = _cardsToLearn
-          .where((element) => element.gotRatedBad && !element.finishedToday);
-
-      //all cards good
-      if (gotBadCards.isEmpty) {
-        emit(FinishedLearningState());
-      }
-
-      //some bad
-      else {
-        _cardsToLearn = gotBadCards.map(
-          (e) {
-            e
-              ..turnedOver = false
-              ..gotRatedInThisSession = false;
-            return e;
-          },
-        ).toList();
-        emit(NextLearningSessionState());
-      }
-    }
-  }
-
-  void rateCard(LearnFeedback feedbackCard) {
-    const nextDateToReview = <Duration>[
-      Duration(days: 1),
-      Duration(days: 2),
-      Duration(days: 3),
-      Duration(days: 4),
-      Duration(days: 5),
-      Duration(days: 6),
+    final nextDateToReview = [
+      0.days,
+      1.days,
+      2.days,
+      3.days,
+      5.days,
+      8.days,
+      10.days,
+      30.days,
     ];
 
-    if (!_cardsToLearn[currentIndex].gotRatedInThisSession) {
-      if (feedbackCard == LearnFeedback.good) {
-        //first try/tries wrong, but now right
-        if (_cardsToLearn[currentIndex].gotRatedBad) {
-          _cardsToLearn[currentIndex].dateToReview =
-              _cardsToLearn[currentIndex].dateToReview.add(Duration(days: 1));
-          if (_cardsToLearn[currentIndex].recallScore > 0) {
-            _cardsToLearn[currentIndex].recallScore--;
+    for (var i = 0; i < _cardsToLearn.length; i++) {
+      switch (_cardsToLearn[i].feedback) {
+        case LearnFeedback.good:
+          _cardsToLearn[i].recallScore += 1;
+          if (_cardsToLearn[i].recallScore < nextDateToReview.length) {
+            _cardsToLearn[i].dateToReview = DateUtils.dateOnly(DateTime.now())
+                .add(nextDateToReview[_cardsToLearn[i].recallScore]);
+          } else {
+            // card is finished
+            _cardsToLearn[i].dateToReview = null;
           }
-        }
 
-        //first try right
-        else {
-          _cardsToLearn[currentIndex].dateToReview = _cardsToLearn[currentIndex]
-              .dateToReview
-              .add(nextDateToReview[_cardsToLearn[currentIndex].recallScore]);
-          _cardsToLearn[currentIndex].recallScore += 1;
-        }
-        _cardsToLearn[currentIndex].finishedToday = true;
-        _cardsRepository.saveCard(_cardsToLearn[currentIndex], null, null);
+        case LearnFeedback.medium:
+          _cardsToLearn[i].recallScore += 0;
+          _cardsToLearn[i].dateToReview =
+              DateUtils.dateOnly(DateTime.now()).add(1.days);
+
+        case LearnFeedback.bad:
+          if (_cardsToLearn[i].recallScore > 0) {
+            _cardsToLearn[i].recallScore -= 2;
+            _cardsToLearn[i].dateToReview = DateUtils.dateOnly(DateTime.now());
+          }
       }
 
-      //bad
-      else {
-        _cardsToLearn[currentIndex].gotRatedBad = true;
-        _cardsToLearn.add(_cardsToLearn[currentIndex]..turnedOver = false);
-      }
+      _cardsRepository.saveCard(_cardsToLearn[i], null, null);
     }
-    _cardsToLearn[currentIndex].gotRatedInThisSession = true;
-    _checkIfAllCardsRated();
-    emit(CardRatedState());
+
+    emit(FinishedLearningState());
+  }
+
+  void rateCard(LearnFeedback feedbackCard, int index) {
+    if (_cardsToLearn[index].feedback != feedbackCard) {
+      _cardsToLearn[index].feedback = feedbackCard;
+      emit(CardRatedState());
+    }
   }
 }
 
-enum LearnFeedback { good, bad }
+enum LearnFeedback { good, medium, bad }

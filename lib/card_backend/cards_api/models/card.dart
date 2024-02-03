@@ -2,6 +2,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:hive/hive.dart';
 import 'package:learning_app/card_backend/cards_api/models/file.dart';
+import 'package:learning_app/learn/cubit/learn_cubit.dart';
 
 part 'card.g.dart';
 
@@ -31,12 +32,18 @@ class Card extends File implements Equatable {
   @HiveField(4)
   int recallScore;
 
-  /// date when the card should get learned again
+  /// date when the card should get learned again, null if finished
   @HiveField(5)
-  DateTime dateToReview;
+  DateTime? dateToReview;
 
   @HiveField(6)
   String name;
+
+  // @HiveField(7)
+  // LearnFeedback lastFeedback;
+
+  // @HiveField(8)
+  // DateTime lastDayReviewed;
 
   Card({
     required this.uid,
@@ -80,7 +87,7 @@ class Card extends File implements Equatable {
       askCardsInverted,
       typeAnswer,
       recallScore,
-      dateToReview,
+      dateToReview ?? DateTime(0),
     ];
   }
 }
