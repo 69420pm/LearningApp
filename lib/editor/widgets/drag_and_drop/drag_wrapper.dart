@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/add_card/cubit/add_card_cubit.dart';
 import 'package:learning_app/editor/models/editor_tile.dart';
 import 'package:learning_app/ui_components/ui_colors.dart';
 import 'package:learning_app/ui_components/ui_icons.dart';
@@ -21,8 +23,7 @@ class _DragWrapperState extends State<DragWrapper> {
       data: widget.index,
       // hitTestBehavior: HitTestBehavior.opaque,
       axis: Axis.vertical,
-      feedback: Container(
-          height: 20, width: 10000, color: Color.fromARGB(198, 77, 77, 77)),
+      feedback: IgnorePointer(child: widget.child as Widget),
       child: ColoredBox(
         color: Colors.transparent,
         child: Focus(
@@ -43,6 +44,13 @@ class _DragWrapperState extends State<DragWrapper> {
             ],
           ),
           onFocusChange: (hasFocus) {
+            if (hasFocus == true) {
+              context.read<AddCardCubit>().focusEditorTile(widget.child);
+            } else {
+              if (FocusManager.instance.primaryFocus == null) {
+                context.read<AddCardCubit>().focusEditorTile(null);
+              }
+            }
             setState(() {
               visible = hasFocus;
             });

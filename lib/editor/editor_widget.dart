@@ -92,6 +92,7 @@ class EditorWidget extends StatelessWidget {
         ];
         return CustomScrollView(
           slivers: listChildren,
+          
         );
       },
     );

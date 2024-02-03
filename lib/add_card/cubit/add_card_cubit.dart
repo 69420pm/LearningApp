@@ -10,6 +10,7 @@ import 'package:learning_app/editor/models/editor_tile.dart';
 import 'package:learning_app/editor/models/text_field_constants.dart';
 import 'package:learning_app/editor/widgets/editor_tiles/front_back_seperator_tile.dart';
 import 'package:learning_app/editor/widgets/editor_tiles/header_tile.dart';
+import 'package:learning_app/editor/widgets/editor_tiles/image_tile.dart';
 import 'package:learning_app/editor/widgets/editor_tiles/text_tile.dart';
 
 part 'add_card_state.dart';
@@ -18,7 +19,6 @@ class AddCardCubit extends Cubit<AddCardState> {
   AddCardCubit(this.cardsRepository) : super(AddCardInitial());
 
   final CardsRepository cardsRepository;
-
   Future<void> saveCard(
     Card card,
     String? parentId,
@@ -35,6 +35,16 @@ class AddCardCubit extends Cubit<AddCardState> {
     emit(AddCardSuccess());
   }
 
+  void focusEditorTile(EditorTile? tile) {
+    if (tile == null) {
+      emit(AddCardFocusedTileChanged(type: EditorTileType.none));
+    } else if (tile is ImageTile) {
+      emit(AddCardFocusedTileChanged(type: EditorTileType.image));
+    } else {
+      emit(AddCardFocusedTileChanged(type: EditorTileType.text));
+    }
+  }
+
   Future<List<EditorTile>> getSavedEditorTiles(
     Card card,
   ) async {
@@ -45,14 +55,13 @@ class AddCardCubit extends Cubit<AddCardState> {
         HeaderTile(
           hintText: 'Front',
           textStyle: TextFieldConstants.headingSmall,
-          key: UniqueKey()
+          key: UniqueKey(),
         ),
         FrontBackSeparatorTile(key: UniqueKey()),
         TextTile(
           textStyle: TextFieldConstants.normal,
           hintText: 'Back',
-          key: UniqueKey()
-
+          key: UniqueKey(),
         ),
       ];
     }
@@ -74,3 +83,5 @@ class AddCardCubit extends Cubit<AddCardState> {
     }
   }
 }
+
+enum EditorTileType { none, text, image }
