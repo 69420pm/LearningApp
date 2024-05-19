@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:learning_app_clone/features/folder_system/domain/entities/subject.dart';
+import 'package:learning_app/features/folder_system/domain/entities/subject.dart';
 
 class SubjectModel extends Subject {
   SubjectModel(

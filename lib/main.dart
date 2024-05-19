@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:learning_app_clone/core/app_router.dart';
+import 'package:learning_app/core/app_router.dart';
 import 'injection_container.dart' as di;
 
 Future<void> main() async {

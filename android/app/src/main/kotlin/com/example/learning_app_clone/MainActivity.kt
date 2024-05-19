@@ -1,4 +1,4 @@
-package com.example.learning_app_clone
+package com.example.learning_app
 
 import io.flutter.embedding.android.FlutterActivity
 

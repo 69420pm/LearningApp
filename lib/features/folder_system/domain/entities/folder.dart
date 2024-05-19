@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:learning_app_clone/features/folder_system/data/models/folder_model.dart';
-import 'package:learning_app_clone/features/folder_system/domain/entities/file.dart';
-import 'package:learning_app_clone/features/folder_system/domain/entities/fileSystem.dart';
+import 'package:learning_app/features/folder_system/data/models/folder_model.dart';
+import 'package:learning_app/features/folder_system/domain/entities/file.dart';
+import 'package:learning_app/features/folder_system/domain/entities/fileSystem.dart';
 
 class Folder extends File implements FileSystem {
   final String id;

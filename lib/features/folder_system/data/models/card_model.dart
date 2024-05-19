@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:learning_app_clone/features/folder_system/domain/entities/card.dart';
+import 'package:learning_app/features/folder_system/domain/entities/card.dart';
 
 class CardModel extends Card {
   CardModel(

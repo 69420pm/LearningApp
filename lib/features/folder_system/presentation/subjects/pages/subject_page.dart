@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:learning_app_clone/features/folder_system/presentation/subjects/bloc/subject_bloc.dart';
-import 'package:learning_app_clone/injection_container.dart';
+import 'package:learning_app/features/folder_system/presentation/subjects/bloc/file_bloc.dart';
+import 'package:learning_app/injection_container.dart';
 
 class SubjectPage extends StatelessWidget {
   const SubjectPage({super.key, required this.subjectId});
@@ -11,8 +11,8 @@ class SubjectPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => sl<SubjectBloc>(param1: subjectId)
-        ..add(SubjectWatchChildrenIds(parentId: subjectId)),
+      create: (context) => sl<FileBloc>(param1: subjectId)
+        ..add(FileWatchChildrenIds(parentId: subjectId)),
       child: const SubjectView(),
     );
   }
@@ -26,21 +26,21 @@ class SubjectView extends StatelessWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () =>
-            context.read<SubjectBloc>().add(SubjectCreateFolder(name: "name")),
+            context.read<FileBloc>().add(FileCreateFolder(name: "name")),
       ),
       body: SafeArea(
         child: Column(
           children: [
-            BlocBuilder<SubjectBloc, SubjectState>(
+            BlocBuilder<FileBloc, FileState>(
               builder: (context, state) {
                 switch (state) {
-                  case SubjectLoading():
+                  case FileLoading():
                     return const Center(
                       child: CircularProgressIndicator(),
                     );
-                  case SubjectError():
+                  case FileError():
                     return Text(state.errorMessage);
-                  case SubjectSuccess():
+                  case FileSuccess():
                     return CustomScrollView(
                       shrinkWrap: true,
                       slivers: [
@@ -48,7 +48,7 @@ class SubjectView extends StatelessWidget {
                           delegate: SliverChildBuilderDelegate(
                             childCount: state.ids.length,
                             (context, index) {
-                              return Text(state.ids[index]);
+                              return Text(state.ids[index].id);
                             },
                           ),
                         ),

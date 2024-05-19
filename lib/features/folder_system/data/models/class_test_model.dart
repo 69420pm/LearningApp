@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:learning_app_clone/features/folder_system/domain/entities/class_test.dart';
+import 'package:learning_app/features/folder_system/domain/entities/class_test.dart';
 
 class ClassTestModel extends ClassTest {
   ClassTestModel(
