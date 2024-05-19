@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:learning_app_clone/core/app_router.dart';
+import 'package:learning_app_clone/core/theme/color_schemes.dart';
 import 'injection_container.dart' as di;
 
 Future<void> main() async {
@@ -17,9 +18,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: lightColorScheme,
         useMaterial3: true,
       ),
+      darkTheme: ThemeData(
+        colorScheme: darkColorScheme,
+        useMaterial3: true,
+      ),
+      themeMode: ThemeMode.system,
       routerConfig: router,
     );
   }
