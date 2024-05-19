@@ -27,9 +27,6 @@ class SubjectListTile extends StatelessWidget {
                   if (!snapshot.data!.deleted) {
                     return Text(
                       snapshot.data!.value!.name,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
                     );
                   }
                   return const Text("deleted");
