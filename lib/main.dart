@@ -12,7 +12,6 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
@@ -25,7 +24,8 @@ class MyApp extends StatelessWidget {
         colorScheme: darkColorScheme,
         useMaterial3: true,
       ),
-      themeMode: ThemeMode.system,
+      //dark for development, else ThemeMode.system
+      themeMode: ThemeMode.dark,
       routerConfig: router,
     );
   }

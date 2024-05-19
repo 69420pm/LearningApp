@@ -21,17 +21,23 @@ class SubjectListTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             StreamBuilder(
-                stream: context.read<HomeBloc>().subscribedStreams[subjectId],
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    if (!snapshot.data!.deleted) {
-                      return Text(snapshot.data!.value!.name);
-                    }
-                    return const Text("deleted");
-                  } else {
-                    return const Text('error');
+              stream: context.read<HomeBloc>().subscribedStreams[subjectId],
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  if (!snapshot.data!.deleted) {
+                    return Text(
+                      snapshot.data!.value!.name,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    );
                   }
-                }),
+                  return const Text("deleted");
+                } else {
+                  return const Text('error');
+                }
+              },
+            ),
           ],
         ),
       ),
