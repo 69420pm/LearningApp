@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:learning_app_clone/core/app_router.dart';
+import 'package:learning_app_clone/core/theme/color_schemes.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'injection_container.dart' as di;
 
 Future<void> main() async {
@@ -11,16 +14,36 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Flutter Demo',
+      routerConfig: router,
+
+      //Theme
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: lightColorScheme,
         useMaterial3: true,
       ),
-      routerConfig: router,
+      darkTheme: ThemeData(
+        colorScheme: darkColorScheme,
+        useMaterial3: true,
+      ),
+      //dark for development, else ThemeMode.system
+      themeMode: ThemeMode.dark,
+
+      //Localization
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en'),
+        Locale('de'),
+      ],
+      locale: null, //defaults to top of supportedLocals
     );
   }
 }

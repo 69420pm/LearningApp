@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app_clone/features/folder_system/presentation/subjects/widgets/subject_list.dart';
 import 'package:learning_app_clone/features/home/presentation/bloc/home_bloc.dart';
 import 'package:learning_app_clone/injection_container.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -22,6 +23,9 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.test),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => context
             .read<HomeBloc>()
