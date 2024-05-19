@@ -48,7 +48,7 @@ class SubjectView extends StatelessWidget {
                           delegate: SliverChildBuilderDelegate(
                             childCount: state.ids.length,
                             (context, index) {
-                              return Text(state.ids[index].id);
+                              return Text(state.ids[index]);
                             },
                           ),
                         ),

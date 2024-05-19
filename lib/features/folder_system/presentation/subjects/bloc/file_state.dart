@@ -17,18 +17,9 @@ final class FileError extends FileState {
 }
 
 final class FileSuccess extends FileState {
-  final List<FileSuccessReturn> ids;
+  final List<String> ids;
 
   FileSuccess({required this.ids});
   @override
   List<Object> get props => ids;
-}
-
-class FileSuccessReturn {
-  String id;
-  bool isFolder;
-  FileSuccessReturn({
-    required this.id,
-    required this.isFolder,
-  });
 }
