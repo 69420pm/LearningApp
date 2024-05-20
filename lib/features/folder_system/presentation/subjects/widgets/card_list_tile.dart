@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Card;
+import 'package:learning_app/features/folder_system/domain/entities/card.dart';
 
 import 'package:learning_app/features/folder_system/presentation/subjects/interfaces/file_list_tile.dart';
 
@@ -12,6 +13,6 @@ class CardListTile extends StatelessWidget implements FileListTile {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Text(card.name);
   }
 }
