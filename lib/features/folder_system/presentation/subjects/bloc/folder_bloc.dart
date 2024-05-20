@@ -3,38 +3,42 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+
 import 'package:learning_app/core/streams/stream_events.dart';
 import 'package:learning_app/features/folder_system/domain/entities/file.dart';
-
+import 'package:learning_app/features/folder_system/domain/usecases/move_file.dart';
 import 'package:learning_app/features/folder_system/domain/usecases/watch_children_file_system.dart';
 import 'package:learning_app/features/folder_system/domain/usecases/watch_file.dart';
 
-part 'file_event.dart';
-part 'file_state.dart';
+part 'folder_event.dart';
+part 'folder_state.dart';
 
-class FileBloc extends Bloc<FileEvent, FileState> {
+class FolderBloc extends Bloc<FolderEvent, FolderState> {
   final String subjectId;
+  MoveFile moveFileUseCase;
   WatchChildrenFileSystem watchChildren;
   WatchFile watchFile;
-  FileBloc({
+  FolderBloc({
     required this.subjectId,
+    required this.moveFileUseCase,
     required this.watchChildren,
     required this.watchFile,
-  }) : super(FileLoading()) {
-    on<FileEvent>((event, emit) {});
-    on<FileWatchChildrenIds>(watchChildrenIds);
+  }) : super(FolderLoading()) {
+    on<FolderEvent>((event, emit) {});
+    on<FolderWatchChildrenIds>(watchChildrenIds);
+    on<FolderMoveFile>(moveFile);
   }
 
   Map<String, Stream<StreamEvent<File?>>> subscribedStreams = {};
 
   Future<FutureOr<void>> watchChildrenIds(
-    FileWatchChildrenIds event,
-    Emitter<FileState> emit,
+    FolderWatchChildrenIds event,
+    Emitter<FolderState> emit,
   ) async {
-    emit(FileLoading());
+    emit(FolderLoading());
     final streamEither = await watchChildren(event.parentId);
     await streamEither.match((failure) async {
-      emit(FileError(errorMessage: failure.errorMessage));
+      emit(FolderError(errorMessage: failure.errorMessage));
     }, (stream) async {
       await emit.forEach(
         stream,
@@ -45,18 +49,29 @@ class FileBloc extends Bloc<FileEvent, FileState> {
                 final watchFileEither = await watchFile(childrenId);
                 watchFileEither.match(
                   (failure) =>
-                      emit(FileError(errorMessage: failure.errorMessage)),
+                      emit(FolderError(errorMessage: failure.errorMessage)),
                   (stream) => subscribedStreams[childrenId] = stream,
                 );
               }
             },
           );
-          return FileSuccess(ids: List.from(data));
+          return FolderSuccess(ids: List.from(data));
         },
         onError: (error, stackTrace) {
-          return FileError(errorMessage: "stream returned error");
+          return FolderError(errorMessage: "stream returned error");
         },
       );
     });
+  }
+
+  Future<FutureOr<void>> moveFile(
+      FolderMoveFile event, Emitter<FolderState> emit) async {
+    final moveEither = await moveFileUseCase(
+        MoveFileParams(fileUID: event.fileUID, newParentId: event.parentId));
+
+    moveEither.match(
+      (failure) => emit(FolderError(errorMessage: failure.errorMessage)),
+      (stream) => null,
+    );
   }
 }

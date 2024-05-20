@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:learning_app/features/folder_system/presentation/subjects/bloc/file_bloc.dart';
+import 'package:learning_app/features/folder_system/presentation/subjects/bloc/folder_bloc.dart';
 import 'package:learning_app/features/folder_system/presentation/subjects/widgets/list_tile_wrapper.dart';
 import 'package:learning_app/injection_container.dart';
 
@@ -16,8 +16,8 @@ class FolderContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) {
-        return sl<FileBloc>(param1: parentId)
-          ..add(FileWatchChildrenIds(parentId: parentId));
+        return sl<FolderBloc>(param1: parentId)
+          ..add(FolderWatchChildrenIds(parentId: parentId));
       },
       child: const _FolderContent(),
     );
@@ -29,16 +29,16 @@ class _FolderContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FileBloc, FileState>(
+    return BlocBuilder<FolderBloc, FolderState>(
       builder: (context, state) {
         switch (state) {
-          case FileLoading():
+          case FolderLoading():
             return const Center(
               child: CircularProgressIndicator(),
             );
-          case FileError():
+          case FolderError():
             return Text(state.errorMessage);
-          case FileSuccess():
+          case FolderSuccess():
             return ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart' hide Card;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/features/folder_system/domain/entities/card.dart';
 import 'package:learning_app/features/folder_system/domain/entities/folder.dart';
-import 'package:learning_app/features/folder_system/presentation/subjects/bloc/file_bloc.dart';
+import 'package:learning_app/features/folder_system/presentation/subjects/bloc/folder_bloc.dart';
 import 'package:learning_app/features/folder_system/presentation/subjects/widgets/card_list_tile.dart';
 import 'package:learning_app/features/folder_system/presentation/subjects/widgets/folder_list_tile.dart';
 
@@ -18,24 +18,38 @@ class ListTileWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: context.read<FileBloc>().subscribedStreams[id],
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          if (!snapshot.data!.deleted && snapshot.data!.value is Folder) {
-            return FolderListTile(
-              folder: snapshot.data!.value as Folder,
-            );
-          } else if (!snapshot.data!.deleted && snapshot.data!.value is Card) {
-            return CardListTile(
-              card: snapshot.data!.value as Card,
-            );
+    return LongPressDraggable(
+      data: id,
+      feedback: Container(
+        color: Colors.red,
+        height: 50,
+        width: 100,
+      ),
+      childWhenDragging: Container(
+        color: Colors.green,
+        height: 50,
+        width: 100,
+      ),
+      child: StreamBuilder(
+        stream: context.read<FolderBloc>().subscribedStreams[id],
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            if (!snapshot.data!.deleted && snapshot.data!.value is Folder) {
+              return FolderListTile(
+                folder: snapshot.data!.value as Folder,
+              );
+            } else if (!snapshot.data!.deleted &&
+                snapshot.data!.value is Card) {
+              return CardListTile(
+                card: snapshot.data!.value as Card,
+              );
+            }
           }
-        }
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+      ),
     );
   }
 }

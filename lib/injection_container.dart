@@ -8,11 +8,12 @@ import 'package:learning_app/features/folder_system/domain/usecases/create_card.
 import 'package:learning_app/features/folder_system/domain/usecases/create_folder.dart';
 import 'package:learning_app/features/folder_system/domain/usecases/create_subject.dart';
 import 'package:learning_app/features/folder_system/domain/usecases/delete_file.dart';
+import 'package:learning_app/features/folder_system/domain/usecases/move_file.dart';
 import 'package:learning_app/features/folder_system/domain/usecases/watch_children_file_system.dart';
 import 'package:learning_app/features/folder_system/domain/usecases/get_file.dart';
 import 'package:learning_app/features/folder_system/domain/usecases/save_file.dart';
 import 'package:learning_app/features/folder_system/domain/usecases/watch_file.dart';
-import 'package:learning_app/features/folder_system/presentation/subjects/bloc/file_bloc.dart';
+import 'package:learning_app/features/folder_system/presentation/subjects/bloc/folder_bloc.dart';
 import 'package:learning_app/features/subject_page/presentation/bloc/subject_bloc.dart';
 import 'package:learning_app/features/home/presentation/bloc/home_bloc.dart';
 
@@ -35,10 +36,11 @@ void features() {
     ),
   );
   sl.registerFactoryParam(
-    (subjectId, _) => FileBloc(
+    (subjectId, _) => FolderBloc(
       subjectId: subjectId as String,
       watchChildren: sl(),
       watchFile: sl(),
+      moveFileUseCase: sl(),
     ),
   );
   sl.registerFactoryParam(
@@ -57,6 +59,7 @@ void features() {
   sl.registerLazySingleton(() => WatchFile(repository: sl()));
   sl.registerLazySingleton(() => CreateFolder(repository: sl()));
   sl.registerLazySingleton(() => CreateCard(repository: sl()));
+  sl.registerLazySingleton(() => MoveFile(repository: sl()));
 
   // Repository
   sl.registerLazySingleton<FileSystemRepository>(
