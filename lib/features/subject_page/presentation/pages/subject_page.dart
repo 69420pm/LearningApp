@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:learning_app/features/folder_system/presentation/subjects/bloc/subject_bloc.dart';
+import 'package:learning_app/features/subject_page/presentation/bloc/subject_bloc.dart';
 import 'package:learning_app/features/folder_system/presentation/subjects/widgets/folder_content.dart';
 import 'package:learning_app/injection_container.dart';
 
