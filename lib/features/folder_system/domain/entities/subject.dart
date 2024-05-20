@@ -4,9 +4,13 @@ import 'package:learning_app/features/folder_system/data/models/subject_model.da
 import 'file.dart';
 
 class Subject extends File {
+  @override
   final String id;
+  @override
   final String name;
+  @override
   final DateTime dateCreated;
+  @override
   final DateTime lastChanged;
   final int icon;
   final bool streakRelevant;

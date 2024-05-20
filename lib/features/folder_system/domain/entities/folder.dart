@@ -4,11 +4,15 @@ import 'package:learning_app/features/folder_system/domain/entities/file.dart';
 import 'package:learning_app/features/folder_system/domain/entities/fileSystem.dart';
 
 class Folder extends File implements FileSystem {
+  @override
   final String id;
+  @override
   final String name;
+  @override
   final DateTime dateCreated;
+  @override
   final DateTime lastChanged;
-  Folder({
+  const Folder({
     required this.id,
     required this.name,
     required this.dateCreated,

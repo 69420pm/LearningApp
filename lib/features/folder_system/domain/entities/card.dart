@@ -5,15 +5,19 @@ import 'package:learning_app/features/folder_system/domain/entities/fileSystem.d
 import 'file.dart';
 
 class Card extends File implements FileSystem {
+  @override
   final String id;
+  @override
   final String name;
+  @override
   final DateTime dateCreated;
+  @override
   final DateTime lastChanged;
   final int recallScore;
   final DateTime dateToReview;
   final bool typeAnswer;
   final bool askCardsBothSided;
-  Card({
+  const Card({
     required this.id,
     required this.name,
     required this.dateCreated,

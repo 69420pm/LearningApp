@@ -2,9 +2,13 @@ import 'package:learning_app/features/folder_system/data/models/class_test_model
 import 'package:learning_app/features/folder_system/domain/entities/file.dart';
 
 class ClassTest extends File {
+  @override
   final String id;
+  @override
   final String name;
+  @override
   final DateTime dateCreated;
+  @override
   final DateTime lastChanged;
   final DateTime date;
   final List<String> folderIds;

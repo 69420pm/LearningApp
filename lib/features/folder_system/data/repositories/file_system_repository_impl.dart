@@ -29,9 +29,12 @@ class FileSystemRepositoryImpl implements FileSystemRepository {
       try {
         return right(await saveFunction(id));
       } on FileNotFoundException {
-        return left(FileNotFoundFailure(
+        return left(
+          FileNotFoundFailure(
             errorMessage:
-                "for get file: ${saveFunction.toString()} with id: $id was a file not found failure thrown"));
+                "for get file: ${saveFunction.toString()} with id: $id was a file not found failure thrown",
+          ),
+        );
       }
     }
 
@@ -61,9 +64,12 @@ class FileSystemRepositoryImpl implements FileSystemRepository {
       try {
         return right(await deleteFunction(id));
       } on FileNotFoundException {
-        return left(FileNotFoundFailure(
+        return left(
+          FileNotFoundFailure(
             errorMessage:
-                "for delete file: ${deleteFunction.toString()} with id: $id was a file not found failure thrown"));
+                "for delete file: ${deleteFunction.toString()} with id: $id was a file not found failure thrown",
+          ),
+        );
       }
     }
 
@@ -81,9 +87,12 @@ class FileSystemRepositoryImpl implements FileSystemRepository {
         case FileType.classTest:
           return delete(lds.deleteClassTest, id);
         default:
-          return left(FileNotFoundFailure(
+          return left(
+            FileNotFoundFailure(
               errorMessage:
-                  "for id: $id with fileType: $type is deletion to possible"));
+                  "for id: $id with fileType: $type is deletion to possible",
+            ),
+          );
       }
     }
 
@@ -128,7 +137,8 @@ class FileSystemRepositoryImpl implements FileSystemRepository {
         );
       } on FileNotFoundException {
         return left(
-            FileNotFoundFailure(errorMessage: "deletion failed for id: $id"));
+          FileNotFoundFailure(errorMessage: "deletion failed for id: $id"),
+        );
       }
     });
   }
@@ -142,16 +152,19 @@ class FileSystemRepositoryImpl implements FileSystemRepository {
       try {
         return right(await saveFunction(file));
       } on FileNotFoundException {
-        return left(FileNotFoundFailure(
+        return left(
+          FileNotFoundFailure(
             errorMessage:
-                "for ${saveFunction.toString()} with parentId: $parentId and file: ${file.toString()} was a file not found failure thrown"));
+                "for ${saveFunction.toString()} with parentId: $parentId and file: ${file.toString()} was a file not found failure thrown",
+          ),
+        );
       }
     }
 
-    final fileType = FileSystemHelper.getTypeFromFile(file, lds);
-    switch (fileType) {
-      case Right(value: final r):
-        switch (r) {
+    final fileTypeEither = FileSystemHelper.getTypeFromFile(file, lds);
+    switch (fileTypeEither) {
+      case Right(value: final fileType):
+        switch (fileType) {
           case FileType.card:
             await save<CardModel>(
               lds.saveCard,
@@ -183,16 +196,53 @@ class FileSystemRepositoryImpl implements FileSystemRepository {
             );
             break;
         }
+        Future<void> saveRelation(
+          Future<List<String>> Function(String) getFunction,
+          Future<void> Function(String, List<String>) saveFunction,
+          String id,
+        ) async {
+          try {
+            final otherChildrenIds = await getFunction(parentId);
+            if (!otherChildrenIds.contains(file.id)) {
+              otherChildrenIds.add(file.id);
+              await saveFunction(parentId, otherChildrenIds);
+            }
+          } on FileNotFoundException {
+            await saveFunction(parentId, [file.id]);
+          }
+        }
+        if (fileType == FileType.classTest) {
+          saveRelation(
+            lds.getClassTestRelation,
+            lds.saveClassTestRelation,
+            file.id,
+          );
+          // try {
+          //   final otherChildrenIds = await lds.getClassTestRelation(parentId);
+          //   if (!otherChildrenIds.contains(file.id)) {
+          //     otherChildrenIds.add(file.id);
+          //     await lds.saveClassTestRelation(parentId, otherChildrenIds);
+          //   }
+          // } on FileNotFoundException {
+          //   await lds.saveClassTestRelation(parentId, [file.id]);
+          // }
+        } else {
+          saveRelation(lds.getRelation, lds.saveRelation, file.id);
+          // try {
+          //   final otherChildrenIds = await lds.getRelation(parentId);
+          //   if (!otherChildrenIds.contains(file.id)) {
+          //     otherChildrenIds.add(file.id);
+          //     await lds.saveRelation(parentId, otherChildrenIds);
+          //   }
+          // } on FileNotFoundException {
+          //   await lds.saveRelation(parentId, [file.id]);
+          // }
+        }
+
       case Left(value: final l):
         return left(l);
     }
-    try {
-      final otherChildrenIds = await lds.getRelation(parentId);
-      otherChildrenIds.add(file.id);
-      await lds.saveRelation(parentId, otherChildrenIds);
-    } on FileNotFoundException {
-      await lds.saveRelation(parentId, [file.id]);
-    }
+
     return right(null);
   }
 
@@ -261,9 +311,12 @@ class FileSystemRepositoryImpl implements FileSystemRepository {
       try {
         return right(watchFunction(id));
       } on FileNotFoundException {
-        return left(FileNotFoundFailure(
+        return left(
+          FileNotFoundFailure(
             errorMessage:
-                "for watching the file ${watchFunction.toString()} with id: $id was a file not found failure thrown"));
+                "for watching the file ${watchFunction.toString()} with id: $id was a file not found failure thrown",
+          ),
+        );
       }
     }
 
@@ -286,7 +339,8 @@ class FileSystemRepositoryImpl implements FileSystemRepository {
 
   @override
   Future<Either<Failure, Stream<List<String>>>> watchChildrenIds(
-      String parentId) async {
+    String parentId,
+  ) async {
     final stream = BehaviorSubject<List<String>>();
     try {
       final startChildrenIds = await lds.getRelation(parentId);
@@ -298,9 +352,12 @@ class FileSystemRepositoryImpl implements FileSystemRepository {
       });
       return right(stream.stream);
     } on FileNotFoundException {
-      return left(FileNotFoundFailure(
+      return left(
+        FileNotFoundFailure(
           errorMessage:
-              "the watchRelation or getRelation for parentId: $parentId threw an error"));
+              "the watchRelation or getRelation for parentId: $parentId threw an error",
+        ),
+      );
     }
   }
 }

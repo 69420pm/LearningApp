@@ -67,6 +67,7 @@ void features() {
       subjectBox: sl(instanceName: "subjectBox"),
       classTestBox: sl(instanceName: "classTestBox"),
       relationBox: sl(instanceName: "relationsBox"),
+      classTestRelationBox: sl(instanceName: "classTestRelationsBox"),
     ),
   );
 }
@@ -81,10 +82,14 @@ Future<void> external() async {
   final subjectBox = await Hive.openBox<String>("subjectBox");
   final classTestBox = await Hive.openBox<String>("classTestBox");
   final relationBox = await Hive.openBox<List<String>>("relationsBox");
+  final classTestRelationBox =
+      await Hive.openBox<List<String>>("classTestRelationBox");
 
   sl.registerLazySingleton(() => cardBox, instanceName: "cardBox");
   sl.registerLazySingleton(() => folderBox, instanceName: "folderBox");
   sl.registerLazySingleton(() => subjectBox, instanceName: "subjectBox");
   sl.registerLazySingleton(() => classTestBox, instanceName: "classTestBox");
   sl.registerLazySingleton(() => relationBox, instanceName: "relationsBox");
+  sl.registerLazySingleton(() => classTestRelationBox,
+      instanceName: "classTestRelationsBox");
 }
