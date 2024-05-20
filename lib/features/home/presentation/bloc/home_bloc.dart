@@ -2,11 +2,11 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:learning_app_clone/core/streams/stream_events.dart';
-import 'package:learning_app_clone/features/folder_system/domain/entities/file.dart';
-import 'package:learning_app_clone/features/folder_system/domain/usecases/create_subject.dart';
-import 'package:learning_app_clone/features/folder_system/domain/usecases/watch_children_file_system.dart';
-import 'package:learning_app_clone/features/folder_system/domain/usecases/watch_file.dart';
+import 'package:learning_app/core/streams/stream_events.dart';
+import 'package:learning_app/features/folder_system/domain/entities/file.dart';
+import 'package:learning_app/features/folder_system/domain/usecases/create_subject.dart';
+import 'package:learning_app/features/folder_system/domain/usecases/watch_children_file_system.dart';
+import 'package:learning_app/features/folder_system/domain/usecases/watch_file.dart';
 
 part 'home_event.dart';
 part 'home_state.dart';
@@ -35,9 +35,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           stream,
           onData: (data) {
             data.forEach(
-              (element) async {
-                if (!subscribedStreams.keys.contains(element)) {
-                  await subscribeWatchFile(element);
+              (subjectId) async {
+                if (!subscribedStreams.keys.contains(subjectId)) {
+                  final watchFileEither = await watchFile(subjectId);
+                  switch (watchFileEither) {
+                    case Right(value: final stream):
+                      subscribedStreams[subjectId] = stream;
+                    case Left(value: final failure):
+                      emit(HomeError(errorMessage: failure.errorMessage));
+                  }
                 }
               },
             );
@@ -45,8 +51,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           },
           // onError: (data) => HomeError(),
         );
-      case (Left()):
-        emit(HomeError());
+      case (Left(value: final failure)):
+        emit(HomeError(errorMessage: failure.errorMessage));
     }
   }
 
@@ -55,14 +61,5 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     Emitter<HomeState> emit,
   ) {
     createSubject(CreateSubjectParams(name: event.name, icon: 1));
-  }
-
-  Future<void> subscribeWatchFile(String subjectId) async {
-    final watchFileEither = await watchFile(subjectId);
-    switch (watchFileEither) {
-      case Right(value: final stream):
-        subscribedStreams[subjectId] = stream;
-      case Left():
-    }
   }
 }

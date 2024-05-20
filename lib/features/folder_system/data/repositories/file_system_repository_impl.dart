@@ -1,17 +1,17 @@
 import 'dart:async';
 
 import 'package:fpdart/src/either.dart';
-import 'package:learning_app_clone/core/errors/exceptions/exceptions.dart';
-import 'package:learning_app_clone/core/errors/failures/failure.dart';
-import 'package:learning_app_clone/core/streams/stream_events.dart';
-import 'package:learning_app_clone/features/folder_system/data/datasources/file_system_local_data_source.dart';
-import 'package:learning_app_clone/features/folder_system/data/models/card_model.dart';
-import 'package:learning_app_clone/features/folder_system/data/models/class_test_model.dart';
-import 'package:learning_app_clone/features/folder_system/data/models/folder_model.dart';
-import 'package:learning_app_clone/features/folder_system/data/models/subject_model.dart';
-import 'package:learning_app_clone/features/folder_system/domain/entities/file.dart';
-import 'package:learning_app_clone/features/folder_system/domain/repositories/file_system_repository.dart';
-import 'package:learning_app_clone/features/folder_system/domain/helper/file_system_helper.dart';
+import 'package:learning_app/core/errors/exceptions/exceptions.dart';
+import 'package:learning_app/core/errors/failures/failure.dart';
+import 'package:learning_app/core/streams/stream_events.dart';
+import 'package:learning_app/features/folder_system/data/datasources/file_system_local_data_source.dart';
+import 'package:learning_app/features/folder_system/data/models/card_model.dart';
+import 'package:learning_app/features/folder_system/data/models/class_test_model.dart';
+import 'package:learning_app/features/folder_system/data/models/folder_model.dart';
+import 'package:learning_app/features/folder_system/data/models/subject_model.dart';
+import 'package:learning_app/features/folder_system/domain/entities/file.dart';
+import 'package:learning_app/features/folder_system/domain/repositories/file_system_repository.dart';
+import 'package:learning_app/features/folder_system/domain/helper/file_system_helper.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:rxdart/subjects.dart';
 

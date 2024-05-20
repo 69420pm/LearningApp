@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:learning_app_clone/core/app_router.dart';
-import 'package:learning_app_clone/core/theme/color_schemes.dart';
+import 'package:learning_app/core/app_router.dart';
+import 'package:learning_app/core/theme/color_schemes.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'injection_container.dart' as di;

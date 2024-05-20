@@ -1,5 +1,5 @@
-import 'package:learning_app_clone/features/folder_system/data/models/class_test_model.dart';
-import 'package:learning_app_clone/features/folder_system/domain/entities/file.dart';
+import 'package:learning_app/features/folder_system/data/models/class_test_model.dart';
+import 'package:learning_app/features/folder_system/domain/entities/file.dart';
 
 class ClassTest extends File {
   final String id;

@@ -1,7 +1,7 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:learning_app_clone/core/errors/failures/failure.dart';
-import 'package:learning_app_clone/core/streams/stream_events.dart';
-import 'package:learning_app_clone/features/folder_system/domain/entities/file.dart';
+import 'package:learning_app/core/errors/failures/failure.dart';
+import 'package:learning_app/core/streams/stream_events.dart';
+import 'package:learning_app/features/folder_system/domain/entities/file.dart';
 
 abstract class FileSystemRepository {
   Future<Either<Failure, void>> saveFile(File file, String parentId);

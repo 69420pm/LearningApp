@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:learning_app_clone/features/home/presentation/bloc/home_bloc.dart';
+import 'package:learning_app/features/home/presentation/bloc/home_bloc.dart';
 
-class SubjectListTile extends StatelessWidget {
-  const SubjectListTile({super.key, required this.subjectId});
+class HomeSubjectListTile extends StatelessWidget {
+  const HomeSubjectListTile({super.key, required this.subjectId});
   final String subjectId;
   @override
   Widget build(BuildContext context) {

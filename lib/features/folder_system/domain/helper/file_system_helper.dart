@@ -1,12 +1,12 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:learning_app_clone/core/errors/exceptions/exceptions.dart';
-import 'package:learning_app_clone/core/errors/failures/failure.dart';
-import 'package:learning_app_clone/features/folder_system/data/datasources/file_system_local_data_source.dart';
-import 'package:learning_app_clone/features/folder_system/domain/entities/card.dart';
-import 'package:learning_app_clone/features/folder_system/domain/entities/class_test.dart';
-import 'package:learning_app_clone/features/folder_system/domain/entities/file.dart';
-import 'package:learning_app_clone/features/folder_system/domain/entities/folder.dart';
-import 'package:learning_app_clone/features/folder_system/domain/entities/subject.dart';
+import 'package:learning_app/core/errors/exceptions/exceptions.dart';
+import 'package:learning_app/core/errors/failures/failure.dart';
+import 'package:learning_app/features/folder_system/data/datasources/file_system_local_data_source.dart';
+import 'package:learning_app/features/folder_system/domain/entities/card.dart';
+import 'package:learning_app/features/folder_system/domain/entities/class_test.dart';
+import 'package:learning_app/features/folder_system/domain/entities/file.dart';
+import 'package:learning_app/features/folder_system/domain/entities/folder.dart';
+import 'package:learning_app/features/folder_system/domain/entities/subject.dart';
 
 enum FileType { card, folder, subject, classTest }
 

@@ -1,11 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:hive/hive.dart';
-import 'package:learning_app_clone/core/errors/exceptions/exceptions.dart';
-import 'package:learning_app_clone/core/streams/stream_events.dart';
-import 'package:learning_app_clone/features/folder_system/data/models/card_model.dart';
-import 'package:learning_app_clone/features/folder_system/data/models/class_test_model.dart';
-import 'package:learning_app_clone/features/folder_system/data/models/folder_model.dart';
-import 'package:learning_app_clone/features/folder_system/data/models/subject_model.dart';
+import 'package:learning_app/core/errors/exceptions/exceptions.dart';
+import 'package:learning_app/core/streams/stream_events.dart';
+import 'package:learning_app/features/folder_system/data/models/card_model.dart';
+import 'package:learning_app/features/folder_system/data/models/class_test_model.dart';
+import 'package:learning_app/features/folder_system/data/models/folder_model.dart';
+import 'package:learning_app/features/folder_system/data/models/subject_model.dart';
 
 typedef Relation = List<String>;
 

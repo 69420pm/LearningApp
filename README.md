@@ -1,4 +1,4 @@
-# learning_app_clone
+# learning_app
 
 A new Flutter project.
 

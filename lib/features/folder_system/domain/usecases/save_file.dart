@@ -2,10 +2,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:fpdart/src/either.dart';
 
-import 'package:learning_app_clone/core/errors/failures/failure.dart';
-import 'package:learning_app_clone/core/usecases/usecase.dart';
-import 'package:learning_app_clone/features/folder_system/domain/entities/file.dart';
-import 'package:learning_app_clone/features/folder_system/domain/repositories/file_system_repository.dart';
+import 'package:learning_app/core/errors/failures/failure.dart';
+import 'package:learning_app/core/usecases/usecase.dart';
+import 'package:learning_app/features/folder_system/domain/entities/file.dart';
+import 'package:learning_app/features/folder_system/domain/repositories/file_system_repository.dart';
 
 class SaveFile implements UseCase<void, SaveFileParams> {
   FileSystemRepository repository;

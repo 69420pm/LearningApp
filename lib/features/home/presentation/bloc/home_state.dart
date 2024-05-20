@@ -9,7 +9,11 @@ sealed class HomeState extends Equatable {
 
 final class HomeLoading extends HomeState {}
 
-final class HomeError extends HomeState {}
+final class HomeError extends HomeState {
+  final String errorMessage;
+
+  HomeError({required this.errorMessage});
+}
 
 final class HomeSuccess extends HomeState {
   final List<String> subjectIds;
