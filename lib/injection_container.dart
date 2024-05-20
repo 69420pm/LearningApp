@@ -4,6 +4,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:learning_app/features/folder_system/data/datasources/file_system_local_data_source.dart';
 import 'package:learning_app/features/folder_system/data/repositories/file_system_repository_impl.dart';
 import 'package:learning_app/features/folder_system/domain/repositories/file_system_repository.dart';
+import 'package:learning_app/features/folder_system/domain/usecases/create_card.dart';
 import 'package:learning_app/features/folder_system/domain/usecases/create_folder.dart';
 import 'package:learning_app/features/folder_system/domain/usecases/create_subject.dart';
 import 'package:learning_app/features/folder_system/domain/usecases/delete_file.dart';
@@ -41,8 +42,10 @@ void features() {
     ),
   );
   sl.registerFactoryParam(
-    (subjectId, _) =>
-        SubjectBloc(createFolderUseCase: sl(), subjectId: subjectId as String),
+    (subjectId, _) => SubjectBloc(
+        createFolderUseCase: sl(),
+        cerateCardUseCase: sl(),
+        subjectId: subjectId as String),
   );
 
   // Use cases
@@ -53,6 +56,7 @@ void features() {
   sl.registerLazySingleton(() => CreateSubject(repository: sl()));
   sl.registerLazySingleton(() => WatchFile(repository: sl()));
   sl.registerLazySingleton(() => CreateFolder(repository: sl()));
+  sl.registerLazySingleton(() => CreateCard(repository: sl()));
 
   // Repository
   sl.registerLazySingleton<FileSystemRepository>(

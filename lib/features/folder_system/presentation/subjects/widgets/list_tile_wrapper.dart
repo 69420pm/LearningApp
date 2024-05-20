@@ -18,23 +18,23 @@ class ListTileWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: context.read<FileBloc>().subscribedStreams[id],
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            if (!snapshot.data!.deleted && snapshot.data!.value is Folder) {
-              return FolderListTile(
-                folder: snapshot.data!.value as Folder,
-              );
-            } else if (!snapshot.data!.deleted &&
-                snapshot.data!.value is Card) {
-              return CardListTile(
-                card: snapshot.data!.value as Card,
-              );
-            }
+      stream: context.read<FileBloc>().subscribedStreams[id],
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          if (!snapshot.data!.deleted && snapshot.data!.value is Folder) {
+            return FolderListTile(
+              folder: snapshot.data!.value as Folder,
+            );
+          } else if (!snapshot.data!.deleted && snapshot.data!.value is Card) {
+            return CardListTile(
+              card: snapshot.data!.value as Card,
+            );
           }
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        });
+        }
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
   }
 }

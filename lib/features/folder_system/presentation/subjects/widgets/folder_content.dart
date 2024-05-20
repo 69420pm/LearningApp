@@ -19,7 +19,7 @@ class FolderContent extends StatelessWidget {
         return sl<FileBloc>(param1: parentId)
           ..add(FileWatchChildrenIds(parentId: parentId));
       },
-      child: _FolderContent(),
+      child: const _FolderContent(),
     );
   }
 }
@@ -39,18 +39,14 @@ class _FolderContent extends StatelessWidget {
           case FileError():
             return Text(state.errorMessage);
           case FileSuccess():
-            return CustomScrollView(
+            return ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              slivers: [
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    childCount: state.ids.length,
-                    (context, index) {
-                      return ListTileWrapper(id: state.ids[index]);
-                    },
-                  ),
-                ),
-              ],
+              itemCount: state.ids.length,
+              itemBuilder: (context, index) {
+                return ListTileWrapper(id: state.ids[index]);
+                // ..isHighlight = index.isOdd;
+              },
             );
         }
       },
