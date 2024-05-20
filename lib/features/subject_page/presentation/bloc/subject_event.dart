@@ -12,3 +12,7 @@ class SubjectCreateFolder extends SubjectEvent {
 
   SubjectCreateFolder({required this.name});
 }
+
+class SubjectCreateCard extends SubjectEvent {
+  SubjectCreateCard();
+}
