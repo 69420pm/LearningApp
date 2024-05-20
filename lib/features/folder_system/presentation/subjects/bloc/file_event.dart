@@ -14,10 +14,3 @@ class FileWatchChildrenIds extends FileEvent {
     required this.parentId,
   });
 }
-
-class FileCreateFolder extends FileEvent {
-  final String name;
-  FileCreateFolder({
-    required this.name,
-  });
-}

@@ -5,11 +5,9 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:learning_app/core/streams/stream_events.dart';
 import 'package:learning_app/features/folder_system/domain/entities/file.dart';
-import 'package:learning_app/features/folder_system/domain/usecases/create_folder.dart';
 
 import 'package:learning_app/features/folder_system/domain/usecases/watch_children_file_system.dart';
 import 'package:learning_app/features/folder_system/domain/usecases/watch_file.dart';
-import 'package:learning_app/features/home/presentation/bloc/home_bloc.dart';
 
 part 'file_event.dart';
 part 'file_state.dart';
@@ -18,16 +16,13 @@ class FileBloc extends Bloc<FileEvent, FileState> {
   final String subjectId;
   WatchChildrenFileSystem watchChildren;
   WatchFile watchFile;
-  CreateFolder createFolderUseCase;
   FileBloc({
     required this.subjectId,
     required this.watchChildren,
     required this.watchFile,
-    required this.createFolderUseCase,
   }) : super(FileLoading()) {
     on<FileEvent>((event, emit) {});
     on<FileWatchChildrenIds>(watchChildrenIds);
-    on<FileCreateFolder>(createFolder);
   }
 
   Map<String, Stream<StreamEvent<File?>>> subscribedStreams = {};
@@ -63,14 +58,5 @@ class FileBloc extends Bloc<FileEvent, FileState> {
         },
       );
     });
-  }
-
-  FutureOr<void> createFolder(
-    FileCreateFolder event,
-    Emitter<FileState> emit,
-  ) {
-    createFolderUseCase(
-      CreateFolderParams(name: event.name, parentId: subjectId),
-    );
   }
 }

@@ -12,6 +12,7 @@ import 'package:learning_app/features/folder_system/domain/usecases/get_file.dar
 import 'package:learning_app/features/folder_system/domain/usecases/save_file.dart';
 import 'package:learning_app/features/folder_system/domain/usecases/watch_file.dart';
 import 'package:learning_app/features/folder_system/presentation/subjects/bloc/file_bloc.dart';
+import 'package:learning_app/features/folder_system/presentation/subjects/bloc/subject_bloc.dart';
 import 'package:learning_app/features/home/presentation/bloc/home_bloc.dart';
 
 final sl = GetIt.instance;
@@ -37,8 +38,11 @@ void features() {
       subjectId: subjectId as String,
       watchChildren: sl(),
       watchFile: sl(),
-      createFolderUseCase: sl(),
     ),
+  );
+  sl.registerFactoryParam(
+    (subjectId, _) =>
+        SubjectBloc(createFolderUseCase: sl(), subjectId: subjectId as String),
   );
 
   // Use cases
