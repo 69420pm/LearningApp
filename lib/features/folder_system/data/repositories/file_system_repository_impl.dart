@@ -217,26 +217,8 @@ class FileSystemRepositoryImpl implements FileSystemRepository {
             lds.saveClassTestRelation,
             file.id,
           );
-          // try {
-          //   final otherChildrenIds = await lds.getClassTestRelation(parentId);
-          //   if (!otherChildrenIds.contains(file.id)) {
-          //     otherChildrenIds.add(file.id);
-          //     await lds.saveClassTestRelation(parentId, otherChildrenIds);
-          //   }
-          // } on FileNotFoundException {
-          //   await lds.saveClassTestRelation(parentId, [file.id]);
-          // }
         } else {
           saveRelation(lds.getRelation, lds.saveRelation, file.id);
-          // try {
-          //   final otherChildrenIds = await lds.getRelation(parentId);
-          //   if (!otherChildrenIds.contains(file.id)) {
-          //     otherChildrenIds.add(file.id);
-          //     await lds.saveRelation(parentId, otherChildrenIds);
-          //   }
-          // } on FileNotFoundException {
-          //   await lds.saveRelation(parentId, [file.id]);
-          // }
         }
 
       case Left(value: final l):

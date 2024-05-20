@@ -178,6 +178,8 @@ class FileSystemHive implements FileSystemLocalDataSource {
     return subjectBox.put(subjectModel.id, subjectModel.toJson());
   }
 
+  // Stream<StreamEvent<T>> T
+
   @override
   Stream<StreamEvent<CardModel?>> watchCard(String id) {
     try {
@@ -196,8 +198,10 @@ class FileSystemHive implements FileSystemLocalDataSource {
   Stream<StreamEvent<FolderModel?>> watchFolder(String id) {
     try {
       final boxEvent = folderBox.watch(key: id);
-      final streamEvent = boxEvent.map((event) => StreamEvent<FolderModel>(
-          deleted: event.deleted, value: event.value, id: event.key));
+      final streamEvent = boxEvent.map((event) => StreamEvent<FolderModel?>(
+          deleted: event.deleted,
+          value: event.value != null ? FolderModel.fromJson(event.value) : null,
+          id: event.key));
       return streamEvent;
     } on HiveError {
       throw FileNotFoundException();
@@ -208,8 +212,11 @@ class FileSystemHive implements FileSystemLocalDataSource {
   Stream<StreamEvent<SubjectModel?>> watchSubject(String? id) {
     try {
       final boxEvent = subjectBox.watch(key: id);
-      final streamEvent = boxEvent.map((event) => StreamEvent<SubjectModel>(
-          deleted: event.deleted, value: event.value, id: event.key));
+      final streamEvent = boxEvent.map((event) => StreamEvent<SubjectModel?>(
+          deleted: event.deleted,
+          value:
+              event.value != null ? SubjectModel.fromJson(event.value) : null,
+          id: event.key));
       return streamEvent;
     } on HiveError {
       throw FileNotFoundException();
@@ -220,8 +227,11 @@ class FileSystemHive implements FileSystemLocalDataSource {
   Stream<StreamEvent<ClassTestModel?>> watchClassTest(String? id) {
     try {
       final boxEvent = classTestBox.watch(key: id);
-      final streamEvent = boxEvent.map((event) => StreamEvent<ClassTestModel>(
-          deleted: event.deleted, value: event.value, id: event.key));
+      final streamEvent = boxEvent.map((event) => StreamEvent<ClassTestModel?>(
+          deleted: event.deleted,
+          value:
+              event.value != null ? ClassTestModel.fromJson(event.value) : null,
+          id: event.key));
       return streamEvent;
     } on HiveError {
       throw FileNotFoundException();

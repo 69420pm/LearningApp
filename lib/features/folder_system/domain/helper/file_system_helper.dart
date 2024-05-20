@@ -55,7 +55,8 @@ abstract class FileSystemHelper {
       return right("/");
     }
     List<String> potentialParentIds = lds.subjectKeys + lds.folderKeys;
-    //! could maybe create a bug, when changing list while iterating over it
+    //! recursion
+    return _getParentIdRec(potentialParentIds, lds, id);
     for (String parentId in potentialParentIds) {
       try {
         final valueIds = await lds.getRelation(parentId);
@@ -77,5 +78,31 @@ abstract class FileSystemHelper {
     return left(
       ParentIdNotFoundFailure(errorMessage: "parent id for $id not found"),
     );
+  }
+
+  static Future<Either<Failure, String>> _getParentIdRec(
+      List<String> potentialParentIds,
+      FileSystemLocalDataSource lds,
+      String id) async {
+    List<String> newPotentialParentIds = [];
+    for (final parentId in potentialParentIds) {
+      try {
+        final valueIds = await lds.getRelation(parentId);
+        for (var valueId in valueIds) {
+          if (id == valueId) {
+            return right(parentId);
+          } else if (lds.folderKeys.contains(valueId)) {
+            newPotentialParentIds.add(valueId);
+          }
+        }
+      } on FileNotFoundException {
+        return left(
+          FileNotFoundFailure(
+            errorMessage: "relation not saved for $parentId",
+          ),
+        );
+      }
+    }
+    return _getParentIdRec(newPotentialParentIds, lds, id);
   }
 }
