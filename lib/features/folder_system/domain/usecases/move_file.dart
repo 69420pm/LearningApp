@@ -14,11 +14,16 @@ class MoveFile implements UseCase<void, MoveFileParams> {
   });
   @override
   Future<Either<Failure, void>> call(MoveFileParams params) async {
-    var getEither = await repository.getFile(params.fileUID);
+    final getEither = await repository.getFile(params.fileUID);
+    return getEither.match((failure) => left(failure), (file) async {
+      return (await repository.deleteFile(params.fileUID))
+          .match((failure) => left(failure), (r) {
+        return repository.saveFile(file, params.newParentId);
+      });
+    });
+    // var delete = await repository.deleteFile(params.fileUID);
 
-    var delete = await repository.deleteFile(params.fileUID);
-
-    return repository.saveFile((getEither as Right).value, params.newParentId);
+    // return repository.saveFile((getEither as Right).value, params.newParentId);
   }
 }
 

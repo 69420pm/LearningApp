@@ -182,8 +182,10 @@ class FileSystemHive implements FileSystemLocalDataSource {
   Stream<StreamEvent<CardModel?>> watchCard(String id) {
     try {
       final boxEvent = cardBox.watch(key: id);
-      final streamEvent = boxEvent.map((event) => StreamEvent<CardModel>(
-          deleted: event.deleted, value: event.value, id: event.key));
+      final streamEvent = boxEvent.map((event) => StreamEvent<CardModel?>(
+          deleted: event.deleted,
+          value: event.value != null ? CardModel.fromJson(event.value) : null,
+          id: event.key));
       return streamEvent;
     } on HiveError {
       throw FileNotFoundException();

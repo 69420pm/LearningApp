@@ -20,7 +20,7 @@ class FolderListTile extends StatelessWidget implements FileListTile {
     return DragTarget(
       onAcceptWithDetails: (DragTargetDetails<String> details) => context
           .read<FolderBloc>()
-          .add(FolderMoveFile(parentId: folder.id, fileUID: details.data)),
+          .add(FolderMoveFile(parentId: folder.id, fileId: details.data)),
       builder: (BuildContext context, List<Object?> candidateData,
               List<dynamic> rejectedData) =>
           UIExpansionTile(

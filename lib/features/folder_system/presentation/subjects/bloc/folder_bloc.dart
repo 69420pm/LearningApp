@@ -67,7 +67,7 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
   Future<FutureOr<void>> moveFile(
       FolderMoveFile event, Emitter<FolderState> emit) async {
     final moveEither = await moveFileUseCase(
-        MoveFileParams(fileUID: event.fileUID, newParentId: event.parentId));
+        MoveFileParams(fileUID: event.fileId, newParentId: event.parentId));
 
     moveEither.match(
       (failure) => emit(FolderError(errorMessage: failure.errorMessage)),

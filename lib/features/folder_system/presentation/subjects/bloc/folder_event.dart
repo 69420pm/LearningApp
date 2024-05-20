@@ -17,9 +17,9 @@ class FolderWatchChildrenIds extends FolderEvent {
 
 class FolderMoveFile extends FolderEvent {
   final String parentId;
-  final String fileUID;
+  final String fileId;
   const FolderMoveFile({
     required this.parentId,
-    required this.fileUID,
+    required this.fileId,
   });
 }
