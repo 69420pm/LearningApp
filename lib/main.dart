@@ -23,10 +23,14 @@ class MyApp extends StatelessWidget {
       //Theme
       theme: ThemeData(
         colorScheme: lightColorScheme,
+        // only to remove border for expansion tile
+        dividerColor: Colors.transparent,
         useMaterial3: true,
       ),
       darkTheme: ThemeData(
         colorScheme: darkColorScheme,
+        // only to remove border for expansion tile
+        dividerColor: Colors.transparent,
         useMaterial3: true,
       ),
       //dark for development, else ThemeMode.system

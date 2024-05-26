@@ -3,10 +3,10 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:learning_app/core/streams/stream_events.dart';
-import 'package:learning_app/features/folder_system/domain/entities/file.dart';
-import 'package:learning_app/features/folder_system/domain/usecases/create_subject.dart';
-import 'package:learning_app/features/folder_system/domain/usecases/watch_children_file_system.dart';
-import 'package:learning_app/features/folder_system/domain/usecases/watch_file.dart';
+import 'package:learning_app/features/file_system/domain/entities/file.dart';
+import 'package:learning_app/features/file_system/domain/usecases/create_subject.dart';
+import 'package:learning_app/features/file_system/domain/usecases/watch_children_file_system.dart';
+import 'package:learning_app/features/file_system/domain/usecases/watch_file.dart';
 
 part 'home_event.dart';
 part 'home_state.dart';
