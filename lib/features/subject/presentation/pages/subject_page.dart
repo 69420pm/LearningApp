@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_icons.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/buttons/ui_icon_button.dart';
+import 'package:learning_app/features/subject/presentation/bloc/cubit/subject_selection_cubit.dart';
 
 import 'package:learning_app/features/subject/presentation/bloc/subject_bloc.dart';
 import 'package:learning_app/features/file_system/presentation/subjects/widgets/folder_content.dart';
+import 'package:learning_app/features/subject/presentation/widgets/subject_app_bar.dart';
 import 'package:learning_app/injection_container.dart';
 
 class SubjectPage extends StatelessWidget {
@@ -15,8 +17,15 @@ class SubjectPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => sl<SubjectBloc>(param1: subjectId),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => sl<SubjectBloc>(param1: subjectId),
+        ),
+        BlocProvider(
+          create: (context) => sl<SubjectSelectionCubit>(),
+        ),
+      ],
       child: SubjectView(subjectId: subjectId),
     );
   }
@@ -31,7 +40,7 @@ class SubjectView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: SubjectAppBar(),
       floatingActionButton: FloatingActionButton(
         onPressed: () => context
             .read<SubjectBloc>()

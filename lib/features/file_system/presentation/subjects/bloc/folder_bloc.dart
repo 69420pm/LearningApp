@@ -14,12 +14,12 @@ part 'folder_event.dart';
 part 'folder_state.dart';
 
 class FolderBloc extends Bloc<FolderEvent, FolderState> {
-  final String subjectId;
+  final String parentId;
   MoveFile moveFileUseCase;
   WatchChildrenFileSystem watchChildren;
   WatchFile watchFile;
   FolderBloc({
-    required this.subjectId,
+    required this.parentId,
     required this.moveFileUseCase,
     required this.watchChildren,
     required this.watchFile,

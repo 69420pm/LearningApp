@@ -14,6 +14,7 @@ import 'package:learning_app/features/file_system/domain/usecases/get_file.dart'
 import 'package:learning_app/features/file_system/domain/usecases/save_file.dart';
 import 'package:learning_app/features/file_system/domain/usecases/watch_file.dart';
 import 'package:learning_app/features/file_system/presentation/subjects/bloc/folder_bloc.dart';
+import 'package:learning_app/features/subject/presentation/bloc/cubit/subject_selection_cubit.dart';
 import 'package:learning_app/features/subject/presentation/bloc/subject_bloc.dart';
 import 'package:learning_app/features/home/presentation/bloc/home_bloc.dart';
 
@@ -36,8 +37,8 @@ void features() {
     ),
   );
   sl.registerFactoryParam(
-    (subjectId, _) => FolderBloc(
-      subjectId: subjectId as String,
+    (parentId, _) => FolderBloc(
+      parentId: parentId as String,
       watchChildren: sl(),
       watchFile: sl(),
       moveFileUseCase: sl(),
@@ -49,7 +50,7 @@ void features() {
         cerateCardUseCase: sl(),
         subjectId: subjectId as String),
   );
-
+  sl.registerFactory(() => SubjectSelectionCubit());
   // Use cases
   sl.registerLazySingleton(() => WatchChildrenFileSystem(repository: sl()));
   sl.registerLazySingleton(() => GetFile(repository: sl()));

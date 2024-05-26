@@ -6,13 +6,11 @@ import 'package:learning_app/features/file_system/presentation/subjects/interfac
 
 class CardListTile extends StatelessWidget implements FileListTile {
   final Card card;
-  const CardListTile({
-    super.key,
-    required this.card,
-  });
+  final void Function() onTap;
+  const CardListTile({super.key, required this.card, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Text(card.name);
+    return InkWell(onTap: onTap, child: Text(card.name));
   }
 }
