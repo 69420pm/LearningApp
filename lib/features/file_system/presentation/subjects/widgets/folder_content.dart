@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:learning_app/features/file_system/presentation/subjects/bloc/folder_bloc.dart';
 import 'package:learning_app/features/file_system/presentation/subjects/widgets/list_tile_wrapper.dart';
+import 'package:learning_app/features/subject/presentation/bloc/cubit/subject_selection_cubit.dart';
 import 'package:learning_app/injection_container.dart';
 
 class FolderContent extends StatelessWidget {
@@ -19,13 +20,16 @@ class FolderContent extends StatelessWidget {
         return sl<FolderBloc>(param1: parentId)
           ..add(FolderWatchChildrenIds(parentId: parentId));
       },
-      child: const _FolderContent(),
+      child: _FolderContent(
+        parentId: parentId,
+      ),
     );
   }
 }
 
 class _FolderContent extends StatelessWidget {
-  const _FolderContent({super.key});
+  const _FolderContent({super.key, required this.parentId});
+  final String parentId;
 
   @override
   Widget build(BuildContext context) {

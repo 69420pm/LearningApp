@@ -7,7 +7,13 @@ sealed class SubjectSelectionState extends Equatable {
   List<Object> get props => [];
 }
 
-final class SubjectSelectionInitial extends SubjectSelectionState {}
+final class SubjectSelectionError extends SubjectSelectionState {
+  final String errorMessage;
+
+  const SubjectSelectionError({required this.errorMessage});
+  @override
+  List<Object> get props => [errorMessage];
+}
 
 final class SubjectSelectionSelectionChanged extends SubjectSelectionState {
   final List<String> selectedIds;

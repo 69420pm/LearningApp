@@ -4,11 +4,13 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:learning_app/features/file_system/data/datasources/file_system_local_data_source.dart';
 import 'package:learning_app/features/file_system/data/repositories/file_system_repository_impl.dart';
 import 'package:learning_app/features/file_system/domain/repositories/file_system_repository.dart';
+import 'package:learning_app/features/file_system/domain/usecases/block_children_selection.dart';
 import 'package:learning_app/features/file_system/domain/usecases/create_card.dart';
 import 'package:learning_app/features/file_system/domain/usecases/create_folder.dart';
 import 'package:learning_app/features/file_system/domain/usecases/create_subject.dart';
 import 'package:learning_app/features/file_system/domain/usecases/delete_file.dart';
 import 'package:learning_app/features/file_system/domain/usecases/move_file.dart';
+import 'package:learning_app/features/file_system/domain/usecases/potentially_select_parent_folder.dart';
 import 'package:learning_app/features/file_system/domain/usecases/watch_children_file_system.dart';
 import 'package:learning_app/features/file_system/domain/usecases/get_file.dart';
 import 'package:learning_app/features/file_system/domain/usecases/save_file.dart';
@@ -46,11 +48,17 @@ void features() {
   );
   sl.registerFactoryParam(
     (subjectId, _) => SubjectBloc(
-        createFolderUseCase: sl(),
-        cerateCardUseCase: sl(),
-        subjectId: subjectId as String),
+      createFolderUseCase: sl(),
+      cerateCardUseCase: sl(),
+      subjectId: subjectId as String,
+    ),
   );
-  sl.registerFactory(() => SubjectSelectionCubit());
+  sl.registerFactory(
+    () => SubjectSelectionCubit(
+      potentiallySelectParentFolder: sl(),
+      blockChildrenSelection: sl(),
+    ),
+  );
   // Use cases
   sl.registerLazySingleton(() => WatchChildrenFileSystem(repository: sl()));
   sl.registerLazySingleton(() => GetFile(repository: sl()));
@@ -61,6 +69,10 @@ void features() {
   sl.registerLazySingleton(() => CreateFolder(repository: sl()));
   sl.registerLazySingleton(() => CreateCard(repository: sl()));
   sl.registerLazySingleton(() => MoveFile(repository: sl()));
+  sl.registerLazySingleton(
+    () => PotentiallySelectParentFolder(repository: sl()),
+  );
+  sl.registerLazySingleton(() => BlockChildrenSelection(repository: sl()));
 
   // Repository
   sl.registerLazySingleton<FileSystemRepository>(
@@ -98,6 +110,8 @@ Future<void> external() async {
   sl.registerLazySingleton(() => subjectBox, instanceName: "subjectBox");
   sl.registerLazySingleton(() => classTestBox, instanceName: "classTestBox");
   sl.registerLazySingleton(() => relationBox, instanceName: "relationsBox");
-  sl.registerLazySingleton(() => classTestRelationBox,
-      instanceName: "classTestRelationsBox");
+  sl.registerLazySingleton(
+    () => classTestRelationBox,
+    instanceName: "classTestRelationsBox",
+  );
 }

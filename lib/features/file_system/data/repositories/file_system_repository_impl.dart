@@ -1,6 +1,10 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 
 import 'package:fpdart/src/either.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:rxdart/subjects.dart';
+
 import 'package:learning_app/core/errors/exceptions/exceptions.dart';
 import 'package:learning_app/core/errors/failures/failure.dart';
 import 'package:learning_app/core/streams/stream_events.dart';
@@ -10,10 +14,8 @@ import 'package:learning_app/features/file_system/data/models/class_test_model.d
 import 'package:learning_app/features/file_system/data/models/folder_model.dart';
 import 'package:learning_app/features/file_system/data/models/subject_model.dart';
 import 'package:learning_app/features/file_system/domain/entities/file.dart';
-import 'package:learning_app/features/file_system/domain/repositories/file_system_repository.dart';
 import 'package:learning_app/features/file_system/domain/helper/file_system_helper.dart';
-import 'package:rxdart/rxdart.dart';
-import 'package:rxdart/subjects.dart';
+import 'package:learning_app/features/file_system/domain/repositories/file_system_repository.dart';
 
 class FileSystemRepositoryImpl implements FileSystemRepository {
   final FileSystemLocalDataSource lds;
@@ -345,24 +347,88 @@ class FileSystemRepositoryImpl implements FileSystemRepository {
 
   @override
   Future<Either<Failure, void>> changeParentId(
-      String fileId, String newParentId) async {
+    String fileId,
+    String newParentId,
+  ) async {
     final parentIdEither = await FileSystemHelper.getParentId(fileId, lds);
     return parentIdEither.match((failure) => left(failure), (parentId) async {
       if (parentId == newParentId) return right(null);
-      final oldValueIds = await lds.getRelation(parentId);
-      // remove fileId from old relation
-      for (String valueId in oldValueIds) {
-        if (valueId == fileId) {
-          oldValueIds.remove(fileId);
-          await lds.saveRelation(parentId, oldValueIds);
-          break;
+      try {
+        final oldValueIds = await lds.getRelation(parentId);
+        // remove fileId from old relation
+        for (String valueId in oldValueIds) {
+          if (valueId == fileId) {
+            oldValueIds.remove(fileId);
+            await lds.saveRelation(parentId, oldValueIds);
+            break;
+          }
         }
+        // add fileId to new [arentid
+        final newValueIds = await lds.getRelation(newParentId);
+        newValueIds.add(fileId);
+        await lds.saveRelation(newParentId, newValueIds);
+      } on FileNotFoundException {
+        return left(
+          FileNotFoundFailure(
+            errorMessage: "file not found while changing parentId of a file",
+          ),
+        );
       }
-      // add fileId to new [arentid
-      final newValueIds = await lds.getRelation(newParentId);
-      newValueIds.add(fileId);
-      await lds.saveRelation(newParentId, newValueIds);
       return right(null);
     });
+  }
+
+  @override
+  Future<Either<Failure, List<String>>> getRelations(String parentId) async {
+    try {
+      return right(await lds.getRelation(parentId));
+    } on FileNotFoundException {
+      return left(FileNotFoundFailure(
+          errorMessage:
+              "while getting relations for $parentId a file not found failure was thrown"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, CheckCompleteChildrenReturns>> checkCompleteChildren(
+      List<String> childrenIds) async {
+    final Map<String, int> childrenCount = {};
+    final List<String> completedParentIds = [];
+    final List<String> childrenToRemove = [];
+    Failure? returnFailure;
+    for (var childId in childrenIds) {
+      final parentIdEither = await FileSystemHelper.getParentId(childId, lds);
+      await parentIdEither.match((failure) async {
+        returnFailure = failure;
+      }, (parentId) async {
+        if (childrenCount[parentId] != null && childrenCount[parentId]! >= 0) {
+          childrenCount[parentId] = (childrenCount[parentId] ?? 0) - 1;
+          if (childrenCount[parentId] == 0) {
+            final typeEither = FileSystemHelper.getTypeFromId(parentId, lds);
+            typeEither.match((l) => returnFailure = l, (r) async {
+              if (r == FileType.folder) {
+                completedParentIds.add(parentId);
+                final childrenIds = await lds.getRelation(parentId);
+                childrenToRemove.addAll(childrenIds);
+              }
+            });
+          }
+        } else {
+          try {
+            childrenCount[parentId] =
+                (await lds.getRelation(parentId)).length - 1;
+          } on FileNotFoundException {
+            returnFailure = FileNotFoundFailure(
+                errorMessage:
+                    "in checkCompleteChildren the relation getting for the parentId $parentId was not successful");
+          }
+        }
+      });
+      if (returnFailure != null) {
+        return left(returnFailure!);
+      }
+    }
+    return right(CheckCompleteChildrenReturns(
+        parentIds: completedParentIds, childrenToRemove: childrenToRemove));
   }
 }
