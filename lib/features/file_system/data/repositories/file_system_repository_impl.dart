@@ -390,11 +390,12 @@ class FileSystemRepositoryImpl implements FileSystemRepository {
   }
 
   @override
-  Future<Either<Failure, CheckCompleteChildrenReturns>> checkCompleteChildren(
+  Future<Either<Failure, Map<String, List<String>>>> checkCompleteChildren(
       List<String> childrenIds) async {
     final Map<String, int> childrenCount = {};
     final List<String> completedParentIds = [];
     final List<String> childrenToRemove = [];
+    final Map<String, List<String>> returnMap = {};
     Failure? returnFailure;
     for (var childId in childrenIds) {
       final parentIdEither = await FileSystemHelper.getParentId(childId, lds);
@@ -409,6 +410,7 @@ class FileSystemRepositoryImpl implements FileSystemRepository {
               if (r == FileType.folder) {
                 completedParentIds.add(parentId);
                 final childrenIds = await lds.getRelation(parentId);
+                returnMap[parentId] = childrenIds;
                 childrenToRemove.addAll(childrenIds);
               }
             });
@@ -428,7 +430,8 @@ class FileSystemRepositoryImpl implements FileSystemRepository {
         return left(returnFailure!);
       }
     }
-    return right(CheckCompleteChildrenReturns(
-        parentIds: completedParentIds, childrenToRemove: childrenToRemove));
+    // return right(CheckCompleteChildrenReturns(
+    //     parentIds: completedParentIds, childrenToRemove: childrenToRemove));
+    return right(returnMap);
   }
 }

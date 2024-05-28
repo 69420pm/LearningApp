@@ -12,7 +12,7 @@ abstract class FileSystemRepository {
 
   /// gets a list of children ids as input and tries to find the highest
   ///  parent(folder) id/s for which all children ids were given
-  Future<Either<Failure, CheckCompleteChildrenReturns>> checkCompleteChildren(
+  Future<Either<Failure, Map<String, List<String>>>> checkCompleteChildren(
       List<String> childrenIds);
 
   Future<Either<Failure, void>> changeParentId(
