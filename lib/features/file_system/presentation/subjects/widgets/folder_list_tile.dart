@@ -14,12 +14,10 @@ import 'package:learning_app/features/subject/presentation/bloc/cubit/subject_se
 class FolderListTile extends StatelessWidget implements FileListTile {
   final Folder folder;
   final void Function() onTap;
-  final bool selected;
   FolderListTile({
     super.key,
     required this.folder,
     required this.onTap,
-    required this.selected,
   });
   @override
   Widget build(BuildContext context) {

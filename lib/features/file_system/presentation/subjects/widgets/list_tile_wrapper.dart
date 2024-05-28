@@ -39,77 +39,92 @@ class ListTileWrapper extends StatelessWidget {
       },
       child: BlocBuilder<SubjectSelectionCubit, SubjectSelectionState>(
         buildWhen: (previous, current) {
-          if (current is SubjectSelectionSelectionChanged) {
-            if (current.selectedIds.contains(id) ||
-                current.previouslySelectedIds.contains(id)) {
-              return true;
-            }
-          }
           return false;
         },
         builder: (context, state) {
-          bool selected = false;
-          if (state is SubjectSelectionSelectionChanged) {
-            if (state.selectedIds.contains(id)) {
-              selected = true;
-            }
-          }
-          return Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: selected ? Colors.green : Colors.transparent,
-              ),
-            ),
-            child: StreamBuilder(
-              stream: context.read<FolderBloc>().subscribedStreams[id],
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  if (!snapshot.data!.deleted &&
-                      snapshot.data!.value is Folder) {
-                    return FolderListTile(
-                      folder: snapshot.data!.value as Folder,
-                      onTap: () {
-                        if (state is SubjectSelectionSelectionChanged &&
-                            state.selectedIds.contains(id)) {
-                          context
-                              .read<SubjectSelectionCubit>()
-                              .deselectListTile(id);
-                        } else if (context
-                            .read<SubjectSelectionCubit>()
-                            .inSelectionMode) {
-                          context
-                              .read<SubjectSelectionCubit>()
-                              .selectListTile(id);
-                        }
-                      },
-                      selected: selected,
-                    );
-                  } else if (!snapshot.data!.deleted &&
-                      snapshot.data!.value is Card) {
-                    return CardListTile(
-                        card: snapshot.data!.value as Card,
-                        onTap: () {
-                          if (state is SubjectSelectionSelectionChanged) {
-                            if (state.selectedIds.contains(id)) {
-                              context
-                                  .read<SubjectSelectionCubit>()
-                                  .deselectListTile(id);
-                            } else if (context
-                                .read<SubjectSelectionCubit>()
-                                .inSelectionMode) {
-                              context
-                                  .read<SubjectSelectionCubit>()
-                                  .selectListTile(id);
-                            }
-                          }
-                        });
+          return Stack(
+            children: [
+              BlocBuilder<SubjectSelectionCubit, SubjectSelectionState>(
+                buildWhen: (previous, current) {
+                  if (current is SubjectSelectionSelectionChanged) {
+                    if (current.selectedIds.contains(id) ||
+                        current.previouslySelectedIds.contains(id)) {
+                      return true;
+                    }
                   }
-                }
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              },
-            ),
+                  return false;
+                },
+                builder: (context, state) {
+                  bool selected = false;
+                  if (state is SubjectSelectionSelectionChanged) {
+                    if (state.selectedIds.contains(id)) {
+                      selected = true;
+                    }
+                  }
+                  return Positioned(
+                      top: 0,
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: selected ? Colors.green : Colors.transparent,
+                          ),
+                        ),
+                      ));
+                },
+              ),
+              StreamBuilder(
+                stream: context.read<FolderBloc>().subscribedStreams[id],
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    if (!snapshot.data!.deleted &&
+                        snapshot.data!.value is Folder) {
+                      return FolderListTile(
+                        folder: snapshot.data!.value as Folder,
+                        onTap: () {
+                          if (state is SubjectSelectionSelectionChanged &&
+                              state.selectedIds.contains(id)) {
+                            context
+                                .read<SubjectSelectionCubit>()
+                                .deselectListTile(id);
+                          } else if (context
+                              .read<SubjectSelectionCubit>()
+                              .inSelectionMode) {
+                            context
+                                .read<SubjectSelectionCubit>()
+                                .selectListTile(id);
+                          }
+                        },
+                      );
+                    } else if (!snapshot.data!.deleted &&
+                        snapshot.data!.value is Card) {
+                      return CardListTile(
+                          card: snapshot.data!.value as Card,
+                          onTap: () {
+                            if (state is SubjectSelectionSelectionChanged) {
+                              if (state.selectedIds.contains(id)) {
+                                context
+                                    .read<SubjectSelectionCubit>()
+                                    .deselectListTile(id);
+                              } else if (context
+                                  .read<SubjectSelectionCubit>()
+                                  .inSelectionMode) {
+                                context
+                                    .read<SubjectSelectionCubit>()
+                                    .selectListTile(id);
+                              }
+                            }
+                          });
+                    }
+                  }
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
+              ),
+            ],
           );
         },
       ),

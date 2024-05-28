@@ -33,6 +33,7 @@ class _FolderContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("rebuild");
     return BlocBuilder<FolderBloc, FolderState>(
       builder: (context, state) {
         switch (state) {
