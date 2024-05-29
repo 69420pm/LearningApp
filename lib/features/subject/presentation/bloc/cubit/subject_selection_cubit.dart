@@ -5,15 +5,12 @@ import 'package:fpdart/fpdart.dart';
 import 'package:learning_app/core/errors/failures/failure.dart';
 
 import 'package:learning_app/features/file_system/domain/usecases/block_children_selection.dart';
-import 'package:learning_app/features/file_system/domain/usecases/potentially_select_parent_folder.dart';
 
 part 'subject_selection_state.dart';
 
 class SubjectSelectionCubit extends Cubit<SubjectSelectionState> {
-  PotentiallySelectParentFolder potentiallySelectParentFolder;
-  BlockChildrenSelection blockChildrenSelection;
+  GetRelations blockChildrenSelection;
   SubjectSelectionCubit({
-    required this.potentiallySelectParentFolder,
     required this.blockChildrenSelection,
   }) : super(
           const SubjectSelectionSelectionChanged(
@@ -22,63 +19,47 @@ class SubjectSelectionCubit extends Cubit<SubjectSelectionState> {
           ),
         );
 
+  /// List of all currently selected ids, which get also rendered, childrenIds
+  /// of a folder are not included
   final List<String> _selectedIds = [];
+
+  /// List of all "selected" ids which doesn't get rendered and also shouldn't
+  /// get interacted with, like the children of a selected folder
   final Map<String, List<String>> _blockedIds = {};
 
   bool get inSelectionMode => _selectedIds.isNotEmpty;
 
   Future<void> selectListTile(String id) async {
-    bool? returnEmpty;
-    _blockedIds.forEach((key, value) {
-      if (value.contains(id)) {
-        returnEmpty = true;
-      }
-    });
-    if (returnEmpty != null) {
-      return;
-    }
-    final previouslySelectedIds = <String>[];
     if (_selectedIds.contains(id)) {
-      _selectedIds.remove(id);
-      _blockedIds.remove(id);
-      previouslySelectedIds.add(id);
+      deselectListTile(id);
     } else {
+      // if the id is blocked return and do nothing
+      bool? returnEmpty;
+      _blockedIds.forEach((key, value) {
+        if (value.contains(id)) {
+          returnEmpty = true;
+        }
+      });
+      if (returnEmpty != null) {
+        return;
+      }
+
+      final previouslySelectedIds = <String>[];
       _selectedIds.add(id);
-      await _blockAndDeselectChildrenIds(id, previouslySelectedIds);
-      // final childrenIdsToBlockEither = await blockChildrenSelection(id);
-      // childrenIdsToBlockEither.match((failure) => null, (childrenIdsToBlock) {
-      //   _blockedIds[id] = childrenIdsToBlock;
-      // });
-      // final potentialFolderIds =
-      //     await potentiallySelectParentFolder(_selectedIds);
-      // potentialFolderIds.match(
-      //     (failure) =>
-      //         emit(SubjectSelectionError(errorMessage: failure.errorMessage)),
-      //     (checkCompleteChildReturns) {
-      //   for (var childIdLists in checkCompleteChildReturns.values.toList()) {
-      //     for (var childId in childIdLists) {
-      //       _selectedIds.remove(childId);
-      //       previouslySelectedIds.add(childId);
-      //     }
-      //   }
-      //   for (var parentId in checkCompleteChildReturns.keys) {
-      //     _selectedIds.add(parentId);
-      //   }
-      //   _blockedIds.addAll(checkCompleteChildReturns);
-      // });
+      await _blockAndDeselectChildrenIdsRec(id, previouslySelectedIds);
+      emit(
+        SubjectSelectionSelectionChanged(
+          selectedIds: List.from(_selectedIds),
+          previouslySelectedIds: List.from(previouslySelectedIds),
+        ),
+      );
     }
-    emit(
-      SubjectSelectionSelectionChanged(
-        selectedIds: List.from(_selectedIds),
-        previouslySelectedIds: List.from(previouslySelectedIds),
-      ),
-    );
   }
 
   void deselectListTile(String id) {
     if (_selectedIds.contains(id)) {
       _selectedIds.remove(id);
-      _removeRec([id]);
+      _removeBlockingRec([id]);
       emit(
         SubjectSelectionSelectionChanged(
           selectedIds: List.from(_selectedIds),
@@ -88,7 +69,8 @@ class SubjectSelectionCubit extends Cubit<SubjectSelectionState> {
     }
   }
 
-  Future<Either<Failure, void>> _blockAndDeselectChildrenIds(
+  //! recursive method to block and deselect all children from a selected folder
+  Future<Either<Failure, void>> _blockAndDeselectChildrenIdsRec(
       String parentId, List<String> previouslySelectedIds) async {
     final childrenEither = await blockChildrenSelection(parentId);
     await childrenEither.match((l) async => left(l), (childrenIds) async {
@@ -96,18 +78,20 @@ class SubjectSelectionCubit extends Cubit<SubjectSelectionState> {
       for (var childId in childrenIds) {
         _selectedIds.remove(childId);
         previouslySelectedIds.add(childId);
-        await _blockAndDeselectChildrenIds(childId, previouslySelectedIds);
+        await _blockAndDeselectChildrenIdsRec(childId, previouslySelectedIds);
       }
     });
     return right(null);
   }
 
-  void _removeRec(List<String> ids) {
+  //! recursive method to remove the blocking from a deselected folder and all
+  //! its children
+  void _removeBlockingRec(List<String> ids) {
     for (var id in ids) {
       if (!_blockedIds.containsKey(id) || _blockedIds[id] == null) {
         return;
       }
-      _removeRec(_blockedIds[id]!);
+      _removeBlockingRec(_blockedIds[id]!);
       _blockedIds.remove(id);
     }
   }

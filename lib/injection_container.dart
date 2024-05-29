@@ -10,7 +10,6 @@ import 'package:learning_app/features/file_system/domain/usecases/create_folder.
 import 'package:learning_app/features/file_system/domain/usecases/create_subject.dart';
 import 'package:learning_app/features/file_system/domain/usecases/delete_file.dart';
 import 'package:learning_app/features/file_system/domain/usecases/move_file.dart';
-import 'package:learning_app/features/file_system/domain/usecases/potentially_select_parent_folder.dart';
 import 'package:learning_app/features/file_system/domain/usecases/watch_children_file_system.dart';
 import 'package:learning_app/features/file_system/domain/usecases/get_file.dart';
 import 'package:learning_app/features/file_system/domain/usecases/save_file.dart';
@@ -55,7 +54,6 @@ void features() {
   );
   sl.registerFactory(
     () => SubjectSelectionCubit(
-      potentiallySelectParentFolder: sl(),
       blockChildrenSelection: sl(),
     ),
   );
@@ -69,10 +67,7 @@ void features() {
   sl.registerLazySingleton(() => CreateFolder(repository: sl()));
   sl.registerLazySingleton(() => CreateCard(repository: sl()));
   sl.registerLazySingleton(() => MoveFile(repository: sl()));
-  sl.registerLazySingleton(
-    () => PotentiallySelectParentFolder(repository: sl()),
-  );
-  sl.registerLazySingleton(() => BlockChildrenSelection(repository: sl()));
+  sl.registerLazySingleton(() => GetRelations(repository: sl()));
 
   // Repository
   sl.registerLazySingleton<FileSystemRepository>(

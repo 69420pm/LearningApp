@@ -37,6 +37,8 @@ class ListTileWrapper extends StatelessWidget {
       onDragStarted: () {
         context.read<SubjectSelectionCubit>().selectListTile(id);
       },
+      // this blocBuilder only provides the state to the children (folder and
+      // cards) to handle their on tap events, it never explicitly rebuilds
       child: BlocBuilder<SubjectSelectionCubit, SubjectSelectionState>(
         buildWhen: (previous, current) {
           return false;
@@ -44,6 +46,8 @@ class ListTileWrapper extends StatelessWidget {
         builder: (context, state) {
           return Stack(
             children: [
+              // this blocBuilder rebuilds the selection frame for the children
+              // to display the selection state, it doesn't rebuild anything else
               BlocBuilder<SubjectSelectionCubit, SubjectSelectionState>(
                 buildWhen: (previous, current) {
                   if (current is SubjectSelectionSelectionChanged) {

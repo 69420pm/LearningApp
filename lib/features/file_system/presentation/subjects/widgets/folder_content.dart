@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:learning_app/features/file_system/presentation/subjects/bloc/folder_bloc.dart';
 import 'package:learning_app/features/file_system/presentation/subjects/widgets/list_tile_wrapper.dart';
-import 'package:learning_app/features/subject/presentation/bloc/cubit/subject_selection_cubit.dart';
 import 'package:learning_app/injection_container.dart';
 
 class FolderContent extends StatelessWidget {
@@ -33,7 +32,6 @@ class _FolderContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("rebuild");
     return BlocBuilder<FolderBloc, FolderState>(
       builder: (context, state) {
         switch (state) {

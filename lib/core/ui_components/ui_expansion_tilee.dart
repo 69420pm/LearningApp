@@ -1,26 +1,30 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class UIExpansionTilee extends StatelessWidget {
-  const UIExpansionTilee(
-      {super.key,
-      required this.title,
-      required this.children,
-      this.onTap,
-      this.controller});
+  const UIExpansionTilee({
+    super.key,
+    required this.title,
+    required this.children,
+    this.onTap,
+  });
   final String title;
   final List<Widget> children;
   final void Function()? onTap;
-  final ExpansionTileController? controller;
   @override
   Widget build(BuildContext context) {
-    return ExpansionTile(
-      controller: controller,
-      title: InkWell(
-        onTap: onTap,
-        child: Text(title),
+    final ExpansionTileController controller = ExpansionTileController();
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      child: ExpansionTile(
+        controller: controller,
+        title: InkWell(
+          onTap: onTap,
+          child: Text(title),
+        ),
+        children: children,
       ),
-      children: children,
     );
   }
 }

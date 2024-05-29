@@ -363,7 +363,7 @@ class FileSystemRepositoryImpl implements FileSystemRepository {
             break;
           }
         }
-        // add fileId to new [arentid
+        // add fileId to new parentid
         final newValueIds = await lds.getRelation(newParentId);
         newValueIds.add(fileId);
         await lds.saveRelation(newParentId, newValueIds);
@@ -387,51 +387,5 @@ class FileSystemRepositoryImpl implements FileSystemRepository {
           errorMessage:
               "while getting relations for $parentId a file not found failure was thrown"));
     }
-  }
-
-  @override
-  Future<Either<Failure, Map<String, List<String>>>> checkCompleteChildren(
-      List<String> childrenIds) async {
-    final Map<String, int> childrenCount = {};
-    final List<String> completedParentIds = [];
-    final List<String> childrenToRemove = [];
-    final Map<String, List<String>> returnMap = {};
-    Failure? returnFailure;
-    for (var childId in childrenIds) {
-      final parentIdEither = await FileSystemHelper.getParentId(childId, lds);
-      await parentIdEither.match((failure) async {
-        returnFailure = failure;
-      }, (parentId) async {
-        if (childrenCount[parentId] != null && childrenCount[parentId]! >= 0) {
-          childrenCount[parentId] = (childrenCount[parentId] ?? 0) - 1;
-          if (childrenCount[parentId] == 0) {
-            final typeEither = FileSystemHelper.getTypeFromId(parentId, lds);
-            typeEither.match((l) => returnFailure = l, (r) async {
-              if (r == FileType.folder) {
-                completedParentIds.add(parentId);
-                final childrenIds = await lds.getRelation(parentId);
-                returnMap[parentId] = childrenIds;
-                childrenToRemove.addAll(childrenIds);
-              }
-            });
-          }
-        } else {
-          try {
-            childrenCount[parentId] =
-                (await lds.getRelation(parentId)).length - 1;
-          } on FileNotFoundException {
-            returnFailure = FileNotFoundFailure(
-                errorMessage:
-                    "in checkCompleteChildren the relation getting for the parentId $parentId was not successful");
-          }
-        }
-      });
-      if (returnFailure != null) {
-        return left(returnFailure!);
-      }
-    }
-    // return right(CheckCompleteChildrenReturns(
-    //     parentIds: completedParentIds, childrenToRemove: childrenToRemove));
-    return right(returnMap);
   }
 }
