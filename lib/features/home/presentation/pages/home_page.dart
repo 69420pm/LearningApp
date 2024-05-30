@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:learning_app/features/home/presentation/bloc/home_bloc.dart';
 import 'package:learning_app/features/home/presentation/widgets/home_subject_list.dart';
 import 'package:learning_app/injection_container.dart';
@@ -27,11 +28,15 @@ class HomeView extends StatelessWidget {
         title: Text(AppLocalizations.of(context)!.test),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context
-            .read<HomeBloc>()
-            .add(const HomeSubjectAddSubject(name: "69")),
+        onPressed: () {
+          context.push(context.namedLocation("editor"));
+
+          // context
+          //   .read<HomeBloc>()
+          //   .add(const HomeSubjectAddSubject(name: "69"));
+        },
       ),
-      body: const SafeArea(
+      body: SafeArea(
         child: HomeSubjectList(),
       ),
     );
