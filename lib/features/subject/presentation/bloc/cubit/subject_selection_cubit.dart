@@ -24,32 +24,48 @@ class SubjectSelectionCubit extends Cubit<SubjectSelectionState> {
           ),
         );
 
-  /// List of all currently selected ids, childrenIds
-  /// of selected Ids are not included
+  /// List of all currently selected ids,
+  /// childrenIds of selected Ids are not included
   final List<String> _selectedIds = [];
 
   bool get inSelectionMode => _selectedIds.isNotEmpty;
 
+  /// Automatically changes selection of item with [id].
+  ///
+  /// If [id] is already selected, it will be deselected.
+  ///
+  /// If [id] is not selected and no parent is selected, it will be selected.
+  ///
+  /// If [id] is not selected and parent is selected, it will be deselected and other children will be deselected.
+  ///
+  /// Only items with changed selection will be updated.
   void changeSelection(String id) async {
-    final oldSelectedIds = [..._selectedIds];
+    // Saving previous selection
+    final prevSelectedIds = [..._selectedIds];
+
     if (_selectedIds.contains(id)) {
-      //! id is selected (all childs should be deselected)
+      // id is selected (all childs should be deselected)
       _selectedIds.remove(id);
     } else {
-      //! id is not directly selected (could be selected if parent is selected)
+      // id is not directly selected (could be selected if parent is selected)
       if (await _checkIfParentSelectedRec(id)) {
+        // some nth-parent is selected => select all other children in all nth-parents and deselect parent
         await _deselectParentRec(id);
       } else {
+        // no parent is not selected
         _selectedIds.add(id);
+        //deselect every children
         await _deselectEveryChildRec(id);
       }
     }
 
+    // List of all ids with changed selection
     var differences = [
-      ...oldSelectedIds.where((item) => !_selectedIds.contains(item)),
-      ..._selectedIds.where((item) => !oldSelectedIds.contains(item)),
+      ...prevSelectedIds.where((item) => !_selectedIds.contains(item)),
+      ..._selectedIds.where((item) => !prevSelectedIds.contains(item)),
     ];
 
+    // updating state
     emit(
       SubjectSelectionSelectionChanged(
         changedIds: List.from(differences),
@@ -58,8 +74,9 @@ class SubjectSelectionCubit extends Cubit<SubjectSelectionState> {
     );
   }
 
+  /// Deselects every child of [id]
   Future<void> _deselectEveryChildRec(String id) async {
-    //! needs to traverse hole tree to check for selected children, recursion ends if no child is found
+    // needs to traverse hole tree to check for selected children, recursion ends if no child is found
     final childrenEither = await getRelationUseCase(id);
     await childrenEither.match((_) => null, (childIds) async {
       for (var childId in childIds) {
@@ -69,9 +86,11 @@ class SubjectSelectionCubit extends Cubit<SubjectSelectionState> {
     });
   }
 
+  /// Recursively selects all other ids and deselects parent
   Future<void> _deselectParentRec(String id) async {
     final parentIdEither = await getParentIdUseCase(id);
     await parentIdEither.match((_) => null, (parentId) async {
+      // all other children are selected
       final childrenEither = await getRelationUseCase(parentId);
       childrenEither.match((_) => null, (childIds) {
         for (var childId in childIds) {
@@ -80,15 +99,16 @@ class SubjectSelectionCubit extends Cubit<SubjectSelectionState> {
       });
 
       if (_selectedIds.contains(parentId)) {
-        //! parent is selected, any parents above should not be selected => recursion ends
+        // parent is selected, any parents above should not be selected => recursion ends
         _selectedIds.remove(parentId);
       } else {
-        //! check if a parent higher is selected, recursion ends if no parent is found anymore (subjectId?!)
+        // check if a parent higher is selected, recursion ends when selected parent is found
         await _deselectParentRec(parentId);
       }
     });
   }
 
+  /// Checks if any parent of [id] is selected
   Future<bool> _checkIfParentSelectedRec(String id) async {
     final parentIdEither = await getParentIdUseCase(id);
     return await parentIdEither.match<FutureOr<bool>>((_) => false,
@@ -97,25 +117,4 @@ class SubjectSelectionCubit extends Cubit<SubjectSelectionState> {
       return await _checkIfParentSelectedRec(parentId);
     });
   }
-
-  // Future<void> _checkIfAllChildrenSelected(String parentId) async {
-  //   final childrenEither = await getRelationUseCase(parentId);
-  //   await childrenEither.match((_) => null, (childIds) async {
-  //     for (var childId in childIds) {
-  //       if (!_selectedIds.contains(childId)) {
-  //         return null;
-  //       }
-  //     }
-  //     //all children are selected
-  //     _selectedIds.add(parentId);
-  //     for (var childId in childIds) {
-  //       _selectedIds.remove(childId);
-  //     }
-  //     final parentEither = await getParentIdUseCase(parentId);
-
-  //     await parentEither.match((_) => null, (parentParentId) async {
-  //       await _checkIfAllChildrenSelected(parentParentId);
-  //     });
-  //   });
-  // }
 }
