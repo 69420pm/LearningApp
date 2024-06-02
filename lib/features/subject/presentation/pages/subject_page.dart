@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_icons.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/buttons/ui_icon_button.dart';
+import 'package:learning_app/features/subject/presentation/bloc/cubit/subject_hover_cubit.dart';
 import 'package:learning_app/features/subject/presentation/bloc/cubit/subject_selection_cubit.dart';
 
 import 'package:learning_app/features/subject/presentation/bloc/subject_bloc.dart';
@@ -24,6 +25,9 @@ class SubjectPage extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => sl<SubjectSelectionCubit>(),
+        ),
+        BlocProvider(
+          create: (context) => sl<SubjectHoverCubit>(),
         ),
       ],
       child: SubjectView(subjectId: subjectId),

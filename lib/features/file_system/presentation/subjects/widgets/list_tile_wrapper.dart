@@ -6,6 +6,7 @@ import 'package:learning_app/features/file_system/domain/entities/folder.dart';
 import 'package:learning_app/features/file_system/presentation/subjects/bloc/folder_bloc.dart';
 import 'package:learning_app/features/file_system/presentation/subjects/widgets/card_list_tile.dart';
 import 'package:learning_app/features/file_system/presentation/subjects/widgets/folder_list_tile.dart';
+import 'package:learning_app/features/subject/presentation/bloc/cubit/subject_hover_cubit.dart';
 import 'package:learning_app/features/subject/presentation/bloc/cubit/subject_selection_cubit.dart';
 
 /// wraps Folder and Card list tiles and updates them listening, to their
@@ -34,6 +35,7 @@ class ListTileWrapper extends StatelessWidget {
         height: 50,
         width: 100,
       ),
+      onDragEnd: (details) => context.read<SubjectHoverCubit>().changeHover(""),
       child: BlocBuilder<SubjectSelectionCubit, SubjectSelectionState>(
         buildWhen: (previous, current) =>
             current is SubjectSelectionSelectionChanged &&
@@ -43,31 +45,41 @@ class ListTileWrapper extends StatelessWidget {
               .selectedIds
               .contains(id);
 
-          return StreamBuilder(
-            stream: context.read<FolderBloc>().subscribedStreams[id],
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                if (!snapshot.data!.deleted && snapshot.data!.value is Folder) {
-                  return FolderListTile(
-                    folder: snapshot.data!.value as Folder,
-                    isSelected: selected,
-                    onTap: () => context
-                        .read<SubjectSelectionCubit>()
-                        .changeSelection(id),
+          return BlocBuilder<SubjectHoverCubit, SubjectHoverState>(
+            buildWhen: (previous, current) =>
+                (previous is SubjectHoverChanged && previous.newId == id) ||
+                (current is SubjectHoverChanged && current.newId == id),
+            builder: (context, state) {
+              bool hovered = state is SubjectHoverChanged && state.newId == id;
+              return StreamBuilder(
+                stream: context.read<FolderBloc>().subscribedStreams[id],
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    if (!snapshot.data!.deleted &&
+                        snapshot.data!.value is Folder) {
+                      return FolderListTile(
+                        folder: snapshot.data!.value as Folder,
+                        isSelected: selected,
+                        onTap: () => context
+                            .read<SubjectSelectionCubit>()
+                            .changeSelection(id),
+                        isHovered: hovered,
+                      );
+                    } else if (!snapshot.data!.deleted &&
+                        snapshot.data!.value is Card) {
+                      return CardListTile(
+                        card: snapshot.data!.value as Card,
+                        isSelected: selected,
+                        onTap: () => context
+                            .read<SubjectSelectionCubit>()
+                            .changeSelection(id),
+                      );
+                    }
+                  }
+                  return const Center(
+                    child: CircularProgressIndicator(),
                   );
-                } else if (!snapshot.data!.deleted &&
-                    snapshot.data!.value is Card) {
-                  return CardListTile(
-                    card: snapshot.data!.value as Card,
-                    isSelected: selected,
-                    onTap: () => context
-                        .read<SubjectSelectionCubit>()
-                        .changeSelection(id),
-                  );
-                }
-              }
-              return const Center(
-                child: CircularProgressIndicator(),
+                },
               );
             },
           );

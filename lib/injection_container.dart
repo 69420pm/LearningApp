@@ -16,6 +16,7 @@ import 'package:learning_app/features/file_system/domain/usecases/get_file.dart'
 import 'package:learning_app/features/file_system/domain/usecases/save_file.dart';
 import 'package:learning_app/features/file_system/domain/usecases/watch_file.dart';
 import 'package:learning_app/features/file_system/presentation/subjects/bloc/folder_bloc.dart';
+import 'package:learning_app/features/subject/presentation/bloc/cubit/subject_hover_cubit.dart';
 import 'package:learning_app/features/subject/presentation/bloc/cubit/subject_selection_cubit.dart';
 import 'package:learning_app/features/subject/presentation/bloc/subject_bloc.dart';
 import 'package:learning_app/features/home/presentation/bloc/home_bloc.dart';
@@ -59,6 +60,8 @@ void features() {
       getParentIdUseCase: sl(),
     ),
   );
+  sl.registerFactory(() => SubjectHoverCubit());
+
   // Use cases
   sl.registerLazySingleton(() => WatchChildrenFileSystem(repository: sl()));
   sl.registerLazySingleton(() => GetFile(repository: sl()));
@@ -70,7 +73,6 @@ void features() {
   sl.registerLazySingleton(() => CreateCard(repository: sl()));
   sl.registerLazySingleton(() => MoveFile(repository: sl()));
   sl.registerLazySingleton(() => GetRelations(repository: sl()));
-
   sl.registerLazySingleton(() => GetParentId(dataSource: sl()));
 
   // Repository

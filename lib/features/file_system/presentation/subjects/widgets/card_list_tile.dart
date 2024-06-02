@@ -8,11 +8,12 @@ class CardListTile extends StatelessWidget implements FileListTile {
   final Card card;
   final void Function() onTap;
   final bool isSelected;
-  const CardListTile(
-      {super.key,
-      required this.card,
-      required this.onTap,
-      required this.isSelected});
+  const CardListTile({
+    super.key,
+    required this.card,
+    required this.onTap,
+    required this.isSelected,
+  });
 
   @override
   Widget build(BuildContext context) {
