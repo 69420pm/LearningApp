@@ -9,6 +9,7 @@ import 'package:learning_app/features/file_system/domain/usecases/create_card.da
 import 'package:learning_app/features/file_system/domain/usecases/create_folder.dart';
 import 'package:learning_app/features/file_system/domain/usecases/create_subject.dart';
 import 'package:learning_app/features/file_system/domain/usecases/delete_file.dart';
+import 'package:learning_app/features/file_system/domain/usecases/get_parentid.dart';
 import 'package:learning_app/features/file_system/domain/usecases/move_file.dart';
 import 'package:learning_app/features/file_system/domain/usecases/watch_children_file_system.dart';
 import 'package:learning_app/features/file_system/domain/usecases/get_file.dart';
@@ -54,7 +55,8 @@ void features() {
   );
   sl.registerFactory(
     () => SubjectSelectionCubit(
-      blockChildrenSelection: sl(),
+      getRelationUseCase: sl(),
+      getParentIdUseCase: sl(),
     ),
   );
   // Use cases
@@ -68,6 +70,8 @@ void features() {
   sl.registerLazySingleton(() => CreateCard(repository: sl()));
   sl.registerLazySingleton(() => MoveFile(repository: sl()));
   sl.registerLazySingleton(() => GetRelations(repository: sl()));
+
+  sl.registerLazySingleton(() => GetParentId(dataSource: sl()));
 
   // Repository
   sl.registerLazySingleton<FileSystemRepository>(

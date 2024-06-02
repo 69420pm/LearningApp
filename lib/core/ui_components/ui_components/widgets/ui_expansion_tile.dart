@@ -8,7 +8,7 @@ import 'package:learning_app/core/ui_components/ui_components/ui_icons.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_text.dart';
 
 class UIExpansionTile extends StatefulWidget {
-  List<Widget> children;
+  Widget child;
   String title;
   double? titleSpacing;
   double? iconSpacing;
@@ -25,7 +25,7 @@ class UIExpansionTile extends StatefulWidget {
 
   UIExpansionTile({
     super.key,
-    required this.children,
+    required this.child,
     required this.title,
     this.titleSpacing = UIConstants.defaultSize,
     this.iconSpacing = UIConstants.defaultSize,
@@ -135,31 +135,32 @@ class _UIExpansionTileState extends State<UIExpansionTile>
           if (_isOpened || _animation.value > 0)
             SizeTransition(
               sizeFactor: _animation,
-              child: ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemBuilder: (context, index) => widget.children[index],
-                itemCount: widget.children.length,
-              ),
+              child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: UIConstants.defaultSize * 2,
+                  ),
+                  child: widget.child),
             ),
         ],
       ),
     )
-        .animate(
-            delay: const Duration(milliseconds: 100),
-            target: widget.changeExtensionState == true ? 1 : 0,
-            onComplete: (controller) => controller.reset(),
-            onPlay: (controller) => controller.reset(),
-            autoPlay: false)
-        .shake(
-            delay: const Duration(milliseconds: 800),
-            duration: const Duration(milliseconds: 800),
-            hz: 3,
-            rotation: .02,
-            curve: Curves.easeIn)
-        .callback(callback: (value) {
-      changeState();
-    });
+        //  .animate(
+        //         delay: const Duration(milliseconds: 100),
+        //         target: widget.changeExtensionState == true ? 1 : 0,
+        //         onComplete: (controller) => controller.reset(),
+        //         onPlay: (controller) => controller.reset(),
+        //         autoPlay: false)
+        //     .shake(
+        //         delay: const Duration(milliseconds: 800),
+        //         duration: const Duration(milliseconds: 800),
+        //         hz: 3,
+        //         rotation: .02,
+        //         curve: Curves.easeIn)
+        //     .callback(callback: (value) {
+        //   changeState();
+        // })
+
+        ;
   }
 
   void update() {
