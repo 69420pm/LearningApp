@@ -28,6 +28,7 @@ class SubjectSelectionCubit extends Cubit<SubjectSelectionState> {
   /// childrenIds of selected Ids are not included
   final List<String> _selectedIds = [];
 
+  List<String> get selectedIds => _selectedIds;
   bool get inSelectionMode => _selectedIds.isNotEmpty;
 
   /// Automatically changes selection of item with [id].

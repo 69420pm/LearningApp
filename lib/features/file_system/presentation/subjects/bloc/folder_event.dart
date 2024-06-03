@@ -15,11 +15,11 @@ class FolderWatchChildrenIds extends FolderEvent {
   });
 }
 
-class FolderMoveFile extends FolderEvent {
+class FolderMoveFiles extends FolderEvent {
   final String parentId;
-  final String fileId;
-  const FolderMoveFile({
+  final List<String> fileIds;
+  const FolderMoveFiles({
     required this.parentId,
-    required this.fileId,
+    required this.fileIds,
   });
 }

@@ -42,6 +42,12 @@ class ListTileWrapper extends StatelessWidget {
         width: 100,
       ),
       onDragEnd: (details) => context.read<SubjectHoverCubit>().changeHover(""),
+      onDragStarted: () {
+        print(context.read<FolderBloc>().parentId);
+        context
+            .read<SubjectHoverCubit>()
+            .changeHover(context.read<FolderBloc>().parentId);
+      },
       child: BlocBuilder<SubjectSelectionCubit, SubjectSelectionState>(
         buildWhen: (previous, current) =>
             current is SubjectSelectionSelectionChanged &&

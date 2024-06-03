@@ -26,7 +26,7 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
   }) : super(FolderLoading()) {
     on<FolderEvent>((event, emit) {});
     on<FolderWatchChildrenIds>(watchChildrenIds);
-    on<FolderMoveFile>(moveFile);
+    on<FolderMoveFiles>(moveFiles);
   }
 
   Map<String, Stream<StreamEvent<File?>>> subscribedStreams = {};
@@ -64,14 +64,14 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
     });
   }
 
-  Future<FutureOr<void>> moveFile(
-      FolderMoveFile event, Emitter<FolderState> emit) async {
-    final moveEither = await moveFileUseCase(
-        MoveFileParams(fileId: event.fileId, newParentId: event.parentId));
-
-    moveEither.match(
-      (failure) => emit(FolderError(errorMessage: failure.errorMessage)),
-      (stream) => null,
-    );
+  Future<FutureOr<void>> moveFiles(
+      FolderMoveFiles event, Emitter<FolderState> emit) async {
+    for (var id in event.fileIds) {
+      await moveFileUseCase(
+              MoveFileParams(fileId: id, newParentId: event.parentId))
+          .then((value) => null,
+              onError: (error) =>
+                  emit(FolderError(errorMessage: error.errorMessage)));
+    }
   }
 }

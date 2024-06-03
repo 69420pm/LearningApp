@@ -37,8 +37,10 @@ class FolderListTile extends StatelessWidget implements FileListTile {
               .read<SubjectSelectionCubit>()
               .changeSelection(details.data.fileId);
         }
+
         context.read<FolderBloc>().add(
-              FolderMoveFile(parentId: folder.id, fileId: details.data.fileId),
+              FolderMoveFiles(
+                  parentId: folder.id, fileIds: [details.data.fileId]),
             );
       },
       builder: (BuildContext context, List<Object?> candidateData,
@@ -46,7 +48,7 @@ class FolderListTile extends StatelessWidget implements FileListTile {
         return GestureDetector(
           onTap: onTap,
           child: UIExpansionTile(
-            title: folder.name,
+            title: folder.id,
             backgroundColor: isHovered
                 ? Colors.grey
                 : isSelected
