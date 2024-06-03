@@ -20,6 +20,12 @@ class ListTileWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void _onTileClicked() {
+      if (context.read<SubjectSelectionCubit>().inSelectionMode) {
+        context.read<SubjectSelectionCubit>().changeSelection(id);
+      }
+    }
+
     return LongPressDraggable(
       data: FileDragDetails(
         fileId: id,
@@ -27,12 +33,12 @@ class ListTileWrapper extends StatelessWidget {
       ),
       feedback: Container(
         color: Colors.red,
-        height: 50,
+        height: 20,
         width: 100,
       ),
       childWhenDragging: Container(
         color: Colors.green,
-        height: 50,
+        height: 20,
         width: 100,
       ),
       onDragEnd: (details) => context.read<SubjectHoverCubit>().changeHover(""),
@@ -60,9 +66,7 @@ class ListTileWrapper extends StatelessWidget {
                       return FolderListTile(
                         folder: snapshot.data!.value as Folder,
                         isSelected: selected,
-                        onTap: () => context
-                            .read<SubjectSelectionCubit>()
-                            .changeSelection(id),
+                        onTap: _onTileClicked,
                         isHovered: hovered,
                       );
                     } else if (!snapshot.data!.deleted &&
@@ -70,9 +74,7 @@ class ListTileWrapper extends StatelessWidget {
                       return CardListTile(
                         card: snapshot.data!.value as Card,
                         isSelected: selected,
-                        onTap: () => context
-                            .read<SubjectSelectionCubit>()
-                            .changeSelection(id),
+                        onTap: _onTileClicked,
                       );
                     }
                   }

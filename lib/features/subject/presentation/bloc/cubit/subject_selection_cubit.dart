@@ -117,4 +117,15 @@ class SubjectSelectionCubit extends Cubit<SubjectSelectionState> {
       return await _checkIfParentSelectedRec(parentId);
     });
   }
+
+  void deselectAll() {
+    final prevSelectedIds = [..._selectedIds];
+    _selectedIds.clear();
+    emit(
+      SubjectSelectionSelectionChanged(
+        changedIds: prevSelectedIds,
+        selectedIds: [],
+      ),
+    );
+  }
 }

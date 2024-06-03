@@ -20,6 +20,7 @@ class CardListTile extends StatelessWidget implements FileListTile {
     return GestureDetector(
       onTap: onTap,
       child: Container(
+        height: 20,
         color: isSelected ? Colors.green : Colors.black,
         child: Text(card.name),
       ),
