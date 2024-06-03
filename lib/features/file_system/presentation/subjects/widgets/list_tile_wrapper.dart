@@ -22,6 +22,7 @@ class ListTileWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     void _onTileClicked() {
       if (context.read<SubjectSelectionCubit>().inSelectionMode) {
+        print(id);
         context.read<SubjectSelectionCubit>().changeSelection(id);
       }
     }
@@ -43,7 +44,6 @@ class ListTileWrapper extends StatelessWidget {
       ),
       onDragEnd: (details) => context.read<SubjectHoverCubit>().changeHover(""),
       onDragStarted: () {
-        print(context.read<FolderBloc>().parentId);
         context
             .read<SubjectHoverCubit>()
             .changeHover(context.read<FolderBloc>().parentId);

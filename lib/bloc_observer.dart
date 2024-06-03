@@ -5,7 +5,7 @@ class MyGlobalObserver extends BlocObserver {
   @override
   void onEvent(Bloc bloc, Object? event) {
     super.onEvent(bloc, event);
-    debugPrint('${bloc.runtimeType} $event');
+    debugPrint('bloc ${bloc.runtimeType} $event');
   }
 
   @override
@@ -17,12 +17,12 @@ class MyGlobalObserver extends BlocObserver {
   @override
   void onChange(BlocBase bloc, Change change) {
     super.onChange(bloc, change);
-    debugPrint('${bloc.runtimeType} $change');
+    debugPrint('bloc ${bloc.runtimeType} $change');
   }
 
   @override
   void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
-    debugPrint('${bloc.runtimeType} $error $stackTrace');
+    debugPrint('bloc ${bloc.runtimeType} $error $stackTrace');
     super.onError(bloc, error, stackTrace);
   }
 }
