@@ -42,6 +42,7 @@ class _FolderContent extends StatelessWidget {
           case FolderError():
             return Text(state.errorMessage);
           case FolderSuccess():
+            print("rebuild");
             return ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,

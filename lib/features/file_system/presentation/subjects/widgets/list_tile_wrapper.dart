@@ -66,17 +66,18 @@ class ListTileWrapper extends StatelessWidget {
                     }
                   }
                   return Positioned(
-                      top: 0,
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: selected ? Colors.green : Colors.transparent,
-                          ),
+                    top: 0,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: selected ? Colors.green : Colors.transparent,
                         ),
-                      ));
+                      ),
+                    ),
+                  );
                 },
               ),
               StreamBuilder(
@@ -105,22 +106,23 @@ class ListTileWrapper extends StatelessWidget {
                     } else if (!snapshot.data!.deleted &&
                         snapshot.data!.value is Card) {
                       return CardListTile(
-                          card: snapshot.data!.value as Card,
-                          onTap: () {
-                            if (state is SubjectSelectionSelectionChanged) {
-                              if (state.selectedIds.contains(id)) {
-                                context
-                                    .read<SubjectSelectionCubit>()
-                                    .deselectListTile(id);
-                              } else if (context
+                        card: snapshot.data!.value as Card,
+                        onTap: () {
+                          if (state is SubjectSelectionSelectionChanged) {
+                            if (state.selectedIds.contains(id)) {
+                              context
                                   .read<SubjectSelectionCubit>()
-                                  .inSelectionMode) {
-                                context
-                                    .read<SubjectSelectionCubit>()
-                                    .selectListTile(id);
-                              }
+                                  .deselectListTile(id);
+                            } else if (context
+                                .read<SubjectSelectionCubit>()
+                                .inSelectionMode) {
+                              context
+                                  .read<SubjectSelectionCubit>()
+                                  .selectListTile(id);
                             }
-                          });
+                          }
+                        },
+                      );
                     }
                   }
                   return const Center(

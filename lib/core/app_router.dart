@@ -22,7 +22,7 @@ final GoRouter router = GoRouter(routes: <GoRoute>[
           path: 'editor',
           name: 'editor',
           builder: (context, state) {
-            return Editor();
+            return EditorPage();
           },
         )
       ])

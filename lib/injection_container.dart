@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:learning_app/features/editor/presentation/cubit/editor_cubit.dart';
 import 'package:learning_app/features/file_system/data/datasources/file_system_local_data_source.dart';
 import 'package:learning_app/features/file_system/data/repositories/file_system_repository_impl.dart';
 import 'package:learning_app/features/file_system/domain/repositories/file_system_repository.dart';
@@ -57,6 +58,8 @@ void features() {
       blockChildrenSelection: sl(),
     ),
   );
+
+  sl.registerFactory(() => EditorCubit());
   // Use cases
   sl.registerLazySingleton(() => WatchChildrenFileSystem(repository: sl()));
   sl.registerLazySingleton(() => GetFile(repository: sl()));

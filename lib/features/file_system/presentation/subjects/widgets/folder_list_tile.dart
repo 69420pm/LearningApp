@@ -25,41 +25,44 @@ class FolderListTile extends StatelessWidget implements FileListTile {
     return Stack(
       children: [
         Positioned.fill(
-            child: DragTarget(
-          onMove: (details) {
-            print("move");
-            hovered = true;
-          },
-          onLeave: (data) {
-            hovered = false;
-          },
-          onAcceptWithDetails: (DragTargetDetails<FileDragDetails> details) {
-            context.read<FolderBloc>().add(
-                  FolderMoveFile(
-                      parentId: folder.id, fileId: details.data.fileId),
-                );
-            if (folder.id != details.data.parentId) {
-              context.read<SubjectSelectionCubit>().deselectListTile(
-                    details.data.fileId,
+          child: DragTarget(
+            onMove: (details) {
+              print("move");
+              hovered = true;
+            },
+            onLeave: (data) {
+              hovered = false;
+            },
+            onAcceptWithDetails: (DragTargetDetails<FileDragDetails> details) {
+              context.read<FolderBloc>().add(
+                    FolderMoveFile(
+                      parentId: folder.id,
+                      fileId: details.data.fileId,
+                    ),
                   );
-            }
-          },
-          builder: (
-            BuildContext context,
-            List<Object?> candidateData,
-            List<dynamic> rejectedData,
-          ) {
-            return Container(
-              color: Colors.transparent,
-              // decoration: BoxDecoration(
-              //   color: Color.fromARGB(20, 255, 0, 0),
-              //   border: Border.all(
-              //     color: hovered ? Colors.green : Colors.transparent,
-              //   ),
-              // ),
-            );
-          },
-        )),
+              if (folder.id != details.data.parentId) {
+                context.read<SubjectSelectionCubit>().deselectListTile(
+                      details.data.fileId,
+                    );
+              }
+            },
+            builder: (
+              BuildContext context,
+              List<Object?> candidateData,
+              List<dynamic> rejectedData,
+            ) {
+              return Container(
+                color: Colors.transparent,
+                // decoration: BoxDecoration(
+                //   color: Color.fromARGB(20, 255, 0, 0),
+                //   border: Border.all(
+                //     color: hovered ? Colors.green : Colors.transparent,
+                //   ),
+                // ),
+              );
+            },
+          ),
+        ),
         UIExpansionTilee(
           title: folder.name,
           onTap: onTap,
@@ -69,7 +72,7 @@ class FolderListTile extends StatelessWidget implements FileListTile {
               child: FolderContent(parentId: folder.id),
             ),
           ],
-        )
+        ),
       ],
     );
 
