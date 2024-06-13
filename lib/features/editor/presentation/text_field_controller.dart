@@ -1,158 +1,95 @@
 import 'package:diff_match_patch/diff_match_patch.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/features/editor/domain/entities/text_editor_style.dart';
 import 'package:learning_app/features/editor/presentation/cubit/editor_cubit.dart';
+import 'package:learning_app/features/editor/presentation/helper/editor_text_style_to_text_style.dart.dart';
 
 class TextFieldController extends TextEditingController {
   List<InlineSpan> spans = [];
-  Map<TextRange, InlineSpan> map = {};
   String previousText = '';
-  TextSelection previousSelection = TextSelection.collapsed(offset: 0);
+  TextEditorStyle previousStyle = TextEditorStyle();
   @override
   TextSpan buildTextSpan({
     required BuildContext context,
     TextStyle? style,
     required bool withComposing,
   }) {
-    final TextStyle currentStyle = style!.copyWith(
-      fontWeight: context.read<EditorCubit>().isBold
-          ? FontWeight.bold
-          : FontWeight.normal,
-      fontStyle: context.read<EditorCubit>().isItalic
-          ? FontStyle.italic
-          : FontStyle.normal,
-      decoration: context.read<EditorCubit>().isUnderlined
-          ? TextDecoration.underline
-          : TextDecoration.none,
+    final TextEditorStyle currentStyle =
+        EditorTextStyleToTextStyle.textStyleToEditorTextStyle(style!).copyWith(
+      isBold: context.read<EditorCubit>().isBold,
+      isItalic: context.read<EditorCubit>().isItalic,
+      isUnderlined: context.read<EditorCubit>().isUnderlined,
     );
 
     assert(
       !value.composing.isValid || !withComposing || value.isComposingRangeValid,
     );
-    // if (text != previousText) {
-    //   _calculateChanges(
-    //       previousSelection, selection, previousText, text, currentStyle);
-    // }
+
     if (text != previousText) {
-      _compareStrings(previousText, text, currentStyle);
+      _compareStrings(
+        previousText,
+        text,
+        EditorTextStyleToTextStyle.editorTextStyleToTextStyle(currentStyle),
+      );
+    } else if (currentStyle != previousStyle && !selection.isCollapsed) {
+      _changeStaticStyle(
+        EditorTextStyleToTextStyle.editorTextStyleToTextStyle(currentStyle),
+        selection,
+      );
     }
     previousText = text;
-    previousSelection = selection;
-    // if (spans.isNotEmpty) {
-    //   return spans[0] as TextSpan;
-    // }
+    previousStyle = currentStyle;
+
     return TextSpan(children: List.from(spans));
-
-    // If the composing range is out of range for the current text, ignore it to
-    // preserve the tree integrity, otherwise in release mode a RangeError will
-    // be thrown and this EditableText will be built with a broken subtree.
-    final bool composingRegionOutOfRange =
-        !value.isComposingRangeValid || !withComposing;
-
-    if (composingRegionOutOfRange) {
-      return TextSpan(style: style, text: text);
-    }
-
-    final TextStyle composingStyle =
-        style?.merge(const TextStyle(decoration: TextDecoration.underline)) ??
-            const TextStyle(decoration: TextDecoration.underline);
-    return TextSpan(
-      style: style,
-      children: <TextSpan>[
-        TextSpan(text: value.composing.textBefore(value.text)),
-        TextSpan(
-          style: composingStyle,
-          text: value.composing.textInside(value.text),
-        ),
-        TextSpan(text: value.composing.textAfter(value.text)),
-      ],
-    );
   }
 
-  /// Calculates the changes between the previous state and the current state.
+  void _changeStaticStyle(TextStyle style, TextSelection selection) {
+    _addString('', selection.start, style, selection.end);
+    _addString(
+      text.substring(selection.start, selection.end),
+      selection.start,
+      style,
+    );
+
+    // int length = 0;
+    // for (int i = 0; i < spans.length; i++) {
+    //   length += spans[i].toPlainText().length;
+    // }
+  }
+
+  /// Compares two strings and generates a list of differences between them.
   ///
-  /// It checks if there is any text added or removed and updates the spans
-  /// accordingly.
+  /// The function uses the [DiffMatchPatch] library to calculate the differences
+  /// between the [oldText] and [newText] strings. It iterates over the list of
+  /// [Diff] objects and applies the appropriate operation based on the [Diff]
+  /// operation type. If the operation is [DIFF_INSERT], it calls the
+  /// [_addString] function to add the text to the result. If the operation is
+  /// [DIFF_DELETE], it calls the [_addString] function with an empty string
+  /// and the range of characters to be deleted. If the operation is [DIFF_EQUAL],
+  /// it does nothing. The function updates the [startIndex] based on the length
+  /// of the text for each operation.
   ///
   /// Parameters:
-  /// - previousSelection: The previous selection of the text.
-  /// - selection: The current selection of the text.
-  /// - previousText: The previous text.
-  /// - text: The current text.
-  /// - style: The style of the text.
-  void _calculateChanges(
-      TextSelection previousSelection,
-      TextSelection selection,
-      String previousText,
-      String text,
-      TextStyle style) {
-    // Check if the previous selection was collapsed and there is no text added
-    if (previousSelection.start >= 0 &&
-        previousSelection.end >= 0 &&
-        selection.start >= 0 &&
-        selection.end >= 0) {
-      if (previousSelection.isCollapsed) {
-        if (previousText.length > text.length) {
-          // Text was removed
-          // print(
-          //   "single remove: ${previousText.substring(selection.end, previousSelection.start)}",
-          // );
-          // _addString('', selection.end, style, previousSelection.start);
-        } else {
-          String textToAdd =
-              text.substring(previousSelection.start, selection.end);
-          int length = 0;
-          for (var i = 0; i < spans.length; i++) {
-            var element = spans[i];
-            length += element.toPlainText().length;
-            if (i < spans.length - 1 &&
-                length - spans[i - 1].toPlainText().length <= selection.start &&
-                length >= length) {}
-          }
-          // _addString(textToAdd, previousSelection.start, style);
-          // print(
-          //   "single add: $textToAdd",
-          // );
-        }
-      } else {
-        int textDelta = (previousText.length - text.length).abs();
-        if (previousText.length > text.length) {
-          // Text was removed
-          // _addString(text.substring(previousSelection.start, selection.end),
-          //     previousSelection.start, style, previousSelection.end);
-
-          // print(
-          //   "multi remove: ${previousText.substring(previousSelection.start, previousSelection.end)}",
-          // );
-          // print(
-          //   "multi add: ${text.substring(previousSelection.start, previousSelection.end + textDelta)}",
-          // );
-        } else {
-          // Text was added
-          // print(
-          //   "multi add: ${text.substring(previousSelection.start, previousSelection.end + textDelta)}",
-          // );
-        }
-      }
-    }
-  }
-
+  /// - [oldText]: The original string to compare.
+  /// - [newText]: The new string to compare.
+  /// - [style]: The optional [TextStyle] to apply to the added text.
+  ///
+  /// Returns: None.
   void _compareStrings(String oldText, String newText, [TextStyle? style]) {
     final dmp = DiffMatchPatch();
+    // compares two strings and returns insertions and deletions
     List<Diff> diffs = dmp.diff(oldText, newText);
     int startIndex = 0;
     for (Diff diff in diffs) {
       switch (diff.operation) {
         case DIFF_INSERT:
-          print("Added: ${diff.text}");
           _addString(diff.text, startIndex, style);
           break;
         case DIFF_DELETE:
-          print("Removed: ${diff.text}");
           _addString('', startIndex, style, startIndex + diff.text.length);
           break;
         case DIFF_EQUAL:
-          print("Unchanged: ${diff.text}");
           break;
       }
       if (diff.operation != DIFF_DELETE) {
@@ -161,8 +98,22 @@ class TextFieldController extends TextEditingController {
     }
   }
 
+  /// Adds a string to the list of spans at the specified start index.
+  ///
+  /// The [text] parameter is the string to be added.
+  /// The [start] parameter is the index at which the string should be added.
+  /// The [currentStyle] parameter is an optional text style to be applied to the added string.
+  /// The [end] parameter is an optional index at which the added string should end.
+  ///
+  /// If the spans list is empty, a new span with the specified [text] and [currentStyle] is added.
+  /// If the [start] index falls within or before an existing span, the [text] is inserted into the span.
+  /// If the [currentStyle] is different from the style of the existing span, the existing span is split into three parts:
+  /// the part before the [start] index, the inserted [text], and the part after the [start] index.
+  /// The inserted [text] is added as a new span with the specified [currentStyle].
+  /// If the [start] index falls after the last span, a new span with the specified [text] and [currentStyle] is added.
+  ///
+  /// The function does not return anything.
   void _addString(String text, int start, [TextStyle? currentStyle, int? end]) {
-    print(start);
     int length = 0;
     int previousLength = 0;
     if (spans.isEmpty) {
@@ -172,43 +123,39 @@ class TextFieldController extends TextEditingController {
     for (int i = 0; i < spans.length; i++) {
       previousLength = length;
       length += spans[i].toPlainText().length;
-      if (start == 0) {
-        // before span
+      // new text should be inserted inside or before a span
+      if (start >= length - spans[i].toPlainText().length && start < length) {
         if (currentStyle == spans[i].style) {
+          String textBefore =
+              spans[i].toPlainText().substring(0, start - previousLength);
+          String textAfter = spans[i].toPlainText().substring(
+                end != null ? end - previousLength : start - previousLength,
+              );
           spans[i] = TextSpan(
-              text: text + spans[i].toPlainText().substring(end ?? 0),
-              style: currentStyle);
-          return;
-        }
-      } else if (start >= length - spans[i].toPlainText().length &&
-          start < length) {
-        if (currentStyle == spans[i].style) {
-          spans[i] = TextSpan(
-              text:
-                  spans[i].toPlainText().substring(0, start - previousLength) +
-                      text +
-                      spans[i].toPlainText().substring(end != null
-                          ? end - previousLength
-                          : start - previousLength),
-              style: currentStyle);
+            text: textBefore + text + textAfter,
+            style: currentStyle,
+          );
           return;
         } else {
           final wrappingStyle = spans[i].style;
           final textBefore =
               spans[i].toPlainText().substring(0, start - previousLength);
           final textAfter = spans[i].toPlainText().substring(
-              end != null ? end - previousLength : start - previousLength);
+                end != null ? end - previousLength : start - previousLength,
+              );
           spans[i] = TextSpan(text: textBefore, style: wrappingStyle);
           spans.insert(i + 1, TextSpan(text: text, style: currentStyle));
           spans.insert(i + 2, TextSpan(text: textAfter, style: wrappingStyle));
           return;
         }
-        // in span
-      } else if (i == spans.length - 1) {
-        // after span
+      }
+      // new text should get inserted after a span
+      else if (i == spans.length - 1) {
         if (currentStyle == spans[i].style) {
           spans[i] = TextSpan(
-              text: spans[i].toPlainText() + text, style: currentStyle);
+            text: spans[i].toPlainText() + text,
+            style: currentStyle,
+          );
           return;
         } else {
           spans.add(TextSpan(text: text, style: currentStyle));
@@ -216,77 +163,5 @@ class TextFieldController extends TextEditingController {
         }
       }
     }
-  }
-
-  /// Calculates the changes between two texts.
-  ///
-  /// This function takes in two strings, [oldText] and [newText], and calculates the changes between them.
-  /// The changes are represented as a list of maps, where each map contains the following keys:
-  /// - 'type': The type of change, which can be 'remove' or 'add'.
-  /// - 'text': The text that was removed or added.
-  /// - 'start': The starting index of the change.
-  ///
-  /// The function iterates over the characters of both texts simultaneously, comparing them. If a difference is found,
-  /// it calculates the extent of the difference and adds a map to the [changes] list.
-  ///
-  /// If there are remaining characters in either text after the iteration, a map is added to the [changes] list
-  /// to represent the remaining text.
-  ///
-  /// The function returns the list of changes.
-  List<Map<String, dynamic>> _calcukklateChanges(
-      String oldText, String newText) {
-    List<Map<String, dynamic>> changes = [];
-    int oldIndex = 0, newIndex = 0;
-
-    while (oldIndex < oldText.length && newIndex < newText.length) {
-      if (oldText[oldIndex] != newText[newIndex]) {
-        int startOld = oldIndex, startNew = newIndex;
-
-        // Find the extent of the difference
-        while (oldIndex < oldText.length &&
-            newIndex < newText.length &&
-            oldText[oldIndex] != newText[newIndex]) {
-          oldIndex++;
-          newIndex++;
-        }
-
-        if (startOld < oldIndex) {
-          changes.add({
-            'type': 'remove',
-            'text': oldText.substring(startOld, oldIndex),
-            'start': startOld,
-          });
-        }
-
-        if (startNew < newIndex) {
-          changes.add({
-            'type': 'add',
-            'text': newText.substring(startNew, newIndex),
-            'start': startNew,
-          });
-        }
-      } else {
-        oldIndex++;
-        newIndex++;
-      }
-    }
-
-    if (oldIndex < oldText.length) {
-      changes.add({
-        'type': 'remove',
-        'text': oldText.substring(oldIndex),
-        'start': oldIndex,
-      });
-    }
-
-    if (newIndex < newText.length) {
-      changes.add({
-        'type': 'add',
-        'text': newText.substring(newIndex),
-        'start': newIndex,
-      });
-    }
-
-    return changes;
   }
 }
