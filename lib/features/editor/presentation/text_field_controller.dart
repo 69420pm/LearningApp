@@ -119,13 +119,16 @@ class TextFieldController extends TextEditingController {
     // compares two strings and returns insertions and deletions
     List<Diff> diffs = dmp.diff(oldText, newText);
     int startIndex = 0;
+    int changeStart = -1;
+    int changeEnd = -1;
+
     for (Diff diff in diffs) {
       switch (diff.operation) {
         case DIFF_INSERT:
           if (startIndex != selection.start - diff.text.length) {
             print("offset");
           }
-          _addString(diff.text, selection.start - diff.text.length, style);
+          _addString(diff.text, startIndex, style);
           break;
         case DIFF_DELETE:
           // _addString('', startIndex, style, startIndex + diff.text.length);
@@ -166,9 +169,10 @@ class TextFieldController extends TextEditingController {
           start = length;
         } else {
           spans[i] = TextSpan(
-            text: spans[i].toPlainText().substring(
-                  end - previousLength,
-                ),
+            text: spans[i].toPlainText().substring(0, start - previousLength) +
+                spans[i].toPlainText().substring(
+                      end - previousLength,
+                    ),
             style: spans[i].style,
           );
           return;
