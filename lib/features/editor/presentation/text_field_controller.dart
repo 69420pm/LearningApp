@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:diff_match_patch/diff_match_patch.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,6 +32,7 @@ class TextFieldController extends TextEditingController {
       _compareStrings(
         previousText,
         text,
+        selection,
         EditorTextStyleToTextStyle.editorTextStyleToTextStyle(currentStyle),
       );
     } else if (currentStyle != previousStyle && !selection.isCollapsed) {
@@ -40,17 +43,69 @@ class TextFieldController extends TextEditingController {
     }
     previousText = text;
     previousStyle = currentStyle;
+    print(spans.length);
 
     return TextSpan(children: List.from(spans));
   }
 
   void _changeStaticStyle(TextStyle style, TextSelection selection) {
-    _addString('', selection.start, style, selection.end);
-    _addString(
-      text.substring(selection.start, selection.end),
-      selection.start,
-      style,
-    );
+    int selectionStart = selection.start;
+    int selectionEnd = selection.end;
+    int length = 0;
+    int previousLength = 0;
+    for (int i = 0; i < spans.length; i++) {
+      previousLength = length;
+      length += spans[i].toPlainText().length;
+      if (length >= selectionStart) {
+        // selection goes over current span
+        if (length <= selection.end) {
+          spans[i] = TextSpan(
+            text: spans[i].toPlainText().substring(
+                  0,
+                  selectionStart - previousLength,
+                ),
+            style: spans[i].style,
+          );
+          spans.insert(
+            i + 1,
+            TextSpan(
+              text: spans[i].toPlainText().substring(
+                    selectionStart - previousLength,
+                  ),
+              style: spans[i].style!.merge(style),
+            ),
+          );
+
+          selectionStart = length;
+        } else {
+          spans[i] = TextSpan(
+            text: spans[i].toPlainText().substring(
+                  0,
+                  selectionStart - previousLength,
+                ),
+            style: spans[i].style,
+          );
+          spans.insert(
+              i + 1,
+              TextSpan(
+                text: spans[i].toPlainText().substring(
+                      selectionStart - previousLength,
+                      selection.end - previousLength,
+                    ),
+                style: spans[i].style!.merge(style),
+              ));
+          spans.insert(
+              i + 2,
+              TextSpan(
+                text: spans[i].toPlainText().substring(
+                      selection.end - previousLength,
+                    ),
+                style: spans[i].style,
+              ));
+          return;
+        }
+      }
+    }
 
     // int length = 0;
     // for (int i = 0; i < spans.length; i++) {
@@ -58,25 +113,8 @@ class TextFieldController extends TextEditingController {
     // }
   }
 
-  /// Compares two strings and generates a list of differences between them.
-  ///
-  /// The function uses the [DiffMatchPatch] library to calculate the differences
-  /// between the [oldText] and [newText] strings. It iterates over the list of
-  /// [Diff] objects and applies the appropriate operation based on the [Diff]
-  /// operation type. If the operation is [DIFF_INSERT], it calls the
-  /// [_addString] function to add the text to the result. If the operation is
-  /// [DIFF_DELETE], it calls the [_addString] function with an empty string
-  /// and the range of characters to be deleted. If the operation is [DIFF_EQUAL],
-  /// it does nothing. The function updates the [startIndex] based on the length
-  /// of the text for each operation.
-  ///
-  /// Parameters:
-  /// - [oldText]: The original string to compare.
-  /// - [newText]: The new string to compare.
-  /// - [style]: The optional [TextStyle] to apply to the added text.
-  ///
-  /// Returns: None.
-  void _compareStrings(String oldText, String newText, [TextStyle? style]) {
+  void _compareStrings(String oldText, String newText, TextSelection selection,
+      [TextStyle? style]) {
     final dmp = DiffMatchPatch();
     // compares two strings and returns insertions and deletions
     List<Diff> diffs = dmp.diff(oldText, newText);
@@ -84,10 +122,15 @@ class TextFieldController extends TextEditingController {
     for (Diff diff in diffs) {
       switch (diff.operation) {
         case DIFF_INSERT:
-          _addString(diff.text, startIndex, style);
+          if (startIndex != selection.start - diff.text.length) {
+            print("offset");
+          }
+          _addString(diff.text, selection.start - diff.text.length, style);
           break;
         case DIFF_DELETE:
-          _addString('', startIndex, style, startIndex + diff.text.length);
+          // _addString('', startIndex, style, startIndex + diff.text.length);
+          //! sometimes startindex is off when using autocompletion
+          _removeString(startIndex, startIndex + diff.text.length);
           break;
         case DIFF_EQUAL:
           break;
@@ -98,21 +141,55 @@ class TextFieldController extends TextEditingController {
     }
   }
 
-  /// Adds a string to the list of spans at the specified start index.
-  ///
-  /// The [text] parameter is the string to be added.
-  /// The [start] parameter is the index at which the string should be added.
-  /// The [currentStyle] parameter is an optional text style to be applied to the added string.
-  /// The [end] parameter is an optional index at which the added string should end.
-  ///
-  /// If the spans list is empty, a new span with the specified [text] and [currentStyle] is added.
-  /// If the [start] index falls within or before an existing span, the [text] is inserted into the span.
-  /// If the [currentStyle] is different from the style of the existing span, the existing span is split into three parts:
-  /// the part before the [start] index, the inserted [text], and the part after the [start] index.
-  /// The inserted [text] is added as a new span with the specified [currentStyle].
-  /// If the [start] index falls after the last span, a new span with the specified [text] and [currentStyle] is added.
-  ///
-  /// The function does not return anything.
+  void _removeString(int start, int end) {
+    int length = 0;
+    int previousLength = 0;
+    for (int i = 0; i < spans.length; i++) {
+      previousLength = length;
+      length += spans[i].toPlainText().length;
+      if (length >= start) {
+        // selection goes over current span
+        if (length <= end) {
+          if (start - previousLength > 0) {
+            spans[i] = TextSpan(
+              text: spans[i].toPlainText().substring(
+                    0,
+                    start - previousLength,
+                  ),
+              style: spans[i].style,
+            );
+          } else {
+            spans.removeAt(i);
+            i -= 1;
+          }
+
+          start = length;
+        } else {
+          spans[i] = TextSpan(
+            text: spans[i].toPlainText().substring(
+                  end - previousLength,
+                ),
+            style: spans[i].style,
+          );
+          return;
+          // try {
+          //   spans.insert(
+          //       i + 2,
+          //       TextSpan(
+          //         text: spans[i].toPlainText().substring(
+          //               end - previousLength,
+          //             ),
+          //         style: spans[i].style,
+          //       ));
+          //   return;
+          // } catch (e) {
+          //   print(e);
+          // }
+        }
+      }
+    }
+  }
+
   void _addString(String text, int start, [TextStyle? currentStyle, int? end]) {
     int length = 0;
     int previousLength = 0;
@@ -124,8 +201,11 @@ class TextFieldController extends TextEditingController {
       previousLength = length;
       length += spans[i].toPlainText().length;
       // new text should be inserted inside or before a span
-      if (start >= length - spans[i].toPlainText().length && start < length) {
-        if (currentStyle == spans[i].style) {
+      if (start >= previousLength && start <= length) {
+        if (EditorTextStyleToTextStyle.textStyleToEditorTextStyle(
+                currentStyle!) ==
+            EditorTextStyleToTextStyle.textStyleToEditorTextStyle(
+                spans[i].style!)) {
           String textBefore =
               spans[i].toPlainText().substring(0, start - previousLength);
           String textAfter = spans[i].toPlainText().substring(
@@ -140,18 +220,34 @@ class TextFieldController extends TextEditingController {
           final wrappingStyle = spans[i].style;
           final textBefore =
               spans[i].toPlainText().substring(0, start - previousLength);
-          final textAfter = spans[i].toPlainText().substring(
-                end != null ? end - previousLength : start - previousLength,
-              );
-          spans[i] = TextSpan(text: textBefore, style: wrappingStyle);
-          spans.insert(i + 1, TextSpan(text: text, style: currentStyle));
-          spans.insert(i + 2, TextSpan(text: textAfter, style: wrappingStyle));
+          try {
+            final textAfter = spans[i].toPlainText().substring(
+                  end != null ? end - previousLength : start - previousLength,
+                );
+            if (textBefore.isNotEmpty) {
+              spans[i] = TextSpan(text: textBefore, style: wrappingStyle);
+              spans.insert(i + 1, TextSpan(text: text, style: currentStyle));
+            } else {
+              spans[i] = TextSpan(text: text, style: currentStyle);
+            }
+
+            if (textAfter.isNotEmpty) {
+              spans.insert(
+                  i + 2, TextSpan(text: textAfter, style: wrappingStyle));
+            }
+          } catch (e) {
+            print("err");
+          }
+
           return;
         }
       }
       // new text should get inserted after a span
       else if (i == spans.length - 1) {
-        if (currentStyle == spans[i].style) {
+        if (EditorTextStyleToTextStyle.textStyleToEditorTextStyle(
+                currentStyle!) ==
+            EditorTextStyleToTextStyle.textStyleToEditorTextStyle(
+                spans[i].style!)) {
           spans[i] = TextSpan(
             text: spans[i].toPlainText() + text,
             style: currentStyle,
