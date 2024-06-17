@@ -19,9 +19,10 @@ class TextFieldController extends TextEditingController {
   }) {
     final TextEditorStyle currentStyle =
         EditorTextStyleToTextStyle.textStyleToEditorTextStyle(style!).copyWith(
-      isBold: context.read<EditorCubit>().isBold,
-      isItalic: context.read<EditorCubit>().isItalic,
-      isUnderlined: context.read<EditorCubit>().isUnderlined,
+      isBold: context.read<EditorCubit>().isBold == true ? true : null,
+      isItalic: context.read<EditorCubit>().isItalic == true ? true : null,
+      isUnderlined:
+          context.read<EditorCubit>().isUnderlined == true ? true : null,
     );
 
     assert(
@@ -59,49 +60,84 @@ class TextFieldController extends TextEditingController {
       if (length >= selectionStart) {
         // selection goes over current span
         if (length <= selection.end) {
-          spans[i] = TextSpan(
-            text: spans[i].toPlainText().substring(
-                  0,
+          String currentText = spans[i].toPlainText();
+          if (selectionStart - previousLength > 0) {
+            spans[i] = TextSpan(
+              text: currentText.substring(
+                0,
+                selectionStart - previousLength,
+              ),
+              style: spans[i].style,
+            );
+            spans.insert(
+              i + 1,
+              TextSpan(
+                text: currentText.substring(
                   selectionStart - previousLength,
                 ),
-            style: spans[i].style,
-          );
-          spans.insert(
-            i + 1,
-            TextSpan(
-              text: spans[i].toPlainText().substring(
-                    selectionStart - previousLength,
-                  ),
+                style: spans[i].style!.merge(style),
+              ),
+            );
+            i += 1;
+          } else {
+            spans[i] = TextSpan(
+              text: currentText.substring(
+                selectionStart - previousLength,
+              ),
               style: spans[i].style!.merge(style),
-            ),
-          );
+            );
+          }
 
           selectionStart = length;
         } else {
-          spans[i] = TextSpan(
-            text: spans[i].toPlainText().substring(
-                  0,
-                  selectionStart - previousLength,
-                ),
-            style: spans[i].style,
-          );
-          spans.insert(
+          int addCount = 0;
+          String currentText = spans[i].toPlainText();
+          TextStyle currentStyle = spans[i].style!;
+          if (selectionStart - previousLength > 0) {
+            spans[i] = TextSpan(
+              text: currentText.substring(
+                0,
+                selectionStart - previousLength,
+              ),
+              style: spans[i].style,
+            );
+            spans.insert(
               i + 1,
               TextSpan(
-                text: spans[i].toPlainText().substring(
-                      selectionStart - previousLength,
-                      selection.end - previousLength,
-                    ),
+                text: currentText.substring(
+                  selectionStart - previousLength,
+                  selection.end - previousLength,
+                ),
                 style: spans[i].style!.merge(style),
-              ));
-          spans.insert(
-              i + 2,
+              ),
+            );
+            addCount += 2;
+          } else {
+            spans[i] = TextSpan(
+              text: currentText.substring(
+                selectionStart - previousLength,
+                selection.end - previousLength,
+              ),
+              style: spans[i].style!.merge(style),
+            );
+            addCount += 1;
+          }
+
+          if (selection.end - previousLength != currentText.length) {
+            spans.insert(
+              i + addCount,
               TextSpan(
-                text: spans[i].toPlainText().substring(
-                      selection.end - previousLength,
-                    ),
-                style: spans[i].style,
-              ));
+                text: currentText.substring(
+                  selection.end - previousLength,
+                ),
+                style: currentStyle,
+              ),
+            );
+            addCount += 1;
+          }
+
+          i += addCount - 1;
+
           return;
         }
       }
@@ -113,15 +149,20 @@ class TextFieldController extends TextEditingController {
     // }
   }
 
-  void _compareStrings(String oldText, String newText, TextSelection selection,
-      [TextStyle? style]) {
+  void _compareStrings(
+    String oldText,
+    String newText,
+    TextSelection selection, [
+    TextStyle? style,
+  ]) {
     final dmp = DiffMatchPatch();
     // compares two strings and returns insertions and deletions
     List<Diff> diffs = dmp.diff(oldText, newText);
     int startIndex = 0;
     int changeStart = -1;
     int changeEnd = -1;
-
+    //! bug when using equal characters with different formatting, the dmp.diff function
+    //! can't detect this, because it doesn't know the formatting
     for (Diff diff in diffs) {
       switch (diff.operation) {
         case DIFF_INSERT:
@@ -131,8 +172,6 @@ class TextFieldController extends TextEditingController {
           _addString(diff.text, startIndex, style);
           break;
         case DIFF_DELETE:
-          // _addString('', startIndex, style, startIndex + diff.text.length);
-          //! sometimes startindex is off when using autocompletion
           _removeString(startIndex, startIndex + diff.text.length);
           break;
         case DIFF_EQUAL:
@@ -207,9 +246,11 @@ class TextFieldController extends TextEditingController {
       // new text should be inserted inside or before a span
       if (start >= previousLength && start <= length) {
         if (EditorTextStyleToTextStyle.textStyleToEditorTextStyle(
-                currentStyle!) ==
+              currentStyle!,
+            ) ==
             EditorTextStyleToTextStyle.textStyleToEditorTextStyle(
-                spans[i].style!)) {
+              spans[i].style!,
+            )) {
           String textBefore =
               spans[i].toPlainText().substring(0, start - previousLength);
           String textAfter = spans[i].toPlainText().substring(
@@ -237,7 +278,9 @@ class TextFieldController extends TextEditingController {
 
             if (textAfter.isNotEmpty) {
               spans.insert(
-                  i + 2, TextSpan(text: textAfter, style: wrappingStyle));
+                i + 2,
+                TextSpan(text: textAfter, style: wrappingStyle),
+              );
             }
           } catch (e) {
             print("err");
@@ -249,9 +292,11 @@ class TextFieldController extends TextEditingController {
       // new text should get inserted after a span
       else if (i == spans.length - 1) {
         if (EditorTextStyleToTextStyle.textStyleToEditorTextStyle(
-                currentStyle!) ==
+              currentStyle!,
+            ) ==
             EditorTextStyleToTextStyle.textStyleToEditorTextStyle(
-                spans[i].style!)) {
+              spans[i].style!,
+            )) {
           spans[i] = TextSpan(
             text: spans[i].toPlainText() + text,
             style: currentStyle,
