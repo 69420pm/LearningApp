@@ -10,25 +10,33 @@ class EditorCubit extends Cubit<EditorState> {
   bool isItalic = false;
   bool isUnderlined = false;
 
-  void changeFormatting(Set<FormatType> set) {
-    if (set.contains(FormatType.bold)) {
+  LineFormatType currentLineFormat = LineFormatType.body;
+
+  void changeFormatting(Set<TextFormatType> set) {
+    if (set.contains(TextFormatType.bold)) {
       isBold = true;
     } else {
       isBold = false;
     }
 
-    if (set.contains(FormatType.italic)) {
+    if (set.contains(TextFormatType.italic)) {
       isItalic = true;
     } else {
       isItalic = false;
     }
 
-    if (set.contains(FormatType.underlined)) {
+    if (set.contains(TextFormatType.underlined)) {
       isUnderlined = true;
     } else {
       isUnderlined = false;
     }
   }
+
+  void changeLineFormat(LineFormatType lineFormatType) {
+    currentLineFormat = lineFormatType;
+  }
 }
 
-enum FormatType { bold, italic, underlined, strikethrough }
+enum TextFormatType { bold, italic, underlined, strikethrough }
+
+enum LineFormatType { heading, subheading, body, monostyled }

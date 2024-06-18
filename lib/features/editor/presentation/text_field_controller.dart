@@ -3,27 +3,35 @@ import 'dart:math';
 import 'package:diff_match_patch/diff_match_patch.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:learning_app/features/editor/domain/entities/text_editor_style.dart';
 import 'package:learning_app/features/editor/presentation/cubit/editor_cubit.dart';
-import 'package:learning_app/features/editor/presentation/helper/editor_text_style_to_text_style.dart.dart';
 
 class TextFieldController extends TextEditingController {
   List<InlineSpan> spans = [];
   String previousText = '';
-  TextEditorStyle previousStyle = TextEditorStyle();
+  TextStyle previousStyle = TextStyle();
   @override
   TextSpan buildTextSpan({
     required BuildContext context,
     TextStyle? style,
     required bool withComposing,
   }) {
-    final TextEditorStyle currentStyle =
-        EditorTextStyleToTextStyle.textStyleToEditorTextStyle(style!).copyWith(
-      isBold: context.read<EditorCubit>().isBold == true ? true : null,
-      isItalic: context.read<EditorCubit>().isItalic == true ? true : null,
-      isUnderlined:
-          context.read<EditorCubit>().isUnderlined == true ? true : null,
+    final TextStyle currentStyle = style!.copyWith(
+      fontWeight:
+          context.read<EditorCubit>().isBold == true ? FontWeight.bold : null,
+      fontStyle: context.read<EditorCubit>().isItalic == true
+          ? FontStyle.italic
+          : null,
+      decoration: context.read<EditorCubit>().isUnderlined == true
+          ? TextDecoration.underline
+          : null,
     );
+    // final TextEditorStyle currentStyle =
+    //     EditorTextStyleToTextStyle.textStyleToEditorTextStyle(style!).copyWith(
+    //   isBold: context.read<EditorCubit>().isBold == true ? true : null,
+    //   isItalic: context.read<EditorCubit>().isItalic == true ? true : null,
+    //   isUnderlined:
+    //       context.read<EditorCubit>().isUnderlined == true ? true : null,
+    // );
 
     assert(
       !value.composing.isValid || !withComposing || value.isComposingRangeValid,
@@ -34,18 +42,37 @@ class TextFieldController extends TextEditingController {
         previousText,
         text,
         selection,
-        EditorTextStyleToTextStyle.editorTextStyleToTextStyle(currentStyle),
+        currentStyle,
       );
     } else if (currentStyle != previousStyle && !selection.isCollapsed) {
       _changeStaticStyle(
-        EditorTextStyleToTextStyle.editorTextStyleToTextStyle(currentStyle),
+        TextStyle(
+          fontWeight: context.read<EditorCubit>().isBold !=
+                  (previousStyle.fontWeight == FontWeight.bold)
+              ? context.read<EditorCubit>().isBold
+                  ? FontWeight.bold
+                  : FontWeight.normal
+              : null,
+          fontStyle: context.read<EditorCubit>().isItalic !=
+                  (previousStyle.fontStyle == FontStyle.italic)
+              ? context.read<EditorCubit>().isItalic
+                  ? FontStyle.italic
+                  : FontStyle.normal
+              : null,
+          decoration: context.read<EditorCubit>().isUnderlined !=
+                  (previousStyle.decoration == TextDecoration.underline)
+              ? context.read<EditorCubit>().isUnderlined
+                  ? TextDecoration.underline
+                  : TextDecoration.none
+              : null,
+        ),
         selection,
       );
+      _reduceTextSpans();
     }
     previousText = text;
     previousStyle = currentStyle;
     print(spans.length);
-
     return TextSpan(children: List.from(spans));
   }
 
@@ -57,9 +84,9 @@ class TextFieldController extends TextEditingController {
     for (int i = 0; i < spans.length; i++) {
       previousLength = length;
       length += spans[i].toPlainText().length;
-      if (length >= selectionStart) {
+      if (length > selectionStart) {
         // selection goes over current span
-        if (length <= selection.end) {
+        if (length < selection.end) {
           String currentText = spans[i].toPlainText();
           if (selectionStart - previousLength > 0) {
             spans[i] = TextSpan(
@@ -169,6 +196,9 @@ class TextFieldController extends TextEditingController {
           if (startIndex != selection.start - diff.text.length) {
             print("offset");
           }
+          if (diff.text.contains('\n')) {
+            print("newline");
+          }
           _addString(diff.text, startIndex, style);
           break;
         case DIFF_DELETE:
@@ -245,12 +275,7 @@ class TextFieldController extends TextEditingController {
       length += spans[i].toPlainText().length;
       // new text should be inserted inside or before a span
       if (start >= previousLength && start <= length) {
-        if (EditorTextStyleToTextStyle.textStyleToEditorTextStyle(
-              currentStyle!,
-            ) ==
-            EditorTextStyleToTextStyle.textStyleToEditorTextStyle(
-              spans[i].style!,
-            )) {
+        if (currentStyle == spans[i].style) {
           String textBefore =
               spans[i].toPlainText().substring(0, start - previousLength);
           String textAfter = spans[i].toPlainText().substring(
@@ -291,12 +316,7 @@ class TextFieldController extends TextEditingController {
       }
       // new text should get inserted after a span
       else if (i == spans.length - 1) {
-        if (EditorTextStyleToTextStyle.textStyleToEditorTextStyle(
-              currentStyle!,
-            ) ==
-            EditorTextStyleToTextStyle.textStyleToEditorTextStyle(
-              spans[i].style!,
-            )) {
+        if (currentStyle == spans[i].style) {
           spans[i] = TextSpan(
             text: spans[i].toPlainText() + text,
             style: currentStyle,
@@ -306,6 +326,25 @@ class TextFieldController extends TextEditingController {
           spans.add(TextSpan(text: text, style: currentStyle));
           return;
         }
+      }
+    }
+  }
+
+  void _reduceTextSpans() {
+    if (spans.length <= 1) {
+      return;
+    }
+    for (int i = 1; i < spans.length; i++) {
+      final currentStyle = spans[i].style;
+      final previousStyle = spans[i - 1].style;
+
+      if (currentStyle == previousStyle) {
+        spans[i - 1] = TextSpan(
+          text: spans[i - 1].toPlainText() + spans[i].toPlainText(),
+          style: currentStyle,
+        );
+        spans.removeAt(i);
+        i -= 1;
       }
     }
   }
