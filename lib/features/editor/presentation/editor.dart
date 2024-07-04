@@ -4,7 +4,6 @@ import 'package:learning_app/features/editor/presentation/cubit/editor_cubit.dar
 import 'package:learning_app/features/editor/presentation/editor_row.dart';
 import 'package:learning_app/features/editor/presentation/editor_text_field.dart';
 import 'package:learning_app/features/editor/presentation/text_field_controller.dart';
-import 'package:learning_app/features/editor/presentation/text_formatter.dart';
 import 'package:learning_app/injection_container.dart';
 
 class EditorPage extends StatelessWidget {
@@ -19,14 +18,8 @@ class EditorPage extends StatelessWidget {
   }
 }
 
-class _EditorView extends StatefulWidget {
-  _EditorView({super.key});
-
-  @override
-  State<_EditorView> createState() => _EditorViewState();
-}
-
-class _EditorViewState extends State<_EditorView> {
+class _EditorView extends StatelessWidget {
+  double cursorHeight = 16;
   TextFieldController controller = TextFieldController();
 
   @override
@@ -35,18 +28,26 @@ class _EditorViewState extends State<_EditorView> {
       appBar: AppBar(),
       body: Column(
         children: [
-          TextField(
-            keyboardType: TextInputType.multiline,
-            maxLines: null,
-            controller: controller,
-            inputFormatters: [TextFormatter()],
+          BlocBuilder<EditorCubit, EditorState>(
+            builder: (context, state) {
+              switch (context.read<EditorCubit>().currentLineFormat) {
+                case LineFormatType.heading:
+                  cursorHeight = 26;
+                  break;
+                default:
+                  cursorHeight = 16;
+                  break;
+              }
+              return TextField(
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                controller: controller,
+                cursorHeight: cursorHeight,
+              );
+            },
           ),
           Expanded(child: Container()),
-          EditorRow(
-            onFormatChanged: () {
-              setState(() {});
-            },
-          )
+          EditorRow()
         ],
       ),
     );

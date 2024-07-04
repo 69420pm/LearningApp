@@ -30,10 +30,12 @@ class EditorCubit extends Cubit<EditorState> {
     } else {
       isUnderlined = false;
     }
+    emit(EditorTextFormattingChanged(textFormatSelection: set));
   }
 
   void changeLineFormat(LineFormatType lineFormatType) {
     currentLineFormat = lineFormatType;
+    emit(EditorLineFormattingChanged(lineFormatType: lineFormatType));
   }
 }
 
