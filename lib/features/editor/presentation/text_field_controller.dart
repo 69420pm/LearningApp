@@ -24,19 +24,11 @@ class TextFieldController extends TextEditingController {
     TextStyle? style,
     required bool withComposing,
   }) {
-    // final TextEditorStyle currentStyle =
-    //     EditorTextStyleToTextStyle.textStyleToEditorTextStyle(style!).copyWith(
-    //   isBold: context.read<EditorCubit>().isBold == true ? true : null,
-    //   isItalic: context.read<EditorCubit>().isItalic == true ? true : null,
-    //   isUnderlined:
-    //       context.read<EditorCubit>().isUnderlined == true ? true : null,
-    // );
-
     assert(
       !value.composing.isValid || !withComposing || value.isComposingRangeValid,
     );
+    _updateCurrentStyles(context, style!);
     if (text != previousText) {
-      _updateCurrentStyles(context, style!);
       _compareStrings(
         previousText,
         text,
@@ -68,7 +60,6 @@ class TextFieldController extends TextEditingController {
         ),
         selection,
       );
-      _reduceTextSpans();
     }
     if ((text == previousText || text.length < previousText.length) &&
         selection != previousSelection) {
@@ -78,16 +69,18 @@ class TextFieldController extends TextEditingController {
     _updateCurrentStyles(context, style!);
 
     _styleLines();
+    _reduceTextSpans();
 
     previousText = text;
     previousStyle = currentStyle;
     previousSelection = selection;
+
+    print(spans);
     return TextSpan(children: List.from(spans));
   }
 
   void _changeStaticStyle(TextStyle style, TextSelection selection) {
     int selectionStart = selection.start;
-    int selectionEnd = selection.end;
     int length = 0;
     int previousLength = 0;
     for (int i = 0; i < spans.length; i++) {
@@ -223,7 +216,6 @@ class TextFieldController extends TextEditingController {
   }
 
   void _styleLines() {
-    print('style');
     if (selection.start >= 0) {
       final textBefore = text.substring(0, selection.start);
       final textInBetween = text.substring(selection.start, selection.end);
@@ -235,10 +227,8 @@ class TextFieldController extends TextEditingController {
       }
     }
 
-    int length = 0;
     int lineIndex = 0;
     for (int i = 0; i < spans.length; i++) {
-      length += spans[i].toPlainText().length;
       final splittedText = spans[i].toPlainText().split('\n');
       final currentSpanStyle = spans[i].style!;
       int shift = -1;
@@ -312,19 +302,6 @@ class TextFieldController extends TextEditingController {
             style: spans[i].style,
           );
           return;
-          // try {
-          //   spans.insert(
-          //       i + 2,
-          //       TextSpan(
-          //         text: spans[i].toPlainText().substring(
-          //               end - previousLength,
-          //             ),
-          //         style: spans[i].style,
-          //       ));
-          //   return;
-          // } catch (e) {
-          //   print(e);
-          // }
         }
       }
     }
@@ -357,27 +334,22 @@ class TextFieldController extends TextEditingController {
           final wrappingStyle = spans[i].style;
           final textBefore =
               spans[i].toPlainText().substring(0, start - previousLength);
-          try {
-            final textAfter = spans[i].toPlainText().substring(
-                  end != null ? end - previousLength : start - previousLength,
-                );
-            if (textBefore.isNotEmpty) {
-              spans[i] = TextSpan(text: textBefore, style: wrappingStyle);
-              spans.insert(i + 1, TextSpan(text: text, style: currentStyle));
-            } else {
-              spans[i] = TextSpan(text: text, style: currentStyle);
-            }
-
-            if (textAfter.isNotEmpty) {
-              spans.insert(
-                i + 2,
-                TextSpan(text: textAfter, style: wrappingStyle),
+          final textAfter = spans[i].toPlainText().substring(
+                end != null ? end - previousLength : start - previousLength,
               );
-            }
-          } catch (e) {
-            print("err");
+          if (textBefore.isNotEmpty) {
+            spans[i] = TextSpan(text: textBefore, style: wrappingStyle);
+            spans.insert(i + 1, TextSpan(text: text, style: currentStyle));
+          } else {
+            spans[i] = TextSpan(text: text, style: currentStyle);
           }
 
+          if (textAfter.isNotEmpty) {
+            spans.insert(
+              i + 2,
+              TextSpan(text: textAfter, style: wrappingStyle),
+            );
+          }
           return;
         }
       }
@@ -456,7 +428,8 @@ class TextFieldController extends TextEditingController {
       final currentStyle = spans[i].style;
       final previousStyle = spans[i - 1].style;
 
-      if (currentStyle == previousStyle) {
+      if (currentStyle == previousStyle &&
+          !spans[i].toPlainText().contains('\n')) {
         spans[i - 1] = TextSpan(
           text: spans[i - 1].toPlainText() + spans[i].toPlainText(),
           style: currentStyle,
