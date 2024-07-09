@@ -8,9 +8,11 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:learning_app/features/editor/presentation/cubit/editor_cubit.dart';
+import 'package:learning_app/features/editor/presentation/helper/editor_text_styles.dart';
 
 class TextFieldController extends TextEditingController {
   List<InlineSpan> spans = [];
+  List<Map<LineFormatType, InlineSpan>> _spans = [];
   List<LineFormatType> lineFormat = [LineFormatType.body];
   String previousText = '';
   TextSelection previousSelection =
@@ -249,7 +251,16 @@ class TextFieldController extends TextEditingController {
               i + shift,
               TextSpan(
                 text: line,
-                style: currentSpanStyle.copyWith(fontSize: 26),
+                style: currentSpanStyle.merge(EditorTextStyles.heading),
+              ),
+            );
+            break;
+          case LineFormatType.subheading:
+            spans.insert(
+              i + shift,
+              TextSpan(
+                text: line,
+                style: currentSpanStyle.merge(EditorTextStyles.subheading),
               ),
             );
             break;
@@ -258,7 +269,7 @@ class TextFieldController extends TextEditingController {
               i + shift,
               TextSpan(
                 text: line,
-                style: currentSpanStyle.copyWith(fontSize: 16),
+                style: currentSpanStyle.merge(EditorTextStyles.body),
               ),
             );
             break;

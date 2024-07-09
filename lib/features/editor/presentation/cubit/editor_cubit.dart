@@ -41,4 +41,12 @@ class EditorCubit extends Cubit<EditorState> {
 
 enum TextFormatType { bold, italic, underlined, strikethrough }
 
-enum LineFormatType { heading, subheading, body, monostyled }
+enum LineFormatType {
+  heading,
+  subheading,
+  body,
+  monostyled,
+  bulleted_list,
+  numbered_list,
+  dashed_list
+}

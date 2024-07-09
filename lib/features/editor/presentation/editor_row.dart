@@ -24,7 +24,7 @@ class EditorRow extends StatelessWidget {
             }
             return SegmentedButton<TextFormatType>(
               // Define the segments
-              segments: [
+              segments: const [
                 ButtonSegment(
                   value: TextFormatType.bold,
                   label: Text('B'),
@@ -59,7 +59,7 @@ class EditorRow extends StatelessWidget {
             }
             return SegmentedButton<LineFormatType>(
               // Define the segments
-              segments: [
+              segments: const [
                 ButtonSegment(
                   value: LineFormatType.heading,
                   label: Text('Heading'),
@@ -72,6 +72,9 @@ class EditorRow extends StatelessWidget {
                   value: LineFormatType.body,
                   label: Text('Body'),
                 ),
+                ButtonSegment(
+                    value: LineFormatType.bulleted_list,
+                    label: Text('Bulleted List')),
               ],
               // Specify that multiple selections are allowed
               multiSelectionEnabled: false,

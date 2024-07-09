@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/features/editor/presentation/cubit/editor_cubit.dart';
 import 'package:learning_app/features/editor/presentation/editor_row.dart';
-import 'package:learning_app/features/editor/presentation/editor_text_field.dart';
 import 'package:learning_app/features/editor/presentation/text_field_controller.dart';
 import 'package:learning_app/injection_container.dart';
 
@@ -34,6 +33,8 @@ class _EditorView extends StatelessWidget {
                 case LineFormatType.heading:
                   cursorHeight = 26;
                   break;
+                case LineFormatType.subheading:
+                  cursorHeight = 20;
                 default:
                   cursorHeight = 16;
                   break;
