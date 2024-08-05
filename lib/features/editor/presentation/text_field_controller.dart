@@ -8,11 +8,11 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:learning_app/features/editor/presentation/cubit/editor_cubit.dart';
+import 'package:learning_app/features/editor/presentation/editor_text_field_manager.dart';
 import 'package:learning_app/features/editor/presentation/helper/editor_text_styles.dart';
 
 class TextFieldController extends TextEditingController {
   List<InlineSpan> spans = [];
-  List<Map<LineFormatType, InlineSpan>> _spans = [];
   List<LineFormatType> lineFormat = [LineFormatType.body];
   String previousText = '';
   TextSelection previousSelection =
@@ -20,12 +20,17 @@ class TextFieldController extends TextEditingController {
   TextStyle previousStyle = TextStyle();
   LineFormatType currentLineFormat = LineFormatType.body;
   TextStyle currentStyle = TextStyle();
+  List<InlineSpan> oldSpans = <InlineSpan>[];
+
   @override
   TextSpan buildTextSpan({
     required BuildContext context,
     TextStyle? style,
     required bool withComposing,
   }) {
+    print('update buildTextSpan');
+    spans = oldSpans;
+
     assert(
       !value.composing.isValid || !withComposing || value.isComposingRangeValid,
     );
@@ -65,19 +70,19 @@ class TextFieldController extends TextEditingController {
     }
     if ((text == previousText || text.length < previousText.length) &&
         selection != previousSelection) {
-      _changeTextStyleAccordingToSelection(context);
+      // _changeTextStyleAccordingToSelection(context);
       _updateCurrentStyles(context, style!);
     }
     _updateCurrentStyles(context, style!);
 
-    _styleLines();
+    oldSpans = List<InlineSpan>.from(spans);
+    styleLines();
     _reduceTextSpans();
 
     previousText = text;
     previousStyle = currentStyle;
     previousSelection = selection;
 
-    print(spans);
     return TextSpan(children: List.from(spans));
   }
 
@@ -217,7 +222,7 @@ class TextFieldController extends TextEditingController {
     }
   }
 
-  void _styleLines() {
+  void styleLines() {
     if (selection.start >= 0) {
       final textBefore = text.substring(0, selection.start);
       final textInBetween = text.substring(selection.start, selection.end);
@@ -230,12 +235,18 @@ class TextFieldController extends TextEditingController {
     }
 
     int lineIndex = 0;
+    int length = 0;
+    int previousLineIndex = -1;
+    List<int> injection = [];
     for (int i = 0; i < spans.length; i++) {
+      length += spans[i].toPlainText().length;
       final splittedText = spans[i].toPlainText().split('\n');
       final currentSpanStyle = spans[i].style!;
       int shift = -1;
+      int splitLength = 0;
       spans.removeAt(i);
       for (int j = 0; j < splittedText.length; j++) {
+        splitLength += splittedText[j].length;
         shift += 1;
         String line = splittedText[j];
         if (j != 0) {
@@ -273,12 +284,44 @@ class TextFieldController extends TextEditingController {
               ),
             );
             break;
+          case LineFormatType.bulleted_list:
+            // text = text.substring(0, length - splitLength) +
+            //     '\uffff' +
+            //     text.substring(length - splitLength);
+
+            if (lineIndex != previousLineIndex) {
+              injection.add(i + shift);
+            }
+            spans.insert(
+              i + shift,
+              TextSpan(
+                text: line,
+                style: currentSpanStyle.merge(EditorTextStyles.body),
+              ),
+            );
+            break;
           default:
             break;
         }
+        previousLineIndex = lineIndex;
       }
       i += shift;
     }
+
+    for (int k = 0; k < injection.length; k++) {
+      spans.insert(
+        injection[k] + k,
+        WidgetSpan(
+          child: Container(height: 20, width: 20, color: Colors.red),
+          style: TextStyle(),
+        ),
+      );
+
+      // }
+    }
+    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    //   selection = TextSelection.collapsed(offset: selection.start + 1);
+    // });
   }
 
   void _removeString(int start, int end) {
@@ -387,15 +430,15 @@ class TextFieldController extends TextEditingController {
       length += spans[i].toPlainText().length;
       if (length >= start) {
         final selectedStyle = spans[i].style!;
-        Set<TextFormatType> textFormatSelection = {};
+        Set<SpanFormatType> textFormatSelection = {};
         if (selectedStyle.fontWeight == FontWeight.bold) {
-          textFormatSelection.add(TextFormatType.bold);
+          textFormatSelection.add(SpanFormatType.bold);
         }
         if (selectedStyle.decoration == TextDecoration.underline) {
-          textFormatSelection.add(TextFormatType.underlined);
+          textFormatSelection.add(SpanFormatType.underlined);
         }
         if (selectedStyle.fontStyle == FontStyle.italic) {
-          textFormatSelection.add(TextFormatType.italic);
+          textFormatSelection.add(SpanFormatType.italic);
         }
         context.read<EditorCubit>().changeFormatting(textFormatSelection);
 

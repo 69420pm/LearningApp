@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/features/editor/presentation/cubit/editor_cubit.dart';
+import 'package:learning_app/features/editor/presentation/editor_text_field_manager.dart';
 import 'package:learning_app/features/editor/presentation/text_field_controller.dart';
 
 class EditorRow extends StatelessWidget {
@@ -11,7 +12,7 @@ class EditorRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Set<TextFormatType> textFormatSelection = <TextFormatType>{};
+    Set<SpanFormatType> textFormatSelection = <SpanFormatType>{};
 
     return Column(
       children: [
@@ -22,19 +23,19 @@ class EditorRow extends StatelessWidget {
             if (state is EditorTextFormattingChanged) {
               textFormatSelection = state.textFormatSelection;
             }
-            return SegmentedButton<TextFormatType>(
+            return SegmentedButton<SpanFormatType>(
               // Define the segments
               segments: const [
                 ButtonSegment(
-                  value: TextFormatType.bold,
+                  value: SpanFormatType.bold,
                   label: Text('B'),
                 ),
                 ButtonSegment(
-                  value: TextFormatType.italic,
+                  value: SpanFormatType.italic,
                   label: Text('I'),
                 ),
                 ButtonSegment(
-                  value: TextFormatType.underlined,
+                  value: SpanFormatType.underlined,
                   label: Text('U'),
                 ),
               ],

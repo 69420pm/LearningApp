@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:learning_app/features/editor/presentation/editor_text_field_manager.dart';
 
 part 'editor_state.dart';
 
@@ -12,20 +13,20 @@ class EditorCubit extends Cubit<EditorState> {
 
   LineFormatType currentLineFormat = LineFormatType.body;
 
-  void changeFormatting(Set<TextFormatType> set) {
-    if (set.contains(TextFormatType.bold)) {
+  void changeFormatting(Set<SpanFormatType> set) {
+    if (set.contains(SpanFormatType.bold)) {
       isBold = true;
     } else {
       isBold = false;
     }
 
-    if (set.contains(TextFormatType.italic)) {
+    if (set.contains(SpanFormatType.italic)) {
       isItalic = true;
     } else {
       isItalic = false;
     }
 
-    if (set.contains(TextFormatType.underlined)) {
+    if (set.contains(SpanFormatType.underlined)) {
       isUnderlined = true;
     } else {
       isUnderlined = false;
@@ -39,14 +40,14 @@ class EditorCubit extends Cubit<EditorState> {
   }
 }
 
-enum TextFormatType { bold, italic, underlined, strikethrough }
+// enum TextFormatType { bold, italic, underlined, strikethrough }
 
-enum LineFormatType {
-  heading,
-  subheading,
-  body,
-  monostyled,
-  bulleted_list,
-  numbered_list,
-  dashed_list
-}
+// enum LineFormatType {
+//   heading,
+//   subheading,
+//   body,
+//   monostyled,
+//   bulleted_list,
+//   numbered_list,
+//   dashed_list
+// }

@@ -10,7 +10,7 @@ sealed class EditorState extends Equatable {
 final class EditorInitial extends EditorState {}
 
 final class EditorTextFormattingChanged extends EditorState {
-  final Set<TextFormatType> textFormatSelection;
+  final Set<SpanFormatType> textFormatSelection;
 
   EditorTextFormattingChanged({required this.textFormatSelection});
   @override
