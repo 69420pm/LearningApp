@@ -1,4 +1,5 @@
 import 'package:diff_match_patch/diff_match_patch.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:learning_app/features/editor/presentation/editor_text_field_manager.dart';
@@ -6,7 +7,8 @@ import 'package:learning_app/features/editor/presentation/editor_text_field_mana
 class EditorInputFormatter extends TextInputFormatter {
   EditorTextFieldManager em;
   EditorInputFormatter({required this.em});
-
+  List<SpanFormatType> currentStyle = [];
+  LineFormatType currentLineFormat = LineFormatType.body;
   @override
   TextEditingValue formatEditUpdate(
     TextEditingValue oldValue,
@@ -42,10 +44,10 @@ class EditorInputFormatter extends TextInputFormatter {
             if (line.characters.isNotEmpty) {
               _addSpan(
                 EditorSpan(
-                  span: TextSpan(text: line),
-                  start: localIndex,
-                  end: localIndex + line.length,
-                ),
+                    span: TextSpan(text: line),
+                    start: localIndex,
+                    end: localIndex + line.length,
+                    spanFormatType: currentStyle),
                 lineIndex,
                 globalIndex,
               );
@@ -78,8 +80,10 @@ class EditorInputFormatter extends TextInputFormatter {
           spans: [span],
           start: globalStart,
           end: globalStart + span.span.toPlainText().length,
+          lineFormatType: currentLineFormat,
         ),
       );
+      _updateGlobalLineIndexes();
     } else {
       // iterate over all spans in the line
       for (int i = 0; i < em.lines[line].spans.length; i++) {
@@ -87,14 +91,17 @@ class EditorInputFormatter extends TextInputFormatter {
         if ((em.lines[line].spans[i].end >= span.end &&
                 em.lines[line].spans[i].start <= span.start) ||
             i == em.lines[line].spans.length - 1) {
+          // change lineFormatType accordingly
+          em.lines[line].lineFormatType = currentLineFormat;
           final before = em.lines[line].spans[i].span
               .toPlainText()
               .substring(0, span.start - em.lines[line].spans[i].start);
+          final oldSpanStyle = em.lines[line].spans[i].spanFormatType;
           final inBetween = span.span.toPlainText();
           final after = em.lines[line].spans[i].span
               .toPlainText()
               .substring(span.start - em.lines[line].spans[i].start);
-          if (em.lines[line].spans[i].spanFormatType == span.spanFormatType) {
+          if (listEquals(oldSpanStyle, span.spanFormatType)) {
             // merge the spans
             em.lines[line].spans[i] = EditorSpan(
               span: TextSpan(
@@ -102,6 +109,7 @@ class EditorInputFormatter extends TextInputFormatter {
               ),
               start: em.lines[line].spans[i].start,
               end: em.lines[line].spans[i].end + inBetween.characters.length,
+              spanFormatType: oldSpanStyle,
             );
           } else {
             if (before.characters.isNotEmpty) {
@@ -112,6 +120,7 @@ class EditorInputFormatter extends TextInputFormatter {
                 ),
                 start: em.lines[line].spans[i].start,
                 end: em.lines[line].spans[i].start + before.characters.length,
+                spanFormatType: oldSpanStyle,
               );
             } else {
               em.lines[line].spans.removeAt(i);
@@ -119,7 +128,7 @@ class EditorInputFormatter extends TextInputFormatter {
             }
             if (inBetween.characters.isNotEmpty) {
               em.lines[line].spans.insert(
-                i,
+                i + 1,
                 EditorSpan(
                   span: TextSpan(text: inBetween),
                   start:
@@ -127,13 +136,14 @@ class EditorInputFormatter extends TextInputFormatter {
                   end: em.lines[line].spans[i].start +
                       before.characters.length +
                       inBetween.characters.length,
+                  spanFormatType: span.spanFormatType,
                 ),
               );
               i++;
             }
             if (after.characters.isNotEmpty) {
               em.lines[line].spans.insert(
-                i,
+                i + 1,
                 EditorSpan(
                   span: TextSpan(text: after),
                   start: em.lines[line].spans[i].start +
@@ -143,19 +153,20 @@ class EditorInputFormatter extends TextInputFormatter {
                       before.characters.length +
                       inBetween.characters.length +
                       after.characters.length,
+                  spanFormatType: oldSpanStyle,
                 ),
               );
               i++;
             }
           }
-          _updateGloablLineIndexes();
+          _updateGlobalLineIndexes();
           break;
         }
       }
     }
   }
 
-  void _updateGloablLineIndexes() {
+  void _updateGlobalLineIndexes() {
     int previousEnd = 0;
     em.lines[0].end = previousEnd;
     for (int i = 0; i < em.lines.length; i++) {

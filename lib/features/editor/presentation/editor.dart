@@ -36,6 +36,7 @@ class _EditorView extends StatelessWidget {
     EditorController editorController = EditorController(
       editorTextFieldManager: editorTextFieldManager,
     );
+    context.read<EditorCubit>().inputFormatter = inputFormatter;
     return Scaffold(
       appBar: AppBar(),
       body: Column(

@@ -38,6 +38,18 @@ class EditorRow extends StatelessWidget {
                   value: SpanFormatType.underlined,
                   label: Text('U'),
                 ),
+                ButtonSegment(
+                  value: SpanFormatType.strikethrough,
+                  label: Text('S'),
+                ),
+                ButtonSegment(
+                  value: SpanFormatType.superscript,
+                  label: Text('sup'),
+                ),
+                ButtonSegment(
+                  value: SpanFormatType.subscript,
+                  label: Text('sub'),
+                ),
               ],
               // Specify that multiple selections are allowed
               multiSelectionEnabled: true,
@@ -74,8 +86,21 @@ class EditorRow extends StatelessWidget {
                   label: Text('Body'),
                 ),
                 ButtonSegment(
-                    value: LineFormatType.bulleted_list,
-                    label: Text('Bulleted List')),
+                  value: LineFormatType.monostyled,
+                  label: Text('Monostyled'),
+                ),
+                ButtonSegment(
+                  value: LineFormatType.bulleted_list,
+                  label: Text('bulleted List'),
+                ),
+                ButtonSegment(
+                  value: LineFormatType.numbered_list,
+                  label: Text('numbered List'),
+                ),
+                ButtonSegment(
+                  value: LineFormatType.dashed_list,
+                  label: Text('dashed List'),
+                ),
               ],
               // Specify that multiple selections are allowed
               multiSelectionEnabled: false,
