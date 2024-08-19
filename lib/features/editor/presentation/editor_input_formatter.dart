@@ -176,7 +176,50 @@ class EditorInputFormatter extends TextInputFormatter {
     }
   }
 
-  void _removeSpan(int start, int end, int line) {}
+  void _removeSpan(int start, int end, int line) {
+    int textLength = end - start;
+    int alreadyDeletedOverhang = 0;
+    for (int i = 0; i < em.lines[line].spans.length; i++) {
+      final currentStyle = em.lines[line].spans[i].spanFormatType;
+
+      int currentStart = em.lines[line].spans[i].start - alreadyDeletedOverhang;
+      int currentEnd = em.lines[line].spans[i].end - alreadyDeletedOverhang;
+
+      if (currentStart <= start && start <= currentEnd) {
+        int localStart = start - currentStart;
+        int localEnd = end - currentStart;
+        String text = em.lines[line].spans[i].span.toPlainText();
+        if (currentEnd >= end) {
+          final editedText = text.substring(0, localStart) +
+              text.substring(localEnd, text.length);
+          // text to delete is in a single span
+          em.lines[line].spans[i] = EditorSpan(
+            span: TextSpan(text: editedText),
+            start: currentStart,
+            end: currentStart + editedText.length,
+            spanFormatType: currentStyle,
+          );
+          _updateGlobalLineIndexes();
+          break;
+        } else {
+          //! error with start index when deleting multiple spans
+          final editedText = text.substring(0, localStart);
+          // text to delete is in multiple spans
+          em.lines[line].spans[i] = EditorSpan(
+            span: TextSpan(
+              text: editedText,
+            ),
+            start: currentStart,
+            end: currentStart + editedText.length,
+            spanFormatType: currentStyle,
+          );
+          start = currentEnd;
+          alreadyDeletedOverhang += text.length - editedText.length;
+        }
+      }
+    }
+  }
+
   void _changeStyle(TextStyle style, int start, int end) {}
   void _changeStyleAccordingToSelection() {}
 }
