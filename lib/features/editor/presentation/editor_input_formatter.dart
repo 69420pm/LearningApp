@@ -44,10 +44,11 @@ class EditorInputFormatter extends TextInputFormatter {
             if (line.characters.isNotEmpty) {
               _addSpan(
                 EditorSpan(
-                    span: TextSpan(text: line),
-                    start: localIndex,
-                    end: localIndex + line.length,
-                    spanFormatType: currentStyle),
+                  span: TextSpan(text: line),
+                  start: localIndex,
+                  end: localIndex + line.length,
+                  spanFormatType: currentStyle,
+                ),
                 lineIndex,
                 globalIndex,
               );
@@ -176,8 +177,52 @@ class EditorInputFormatter extends TextInputFormatter {
     }
   }
 
+  //! indeces are not correct when deleting
   void _removeSpan(int start, int end, int line) {
-    int textLength = end - start;
+    int replaceSpan(
+      int start,
+      String text,
+      int i,
+      List<SpanFormatType> styles,
+    ) {
+      if (text.isEmpty) {
+        em.lines[line].spans.removeAt(i);
+        _updateGlobalLineIndexes();
+        i--;
+        // merge with next span if possible
+        if (i >= 0 && i < em.lines[line].spans.length) {
+          final currentSpan = em.lines[line].spans[i];
+          final nextSpan = em.lines[line].spans[i + 1];
+          if (listEquals(
+            currentSpan.spanFormatType,
+            nextSpan.spanFormatType,
+          )) {
+            em.lines[line].spans[i] = EditorSpan(
+              span: TextSpan(
+                text: currentSpan.span.toPlainText() +
+                    nextSpan.span.toPlainText(),
+              ),
+              start: currentSpan.start,
+              end: nextSpan.end,
+              spanFormatType: currentSpan.spanFormatType,
+            );
+            em.lines[line].spans.removeAt(i + 1);
+            i--;
+          }
+        }
+        return i;
+      } else {
+        em.lines[line].spans[i] = EditorSpan(
+          span: TextSpan(text: text),
+          start: start,
+          end: start + text.length,
+          spanFormatType: styles,
+        );
+        _updateGlobalLineIndexes();
+        return i;
+      }
+    }
+
     int alreadyDeletedOverhang = 0;
     for (int i = 0; i < em.lines[line].spans.length; i++) {
       final currentStyle = em.lines[line].spans[i].spanFormatType;
@@ -192,27 +237,12 @@ class EditorInputFormatter extends TextInputFormatter {
         if (currentEnd >= end) {
           final editedText = text.substring(0, localStart) +
               text.substring(localEnd, text.length);
-          // text to delete is in a single span
-          em.lines[line].spans[i] = EditorSpan(
-            span: TextSpan(text: editedText),
-            start: currentStart,
-            end: currentStart + editedText.length,
-            spanFormatType: currentStyle,
-          );
+          i = replaceSpan(currentStart, editedText, i, currentStyle);
           _updateGlobalLineIndexes();
           break;
         } else {
-          //! error with start index when deleting multiple spans
           final editedText = text.substring(0, localStart);
-          // text to delete is in multiple spans
-          em.lines[line].spans[i] = EditorSpan(
-            span: TextSpan(
-              text: editedText,
-            ),
-            start: currentStart,
-            end: currentStart + editedText.length,
-            spanFormatType: currentStyle,
-          );
+          i = replaceSpan(currentStart, editedText, i, currentStyle);
           start = currentEnd;
           alreadyDeletedOverhang += text.length - editedText.length;
         }
