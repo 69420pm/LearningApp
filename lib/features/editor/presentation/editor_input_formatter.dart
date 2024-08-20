@@ -40,7 +40,11 @@ class EditorInputFormatter extends TextInputFormatter {
       switch (diff.operation) {
         case DIFF_INSERT:
           List<String> lines = diff.text.split('\n');
-          for (String line in lines) {
+          for (int i = 0; i < lines.length; i++) {
+            String line = lines[i];
+            if (i != 0) {
+              lineIndex += 1;
+            }
             if (line.characters.isNotEmpty) {
               _addSpan(
                 EditorSpan(
@@ -53,13 +57,24 @@ class EditorInputFormatter extends TextInputFormatter {
                 globalIndex,
               );
             }
+
             globalIndex += line.length;
-            lineIndex += 1;
+
             localIndex = 0;
           }
           break;
         case DIFF_DELETE:
-          _removeSpan(localIndex, localIndex + diff.text.length, lineIndex);
+          List<String> lines = diff.text.split('\n');
+          for (int i = 0; i < lines.length; i++) {
+            String line = lines[i];
+            if (i != 0) {
+              lineIndex += 1;
+            }
+            if (line.characters.isNotEmpty) {
+              _removeSpan(localIndex, localIndex + line.length, lineIndex);
+            }
+            localIndex = 0;
+          }
           break;
         case DIFF_EQUAL:
           List<String> lines = diff.text.split('\n');
@@ -171,9 +186,11 @@ class EditorInputFormatter extends TextInputFormatter {
     int previousEnd = 0;
     em.lines[0].end = previousEnd;
     for (int i = 0; i < em.lines.length; i++) {
-      em.lines[i].start = previousEnd;
-      em.lines[i].end = previousEnd + em.lines[i].spans.last.end;
-      previousEnd = em.lines[i].end;
+      if (em.lines[i].spans.isNotEmpty) {
+        em.lines[i].start = previousEnd;
+        em.lines[i].end = previousEnd + em.lines[i].spans.last.end;
+        previousEnd = em.lines[i].end;
+      }
     }
   }
 
@@ -187,10 +204,9 @@ class EditorInputFormatter extends TextInputFormatter {
     ) {
       if (text.isEmpty) {
         em.lines[line].spans.removeAt(i);
-        _updateGlobalLineIndexes();
         i--;
         // merge with next span if possible
-        if (i >= 0 && i < em.lines[line].spans.length) {
+        if (i >= 0 && i < em.lines[line].spans.length - 1) {
           final currentSpan = em.lines[line].spans[i];
           final nextSpan = em.lines[line].spans[i + 1];
           if (listEquals(
@@ -218,19 +234,17 @@ class EditorInputFormatter extends TextInputFormatter {
           end: start + text.length,
           spanFormatType: styles,
         );
-        _updateGlobalLineIndexes();
         return i;
       }
     }
 
     int alreadyDeletedOverhang = 0;
     for (int i = 0; i < em.lines[line].spans.length; i++) {
-      final currentStyle = em.lines[line].spans[i].spanFormatType;
-
       int currentStart = em.lines[line].spans[i].start - alreadyDeletedOverhang;
       int currentEnd = em.lines[line].spans[i].end - alreadyDeletedOverhang;
 
       if (currentStart <= start && start <= currentEnd) {
+        final currentStyle = em.lines[line].spans[i].spanFormatType;
         int localStart = start - currentStart;
         int localEnd = end - currentStart;
         String text = em.lines[line].spans[i].span.toPlainText();
@@ -243,8 +257,9 @@ class EditorInputFormatter extends TextInputFormatter {
         } else {
           final editedText = text.substring(0, localStart);
           i = replaceSpan(currentStart, editedText, i, currentStyle);
-          start = currentEnd;
           alreadyDeletedOverhang += text.length - editedText.length;
+          start = currentEnd - alreadyDeletedOverhang;
+          end -= alreadyDeletedOverhang;
         }
       }
     }
