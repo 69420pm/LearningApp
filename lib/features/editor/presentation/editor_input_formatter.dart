@@ -44,6 +44,7 @@ class EditorInputFormatter extends TextInputFormatter {
             String line = lines[i];
             if (i != 0) {
               lineIndex += 1;
+              localIndex = 0;
             }
             if (line.characters.isNotEmpty) {
               _addSpan(
@@ -59,8 +60,6 @@ class EditorInputFormatter extends TextInputFormatter {
             }
 
             globalIndex += line.length;
-
-            localIndex = 0;
           }
           break;
         case DIFF_DELETE:
@@ -69,11 +68,11 @@ class EditorInputFormatter extends TextInputFormatter {
             String line = lines[i];
             if (i != 0) {
               lineIndex += 1;
+              localIndex = 0;
             }
             if (line.characters.isNotEmpty) {
               _removeSpan(localIndex, localIndex + line.length, lineIndex);
             }
-            localIndex = 0;
           }
           break;
         case DIFF_EQUAL:
@@ -252,6 +251,11 @@ class EditorInputFormatter extends TextInputFormatter {
           final editedText = text.substring(0, localStart) +
               text.substring(localEnd, text.length);
           i = replaceSpan(currentStart, editedText, i, currentStyle);
+          alreadyDeletedOverhang += text.length - editedText.length;
+          for (int j = i + 1; j < em.lines[line].spans.length; j++) {
+            em.lines[line].spans[j].start -= alreadyDeletedOverhang;
+            em.lines[line].spans[j].end -= alreadyDeletedOverhang;
+          }
           _updateGlobalLineIndexes();
           break;
         } else {
