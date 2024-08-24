@@ -35,6 +35,7 @@ class EditorCubit extends Cubit<EditorState> {
       newStyle.add(SpanFormatType.superscript);
     }
     inputFormatter.currentStyle = newStyle;
+    inputFormatter.changeLineFormat();
     emit(EditorTextFormattingChanged(textFormatSelection: set));
   }
 

@@ -36,6 +36,20 @@ class EditorSpan extends Equatable {
     _spanFormatType = spanFormatType;
   }
 
+  EditorSpan copyWith({
+    InlineSpan? span,
+    int? start,
+    int? end,
+    List<SpanFormatType>? spanFormatType,
+  }) {
+    return EditorSpan(
+      span: span ?? this.span,
+      start: start ?? this.start,
+      end: end ?? this.end,
+      spanFormatType: spanFormatType ?? this.spanFormatType,
+    );
+  }
+
   @override
   List<Object?> get props => [span, start, end, spanFormatType];
 }

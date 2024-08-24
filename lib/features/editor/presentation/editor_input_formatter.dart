@@ -8,7 +8,17 @@ class EditorInputFormatter extends TextInputFormatter {
   EditorTextFieldManager em;
   EditorInputFormatter({required this.em});
   List<SpanFormatType> currentStyle = [];
+  // gets updated in editor_cubit.dart
   LineFormatType currentLineFormat = LineFormatType.body;
+  TextSelection lastSelection = TextSelection.collapsed(offset: 0);
+
+  void changeLineFormat() {
+    if (!lastSelection.isCollapsed) {
+      _changeStyle(currentStyle, lastSelection.start, lastSelection.end);
+      print(em.lines);
+    }
+  }
+
   @override
   TextEditingValue formatEditUpdate(
     TextEditingValue oldValue,
@@ -19,15 +29,15 @@ class EditorInputFormatter extends TextInputFormatter {
       newValue.text,
       newValue.selection,
     );
+    lastSelection = newValue.selection;
     return newValue;
   }
 
   void _compareStrings(
     String oldText,
     String newText,
-    TextSelection selection, [
-    TextStyle? style,
-  ]) {
+    TextSelection selection,
+  ) {
     final dmp = DiffMatchPatch();
     // compares two strings and returns insertions and deletions
     List<Diff> diffs = dmp.diff(oldText, newText);
@@ -85,6 +95,7 @@ class EditorInputFormatter extends TextInputFormatter {
         globalIndex += diff.text.length;
       }
     }
+    print(em.lines);
   }
 
   // start and end is line relative
@@ -193,7 +204,6 @@ class EditorInputFormatter extends TextInputFormatter {
     }
   }
 
-  //! indeces are not correct when deleting
   void _removeSpan(int start, int end, int line) {
     int replaceSpan(
       int start,
@@ -269,6 +279,113 @@ class EditorInputFormatter extends TextInputFormatter {
     }
   }
 
-  void _changeStyle(TextStyle style, int start, int end) {}
+  void _changeStyle(
+    List<SpanFormatType> style,
+    int globalStart,
+    int globalEnd,
+  ) {
+    int lineIndex = 0;
+    int localIndex = 0;
+    int globalIndex = 0;
+    for (int i = 0; i < em.lines.length; i++) {
+      final line = em.lines[i];
+      localIndex = 0;
+      if (globalStart <= globalIndex) {
+        for (int j = 0; j < line.spans.length; j++) {
+          int currentStart = line.spans[j].start + globalIndex;
+          int currentEnd = line.spans[j].end + globalIndex;
+          if (currentStart <= globalStart && globalStart <= currentEnd) {
+            final before = line.spans[j].span
+                .toPlainText()
+                .substring(0, globalStart - currentStart);
+            final inBetween = line.spans[j].span.toPlainText().substring(
+                  globalStart - currentStart,
+                  globalEnd - currentStart,
+                );
+            final oldTextStyle = line.spans[j].spanFormatType;
+            if (currentEnd >= globalEnd) {
+              final after = line.spans[j].span
+                  .toPlainText()
+                  .substring(globalEnd - currentStart);
+              if (before.isNotEmpty) {
+                em.lines[i].spans[j] = EditorSpan(
+                  span: TextSpan(text: before),
+                  start: line.spans[j].start,
+                  end: line.spans[j].start + before.characters.length,
+                  spanFormatType: oldTextStyle,
+                );
+              } else {
+                em.lines[i].spans.removeAt(j);
+                j--;
+              }
+              if (inBetween.isNotEmpty) {
+                em.lines[i].spans.insert(
+                  j + 1,
+                  EditorSpan(
+                    span: TextSpan(text: inBetween),
+                    start: line.spans[j].start + before.characters.length,
+                    end: line.spans[j].start +
+                        before.characters.length +
+                        inBetween.characters.length,
+                    spanFormatType: oldTextStyle + style,
+                  ),
+                );
+                j++;
+              }
+              if (after.isNotEmpty) {
+                em.lines[i].spans.insert(
+                  j + 1,
+                  EditorSpan(
+                    span: TextSpan(text: after),
+                    start: line.spans[j].start +
+                        after.characters.length +
+                        before.characters.length,
+                    end: line.spans[j].start +
+                        before.characters.length +
+                        inBetween.characters.length +
+                        after.characters.length,
+                    spanFormatType: oldTextStyle,
+                  ),
+                );
+                j++;
+              }
+              break;
+            } else {
+              // change is in multiple spans
+              if (before.isNotEmpty) {
+                em.lines[i].spans[j] = EditorSpan(
+                  span: TextSpan(text: before),
+                  start: line.spans[j].start,
+                  end: line.spans[j].start + before.characters.length,
+                  spanFormatType: oldTextStyle,
+                );
+              } else {
+                em.lines[i].spans.removeAt(j);
+                j--;
+              }
+              if (inBetween.isNotEmpty) {
+                em.lines[i].spans.insert(
+                  j + 1,
+                  EditorSpan(
+                    span: TextSpan(text: inBetween),
+                    start: line.spans[j].start + before.characters.length,
+                    end: line.spans[j].start +
+                        before.characters.length +
+                        inBetween.characters.length,
+                    spanFormatType: oldTextStyle + style,
+                  ),
+                );
+                j++;
+              }
+              globalStart = currentEnd;
+            }
+          }
+          localIndex += line.spans[j].end - line.spans[j].start;
+          globalIndex += line.spans.last.end;
+        }
+      }
+    }
+  }
+
   void _changeStyleAccordingToSelection() {}
 }
