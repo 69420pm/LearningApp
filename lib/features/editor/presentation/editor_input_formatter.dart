@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:diff_match_patch/diff_match_patch.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -50,10 +52,9 @@ class EditorInputFormatter extends TextInputFormatter {
       switch (diff.operation) {
         case DIFF_INSERT:
           List<String> lines = diff.text.split('\n');
-          for (int i = 0; i < lines.length; i++) {
-            String line = lines[i];
-            if (i != 0) {
-              lineIndex += 1;
+          for (int lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+            String line = lines[lineIndex];
+            if (lineIndex != 0) {
               localIndex = 0;
             }
             if (line.characters.isNotEmpty) {
@@ -61,7 +62,7 @@ class EditorInputFormatter extends TextInputFormatter {
                 EditorSpan(
                   span: TextSpan(text: line),
                   start: localIndex,
-                  end: localIndex + line.length,
+                  end: localIndex + line.characters.length,
                   spanFormatType: currentStyle,
                 ),
                 lineIndex,
@@ -70,14 +71,14 @@ class EditorInputFormatter extends TextInputFormatter {
             }
 
             globalIndex += line.length;
+            localIndex += line.characters.length;
           }
           break;
         case DIFF_DELETE:
           List<String> lines = diff.text.split('\n');
-          for (int i = 0; i < lines.length; i++) {
-            String line = lines[i];
-            if (i != 0) {
-              lineIndex += 1;
+          for (int lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+            String line = lines[lineIndex];
+            if (lineIndex != 0) {
               localIndex = 0;
             }
             if (line.characters.isNotEmpty) {
@@ -284,106 +285,106 @@ class EditorInputFormatter extends TextInputFormatter {
     int globalStart,
     int globalEnd,
   ) {
-    int lineIndex = 0;
-    int localIndex = 0;
     int globalIndex = 0;
-    for (int i = 0; i < em.lines.length; i++) {
-      final line = em.lines[i];
-      localIndex = 0;
-      if (globalStart <= globalIndex) {
-        for (int j = 0; j < line.spans.length; j++) {
-          int currentStart = line.spans[j].start + globalIndex;
-          int currentEnd = line.spans[j].end + globalIndex;
-          if (currentStart <= globalStart && globalStart <= currentEnd) {
-            final before = line.spans[j].span
+    for (int lineIndex = 0; lineIndex < em.lines.length; lineIndex++) {
+      final line = em.lines[lineIndex];
+      if (globalStart >= globalIndex &&
+          line.spans.isNotEmpty &&
+          globalStart <= globalIndex + line.spans.last.end) {
+        for (int spanIndex = 0; spanIndex < line.spans.length; spanIndex++) {
+          int currentStart = line.spans[spanIndex].start + globalIndex;
+          int currentEnd = line.spans[spanIndex].end + globalIndex;
+          if (currentStart <= globalStart && globalStart < currentEnd) {
+            final before = line.spans[spanIndex].span
                 .toPlainText()
                 .substring(0, globalStart - currentStart);
-            final inBetween = line.spans[j].span.toPlainText().substring(
-                  globalStart - currentStart,
-                  globalEnd - currentStart,
-                );
-            final oldTextStyle = line.spans[j].spanFormatType;
+            final inBetween =
+                line.spans[spanIndex].span.toPlainText().substring(
+                      globalStart - currentStart,
+                      [currentEnd, globalEnd - currentStart].reduce(min),
+                    );
+            final oldTextStyle = line.spans[spanIndex].spanFormatType;
+            final oldStart = line.spans[spanIndex].start;
             if (currentEnd >= globalEnd) {
-              final after = line.spans[j].span
+              final after = line.spans[spanIndex].span
                   .toPlainText()
                   .substring(globalEnd - currentStart);
               if (before.isNotEmpty) {
-                em.lines[i].spans[j] = EditorSpan(
+                line.spans[spanIndex] = EditorSpan(
                   span: TextSpan(text: before),
-                  start: line.spans[j].start,
-                  end: line.spans[j].start + before.characters.length,
+                  start: oldStart,
+                  end: oldStart + before.characters.length,
                   spanFormatType: oldTextStyle,
                 );
               } else {
-                em.lines[i].spans.removeAt(j);
-                j--;
+                line.spans.removeAt(spanIndex);
+                spanIndex--;
               }
               if (inBetween.isNotEmpty) {
-                em.lines[i].spans.insert(
-                  j + 1,
+                line.spans.insert(
+                  spanIndex + 1,
                   EditorSpan(
                     span: TextSpan(text: inBetween),
-                    start: line.spans[j].start + before.characters.length,
-                    end: line.spans[j].start +
+                    start: oldStart + before.characters.length,
+                    end: oldStart +
                         before.characters.length +
                         inBetween.characters.length,
                     spanFormatType: oldTextStyle + style,
                   ),
                 );
-                j++;
+                spanIndex++;
               }
               if (after.isNotEmpty) {
-                em.lines[i].spans.insert(
-                  j + 1,
+                line.spans.insert(
+                  spanIndex + 1,
                   EditorSpan(
                     span: TextSpan(text: after),
-                    start: line.spans[j].start +
+                    start: line.spans[spanIndex].start +
                         after.characters.length +
                         before.characters.length,
-                    end: line.spans[j].start +
+                    end: line.spans[spanIndex].start +
                         before.characters.length +
                         inBetween.characters.length +
                         after.characters.length,
                     spanFormatType: oldTextStyle,
                   ),
                 );
-                j++;
+                spanIndex++;
               }
               break;
             } else {
               // change is in multiple spans
               if (before.isNotEmpty) {
-                em.lines[i].spans[j] = EditorSpan(
+                line.spans[spanIndex] = EditorSpan(
                   span: TextSpan(text: before),
-                  start: line.spans[j].start,
-                  end: line.spans[j].start + before.characters.length,
+                  start: oldStart,
+                  end: oldStart + before.characters.length,
                   spanFormatType: oldTextStyle,
                 );
               } else {
-                em.lines[i].spans.removeAt(j);
-                j--;
+                line.spans.removeAt(spanIndex);
+                spanIndex--;
               }
               if (inBetween.isNotEmpty) {
-                em.lines[i].spans.insert(
-                  j + 1,
+                line.spans.insert(
+                  spanIndex + 1,
                   EditorSpan(
                     span: TextSpan(text: inBetween),
-                    start: line.spans[j].start + before.characters.length,
-                    end: line.spans[j].start +
+                    start: oldStart + before.characters.length,
+                    end: oldStart +
                         before.characters.length +
                         inBetween.characters.length,
                     spanFormatType: oldTextStyle + style,
                   ),
                 );
-                j++;
+                spanIndex++;
               }
               globalStart = currentEnd;
             }
           }
-          localIndex += line.spans[j].end - line.spans[j].start;
-          globalIndex += line.spans.last.end;
         }
       }
+      globalIndex += line.spans.last.end;
     }
   }
 
