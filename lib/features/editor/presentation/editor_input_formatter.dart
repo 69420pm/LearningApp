@@ -49,51 +49,58 @@ class EditorInputFormatter extends TextInputFormatter {
     //! bug when using equal characters with different formatting, the dmp.diff function
     //! can't detect this, because it doesn't know the formatting
     for (Diff diff in diffs) {
-      switch (diff.operation) {
-        case DIFF_INSERT:
-          List<String> lines = diff.text.split('\n');
-          for (int lineIndex = 0; lineIndex < lines.length; lineIndex++) {
-            String line = lines[lineIndex];
-            if (lineIndex != 0) {
-              localIndex = 0;
-            }
-            if (line.characters.isNotEmpty) {
-              _addSpan(
-                EditorSpan(
-                  span: TextSpan(text: line),
-                  start: localIndex,
-                  end: localIndex + line.characters.length,
-                  spanFormatType: currentStyle,
-                ),
-                lineIndex,
-                globalIndex,
-              );
-            }
+      try {
+        switch (diff.operation) {
+          case DIFF_INSERT:
+            List<String> lines = diff.text.split('\n');
+            for (int i = 0; i < lines.length; i++) {
+              String line = lines[i];
+              if (i != 0) {
+                localIndex = 0;
+              }
+              if (line.characters.isNotEmpty) {
+                _addSpan(
+                  EditorSpan(
+                    span: TextSpan(text: line),
+                    start: localIndex,
+                    end: localIndex + line.characters.length,
+                    spanFormatType: currentStyle,
+                  ),
+                  lineIndex + i,
+                  globalIndex,
+                );
+              }
 
-            globalIndex += line.length;
-            localIndex += line.characters.length;
-          }
-          break;
-        case DIFF_DELETE:
-          List<String> lines = diff.text.split('\n');
-          for (int lineIndex = 0; lineIndex < lines.length; lineIndex++) {
-            String line = lines[lineIndex];
-            if (lineIndex != 0) {
-              localIndex = 0;
+              globalIndex += line.characters.length;
+              localIndex += line.characters.length;
             }
-            if (line.characters.isNotEmpty) {
-              _removeSpan(localIndex, localIndex + line.length, lineIndex);
+            break;
+          case DIFF_DELETE:
+            List<String> lines = diff.text.split('\n');
+            for (int i = 0; i < lines.length; i++) {
+              String line = lines[i];
+              if (i != 0) {
+                localIndex = 0;
+              }
+              if (line.characters.isNotEmpty) {
+                _removeSpan(localIndex, localIndex + line.characters.length,
+                    lineIndex + i);
+              }
             }
-          }
-          break;
-        case DIFF_EQUAL:
-          List<String> lines = diff.text.split('\n');
-          lineIndex += lines.length - 1;
-          localIndex = lines[lines.length - 1].characters.length;
-          break;
-      }
-      if (diff.operation != DIFF_DELETE) {
-        globalIndex += diff.text.length;
+            break;
+          case DIFF_EQUAL:
+            List<String> lines = diff.text.split('\n');
+            lineIndex += lines.length - 1;
+            if (lines.length > 1) {
+              localIndex = lines[lines.length - 1].characters.length;
+            } else {
+              localIndex += diff.text.characters.length;
+            }
+            globalIndex += diff.text.characters.length;
+            break;
+        }
+      } catch (e) {
+        print(e);
       }
     }
     print(em.lines);
@@ -110,6 +117,9 @@ class EditorInputFormatter extends TextInputFormatter {
           lineFormatType: currentLineFormat,
         ),
       );
+      _updateGlobalLineIndexes();
+    } else if (em.lines[line].spans.isEmpty) {
+      em.lines[line].spans.add(span);
       _updateGlobalLineIndexes();
     } else {
       // iterate over all spans in the line
@@ -301,7 +311,8 @@ class EditorInputFormatter extends TextInputFormatter {
             final inBetween =
                 line.spans[spanIndex].span.toPlainText().substring(
                       globalStart - currentStart,
-                      [currentEnd, globalEnd - currentStart].reduce(min),
+                      [currentEnd - currentStart, globalEnd - currentStart]
+                          .reduce(min),
                     );
             final oldTextStyle = line.spans[spanIndex].spanFormatType;
             final oldStart = line.spans[spanIndex].start;
