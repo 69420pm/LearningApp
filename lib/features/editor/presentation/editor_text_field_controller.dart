@@ -6,10 +6,11 @@ import 'package:learning_app/features/editor/presentation/editor_text_field_mana
 
 class EditorTextFieldController extends TextEditingController {
   EditorTextFieldManager em;
-  EditorTextFieldController({required this.em, required this.inputFormatter});
   EditorInputFormatter inputFormatter;
+  EditorTextFieldController({required this.em, required this.inputFormatter});
   String previousText = '';
   TextSelection previousSelection = TextSelection.collapsed(offset: 0);
+
   @override
   TextSpan buildTextSpan(
       {required BuildContext context,
@@ -19,7 +20,6 @@ class EditorTextFieldController extends TextEditingController {
 
     previousSelection = selection;
     previousText = text;
-    return super.buildTextSpan(
-        context: context, style: style, withComposing: withComposing);
+    return TextSpan(children: List.from(em.spans));
   }
 }

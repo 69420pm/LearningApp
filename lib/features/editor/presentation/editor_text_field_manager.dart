@@ -5,6 +5,16 @@ import 'package:learning_app/features/editor/presentation/cubit/editor_cubit.dar
 
 class EditorTextFieldManager {
   List<EditorLine> lines = [];
+  List<InlineSpan> spans = [];
+
+  void generateSpans() {
+    spans.clear();
+    for (EditorLine line in lines) {
+      for (EditorSpan span in line.spans) {
+        spans.add(span.span);
+      }
+    }
+  }
 }
 
 class EditorSpan extends Equatable {
@@ -33,7 +43,7 @@ class EditorSpan extends Equatable {
     required this.end,
     List<SpanFormatType> spanFormatType = const [],
   }) {
-    _spanFormatType = spanFormatType;
+    this.spanFormatType = spanFormatType;
   }
 
   EditorSpan copyWith({

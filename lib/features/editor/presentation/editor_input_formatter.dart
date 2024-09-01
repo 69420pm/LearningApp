@@ -31,7 +31,9 @@ class EditorInputFormatter extends TextInputFormatter {
       newValue.text,
       newValue.selection,
     );
+
     lastSelection = newValue.selection;
+    em.generateSpans();
     return newValue;
   }
 
@@ -57,6 +59,7 @@ class EditorInputFormatter extends TextInputFormatter {
               String line = lines[i];
               if (i != 0) {
                 localIndex = 0;
+                line += '\n';
               }
               if (line.characters.isNotEmpty) {
                 _addSpan(
@@ -81,6 +84,7 @@ class EditorInputFormatter extends TextInputFormatter {
               String line = lines[i];
               if (i != 0) {
                 localIndex = 0;
+                line += '\n';
               }
               if (line.characters.isNotEmpty) {
                 _removeSpan(localIndex, localIndex + line.characters.length,
@@ -92,7 +96,7 @@ class EditorInputFormatter extends TextInputFormatter {
             List<String> lines = diff.text.split('\n');
             lineIndex += lines.length - 1;
             if (lines.length > 1) {
-              localIndex = lines[lines.length - 1].characters.length;
+              localIndex = lines[lines.length - 1].characters.length + 1;
             } else {
               localIndex += diff.text.characters.length;
             }
@@ -397,6 +401,7 @@ class EditorInputFormatter extends TextInputFormatter {
       }
       globalIndex += line.spans.last.end;
     }
+    em.generateSpans();
   }
 
   void _changeStyleAccordingToSelection() {}
