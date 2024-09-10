@@ -58,10 +58,71 @@ class EditorInputFormatter extends TextInputFormatter {
             for (int i = 0; i < lines.length; i++) {
               String line = lines[i];
               if (i != 0) {
-                localIndex = 0;
                 line += '\n';
+                if (localIndex != em.lines[lineIndex].spans.last.end) {
+                  // shift spans to next line
+                  for (int j = 0; j < em.lines[lineIndex].spans.length; j++) {
+                    final span = em.lines[lineIndex].spans[j];
+                    if (span.end >= localIndex && span.start <= localIndex) {
+                      EditorSpan? previousSpan;
+                      if (j > 0) {
+                        previousSpan = em.lines[lineIndex].spans[j - 1];
+                      }
+                      final splittedSpans = splitSpan(
+                        span,
+                        localIndex -
+                            (previousSpan != null ? previousSpan.end : 0),
+                      );
+                      if (splittedSpans[0] != null) {
+                        em.lines[lineIndex].spans[j] = splittedSpans[0]!;
+                        j++;
+                      } else {
+                        em.lines[lineIndex].spans.removeAt(j);
+                        j--;
+                      }
+
+                      final spansToShift = em.lines[lineIndex].spans
+                          .getRange(j, em.lines[lineIndex].spans.length)
+                          .toList();
+                      if (splittedSpans[1] != null) {
+                        spansToShift.insert(0, splittedSpans[1]!);
+                      }
+                      int spansToShiftStart = 0;
+                      for (int k = 0; k < spansToShift.length; k++) {
+                        spansToShift[k].start = spansToShiftStart;
+                        spansToShiftStart += spansToShift[k]
+                            .span
+                            .toPlainText()
+                            .characters
+                            .length;
+                        spansToShift[k].end = spansToShiftStart;
+                      }
+                      if (em.lines.length > lineIndex) {
+                        em.lines.insert(
+                          lineIndex + 1,
+                          EditorLine(
+                            start: globalIndex,
+                            end: globalIndex + spansToShift.last.end,
+                            spans: spansToShift,
+                          ),
+                        );
+                      } else {
+                        em.lines[lineIndex + 1].spans.insertAll(
+                          0,
+                          spansToShift,
+                        );
+                      }
+
+                      em.lines[lineIndex].spans
+                          .removeRange(j, em.lines[lineIndex].spans.length);
+                      localIndex = 0;
+                      break;
+                    }
+                  }
+                }
+                lineIndex++;
               }
-              if (line.characters.isNotEmpty) {
+              if (line.isNotEmpty) {
                 _addSpan(
                   EditorSpan(
                     span: TextSpan(text: line),
@@ -69,9 +130,10 @@ class EditorInputFormatter extends TextInputFormatter {
                     end: localIndex + line.characters.length,
                     spanFormatType: currentStyle,
                   ),
-                  lineIndex + i,
+                  lineIndex,
                   globalIndex,
                 );
+                _updateGlobalLineIndexes();
               }
 
               globalIndex += line.characters.length;
@@ -87,8 +149,11 @@ class EditorInputFormatter extends TextInputFormatter {
                 line += '\n';
               }
               if (line.characters.isNotEmpty) {
-                _removeSpan(localIndex, localIndex + line.characters.length,
-                    lineIndex + i);
+                _removeSpan(
+                  localIndex,
+                  localIndex + line.characters.length,
+                  lineIndex + i,
+                );
               }
             }
             break;
@@ -104,6 +169,7 @@ class EditorInputFormatter extends TextInputFormatter {
             break;
         }
       } catch (e) {
+        rethrow;
         print(e);
       }
     }
@@ -215,6 +281,45 @@ class EditorInputFormatter extends TextInputFormatter {
         em.lines[i].start = previousEnd;
         em.lines[i].end = previousEnd + em.lines[i].spans.last.end;
         previousEnd = em.lines[i].end;
+      } else {
+        em.lines.removeAt(i);
+        i--;
+      }
+      if (i > 0 &&
+          em.lines[i].spans.isNotEmpty &&
+          !em.lines[i].spans[0].span.toPlainText().startsWith('\n')) {
+        final previousSpans = em.lines[i - 1].spans;
+        final currentSpans = em.lines[i].spans;
+        final currentSpansCharacterLength = currentSpans.last.end;
+        for (final span in em.lines[i].spans) {
+          span.start += previousSpans.last.end;
+          span.end += previousSpans.last.end;
+        }
+        // merge last spans if possible
+        if (listEquals(
+          previousSpans.last.spanFormatType,
+          currentSpans.first.spanFormatType,
+        )) {
+          previousSpans[previousSpans.length - 1] = EditorSpan(
+            span: TextSpan(
+              text: previousSpans.last.span.toPlainText() +
+                  currentSpans.first.span.toPlainText(),
+            ),
+            start: previousSpans.last.start,
+            end: previousSpans.last.end +
+                currentSpans.first.span.toPlainText().characters.length,
+            spanFormatType: previousSpans.last.spanFormatType,
+          );
+          currentSpans.removeAt(0);
+        }
+        em.lines[i - 1] = EditorLine(
+          spans: previousSpans + currentSpans,
+          start: em.lines[i - 1].start,
+          end: em.lines[i - 1].end + currentSpansCharacterLength,
+          lineFormatType: em.lines[i - 1].lineFormatType,
+        );
+        em.lines.removeAt(i);
+        i--;
       }
     }
   }
@@ -294,6 +399,7 @@ class EditorInputFormatter extends TextInputFormatter {
     }
   }
 
+//! not working
   void _changeStyle(
     List<SpanFormatType> style,
     int globalStart,
@@ -405,4 +511,63 @@ class EditorInputFormatter extends TextInputFormatter {
   }
 
   void _changeStyleAccordingToSelection() {}
+
+  int findStartLine(int globalStart) {
+    for (int i = 0; i < em.lines.length; i++) {
+      if (globalStart >= em.lines[i].start && globalStart <= em.lines[i].end) {
+        return i;
+      }
+    }
+    // in a new line
+    return em.lines.length;
+  }
+
+  /// Splits an [EditorSpan] at a given index into two [EditorSpan]s.
+  ///
+  /// The first returned [EditorSpan] contains the text before the split point,
+  /// the second returned [EditorSpan] contains the text after the split point.
+  ///
+  /// If the split point is at the start or end of the [EditorSpan], the
+  /// corresponding [EditorSpan] is null.
+  ///
+  /// The [EditorSpan]s returned are copies of the original [EditorSpan], with
+  /// the start and end adjusted according to the split point.
+  ///
+  /// The style of the returned [EditorSpan]s is the same as the original
+  /// [EditorSpan].
+  List<EditorSpan?> splitSpan(EditorSpan span, int splitPoint) {
+    final leftText = span.span.toPlainText().substring(0, splitPoint);
+    final rightText = span.span.toPlainText().substring(splitPoint);
+    final leftSpan = leftText.isEmpty
+        ? null
+        : span.copyWith(
+            span: TextSpan(text: leftText),
+            end: span.start + splitPoint,
+          );
+    final rightSpan = rightText.isEmpty
+        ? null
+        : span.copyWith(
+            span: TextSpan(text: rightText),
+            start: span.start + splitPoint,
+            end: span.end,
+          );
+    return [leftSpan, rightSpan];
+  }
+
+  List<EditorSpan> mergePotentiallySpans(
+    EditorSpan leftSpan,
+    EditorSpan rightSpan,
+  ) {
+    if (listEquals(leftSpan.spanFormatType, rightSpan.spanFormatType)) {
+      final mergedSpan = leftSpan.copyWith(
+        span: TextSpan(
+          text: leftSpan.span.toPlainText() + rightSpan.span.toPlainText(),
+        ),
+        start: leftSpan.start,
+        end: rightSpan.end,
+      );
+      return [mergedSpan];
+    }
+    return [leftSpan, rightSpan];
+  }
 }

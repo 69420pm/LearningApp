@@ -119,11 +119,9 @@ class EditorFormatStyles {
   );
   static TextStyle superscript = const TextStyle(
     fontSize: 10,
-    textBaseline: TextBaseline.alphabetic,
   );
   static TextStyle subscript = const TextStyle(
     fontSize: 10,
-    textBaseline: TextBaseline.alphabetic,
   );
   static TextStyle heading = const TextStyle(
     fontSize: 26,
