@@ -29,6 +29,7 @@ class FolderListTile extends StatelessWidget implements FileListTile {
   @override
   Widget build(BuildContext context) {
     return DragTarget(
+      onLeave: (details) => context.read<SubjectHoverCubit>().changeHover(""),
       onMove: (details) => context
           .read<SubjectHoverCubit>()
           .changeHover(folder.id), //context.read<FolderBloc>(),
@@ -40,7 +41,6 @@ class FolderListTile extends StatelessWidget implements FileListTile {
           context
               .read<SubjectSelectionCubit>()
               .changeSelection(details.data.fileId);
-          print("?");
         } else {
           //move hole selection to this folder
           List<String> selectedIds = List<String>.from(

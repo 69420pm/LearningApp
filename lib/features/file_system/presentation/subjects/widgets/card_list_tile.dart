@@ -21,7 +21,7 @@ class CardListTile extends StatelessWidget implements FileListTile {
       onTap: onTap,
       child: Container(
         height: 40,
-        color: isSelected ? Colors.green : Colors.grey,
+        color: isSelected ? Colors.green : Colors.black,
         child: Text(card.name),
       ),
     );

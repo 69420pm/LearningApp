@@ -52,38 +52,37 @@ class SubjectView extends StatelessWidget {
             .add(SubjectCreateFolder(name: DateTime.now().toIso8601String())),
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            FolderContent(parentId: subjectId),
-            DragTarget(
-              onMove: (details) {
-                context.read<SubjectHoverCubit>().changeHover(subjectId);
-              },
-              onAcceptWithDetails:
-                  (DragTargetDetails<FileDragDetails> details) {
-                if (!context.read<SubjectSelectionCubit>().inSelectionMode &&
-                    details.data.parentId == subjectId) {
-                  print("sele");
-                  //select file
-                  context
-                      .read<SubjectSelectionCubit>()
-                      .changeSelection(details.data.fileId);
-                } else {
-                  //move hole selection to this folder
-                  List<String> selectedIds =
-                      context.read<SubjectSelectionCubit>().selectedIds;
+        child: DragTarget(
+          onMove: (details) {
+            context.read<SubjectHoverCubit>().changeHover(subjectId);
+          },
+          onAcceptWithDetails: (DragTargetDetails<FileDragDetails> details) {
+            if (!context.read<SubjectSelectionCubit>().inSelectionMode &&
+                details.data.parentId == subjectId) {
+              //select file
+              context
+                  .read<SubjectSelectionCubit>()
+                  .changeSelection(details.data.fileId);
+            } else {
+              //move hole selection to this folder
+              List<String> selectedIds =
+                  List.from(context.read<SubjectSelectionCubit>().selectedIds);
 
-                  if (!selectedIds.contains(details.data.fileId)) {
-                    selectedIds.add(details.data.fileId);
-                  }
+              if (!selectedIds.contains(details.data.fileId)) {
+                selectedIds.add(details.data.fileId);
+              }
 
-                  context.read<SubjectBloc>().add(SubjectMoveFiles(
-                      parentId: subjectId, fileIds: selectedIds));
-                }
-              },
-              builder: (BuildContext context, List<Object?> candidateData,
-                  List<dynamic> rejectedData) {
-                return Container(
+              context.read<SubjectBloc>().add(
+                  SubjectMoveFiles(parentId: subjectId, fileIds: selectedIds));
+            }
+          },
+          onLeave: (details) =>
+              context.read<SubjectHoverCubit>().changeHover(""),
+          builder: (context, candidateData, rejectedData) {
+            return Column(
+              children: [
+                FolderContent(parentId: subjectId),
+                Container(
                   color: Colors.blue,
                   height: 50,
                   width: double.infinity,
@@ -92,10 +91,10 @@ class SubjectView extends StatelessWidget {
                     onPressed: () =>
                         context.read<SubjectBloc>().add(SubjectCreateCard()),
                   ),
-                );
-              },
-            ),
-          ],
+                ),
+              ],
+            );
+          },
         ),
       ),
     );

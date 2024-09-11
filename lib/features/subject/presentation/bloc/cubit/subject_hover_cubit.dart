@@ -14,6 +14,7 @@ class SubjectHoverCubit extends Cubit<SubjectHoverState> {
         );
 
   void changeHover(String newId) {
+    if (newId == (state as SubjectHoverChanged).newId) return;
     emit(
       SubjectHoverChanged(
         newId: newId,

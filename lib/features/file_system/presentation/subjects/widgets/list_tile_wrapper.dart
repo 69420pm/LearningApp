@@ -8,6 +8,7 @@ import 'package:learning_app/features/file_system/presentation/subjects/widgets/
 import 'package:learning_app/features/file_system/presentation/subjects/widgets/folder_list_tile.dart';
 import 'package:learning_app/features/subject/presentation/bloc/cubit/subject_hover_cubit.dart';
 import 'package:learning_app/features/subject/presentation/bloc/cubit/subject_selection_cubit.dart';
+import 'package:learning_app/injection_container.dart';
 
 /// wraps Folder and Card list tiles and updates them, listening to their
 /// watch stream accordingly
@@ -22,7 +23,6 @@ class ListTileWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     void _onTileClicked() {
       if (context.read<SubjectSelectionCubit>().inSelectionMode) {
-        print("selecting");
         context.read<SubjectSelectionCubit>().changeSelection(id);
       }
     }
@@ -32,10 +32,25 @@ class ListTileWrapper extends StatelessWidget {
         fileId: id,
         parentId: context.read<FolderBloc>().parentId,
       ),
-      feedback: Container(
-        color: Colors.red,
-        height: 40,
-        width: 100,
+      feedback: BlocProvider.value(
+        value: BlocProvider.of<SubjectHoverCubit>(context),
+        child: BlocBuilder<SubjectHoverCubit, SubjectHoverState>(
+          buildWhen: (previous, current) =>
+              (previous as SubjectHoverChanged).newId == "" ||
+              (current as SubjectHoverChanged).newId == "",
+          builder: (context, state) {
+            return Container(
+              color: (context.read<SubjectHoverCubit>().state
+                              as SubjectHoverChanged)
+                          .newId ==
+                      ""
+                  ? Colors.red
+                  : Colors.blue,
+              height: 40,
+              width: 100,
+            );
+          },
+        ),
       ),
       childWhenDragging: Container(
         color: Colors.green,
