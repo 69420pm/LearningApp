@@ -137,7 +137,6 @@ class EditorInputFormatter extends TextInputFormatter {
                   lineIndex,
                   globalIndex,
                 );
-                _updateGlobalLineIndexes();
               }
 
               globalIndex += line.characters.length;
@@ -180,7 +179,7 @@ class EditorInputFormatter extends TextInputFormatter {
     print(em.lines);
   }
 
-  // start and end is line relative
+// start and end is line relative
   void _addSpan(EditorSpan span, int line, int globalStart) {
     if (em.lines.length <= line) {
       em.lines.add(
@@ -238,14 +237,14 @@ class EditorInputFormatter extends TextInputFormatter {
               i--;
             }
             if (inBetween.characters.isNotEmpty) {
+              int start = i >= 0 ? em.lines[line].spans[i].start : 0;
               em.lines[line].spans.insert(
                 i + 1,
                 EditorSpan(
                   span: TextSpan(text: inBetween),
                   //! index error with shifting spans here after start:
-                  start:
-                      em.lines[line].spans[i].start + before.characters.length,
-                  end: em.lines[line].spans[i].start +
+                  start: start + before.characters.length,
+                  end: start +
                       before.characters.length +
                       inBetween.characters.length,
                   spanFormatType: span.spanFormatType,
@@ -270,6 +269,11 @@ class EditorInputFormatter extends TextInputFormatter {
               );
               i++;
             }
+          }
+          // update local indexes of following EditorSpans
+          for (int j = i + 1; j < em.lines[line].spans.length; j++) {
+            em.lines[line].spans[j].start += inBetween.characters.length;
+            em.lines[line].spans[j].end += inBetween.characters.length;
           }
           _updateGlobalLineIndexes();
           break;
