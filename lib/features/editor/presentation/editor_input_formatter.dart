@@ -115,13 +115,17 @@ class EditorInputFormatter extends TextInputFormatter {
 
                       em.lines[lineIndex].spans
                           .removeRange(j, em.lines[lineIndex].spans.length);
-                      localIndex = 0;
+
+                      em.lines[lineIndex].end = em.lines[lineIndex].start +
+                          em.lines[lineIndex].spans.last.end;
                       break;
                     }
                   }
                 }
                 lineIndex++;
+                localIndex = 0;
               }
+
               if (line.isNotEmpty) {
                 _addSpan(
                   EditorSpan(
@@ -238,6 +242,7 @@ class EditorInputFormatter extends TextInputFormatter {
                 i + 1,
                 EditorSpan(
                   span: TextSpan(text: inBetween),
+                  //! index error with shifting spans here after start:
                   start:
                       em.lines[line].spans[i].start + before.characters.length,
                   end: em.lines[line].spans[i].start +
