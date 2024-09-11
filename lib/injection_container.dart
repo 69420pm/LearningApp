@@ -44,7 +44,6 @@ void features() {
       parentId: parentId as String,
       watchChildren: sl(),
       watchFile: sl(),
-      moveFileUseCase: sl(),
     ),
   );
   sl.registerFactoryParam(
@@ -52,6 +51,7 @@ void features() {
       createFolderUseCase: sl(),
       cerateCardUseCase: sl(),
       subjectId: subjectId as String,
+      moveFileUseCase: sl(),
     ),
   );
   sl.registerFactory(
@@ -71,7 +71,7 @@ void features() {
   sl.registerLazySingleton(() => WatchFile(repository: sl()));
   sl.registerLazySingleton(() => CreateFolder(repository: sl()));
   sl.registerLazySingleton(() => CreateCard(repository: sl()));
-  sl.registerLazySingleton(() => MoveFile(repository: sl()));
+  sl.registerLazySingleton(() => MoveFiles(repository: sl()));
   sl.registerLazySingleton(() => GetRelations(repository: sl()));
   sl.registerLazySingleton(() => GetParentId(dataSource: sl()));
 

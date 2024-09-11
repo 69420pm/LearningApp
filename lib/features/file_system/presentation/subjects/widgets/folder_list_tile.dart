@@ -12,6 +12,7 @@ import 'package:learning_app/features/file_system/presentation/subjects/widgets/
 import 'package:learning_app/features/file_system/presentation/subjects/widgets/list_tile_wrapper.dart';
 import 'package:learning_app/features/subject/presentation/bloc/cubit/subject_hover_cubit.dart';
 import 'package:learning_app/features/subject/presentation/bloc/cubit/subject_selection_cubit.dart';
+import 'package:learning_app/features/subject/presentation/bloc/subject_bloc.dart';
 
 class FolderListTile extends StatelessWidget implements FileListTile {
   final Folder folder;
@@ -31,23 +32,27 @@ class FolderListTile extends StatelessWidget implements FileListTile {
       onMove: (details) => context
           .read<SubjectHoverCubit>()
           .changeHover(folder.id), //context.read<FolderBloc>(),
+      // onLeave: (data) => context.read<SubjectHoverCubit>().changeHover(""),
       onAcceptWithDetails: (DragTargetDetails<FileDragDetails> details) {
-        if (context.read<SubjectSelectionCubit>().inSelectionMode) {
-          List<String> selectedIds =
-              context.read<SubjectSelectionCubit>().selectedIds;
+        if (!context.read<SubjectSelectionCubit>().inSelectionMode &&
+            details.data.parentId == folder.id) {
+          //select file
+          context
+              .read<SubjectSelectionCubit>()
+              .changeSelection(details.data.fileId);
+          print("?");
+        } else {
+          //move hole selection to this folder
+          List<String> selectedIds = List<String>.from(
+              context.read<SubjectSelectionCubit>().selectedIds);
 
           if (!selectedIds.contains(details.data.fileId)) {
             selectedIds.add(details.data.fileId);
           }
 
           context
-              .read<FolderBloc>()
-              .add(FolderMoveFiles(parentId: folder.id, fileIds: selectedIds));
-          context.read<SubjectSelectionCubit>().deselectAll();
-        } else if (details.data.parentId == folder.id) {
-          context
-              .read<SubjectSelectionCubit>()
-              .changeSelection(details.data.fileId);
+              .read<SubjectBloc>()
+              .add(SubjectMoveFiles(parentId: folder.id, fileIds: selectedIds));
         }
       },
       builder: (BuildContext context, List<Object?> candidateData,
@@ -55,7 +60,7 @@ class FolderListTile extends StatelessWidget implements FileListTile {
         return GestureDetector(
           onTap: onTap,
           child: UIExpansionTile(
-            title: folder.name,
+            title: folder.id,
             backgroundColor: isHovered
                 ? Colors.grey
                 : isSelected

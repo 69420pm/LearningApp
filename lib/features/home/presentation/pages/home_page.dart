@@ -29,11 +29,9 @@ class HomeView extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          context.push(context.namedLocation("editor"));
+          //context.push(context.namedLocation("editor"));
 
-          // context
-          //   .read<HomeBloc>()
-          //   .add(const HomeSubjectAddSubject(name: "69"));
+          context.read<HomeBloc>().add(const HomeSubjectAddSubject(name: "69"));
         },
       ),
       body: SafeArea(

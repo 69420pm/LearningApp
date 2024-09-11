@@ -13,13 +13,13 @@ final class FolderLoading extends FolderState {}
 final class FolderError extends FolderState {
   final String errorMessage;
 
-  FolderError({required this.errorMessage});
+  const FolderError({required this.errorMessage});
 }
 
 final class FolderSuccess extends FolderState {
   final List<String> ids;
 
-  FolderSuccess({required this.ids});
+  const FolderSuccess({required this.ids});
   @override
   List<Object> get props => ids;
 }

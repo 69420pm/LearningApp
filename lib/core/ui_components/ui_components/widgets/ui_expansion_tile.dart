@@ -3,9 +3,11 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_constants.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_icons.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_text.dart';
+import 'package:learning_app/features/subject/presentation/bloc/subject_bloc.dart';
 
 class UIExpansionTile extends StatefulWidget {
   Widget child;
@@ -22,6 +24,7 @@ class UIExpansionTile extends StatefulWidget {
   Border? border;
   bool changeExtensionState;
   bool startOpen;
+  String? parentId;
 
   UIExpansionTile({
     super.key,
@@ -39,6 +42,7 @@ class UIExpansionTile extends StatefulWidget {
     this.border,
     this.changeExtensionState = false,
     this.startOpen = false,
+    this.parentId = "",
   }) {
     iconColor ??= textColor;
   }

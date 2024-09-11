@@ -9,7 +9,7 @@ import 'package:learning_app/features/file_system/presentation/subjects/widgets/
 import 'package:learning_app/features/subject/presentation/bloc/cubit/subject_hover_cubit.dart';
 import 'package:learning_app/features/subject/presentation/bloc/cubit/subject_selection_cubit.dart';
 
-/// wraps Folder and Card list tiles and updates them listening, to their
+/// wraps Folder and Card list tiles and updates them, listening to their
 /// watch stream accordingly
 class ListTileWrapper extends StatelessWidget {
   final String id;
@@ -22,7 +22,7 @@ class ListTileWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     void _onTileClicked() {
       if (context.read<SubjectSelectionCubit>().inSelectionMode) {
-        print(id);
+        print("selecting");
         context.read<SubjectSelectionCubit>().changeSelection(id);
       }
     }
@@ -34,12 +34,12 @@ class ListTileWrapper extends StatelessWidget {
       ),
       feedback: Container(
         color: Colors.red,
-        height: 20,
+        height: 40,
         width: 100,
       ),
       childWhenDragging: Container(
         color: Colors.green,
-        height: 20,
+        height: 40,
         width: 100,
       ),
       onDragEnd: (details) => context.read<SubjectHoverCubit>().changeHover(""),
