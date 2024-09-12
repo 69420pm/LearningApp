@@ -21,6 +21,7 @@ class EditorInputFormatter extends TextInputFormatter {
     }
   }
 
+//! multiline pasting is buggy
   @override
   TextEditingValue formatEditUpdate(
     TextEditingValue oldValue,
@@ -57,7 +58,8 @@ class EditorInputFormatter extends TextInputFormatter {
           for (int i = 0; i < lines.length; i++) {
             String line = lines[i];
             if (i != 0) {
-              line += '\n';
+              // line += '\n';
+              line = '\n$line';
               if (localIndex != em.lines[lineIndex].spans.last.end) {
                 // shift spans to next line
                 for (int j = 0; j < em.lines[lineIndex].spans.length; j++) {
@@ -185,15 +187,15 @@ class EditorInputFormatter extends TextInputFormatter {
           lineFormatType: currentLineFormat,
         ),
       );
-      _updateGlobalLineIndexes();
     } else if (em.lines[line].spans.isEmpty) {
       em.lines[line].spans.add(span);
-      _updateGlobalLineIndexes();
     } else {
       // iterate over all spans in the line
       for (int i = 0; i < em.lines[line].spans.length; i++) {
         // if the span is in the bounds of the em.lines[i].spans[i]
-        if ((em.lines[line].spans[i].end >= span.end &&
+        if ((em.lines[line].spans[i].end +
+                        span.span.toPlainText().characters.length >=
+                    span.end &&
                 em.lines[line].spans[i].start <= span.start) ||
             i == em.lines[line].spans.length - 1) {
           // change lineFormatType accordingly
@@ -217,8 +219,7 @@ class EditorInputFormatter extends TextInputFormatter {
               spanFormatType: oldSpanStyle,
             );
           } else {
-            if (before.characters.isNotEmpty) {
-              //! somehow broken
+            if (before.isNotEmpty) {
               // split the span and insert new span in between
               em.lines[line].spans[i] = EditorSpan(
                 span: TextSpan(
@@ -233,7 +234,7 @@ class EditorInputFormatter extends TextInputFormatter {
               i--;
             }
             int start = i >= 0 ? em.lines[line].spans[i].start : 0;
-            if (inBetween.characters.isNotEmpty) {
+            if (inBetween.isNotEmpty) {
               em.lines[line].spans.insert(
                 i + 1,
                 EditorSpan(
@@ -247,7 +248,7 @@ class EditorInputFormatter extends TextInputFormatter {
               );
               i++;
             }
-            if (after.characters.isNotEmpty) {
+            if (after.isNotEmpty) {
               em.lines[line].spans.insert(
                 i + 1,
                 EditorSpan(
@@ -270,11 +271,11 @@ class EditorInputFormatter extends TextInputFormatter {
             em.lines[line].spans[j].start += inBetween.characters.length;
             em.lines[line].spans[j].end += inBetween.characters.length;
           }
-          _updateGlobalLineIndexes();
           break;
         }
       }
     }
+    _updateGlobalLineIndexes();
   }
 
   void _updateGlobalLineIndexes() {
@@ -409,113 +410,82 @@ class EditorInputFormatter extends TextInputFormatter {
     int globalStart,
     int globalEnd,
   ) {
-    int globalIndex = 0;
-    for (int lineIndex = 0; lineIndex < em.lines.length; lineIndex++) {
-      final line = em.lines[lineIndex];
-      if (globalStart >= globalIndex &&
-          line.spans.isNotEmpty &&
-          globalStart <= globalIndex + line.spans.last.end) {
-        for (int spanIndex = 0; spanIndex < line.spans.length; spanIndex++) {
-          int currentStart = line.spans[spanIndex].start + globalIndex;
-          int currentEnd = line.spans[spanIndex].end + globalIndex;
-          if (currentStart <= globalStart && globalStart < currentEnd) {
-            final before = line.spans[spanIndex].span
-                .toPlainText()
-                .substring(0, globalStart - currentStart);
-            final inBetween =
-                line.spans[spanIndex].span.toPlainText().substring(
-                      globalStart - currentStart,
-                      [currentEnd - currentStart, globalEnd - currentStart]
-                          .reduce(min),
-                    );
-            final oldTextStyle = line.spans[spanIndex].spanFormatType;
-            final oldStart = line.spans[spanIndex].start;
-            if (currentEnd >= globalEnd) {
-              final after = line.spans[spanIndex].span
-                  .toPlainText()
-                  .substring(globalEnd - currentStart);
-              if (before.isNotEmpty) {
-                line.spans[spanIndex] = EditorSpan(
-                  span: TextSpan(text: before),
-                  start: oldStart,
-                  end: oldStart + before.characters.length,
-                  spanFormatType: oldTextStyle,
-                );
-              } else {
-                line.spans.removeAt(spanIndex);
-                spanIndex--;
-              }
-              if (inBetween.isNotEmpty) {
-                line.spans.insert(
-                  spanIndex + 1,
-                  EditorSpan(
-                    span: TextSpan(text: inBetween),
-                    start: oldStart + before.characters.length,
-                    end: oldStart +
-                        before.characters.length +
-                        inBetween.characters.length,
-                    spanFormatType: oldTextStyle + style,
-                  ),
-                );
-                spanIndex++;
-              }
-              if (after.isNotEmpty) {
-                line.spans.insert(
-                  spanIndex + 1,
-                  EditorSpan(
-                    span: TextSpan(text: after),
-                    start: line.spans[spanIndex].start +
-                        after.characters.length +
-                        before.characters.length,
-                    end: line.spans[spanIndex].start +
-                        before.characters.length +
-                        inBetween.characters.length +
-                        after.characters.length,
-                    spanFormatType: oldTextStyle,
-                  ),
-                );
-                spanIndex++;
-              }
-              break;
-            } else {
-              // change is in multiple spans
-              if (before.isNotEmpty) {
-                line.spans[spanIndex] = EditorSpan(
-                  span: TextSpan(text: before),
-                  start: oldStart,
-                  end: oldStart + before.characters.length,
-                  spanFormatType: oldTextStyle,
-                );
-              } else {
-                line.spans.removeAt(spanIndex);
-                spanIndex--;
-              }
-              if (inBetween.isNotEmpty) {
-                line.spans.insert(
-                  spanIndex + 1,
-                  EditorSpan(
-                    span: TextSpan(text: inBetween),
-                    start: oldStart + before.characters.length,
-                    end: oldStart +
-                        before.characters.length +
-                        inBetween.characters.length,
-                    spanFormatType: oldTextStyle + style,
-                  ),
-                );
-                spanIndex++;
-              }
-              globalStart = currentEnd;
+    int startLine = findStartLine(globalStart);
+    int endLine = findStartLine(globalEnd);
+    for (int i = startLine; i <= endLine; i++) {
+      int localStart = globalStart - em.lines[i].start;
+      int localEnd = globalEnd - em.lines[i].start;
+      for (int j = 0; j < em.lines[i].spans.length; j++) {
+        final currentSpan = em.lines[i].spans[j];
+        if (localStart >= currentSpan.start) {
+          String before = currentSpan.span.toPlainText().substring(
+                0,
+                localStart - currentSpan.start,
+              );
+          String inBetween = currentSpan.span.toPlainText().substring(
+                localStart - currentSpan.start,
+                localEnd - currentSpan.start,
+              );
+          if (localEnd <= currentSpan.end) {
+            if (listEquals(style, currentSpan.spanFormatType)) {
+              // nothing to change
+              return;
             }
+            // single span
+
+            String after = em.lines[i].spans[j].span
+                .toPlainText()
+                .substring(localEnd - currentSpan.start);
+            if (before.isNotEmpty) {
+              em.lines[i].spans[j] = EditorSpan(
+                span: TextSpan(text: before),
+                start: currentSpan.start,
+                end: currentSpan.start + before.characters.length,
+                spanFormatType: currentSpan.spanFormatType,
+              );
+            } else {
+              em.lines[i].spans.removeAt(j);
+              j--;
+            }
+            if (inBetween.isNotEmpty) {
+              em.lines[i].spans.insert(
+                  j + 1,
+                  EditorSpan(
+                    span: TextSpan(text: inBetween),
+                    start: currentSpan.start + before.characters.length,
+                    end: currentSpan.start +
+                        before.characters.length +
+                        inBetween.characters.length,
+                    spanFormatType: style,
+                  ));
+              j++;
+            }
+            if (after.isNotEmpty) {
+              em.lines[i].spans.insert(
+                j + 1,
+                EditorSpan(
+                  span: TextSpan(text: after),
+                  start: currentSpan.start +
+                      before.characters.length +
+                      inBetween.characters.length,
+                  end: currentSpan.end,
+                  spanFormatType: currentSpan.spanFormatType,
+                ),
+              );
+            }
+            return;
+          } else {
+            // multiple spans
+            //! add this behavior and split call of this method line wise
           }
         }
       }
-      globalIndex += line.spans.last.end;
     }
-    em.generateSpans();
   }
 
   void _changeStyleAccordingToSelection() {}
 
+  /// return index of line where the index of [globalStart] is located
   int findStartLine(int globalStart) {
     for (int i = 0; i < em.lines.length; i++) {
       if (globalStart >= em.lines[i].start && globalStart <= em.lines[i].end) {
