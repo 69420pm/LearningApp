@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_icons.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/buttons/ui_icon_button.dart';
+import 'package:learning_app/features/file_system/presentation/subjects/widgets/folder_drag_target.dart';
 import 'package:learning_app/features/file_system/presentation/subjects/widgets/list_tile_wrapper.dart';
 import 'package:learning_app/features/subject/presentation/bloc/cubit/subject_hover_cubit.dart';
 import 'package:learning_app/features/subject/presentation/bloc/cubit/subject_selection_cubit.dart';
@@ -10,6 +11,7 @@ import 'package:learning_app/features/subject/presentation/bloc/cubit/subject_se
 import 'package:learning_app/features/subject/presentation/bloc/subject_bloc.dart';
 import 'package:learning_app/features/file_system/presentation/subjects/widgets/folder_content.dart';
 import 'package:learning_app/features/subject/presentation/widgets/subject_app_bar.dart';
+import 'package:learning_app/features/subject/presentation/widgets/subject_page_auto_scroller.dart';
 import 'package:learning_app/injection_container.dart';
 
 class SubjectPage extends StatelessWidget {
@@ -44,57 +46,36 @@ class SubjectView extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
+    final globalKey = GlobalKey();
+    final scrollController = ScrollController();
     return Scaffold(
-      appBar: SubjectAppBar(),
+      appBar: const SubjectAppBar(),
       floatingActionButton: FloatingActionButton(
         onPressed: () => context
             .read<SubjectBloc>()
             .add(SubjectCreateFolder(name: DateTime.now().toIso8601String())),
       ),
       body: SafeArea(
-        child: DragTarget(
-          onMove: (details) {
-            context.read<SubjectHoverCubit>().changeHover(subjectId);
-          },
-          onAcceptWithDetails: (DragTargetDetails<FileDragDetails> details) {
-            if (!context.read<SubjectSelectionCubit>().inSelectionMode &&
-                details.data.parentId == subjectId) {
-              //select file
-              context
-                  .read<SubjectSelectionCubit>()
-                  .changeSelection(details.data.fileId);
-            } else {
-              //move hole selection to this folder
-              List<String> selectedIds =
-                  List.from(context.read<SubjectSelectionCubit>().selectedIds);
-
-              if (!selectedIds.contains(details.data.fileId)) {
-                selectedIds.add(details.data.fileId);
-              }
-
-              context.read<SubjectBloc>().add(
-                  SubjectMoveFiles(parentId: subjectId, fileIds: selectedIds));
-            }
-          },
-          onLeave: (details) =>
-              context.read<SubjectHoverCubit>().changeHover(""),
-          builder: (context, candidateData, rejectedData) {
-            return Column(
-              children: [
-                FolderContent(parentId: subjectId),
-                Container(
-                  color: Colors.blue,
-                  height: 50,
-                  width: double.infinity,
-                  child: UIIconButton(
+        child: SingleChildScrollView(
+          controller: scrollController,
+          key: globalKey,
+          child: AutoScrollView(
+            globalKey: globalKey,
+            scrollController: scrollController,
+            child: FolderDragTarget(
+              folderId: subjectId,
+              child: Column(
+                children: [
+                  FolderContent(parentId: subjectId),
+                  UIIconButton(
                     icon: UIIcons.add,
                     onPressed: () =>
                         context.read<SubjectBloc>().add(SubjectCreateCard()),
                   ),
-                ),
-              ],
-            );
-          },
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );

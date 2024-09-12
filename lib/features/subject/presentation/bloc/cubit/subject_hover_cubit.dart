@@ -13,8 +13,17 @@ class SubjectHoverCubit extends Cubit<SubjectHoverState> {
           ),
         );
 
+  var _isDragging = false;
+
+  bool get isDragging => _isDragging;
+
+  void endDrag() {
+    _isDragging = false;
+  }
+
   void changeHover(String newId) {
     if (newId == (state as SubjectHoverChanged).newId) return;
+    if (newId != "") _isDragging = true;
     emit(
       SubjectHoverChanged(
         newId: newId,
