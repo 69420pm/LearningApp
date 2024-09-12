@@ -51,129 +51,124 @@ class EditorInputFormatter extends TextInputFormatter {
     //! bug when using equal characters with different formatting, the dmp.diff function
     //! can't detect this, because it doesn't know the formatting
     for (Diff diff in diffs) {
-      try {
-        switch (diff.operation) {
-          case DIFF_INSERT:
-            List<String> lines = diff.text.split('\n');
-            for (int i = 0; i < lines.length; i++) {
-              String line = lines[i];
-              if (i != 0) {
-                line += '\n';
-                if (localIndex != em.lines[lineIndex].spans.last.end) {
-                  // shift spans to next line
-                  for (int j = 0; j < em.lines[lineIndex].spans.length; j++) {
-                    final span = em.lines[lineIndex].spans[j];
-                    if (span.end >= localIndex && span.start <= localIndex) {
-                      EditorSpan? previousSpan;
-                      if (j > 0) {
-                        previousSpan = em.lines[lineIndex].spans[j - 1];
-                      }
-                      final splittedSpans = splitSpan(
-                        span,
-                        localIndex -
-                            (previousSpan != null ? previousSpan.end : 0),
-                      );
-                      if (splittedSpans[0] != null) {
-                        em.lines[lineIndex].spans[j] = splittedSpans[0]!;
-                        j++;
-                      } else {
-                        em.lines[lineIndex].spans.removeAt(j);
-                        j--;
-                      }
-
-                      final spansToShift = em.lines[lineIndex].spans
-                          .getRange(j, em.lines[lineIndex].spans.length)
-                          .toList();
-                      if (splittedSpans[1] != null) {
-                        spansToShift.insert(0, splittedSpans[1]!);
-                      }
-                      int spansToShiftStart = 0;
-                      for (int k = 0; k < spansToShift.length; k++) {
-                        spansToShift[k].start = spansToShiftStart;
-                        spansToShiftStart += spansToShift[k]
-                            .span
-                            .toPlainText()
-                            .characters
-                            .length;
-                        spansToShift[k].end = spansToShiftStart;
-                      }
-                      if (em.lines.length > lineIndex) {
-                        em.lines.insert(
-                          lineIndex + 1,
-                          EditorLine(
-                            start: globalIndex,
-                            end: globalIndex + spansToShift.last.end,
-                            spans: spansToShift,
-                          ),
-                        );
-                      } else {
-                        em.lines[lineIndex + 1].spans.insertAll(
-                          0,
-                          spansToShift,
-                        );
-                      }
-
-                      em.lines[lineIndex].spans
-                          .removeRange(j, em.lines[lineIndex].spans.length);
-
-                      em.lines[lineIndex].end = em.lines[lineIndex].start +
-                          em.lines[lineIndex].spans.last.end;
-                      break;
+      switch (diff.operation) {
+        case DIFF_INSERT:
+          List<String> lines = diff.text.split('\n');
+          for (int i = 0; i < lines.length; i++) {
+            String line = lines[i];
+            if (i != 0) {
+              line += '\n';
+              if (localIndex != em.lines[lineIndex].spans.last.end) {
+                // shift spans to next line
+                for (int j = 0; j < em.lines[lineIndex].spans.length; j++) {
+                  final span = em.lines[lineIndex].spans[j];
+                  if (span.end >= localIndex && span.start <= localIndex) {
+                    EditorSpan? previousSpan;
+                    if (j > 0) {
+                      previousSpan = em.lines[lineIndex].spans[j - 1];
                     }
+                    final splittedSpans = splitSpan(
+                      span,
+                      localIndex -
+                          (previousSpan != null ? previousSpan.end : 0),
+                    );
+                    if (splittedSpans[0] != null) {
+                      em.lines[lineIndex].spans[j] = splittedSpans[0]!;
+                      j++;
+                    } else {
+                      em.lines[lineIndex].spans.removeAt(j);
+                      j--;
+                    }
+
+                    final spansToShift = em.lines[lineIndex].spans
+                        .getRange(j, em.lines[lineIndex].spans.length)
+                        .toList();
+                    if (splittedSpans[1] != null) {
+                      spansToShift.insert(0, splittedSpans[1]!);
+                    }
+                    int spansToShiftStart = 0;
+                    for (int k = 0; k < spansToShift.length; k++) {
+                      spansToShift[k].start = spansToShiftStart;
+                      spansToShiftStart +=
+                          spansToShift[k].span.toPlainText().characters.length;
+                      spansToShift[k].end = spansToShiftStart;
+                    }
+                    if (em.lines.length > lineIndex) {
+                      em.lines.insert(
+                        lineIndex + 1,
+                        EditorLine(
+                          start: globalIndex,
+                          end: globalIndex + spansToShift.last.end,
+                          spans: spansToShift,
+                        ),
+                      );
+                    } else {
+                      em.lines[lineIndex + 1].spans.insertAll(
+                        0,
+                        spansToShift,
+                      );
+                    }
+
+                    em.lines[lineIndex].spans
+                        .removeRange(j, em.lines[lineIndex].spans.length);
+
+                    em.lines[lineIndex].end = em.lines[lineIndex].start +
+                        em.lines[lineIndex].spans.last.end;
+                    break;
                   }
                 }
-                lineIndex++;
-                localIndex = 0;
               }
+              lineIndex++;
+              localIndex = 0;
+            }
 
-              if (line.isNotEmpty) {
-                _addSpan(
-                  EditorSpan(
-                    span: TextSpan(text: line),
-                    start: localIndex,
-                    end: localIndex + line.characters.length,
-                    spanFormatType: currentStyle,
-                  ),
-                  lineIndex,
-                  globalIndex,
-                );
-              }
+            if (line.isNotEmpty) {
+              _addSpan(
+                EditorSpan(
+                  span: TextSpan(text: line),
+                  start: localIndex,
+                  end: localIndex + line.characters.length,
+                  spanFormatType: currentStyle,
+                ),
+                lineIndex,
+                globalIndex,
+              );
+            }
 
-              globalIndex += line.characters.length;
-              localIndex += line.characters.length;
+            globalIndex += line.characters.length;
+            localIndex += line.characters.length;
+          }
+          break;
+        case DIFF_DELETE:
+          List<String> lines = diff.text.split('\n');
+          int previousLineLength = 0;
+          for (int i = 0; i < lines.length; i++) {
+            String line = lines[i];
+            if (i != 0) {
+              localIndex = 0;
+              line += '\n';
             }
-            break;
-          case DIFF_DELETE:
-            List<String> lines = diff.text.split('\n');
-            for (int i = 0; i < lines.length; i++) {
-              String line = lines[i];
-              if (i != 0) {
-                localIndex = 0;
-                line += '\n';
-              }
-              if (line.characters.isNotEmpty) {
-                _removeSpan(
-                  localIndex,
-                  localIndex + line.characters.length,
-                  lineIndex + i,
-                );
-              }
+            if (line.characters.isNotEmpty) {
+              previousLineLength = em.lines.length;
+              _removeSpan(
+                localIndex,
+                localIndex + line.characters.length,
+                lineIndex + i,
+              );
+              lineIndex -= previousLineLength - em.lines.length;
             }
-            break;
-          case DIFF_EQUAL:
-            List<String> lines = diff.text.split('\n');
-            lineIndex += lines.length - 1;
-            if (lines.length > 1) {
-              localIndex = lines[lines.length - 1].characters.length + 1;
-            } else {
-              localIndex += diff.text.characters.length;
-            }
-            globalIndex += diff.text.characters.length;
-            break;
-        }
-      } catch (e) {
-        rethrow;
-        print(e);
+          }
+          break;
+        case DIFF_EQUAL:
+          List<String> lines = diff.text.split('\n');
+          lineIndex += lines.length - 1;
+          if (lines.length > 1) {
+            localIndex = lines[lines.length - 1].characters.length + 1;
+          } else {
+            localIndex += diff.text.characters.length;
+          }
+          globalIndex += diff.text.characters.length;
+          break;
       }
     }
     print(em.lines);
@@ -223,6 +218,7 @@ class EditorInputFormatter extends TextInputFormatter {
             );
           } else {
             if (before.characters.isNotEmpty) {
+              //! somehow broken
               // split the span and insert new span in between
               em.lines[line].spans[i] = EditorSpan(
                 span: TextSpan(
@@ -236,13 +232,12 @@ class EditorInputFormatter extends TextInputFormatter {
               em.lines[line].spans.removeAt(i);
               i--;
             }
+            int start = i >= 0 ? em.lines[line].spans[i].start : 0;
             if (inBetween.characters.isNotEmpty) {
-              int start = i >= 0 ? em.lines[line].spans[i].start : 0;
               em.lines[line].spans.insert(
                 i + 1,
                 EditorSpan(
                   span: TextSpan(text: inBetween),
-                  //! index error with shifting spans here after start:
                   start: start + before.characters.length,
                   end: start +
                       before.characters.length +
@@ -257,10 +252,10 @@ class EditorInputFormatter extends TextInputFormatter {
                 i + 1,
                 EditorSpan(
                   span: TextSpan(text: after),
-                  start: em.lines[line].spans[i].start +
+                  start: start +
                       before.characters.length +
                       inBetween.characters.length,
-                  end: em.lines[line].spans[i].start +
+                  end: start +
                       before.characters.length +
                       inBetween.characters.length +
                       after.characters.length,
