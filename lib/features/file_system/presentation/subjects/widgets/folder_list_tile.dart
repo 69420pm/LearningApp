@@ -16,10 +16,6 @@ import 'package:learning_app/features/subject/presentation/bloc/cubit/subject_se
 import 'package:learning_app/features/subject/presentation/bloc/subject_bloc.dart';
 
 class FolderListTile extends StatelessWidget implements FileListTile {
-  final Folder folder;
-  final void Function() onTap;
-  final bool isSelected;
-  final bool isHovered;
   const FolderListTile({
     super.key,
     required this.folder,
@@ -27,6 +23,12 @@ class FolderListTile extends StatelessWidget implements FileListTile {
     required this.isSelected,
     required this.isHovered,
   });
+
+  final Folder folder;
+  final void Function() onTap;
+  final bool isSelected;
+  final bool isHovered;
+
   @override
   Widget build(BuildContext context) {
     return FolderDragTarget(
@@ -34,6 +36,7 @@ class FolderListTile extends StatelessWidget implements FileListTile {
       child: GestureDetector(
         onTap: onTap,
         child: UIExpansionTile(
+          startOpen: true,
           title: folder.id,
           backgroundColor: isHovered
               ? Colors.grey
