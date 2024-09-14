@@ -412,14 +412,15 @@ class EditorInputFormatter extends TextInputFormatter {
     void changeStylePerLine(int localStart, int localEnd, int line) {
       for (int j = 0; j < em.lines[line].spans.length; j++) {
         final currentSpan = em.lines[line].spans[j];
-        if (localStart >= currentSpan.start) {
+        if (localStart >= currentSpan.start && localStart <= currentSpan.end) {
           String before = currentSpan.span.toPlainText().substring(
                 0,
                 localStart - currentSpan.start,
               );
           String inBetween = currentSpan.span.toPlainText().substring(
                 localStart - currentSpan.start,
-                min(localEnd - currentSpan.start, currentSpan.end),
+                min(localEnd - currentSpan.start,
+                    currentSpan.end - currentSpan.start),
               );
           bool inSingleSpan = false;
           if (localEnd <= currentSpan.end) {
@@ -432,9 +433,9 @@ class EditorInputFormatter extends TextInputFormatter {
 
           String after = '';
           if (inSingleSpan) {
-            after = em.lines[line].spans[j].span
-                .toPlainText()
-                .substring(min(localEnd - currentSpan.start, currentSpan.end));
+            after = currentSpan.span.toPlainText().substring(min(
+                localEnd - currentSpan.start,
+                currentSpan.end - currentSpan.start));
           }
 
           if (before.isNotEmpty) {
@@ -457,7 +458,7 @@ class EditorInputFormatter extends TextInputFormatter {
                 end: currentSpan.start +
                     before.characters.length +
                     inBetween.characters.length,
-                spanFormatType: style,
+                spanFormatType: style + currentSpan.spanFormatType,
               ),
             );
             j++;
@@ -479,6 +480,7 @@ class EditorInputFormatter extends TextInputFormatter {
             return;
           } else {
             globalStart += inBetween.characters.length;
+            localStart += inBetween.characters.length;
           }
         }
       }
