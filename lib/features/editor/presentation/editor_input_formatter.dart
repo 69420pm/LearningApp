@@ -4,9 +4,30 @@ import 'package:diff_match_patch/diff_match_patch.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/features/editor/presentation/cubit/editor_cubit.dart';
 import 'package:learning_app/features/editor/presentation/editor_text_field_manager.dart';
 import 'package:rxdart/rxdart.dart';
 
+extension SafeSubstring on Characters {
+  /// A safe substring method that works for multi-byte characters like emojis.
+  ///
+  /// Takes a [start] and an optional [end] index.
+  /// If [end] is not provided, it will return the substring from [start] to the end.
+  String safeSubstring(int start, [int? end]) {
+    // Ensures the `start` and `end` values are within the length of the characters.
+    end = end ?? this.length;
+    assert(start >= 0 && start <= this.length, 'Start index is out of range');
+    assert(end >= 0 && end <= this.length, 'End index is out of range');
+    assert(start <= end, 'Start index cannot be greater than the end index');
+
+    // Use `skip` and `take` to extract the substring safely.
+    final result = this.skip(start).take(end - start).toString();
+    return result;
+  }
+}
+
+//! replace everything with correct substrings (chatgpt)
 class EditorInputFormatter extends TextInputFormatter {
   EditorTextFieldManager em;
   EditorInputFormatter({required this.em});
@@ -183,7 +204,7 @@ class EditorInputFormatter extends TextInputFormatter {
         EditorLine(
           spans: [span],
           start: globalStart,
-          end: globalStart + span.span.toPlainText().length,
+          end: globalStart + span.span.toPlainText().characters.length,
           lineFormatType: currentLineFormat,
         ),
       );
@@ -202,12 +223,14 @@ class EditorInputFormatter extends TextInputFormatter {
           em.lines[line].lineFormatType = currentLineFormat;
           final before = em.lines[line].spans[i].span
               .toPlainText()
-              .substring(0, span.start - em.lines[line].spans[i].start);
+              .characters
+              .safeSubstring(0, span.start - em.lines[line].spans[i].start);
           final oldSpanStyle = em.lines[line].spans[i].spanFormatType;
           final inBetween = span.span.toPlainText();
           final after = em.lines[line].spans[i].span
               .toPlainText()
-              .substring(span.start - em.lines[line].spans[i].start);
+              .characters
+              .safeSubstring(span.start - em.lines[line].spans[i].start);
           if (listEquals(oldSpanStyle, span.spanFormatType)) {
             // merge the spans
             em.lines[line].spans[i] = EditorSpan(
@@ -365,7 +388,7 @@ class EditorInputFormatter extends TextInputFormatter {
         em.lines[line].spans[i] = EditorSpan(
           span: TextSpan(text: text),
           start: start,
-          end: start + text.length,
+          end: start + text.characters.length,
           spanFormatType: styles,
         );
         return i;
@@ -383,10 +406,11 @@ class EditorInputFormatter extends TextInputFormatter {
         int localEnd = end - currentStart;
         String text = em.lines[line].spans[i].span.toPlainText();
         if (currentEnd >= end) {
-          final editedText = text.substring(0, localStart) +
-              text.substring(localEnd, text.length);
+          final editedText = text.characters.safeSubstring(0, localStart) +
+              text.characters.safeSubstring(localEnd, text.characters.length);
           i = replaceSpan(currentStart, editedText, i, currentStyle);
-          alreadyDeletedOverhang += text.length - editedText.length;
+          alreadyDeletedOverhang +=
+              text.characters.length - editedText.characters.length;
           for (int j = i + 1; j < em.lines[line].spans.length; j++) {
             em.lines[line].spans[j].start -= alreadyDeletedOverhang;
             em.lines[line].spans[j].end -= alreadyDeletedOverhang;
@@ -394,9 +418,10 @@ class EditorInputFormatter extends TextInputFormatter {
           _updateGlobalLineIndexes();
           break;
         } else {
-          final editedText = text.substring(0, localStart);
+          final editedText = text.characters.safeSubstring(0, localStart);
           i = replaceSpan(currentStart, editedText, i, currentStyle);
-          alreadyDeletedOverhang += text.length - editedText.length;
+          alreadyDeletedOverhang +=
+              text.characters.length - editedText.characters.length;
           start = currentEnd - alreadyDeletedOverhang;
           end -= alreadyDeletedOverhang;
         }
@@ -413,15 +438,17 @@ class EditorInputFormatter extends TextInputFormatter {
       for (int j = 0; j < em.lines[line].spans.length; j++) {
         final currentSpan = em.lines[line].spans[j];
         if (localStart >= currentSpan.start && localStart <= currentSpan.end) {
-          String before = currentSpan.span.toPlainText().substring(
-                0,
-                localStart - currentSpan.start,
-              );
-          String inBetween = currentSpan.span.toPlainText().substring(
-                localStart - currentSpan.start,
-                min(localEnd - currentSpan.start,
-                    currentSpan.end - currentSpan.start),
-              );
+          String before =
+              currentSpan.span.toPlainText().characters.safeSubstring(
+                    0,
+                    localStart - currentSpan.start,
+                  );
+          String inBetween =
+              currentSpan.span.toPlainText().characters.safeSubstring(
+                    localStart - currentSpan.start,
+                    min(localEnd - currentSpan.start,
+                        currentSpan.end - currentSpan.start),
+                  );
           bool inSingleSpan = false;
           if (localEnd <= currentSpan.end) {
             inSingleSpan = true;
@@ -433,7 +460,7 @@ class EditorInputFormatter extends TextInputFormatter {
 
           String after = '';
           if (inSingleSpan) {
-            after = currentSpan.span.toPlainText().substring(min(
+            after = currentSpan.span.toPlainText().characters.safeSubstring(min(
                 localEnd - currentSpan.start,
                 currentSpan.end - currentSpan.start));
           }
@@ -497,7 +524,25 @@ class EditorInputFormatter extends TextInputFormatter {
     }
   }
 
-  void _changeStyleAccordingToSelection() {}
+  void changeStyleAccordingToSelection(
+      int selectionStart, BuildContext context) {
+    if (selectionStart < 0) {
+      return;
+    }
+    int line = findStartLine(selectionStart);
+    if (em.lines.length <= line) {
+      return;
+    }
+    for (int i = 0; i < em.lines[line].spans.length; i++) {
+      if (selectionStart >= em.lines[line].spans[i].start &&
+          selectionStart <= em.lines[line].spans[i].end) {
+        currentStyle = em.lines[line].spans[i].spanFormatType;
+      }
+    }
+
+    context.read<EditorCubit>().changeFormatting(currentStyle.toSet());
+    print('change style');
+  }
 
   /// return index of line where the index of [globalStart] is located
   int findStartLine(int globalStart) {
@@ -524,8 +569,10 @@ class EditorInputFormatter extends TextInputFormatter {
   /// The style of the returned [EditorSpan]s is the same as the original
   /// [EditorSpan].
   List<EditorSpan?> splitSpan(EditorSpan span, int splitPoint) {
-    final leftText = span.span.toPlainText().substring(0, splitPoint);
-    final rightText = span.span.toPlainText().substring(splitPoint);
+    final leftText =
+        span.span.toPlainText().characters.safeSubstring(0, splitPoint);
+    final rightText =
+        span.span.toPlainText().characters.safeSubstring(splitPoint);
     final leftSpan = leftText.isEmpty
         ? null
         : span.copyWith(

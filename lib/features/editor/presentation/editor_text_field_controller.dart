@@ -17,7 +17,11 @@ class EditorTextFieldController extends TextEditingController {
       TextStyle? style,
       required bool withComposing}) {
     inputFormatter.lastSelection = selection;
-
+    if (selection != previousSelection &&
+        (text == previousText ||
+            text.characters.length < previousText.characters.length)) {
+      inputFormatter.changeStyleAccordingToSelection(selection.start, context);
+    }
     previousSelection = selection;
     previousText = text;
     return TextSpan(children: List.from(em.spans));
