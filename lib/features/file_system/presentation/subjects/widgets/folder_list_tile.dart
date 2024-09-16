@@ -22,13 +22,14 @@ class FolderListTile extends StatelessWidget implements FileListTile {
     required this.onTap,
     required this.isSelected,
     required this.isHovered,
+    this.changeExtensionState = false,
   });
 
   final Folder folder;
   final void Function() onTap;
   final bool isSelected;
   final bool isHovered;
-
+  final bool changeExtensionState;
   @override
   Widget build(BuildContext context) {
     return FolderDragTarget(
@@ -36,7 +37,8 @@ class FolderListTile extends StatelessWidget implements FileListTile {
       child: GestureDetector(
         onTap: onTap,
         child: UIExpansionTile(
-          startOpen: true,
+          //lockClosed: isSelected,
+          changeExtensionState: changeExtensionState,
           title: folder.id,
           backgroundColor: isHovered
               ? Colors.grey

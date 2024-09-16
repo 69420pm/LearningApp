@@ -24,6 +24,7 @@ class UIExpansionTile extends StatefulWidget {
   Border? border;
   bool changeExtensionState;
   bool startOpen;
+  bool lockClosed;
   String? parentId;
 
   UIExpansionTile({
@@ -43,6 +44,7 @@ class UIExpansionTile extends StatefulWidget {
     this.changeExtensionState = false,
     this.startOpen = false,
     this.parentId = "",
+    this.lockClosed = false,
   }) {
     iconColor ??= textColor;
   }
@@ -148,33 +150,35 @@ class _UIExpansionTileState extends State<UIExpansionTile>
         ],
       ),
     )
-        //  .animate(
-        //         delay: const Duration(milliseconds: 100),
-        //         target: widget.changeExtensionState == true ? 1 : 0,
-        //         onComplete: (controller) => controller.reset(),
-        //         onPlay: (controller) => controller.reset(),
-        //         autoPlay: false)
-        //     .shake(
-        //         delay: const Duration(milliseconds: 800),
-        //         duration: const Duration(milliseconds: 800),
-        //         hz: 3,
-        //         rotation: .02,
-        //         curve: Curves.easeIn)
-        //     .callback(callback: (value) {
-        //   changeState();
-        // })
-
-        ;
+        .animate(
+          target: widget.changeExtensionState == true ? 1 : 0,
+          onComplete: (controller) => controller.reset(),
+          autoPlay: false,
+        )
+        .shimmer(
+          delay: const Duration(milliseconds: 800),
+          duration: const Duration(milliseconds: 800),
+          curve: Curves.easeIn,
+          angle: 0,
+          size: .5,
+        )
+        .callback(
+      callback: (value) {
+        changeState();
+      },
+    );
   }
 
   void update() {
-    setState(() {
-      _isOpened = !_isOpened;
-    });
-    if (_isOpened) {
-      _animationController.forward();
-    } else {
-      _animationController.reverse();
+    if (!widget.lockClosed) {
+      setState(() {
+        _isOpened = !_isOpened;
+      });
+      if (_isOpened) {
+        _animationController.forward();
+      } else {
+        _animationController.reverse();
+      }
     }
   }
 

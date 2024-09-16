@@ -115,6 +115,8 @@ class ListTileWrapper extends StatelessWidget {
                         isSelected: selected,
                         onTap: _onTileClicked,
                         isHovered: hovered,
+                        changeExtensionState:
+                            state is SubjectHoverChanged && state.newId == id,
                       );
                     } else if (!snapshot.data!.deleted &&
                         snapshot.data!.value is Card) {
