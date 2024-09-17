@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/features/editor/presentation/cubit/editor_cubit.dart';
+import 'package:learning_app/features/editor/presentation/editor_text_field_controller.dart';
 import 'package:learning_app/features/editor/presentation/editor_text_field_manager.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -27,7 +28,6 @@ extension SafeSubstring on Characters {
   }
 }
 
-//! replace everything with correct substrings (chatgpt)
 class EditorInputFormatter extends TextInputFormatter {
   EditorTextFieldManager em;
   EditorInputFormatter({required this.em});
@@ -90,7 +90,7 @@ class EditorInputFormatter extends TextInputFormatter {
                     if (j > 0) {
                       previousSpan = em.lines[lineIndex].spans[j - 1];
                     }
-                    final splittedSpans = splitSpan(
+                    final splittedSpans = _splitSpan(
                       span,
                       localIndex -
                           (previousSpan != null ? previousSpan.end : 0),
@@ -513,8 +513,8 @@ class EditorInputFormatter extends TextInputFormatter {
       }
     }
 
-    int startLine = findStartLine(globalStart);
-    int endLine = findStartLine(globalEnd);
+    int startLine = _findStartLine(globalStart);
+    int endLine = _findStartLine(globalEnd);
     for (int i = startLine; i <= endLine; i++) {
       changeStylePerLine(
         globalStart - em.lines[i].start,
@@ -522,6 +522,7 @@ class EditorInputFormatter extends TextInputFormatter {
         i,
       );
     }
+    em.generateSpans();
   }
 
   void changeStyleAccordingToSelection(
@@ -529,23 +530,38 @@ class EditorInputFormatter extends TextInputFormatter {
     if (selectionStart < 0) {
       return;
     }
-    int line = findStartLine(selectionStart);
+    int line = _findStartLine(selectionStart);
     if (em.lines.length <= line) {
       return;
     }
+    selectionStart -= em.lines[line].start;
+    currentLineFormat = em.lines[line].lineFormatType;
     for (int i = 0; i < em.lines[line].spans.length; i++) {
       if (selectionStart >= em.lines[line].spans[i].start &&
           selectionStart <= em.lines[line].spans[i].end) {
         currentStyle = em.lines[line].spans[i].spanFormatType;
+        break;
       }
     }
-
     context.read<EditorCubit>().changeFormatting(currentStyle.toSet());
-    print('change style');
+    context.read<EditorCubit>().changeLineFormat(currentLineFormat);
+  }
+
+  void changeLineStyleAccordingToSelection(LineFormatType type) {
+    currentLineFormat = type;
+    if (lastSelection.start < 0) {
+      return;
+    }
+    int line = _findStartLine(lastSelection.start);
+    if (em.lines.length <= line) {
+      return;
+    }
+    currentLineFormat = em.lines[line].lineFormatType;
+    em.generateSpans();
   }
 
   /// return index of line where the index of [globalStart] is located
-  int findStartLine(int globalStart) {
+  int _findStartLine(int globalStart) {
     for (int i = 0; i < em.lines.length; i++) {
       if (globalStart >= em.lines[i].start && globalStart <= em.lines[i].end) {
         return i;
@@ -568,7 +584,7 @@ class EditorInputFormatter extends TextInputFormatter {
   ///
   /// The style of the returned [EditorSpan]s is the same as the original
   /// [EditorSpan].
-  List<EditorSpan?> splitSpan(EditorSpan span, int splitPoint) {
+  List<EditorSpan?> _splitSpan(EditorSpan span, int splitPoint) {
     final leftText =
         span.span.toPlainText().characters.safeSubstring(0, splitPoint);
     final rightText =
@@ -589,20 +605,20 @@ class EditorInputFormatter extends TextInputFormatter {
     return [leftSpan, rightSpan];
   }
 
-  List<EditorSpan> mergePotentiallySpans(
-    EditorSpan leftSpan,
-    EditorSpan rightSpan,
-  ) {
-    if (listEquals(leftSpan.spanFormatType, rightSpan.spanFormatType)) {
-      final mergedSpan = leftSpan.copyWith(
-        span: TextSpan(
-          text: leftSpan.span.toPlainText() + rightSpan.span.toPlainText(),
-        ),
-        start: leftSpan.start,
-        end: rightSpan.end,
-      );
-      return [mergedSpan];
-    }
-    return [leftSpan, rightSpan];
-  }
+  // List<EditorSpan> _mergePotentiallySpans(
+  //   EditorSpan leftSpan,
+  //   EditorSpan rightSpan,
+  // ) {
+  //   if (listEquals(leftSpan.spanFormatType, rightSpan.spanFormatType)) {
+  //     final mergedSpan = leftSpan.copyWith(
+  //       span: TextSpan(
+  //         text: leftSpan.span.toPlainText() + rightSpan.span.toPlainText(),
+  //       ),
+  //       start: leftSpan.start,
+  //       end: rightSpan.end,
+  //     );
+  //     return [mergedSpan];
+  //   }
+  //   return [leftSpan, rightSpan];
+  // }
 }

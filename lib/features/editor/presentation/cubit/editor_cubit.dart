@@ -41,7 +41,7 @@ class EditorCubit extends Cubit<EditorState> {
 
   void changeLineFormat(LineFormatType lineFormatType) {
     currentLineFormat = lineFormatType;
-    inputFormatter.currentLineFormat = lineFormatType;
+    inputFormatter.changeLineStyleAccordingToSelection(lineFormatType);
     emit(EditorLineFormattingChanged(lineFormatType: lineFormatType));
   }
 }

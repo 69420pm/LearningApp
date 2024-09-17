@@ -47,16 +47,28 @@ class _EditorView extends StatelessWidget {
       appBar: AppBar(),
       body: Column(
         children: [
-          BlocListener<EditorCubit, EditorState>(
-              listener: (context, state) {},
-              child: TextField(
+          BlocBuilder<EditorCubit, EditorState>(
+            builder: (context, state) {
+              switch (context.read<EditorCubit>().currentLineFormat) {
+                case LineFormatType.heading:
+                  cursorHeight = 26;
+                  break;
+                case LineFormatType.subheading:
+                  cursorHeight = 20;
+                default:
+                  cursorHeight = 16;
+                  break;
+              }
+              return TextField(
                 inputFormatters: [inputFormatter],
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
                 controller: editorTextFieldController,
                 cursorHeight: cursorHeight,
                 onChanged: (value) {},
-              )),
+              );
+            },
+          ),
           // BlocBuilder<EditorCubit, EditorState>(
           //   builder: (context, state) {
           //     switch (context.read<EditorCubit>().currentLineFormat) {
@@ -74,7 +86,7 @@ class _EditorView extends StatelessWidget {
           //   },
           // ),
           Expanded(child: Container()),
-          EditorRow()
+          EditorRow(),
         ],
       ),
     );

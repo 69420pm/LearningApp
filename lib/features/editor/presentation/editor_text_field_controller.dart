@@ -12,10 +12,11 @@ class EditorTextFieldController extends TextEditingController {
   TextSelection previousSelection = TextSelection.collapsed(offset: 0);
 
   @override
-  TextSpan buildTextSpan(
-      {required BuildContext context,
-      TextStyle? style,
-      required bool withComposing}) {
+  TextSpan buildTextSpan({
+    required BuildContext context,
+    TextStyle? style,
+    required bool withComposing,
+  }) {
     inputFormatter.lastSelection = selection;
     if (selection != previousSelection &&
         (text == previousText ||

@@ -10,7 +10,17 @@ class EditorTextFieldManager {
   void generateSpans() {
     spans.clear();
     for (EditorLine line in lines) {
+      final lineStyle =
+          EditorFormatStyles.getLineFormatStyle(line.lineFormatType);
       for (EditorSpan span in line.spans) {
+        if (span.span.style == null) {
+          span.span = TextSpan(text: span.span.toPlainText(), style: lineStyle);
+        } else {
+          span.span = TextSpan(
+            text: span.span.toPlainText(),
+            style: span.span.style!.merge(lineStyle),
+          );
+        }
         spans.add(span.span);
       }
     }
@@ -66,15 +76,37 @@ class EditorSpan extends Equatable {
 
 class EditorLine extends Equatable {
   List<EditorSpan> spans = [];
-  LineFormatType lineFormatType;
+  LineFormatType _lineFormatType = LineFormatType.body;
+
+  LineFormatType get lineFormatType => _lineFormatType;
+
+  set lineFormatType(LineFormatType value) {
+    if (value == _lineFormatType) return;
+    for (EditorSpan span in spans) {
+      if (span.span.style != null) {
+        span.span = TextSpan(
+          text: span.span.toPlainText(),
+          style: span.span.style!
+              .merge(EditorFormatStyles.getLineFormatStyle(value)),
+        );
+      } else {
+        span.span = TextSpan(
+          text: span.span.toPlainText(),
+          style: EditorFormatStyles.getLineFormatStyle(value),
+        );
+      }
+    }
+    _lineFormatType = value;
+  }
+
   int start;
   int end;
   EditorLine({
     required this.start,
     required this.end,
     required this.spans,
-    this.lineFormatType = LineFormatType.body,
-  });
+    lineFormatType = LineFormatType.body,
+  }) : _lineFormatType = lineFormatType;
 
   @override
   List<Object?> get props => [spans, start, end, lineFormatType];
