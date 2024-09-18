@@ -81,13 +81,12 @@ class ListTileWrapper extends StatelessWidget {
         width: 100,
       ),
       onDragEnd: (details) {
-        context.read<SubjectHoverCubit>().changeHover("");
         context.read<SubjectHoverCubit>().endDrag();
       },
       onDragStarted: () {
         context
             .read<SubjectHoverCubit>()
-            .changeHover(context.read<FolderBloc>().parentId);
+            .changeHover(context.read<FolderBloc>().parentId, id);
       },
       child: BlocBuilder<SubjectSelectionCubit, SubjectSelectionState>(
         buildWhen: (previous, current) =>

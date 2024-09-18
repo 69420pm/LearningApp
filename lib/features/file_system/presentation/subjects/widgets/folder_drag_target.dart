@@ -14,10 +14,12 @@ class FolderDragTarget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DragTarget(
-        onLeave: (details) => context.read<SubjectHoverCubit>().changeHover(""),
-        onMove: (details) =>
-            context.read<SubjectHoverCubit>().changeHover(folderId),
+    return DragTarget<FileDragDetails>(
+        onLeave: (details) =>
+            context.read<SubjectHoverCubit>().changeHover("", ""),
+        onMove: (details) => context
+            .read<SubjectHoverCubit>()
+            .changeHover(folderId, details.data.fileId),
         onAcceptWithDetails: (DragTargetDetails<FileDragDetails> details) {
           if (!context.read<SubjectSelectionCubit>().inSelectionMode &&
               details.data.parentId == folderId) {

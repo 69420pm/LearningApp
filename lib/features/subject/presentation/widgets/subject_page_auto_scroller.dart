@@ -36,7 +36,8 @@ class AutoScrollView extends StatelessWidget {
             startScrollOffset = null;
           },
           onPointerMove: (event) {
-            if (context.read<SubjectHoverCubit>().isDragging) {
+            if (context.read<SubjectHoverCubit>().isDragging &&
+                scrollController.position.maxScrollExtent != 0) {
               final render =
                   globalKey.currentContext?.findRenderObject() as RenderBox?;
               final top = render?.localToGlobal(Offset.zero).dy ?? 0;
@@ -53,7 +54,6 @@ class AutoScrollView extends StatelessWidget {
                 isMovingUp = true;
                 isMovingDown = false;
 
-                print("up");
                 scrollController.animateTo(
                   0,
                   //makes it around the same speed , but a bit slower at the start of the list

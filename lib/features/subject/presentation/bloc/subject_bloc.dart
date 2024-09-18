@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:learning_app/features/file_system/domain/usecases/create_card.dart';
 
 import 'package:learning_app/features/file_system/domain/usecases/create_folder.dart';
+import 'package:learning_app/features/file_system/domain/usecases/get_parent_ids.dart';
 import 'package:learning_app/features/file_system/domain/usecases/move_file.dart';
 
 part 'subject_event.dart';
@@ -15,12 +16,14 @@ class SubjectBloc extends Bloc<SubjectEvent, SubjectState> {
   CreateFolder createFolderUseCase;
   CreateCard cerateCardUseCase;
   MoveFiles moveFileUseCase;
+  GetParentIds getParentIdsUseCase;
 
   final String subjectId;
   SubjectBloc(
       {required this.createFolderUseCase,
       required this.moveFileUseCase,
       required this.cerateCardUseCase,
+      required this.getParentIdsUseCase,
       required this.subjectId})
       : super(SubjectInitial()) {
     on<SubjectCreateFolder>(createFolder);
@@ -43,6 +46,22 @@ class SubjectBloc extends Bloc<SubjectEvent, SubjectState> {
 
   FutureOr<void> moveFiles(
       SubjectMoveFiles event, Emitter<SubjectState> emit) async {
+    //to avoid circles in file paths, while moving files from one folder to another,
+    //all files to move which have the new parent folder currently as child folder
+    //don't get moved.
+
+    final getParentIds = await getParentIdsUseCase(event.parentId);
+    getParentIds.match(
+      (l) => print(l.errorMessage),
+      (r) {
+        for (var parentId in r) {
+          if (event.fileIds.contains(parentId)) {
+            event.fileIds.remove(parentId);
+          }
+        }
+      },
+    );
+
     await moveFileUseCase(
         MoveFilesParams(fileIds: event.fileIds, newParentId: event.parentId));
   }
