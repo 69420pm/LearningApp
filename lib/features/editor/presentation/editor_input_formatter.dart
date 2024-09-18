@@ -48,13 +48,8 @@ class EditorInputFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    _compareStrings(
-      oldValue.text,
-      newValue.text,
-      newValue.selection,
-    );
+    _compareStrings(oldValue.text, newValue.text);
 
-    lastSelection = newValue.selection;
     em.generateSpans();
     return newValue;
   }
@@ -62,7 +57,6 @@ class EditorInputFormatter extends TextInputFormatter {
   void _compareStrings(
     String oldText,
     String newText,
-    TextSelection selection,
   ) {
     final dmp = DiffMatchPatch();
     // compares two strings and returns insertions and deletions
