@@ -1,10 +1,11 @@
 import 'dart:math';
 
-import 'package:diff_match_patch/diff_match_patch.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/core/diff_match/api.dart';
+import 'package:learning_app/core/diff_match/diff/diff.dart';
 import 'package:learning_app/features/editor/presentation/cubit/editor_cubit.dart';
 import 'package:learning_app/features/editor/presentation/editor_text_field_controller.dart';
 import 'package:learning_app/features/editor/presentation/editor_text_field_manager.dart';
@@ -29,8 +30,10 @@ extension SafeSubstring on Characters {
 }
 
 class EditorInputFormatter extends TextInputFormatter {
-  EditorTextFieldManager em;
-  EditorInputFormatter({required this.em});
+  final EditorTextFieldManager em;
+  final BuildContext context;
+
+  EditorInputFormatter({required this.em, required this.context});
   List<SpanFormatType> currentStyle = [];
   // gets updated in editor_cubit.dart
   LineFormatType currentLineFormat = LineFormatType.body;
@@ -73,6 +76,9 @@ class EditorInputFormatter extends TextInputFormatter {
           for (int i = 0; i < lines.length; i++) {
             String line = lines[i];
             if (i != 0) {
+              currentLineFormat = LineFormatType.body;
+              context.read<EditorCubit>().changeLineFormat(currentLineFormat,
+                  updateCurrentLine: false);
               // line += '\n';
               line = '\n$line';
               if (localIndex != em.lines[lineIndex].spans.last.end) {
@@ -538,7 +544,9 @@ class EditorInputFormatter extends TextInputFormatter {
       }
     }
     context.read<EditorCubit>().changeFormatting(currentStyle.toSet());
-    context.read<EditorCubit>().changeLineFormat(currentLineFormat);
+    context
+        .read<EditorCubit>()
+        .changeLineFormat(currentLineFormat, updateCurrentLine: false);
   }
 
   void changeLineStyleAccordingToSelection(LineFormatType type) {
@@ -550,7 +558,7 @@ class EditorInputFormatter extends TextInputFormatter {
     if (em.lines.length <= line) {
       return;
     }
-    currentLineFormat = em.lines[line].lineFormatType;
+    em.lines[line].lineFormatType = type;
     em.generateSpans();
   }
 

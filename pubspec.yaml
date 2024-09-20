@@ -48,8 +48,9 @@ dependencies:
     sdk: flutter
   intl: any
   flutter_animate: ^4.5.0
-  diff_match_patch: ^0.4.1
   extended_text_field: ^15.0.0
+  # diff_match_patch: ^0.4.1
+
 
 dev_dependencies:
   flutter_test:

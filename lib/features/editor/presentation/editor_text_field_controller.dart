@@ -5,8 +5,8 @@ import 'package:learning_app/features/editor/presentation/editor_input_formatter
 import 'package:learning_app/features/editor/presentation/editor_text_field_manager.dart';
 
 class EditorTextFieldController extends TextEditingController {
-  EditorTextFieldManager em;
-  EditorInputFormatter inputFormatter;
+  final EditorTextFieldManager em;
+  final EditorInputFormatter inputFormatter;
   EditorTextFieldController({required this.em, required this.inputFormatter});
   String previousText = '';
   TextSelection previousSelection = TextSelection.collapsed(offset: 0);

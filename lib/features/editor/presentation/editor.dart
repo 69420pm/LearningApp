@@ -33,7 +33,7 @@ class _EditorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     EditorInputFormatter inputFormatter =
-        EditorInputFormatter(em: editorTextFieldManager);
+        EditorInputFormatter(em: editorTextFieldManager, context: context);
     EditorController editorController = EditorController(
       editorTextFieldManager: editorTextFieldManager,
     );
@@ -65,7 +65,6 @@ class _EditorView extends StatelessWidget {
                 maxLines: null,
                 controller: editorTextFieldController,
                 cursorHeight: cursorHeight,
-                onChanged: (value) {},
               );
             },
           ),
