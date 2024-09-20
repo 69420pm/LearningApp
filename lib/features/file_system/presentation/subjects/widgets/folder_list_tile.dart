@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/core/ui_components/ui_components/ui_colors.dart';
+import 'package:learning_app/core/ui_components/ui_components/ui_constants.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/ui_expansion_tile.dart';
 import 'package:learning_app/core/ui_components/ui_expansion_tilee.dart';
 import 'package:learning_app/features/file_system/domain/entities/folder.dart';
@@ -34,18 +36,27 @@ class FolderListTile extends StatelessWidget implements FileListTile {
   Widget build(BuildContext context) {
     return FolderDragTarget(
       folderId: folder.id,
-      child: GestureDetector(
-        onTap: onTap,
-        child: UIExpansionTile(
-          //lockClosed: isSelected,
-          changeExtensionState: changeExtensionState,
-          title: folder.id,
-          backgroundColor: isHovered
-              ? Colors.grey
-              : isSelected
-                  ? Colors.green
-                  : Colors.black,
-          child: FolderContent(parentId: folder.id),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: UIConstants.defaultSize),
+        child: GestureDetector(
+          onTap: onTap,
+          child: UIExpansionTile(
+            iconSize: UIConstants.defaultSize * 3,
+            changeExtensionState: changeExtensionState,
+            backgroundColor: isHovered
+                ? Theme.of(context).colorScheme.primaryContainer
+                : Theme.of(context).colorScheme.surfaceContainer,
+            border: Border.all(
+              color: isSelected
+                  ? Theme.of(context).colorScheme.primary
+                  : Colors.transparent,
+              width: UIConstants.borderWidth,
+            ),
+            title: folder.name,
+            collapsedHeight: UIConstants.defaultSize * 8,
+            //trailing: UILinearProgressIndicator(value: 0.5),
+            child: FolderContent(parentId: folder.id),
+          ),
         ),
       ),
     );

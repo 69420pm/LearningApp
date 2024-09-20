@@ -6,7 +6,7 @@ class UIConstants {
   static const double itemPaddingSmall = 12;
   static const double descriptionPadding = 2;
 
-  static const double pageHorizontalPadding = 30;
+  static const double pageHorizontalPadding = 20;
   static const double pageVerticalPadding = 24;
 
   static const double cardHorizontalPadding = 24;

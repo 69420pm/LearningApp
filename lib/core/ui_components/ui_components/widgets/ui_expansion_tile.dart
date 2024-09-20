@@ -13,7 +13,7 @@ class UIExpansionTile extends StatefulWidget {
   Widget child;
   String title;
   double? titleSpacing;
-  double? iconSpacing;
+  double? iconSize;
   double? childSpacing;
   double? collapsedHeight;
   Widget? trailing;
@@ -32,7 +32,7 @@ class UIExpansionTile extends StatefulWidget {
     required this.child,
     required this.title,
     this.titleSpacing = UIConstants.defaultSize,
-    this.iconSpacing = UIConstants.defaultSize,
+    this.iconSize = UIConstants.defaultSize,
     this.childSpacing = 0,
     this.collapsedHeight,
     this.trailing,
@@ -86,8 +86,13 @@ class _UIExpansionTileState extends State<UIExpansionTile>
     super.dispose();
   }
 
-  GestureDetector expansionIcon() => GestureDetector(
-        onTap: update,
+  Widget expansionIcon() {
+    return GestureDetector(
+      onTap: update,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        width: widget.collapsedHeight,
+        height: widget.collapsedHeight,
         child: AnimatedBuilder(
           animation: _animation,
           builder: (context, _) {
@@ -97,7 +102,9 @@ class _UIExpansionTileState extends State<UIExpansionTile>
             );
           },
         ),
-      );
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -142,10 +149,12 @@ class _UIExpansionTileState extends State<UIExpansionTile>
             SizeTransition(
               sizeFactor: _animation,
               child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: UIConstants.defaultSize * 2,
-                  ),
-                  child: widget.child),
+                padding: const EdgeInsets.only(
+                  left: UIConstants.defaultSize * 2,
+                  right: UIConstants.borderWidth,
+                ),
+                child: widget.child,
+              ),
             ),
         ],
       ),

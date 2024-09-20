@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_app/core/ui_components/ui_components/ui_constants.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_icons.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/buttons/ui_icon_button.dart';
 import 'package:learning_app/features/file_system/presentation/subjects/widgets/folder_drag_target.dart';
@@ -56,23 +57,31 @@ class SubjectView extends StatelessWidget {
             .add(SubjectCreateFolder(name: DateTime.now().toIso8601String())),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          controller: scrollController,
-          key: globalKey,
-          child: AutoScrollView(
-            globalKey: globalKey,
-            scrollController: scrollController,
-            child: FolderDragTarget(
-              folderId: subjectId,
-              child: Column(
-                children: [
-                  FolderContent(parentId: subjectId),
-                  UIIconButton(
-                    icon: UIIcons.add,
-                    onPressed: () =>
-                        context.read<SubjectBloc>().add(SubjectCreateCard()),
-                  ),
-                ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+              horizontal: UIConstants.pageHorizontalPadding),
+          child: SingleChildScrollView(
+            controller: scrollController,
+            key: globalKey,
+            child: AutoScrollView(
+              globalKey: globalKey,
+              scrollController: scrollController,
+              child: FolderDragTarget(
+                folderId: subjectId,
+                child: Column(
+                  children: [
+                    BlocBuilder<SubjectHoverCubit, SubjectHoverState>(
+                      builder: (context, state) {
+                        return FolderContent(parentId: subjectId);
+                      },
+                    ),
+                    UIIconButton(
+                      icon: UIIcons.add,
+                      onPressed: () =>
+                          context.read<SubjectBloc>().add(SubjectCreateCard()),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
