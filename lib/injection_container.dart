@@ -54,6 +54,7 @@ void features() {
       subjectId: subjectId as String,
       moveFileUseCase: sl(),
       getParentIdsUseCase: sl(),
+      getFileUseCase: sl(),
     ),
   );
   sl.registerFactory(

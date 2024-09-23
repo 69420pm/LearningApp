@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_constants.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_icons.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/buttons/ui_icon_button.dart';
+import 'package:learning_app/core/ui_components/ui_components/widgets/ui_label_row.dart';
+import 'package:learning_app/features/file_system/domain/entities/subject.dart';
 import 'package:learning_app/features/file_system/presentation/subjects/widgets/folder_drag_target.dart';
 import 'package:learning_app/features/file_system/presentation/subjects/widgets/list_tile_wrapper.dart';
 import 'package:learning_app/features/subject/presentation/bloc/cubit/subject_hover_cubit.dart';
@@ -12,7 +14,9 @@ import 'package:learning_app/features/subject/presentation/bloc/cubit/subject_se
 import 'package:learning_app/features/subject/presentation/bloc/subject_bloc.dart';
 import 'package:learning_app/features/file_system/presentation/subjects/widgets/folder_content.dart';
 import 'package:learning_app/features/subject/presentation/widgets/subject_app_bar.dart';
+import 'package:learning_app/features/subject/presentation/widgets/subject_card.dart';
 import 'package:learning_app/features/subject/presentation/widgets/subject_page_auto_scroller.dart';
+import 'package:learning_app/features/subject/presentation/widgets/subject_tool_bar.dart';
 import 'package:learning_app/injection_container.dart';
 
 class SubjectPage extends StatelessWidget {
@@ -51,42 +55,73 @@ class SubjectView extends StatelessWidget {
     final scrollController = ScrollController();
     return Scaffold(
       appBar: const SubjectAppBar(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context
-            .read<SubjectBloc>()
-            .add(SubjectCreateFolder(name: DateTime.now().toIso8601String())),
-      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(
               horizontal: UIConstants.pageHorizontalPadding),
-          child: SingleChildScrollView(
-            controller: scrollController,
-            key: globalKey,
-            child: AutoScrollView(
-              globalKey: globalKey,
-              scrollController: scrollController,
-              child: FolderDragTarget(
-                folderId: subjectId,
-                child: Column(
-                  children: [
-                    BlocBuilder<SubjectHoverCubit, SubjectHoverState>(
-                      builder: (context, state) {
-                        return FolderContent(parentId: subjectId);
-                      },
-                    ),
-                    UIIconButton(
-                      icon: UIIcons.add,
-                      onPressed: () =>
-                          context.read<SubjectBloc>().add(SubjectCreateCard()),
-                    ),
-                  ],
-                ),
+          child: AutoScrollView(
+            globalKey: globalKey,
+            scrollController: scrollController,
+            child: FolderDragTarget(
+              folderId: subjectId,
+              child: CustomScrollView(
+                controller: scrollController,
+                key: globalKey,
+                slivers: [
+                  SliverList(
+                    delegate: SliverChildListDelegate([
+                      const SizedBox(height: UIConstants.itemPadding),
+                      SubjectCard(subjectId: subjectId),
+                      const SizedBox(height: UIConstants.itemPaddingLarge),
+                    ]),
+                  ),
+                  SliverPersistentHeader(
+                    pinned: true,
+                    delegate: _StickyHeaderDelegate(),
+                  ),
+                  SliverList(
+                    delegate: SliverChildListDelegate([
+                      const SizedBox(height: UIConstants.itemPadding),
+                      BlocBuilder<SubjectHoverCubit, SubjectHoverState>(
+                        builder: (context, state) {
+                          return FolderContent(parentId: subjectId);
+                        },
+                      ),
+                    ]),
+                  ),
+                ],
               ),
             ),
           ),
         ),
       ),
     );
+  }
+}
+
+class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
+  _StickyHeaderDelegate();
+
+  @override
+  double get minExtent => UIConstants.defaultSize * 6;
+
+  @override
+  double get maxExtent => UIConstants.defaultSize * 6;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+      ),
+      alignment: Alignment.center,
+      child: const SubjectToolBar(),
+    );
+  }
+
+  @override
+  bool shouldRebuild(covariant _StickyHeaderDelegate oldDelegate) {
+    return true;
   }
 }

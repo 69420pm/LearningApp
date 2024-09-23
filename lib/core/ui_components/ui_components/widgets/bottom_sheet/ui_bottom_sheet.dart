@@ -81,7 +81,7 @@ class UIBottomSheet extends StatelessWidget {
         barrierLabel: localizations.scrimLabel,
         barrierOnTapHint:
             localizations.scrimOnTapHint(localizations.bottomSheetLabel),
-        backgroundColor: UIColors.overlay,
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
         elevation: 0,
         modalBarrierColor: transparentBarrier
             ? Colors.transparent

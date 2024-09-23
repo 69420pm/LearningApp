@@ -3,9 +3,11 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:learning_app/features/file_system/domain/entities/subject.dart';
 import 'package:learning_app/features/file_system/domain/usecases/create_card.dart';
 
 import 'package:learning_app/features/file_system/domain/usecases/create_folder.dart';
+import 'package:learning_app/features/file_system/domain/usecases/get_file.dart';
 import 'package:learning_app/features/file_system/domain/usecases/get_parent_ids.dart';
 import 'package:learning_app/features/file_system/domain/usecases/move_file.dart';
 
@@ -17,15 +19,20 @@ class SubjectBloc extends Bloc<SubjectEvent, SubjectState> {
   CreateCard cerateCardUseCase;
   MoveFiles moveFileUseCase;
   GetParentIds getParentIdsUseCase;
+  GetFile getFileUseCase;
 
   final String subjectId;
-  SubjectBloc(
-      {required this.createFolderUseCase,
-      required this.moveFileUseCase,
-      required this.cerateCardUseCase,
-      required this.getParentIdsUseCase,
-      required this.subjectId})
-      : super(SubjectInitial()) {
+  Future<Subject?> get subject async =>
+      (await getFileUseCase(subjectId)).match((l) => null, (r) => r as Subject);
+
+  SubjectBloc({
+    required this.createFolderUseCase,
+    required this.moveFileUseCase,
+    required this.cerateCardUseCase,
+    required this.getParentIdsUseCase,
+    required this.getFileUseCase,
+    required this.subjectId,
+  }) : super(SubjectInitial()) {
     on<SubjectCreateFolder>(createFolder);
     on<SubjectCreateCard>(createCard);
     on<SubjectMoveFiles>(moveFiles);
