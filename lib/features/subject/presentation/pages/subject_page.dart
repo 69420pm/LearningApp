@@ -75,10 +75,7 @@ class SubjectView extends StatelessWidget {
                       const SizedBox(height: UIConstants.itemPaddingLarge),
                     ]),
                   ),
-                  SliverPersistentHeader(
-                    pinned: true,
-                    delegate: _StickyHeaderDelegate(),
-                  ),
+                  const SubjectToolBar(),
                   SliverList(
                     delegate: SliverChildListDelegate([
                       const SizedBox(height: UIConstants.itemPadding),
@@ -96,32 +93,5 @@ class SubjectView extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
-  _StickyHeaderDelegate();
-
-  @override
-  double get minExtent => UIConstants.defaultSize * 6;
-
-  @override
-  double get maxExtent => UIConstants.defaultSize * 6;
-
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-      ),
-      alignment: Alignment.center,
-      child: const SubjectToolBar(),
-    );
-  }
-
-  @override
-  bool shouldRebuild(covariant _StickyHeaderDelegate oldDelegate) {
-    return true;
   }
 }

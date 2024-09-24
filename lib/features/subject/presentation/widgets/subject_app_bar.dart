@@ -23,6 +23,12 @@ class SubjectAppBar extends StatelessWidget implements PreferredSizeWidget {
                       context.read<SubjectSelectionCubit>().deselectAll(),
                 )
               : null,
+          actions: [
+            UIIconButton(
+              icon: UIIcons.settings,
+              onPressed: () {},
+            )
+          ],
         );
       },
     );
