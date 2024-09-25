@@ -48,7 +48,8 @@ class AutoScrollView extends StatelessWidget {
               startScrollOffset ??= scrollController.offset;
               const space = 0.1;
               const duration = Duration(milliseconds: 2500);
-              const curve = Curves.easeIn;
+              final speed = 1500;
+              const curve = Curves.linear;
 
               if (relPos < space && isMovingUp == false) {
                 isMovingUp = true;
@@ -57,11 +58,8 @@ class AutoScrollView extends StatelessWidget {
                 scrollController.animateTo(
                   0,
                   //makes it around the same speed , but a bit slower at the start of the list
-                  duration: duration *
-                      max(
-                          0.4,
-                          scrollController.position.pixels /
-                              scrollController.position.maxScrollExtent),
+                  duration:
+                      duration * ((scrollController.position.pixels) / speed),
                   curve: curve,
                 );
               } else if (relPos > 1 - space && isMovingDown == false) {
@@ -72,11 +70,9 @@ class AutoScrollView extends StatelessWidget {
 
                   //makes it around the same speed , but a bit slower at the end of the list
                   duration: duration *
-                      max(
-                          0.4,
-                          (scrollController.position.maxScrollExtent -
-                                  scrollController.position.pixels) /
-                              scrollController.position.maxScrollExtent),
+                      ((scrollController.position.maxScrollExtent -
+                              scrollController.position.pixels) /
+                          speed),
                   curve: curve,
                 );
               } else if (relPos > space && relPos < 1 - space) {

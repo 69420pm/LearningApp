@@ -64,29 +64,36 @@ class SubjectView extends StatelessWidget {
             scrollController: scrollController,
             child: FolderDragTarget(
               folderId: subjectId,
-              child: CustomScrollView(
+              child: Scrollbar(
                 controller: scrollController,
-                key: globalKey,
-                slivers: [
-                  SliverList(
-                    delegate: SliverChildListDelegate([
-                      const SizedBox(height: UIConstants.itemPadding),
-                      SubjectCard(subjectId: subjectId),
-                      const SizedBox(height: UIConstants.itemPaddingLarge),
-                    ]),
-                  ),
-                  const SubjectToolBar(),
-                  SliverList(
-                    delegate: SliverChildListDelegate([
-                      const SizedBox(height: UIConstants.itemPadding),
-                      BlocBuilder<SubjectHoverCubit, SubjectHoverState>(
-                        builder: (context, state) {
-                          return FolderContent(parentId: subjectId);
-                        },
-                      ),
-                    ]),
-                  ),
-                ],
+                interactive: true,
+                thumbVisibility: false,
+                radius: const Radius.circular(8.0),
+                thickness: UIConstants.defaultSize,
+                child: CustomScrollView(
+                  controller: scrollController,
+                  key: globalKey,
+                  slivers: [
+                    SliverList(
+                      delegate: SliverChildListDelegate([
+                        const SizedBox(height: UIConstants.itemPadding),
+                        SubjectCard(subjectId: subjectId),
+                        const SizedBox(height: UIConstants.itemPaddingLarge),
+                      ]),
+                    ),
+                    const SubjectToolBar(),
+                    SliverList(
+                      delegate: SliverChildListDelegate([
+                        const SizedBox(height: UIConstants.itemPadding),
+                        BlocBuilder<SubjectHoverCubit, SubjectHoverState>(
+                          builder: (context, state) {
+                            return FolderContent(parentId: subjectId);
+                          },
+                        ),
+                      ]),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
