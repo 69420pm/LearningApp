@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_constants.dart';
+import 'package:learning_app/core/ui_components/ui_components/widgets/ui_appbar.dart';
 import 'package:learning_app/features/home/presentation/bloc/home_bloc.dart';
 import 'package:learning_app/features/home/presentation/widgets/subject_list.dart';
 import 'package:learning_app/features/home/presentation/widgets/calendar_card.dart';
@@ -29,8 +30,9 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.test),
+      appBar: UIAppBar(
+        title: AppLocalizations.of(context)!.test,
+        leadingBackButton: false,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

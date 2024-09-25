@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:learning_app/features/home/presentation/widgets/home_subject_list_tile.dart';
+import 'package:learning_app/features/home/presentation/widgets/subject_list_tile.dart';
 import 'package:learning_app/features/home/presentation/bloc/home_bloc.dart';
 
 class HomeSubjectList extends StatelessWidget {
@@ -27,7 +27,7 @@ class HomeSubjectList extends StatelessWidget {
             return SliverList(
               delegate: SliverChildBuilderDelegate(
                   childCount: state.subjectIds.length, (context, index) {
-                return HomeSubjectListTile(
+                return SubjectListTile(
                   subjectId: state.subjectIds[index],
                 );
               }),
