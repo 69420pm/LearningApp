@@ -14,6 +14,7 @@ class SubjectAppBar extends StatelessWidget implements PreferredSizeWidget {
       builder: (context, state) {
         bool inSelectionMode =
             context.read<SubjectSelectionCubit>().inSelectionMode;
+        print(inSelectionMode);
         return UIAppBar(
           title: "subject.name",
           leading: inSelectionMode
@@ -23,6 +24,7 @@ class SubjectAppBar extends StatelessWidget implements PreferredSizeWidget {
                       context.read<SubjectSelectionCubit>().deselectAll(),
                 )
               : null,
+          leadingBackButton: !inSelectionMode,
           actions: [
             UIIconButton(
               icon: UIIcons.settings,
