@@ -16,7 +16,7 @@ import 'package:learning_app/features/file_system/presentation/subjects/widgets/
 import 'package:learning_app/features/subject/presentation/widgets/subject_app_bar.dart';
 import 'package:learning_app/features/subject/presentation/widgets/subject_card.dart';
 import 'package:learning_app/features/subject/presentation/widgets/subject_page_auto_scroller.dart';
-import 'package:learning_app/features/subject/presentation/widgets/subject_tool_bar.dart';
+import 'package:learning_app/features/subject/presentation/widgets/files_tool_bar.dart';
 import 'package:learning_app/injection_container.dart';
 
 class SubjectPage extends StatelessWidget {
@@ -81,7 +81,7 @@ class SubjectView extends StatelessWidget {
                         const SizedBox(height: UIConstants.itemPaddingLarge),
                       ]),
                     ),
-                    const SubjectToolBar(),
+                    const FilesToolBar(),
                     SliverList(
                       delegate: SliverChildListDelegate([
                         const SizedBox(height: UIConstants.itemPadding),

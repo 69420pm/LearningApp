@@ -9,12 +9,14 @@ class HomeSubjectListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => context.push(
-        context.namedLocation(
-          'subject',
-          pathParameters: <String, String>{'subjectId': subjectId},
-        ),
-      ),
+      onTap: () {
+        context.push(
+          context.namedLocation(
+            'subject',
+            pathParameters: <String, String>{'subjectId': subjectId},
+          ),
+        );
+      },
       child: SizedBox(
         height: 40,
         child: Column(

@@ -12,25 +12,25 @@ class HomeSubjectList extends StatelessWidget {
       builder: (context, state) {
         switch (state) {
           case HomeLoading():
-            return const Center(
-              child: CircularProgressIndicator(),
+            return const SliverToBoxAdapter(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
             );
           case HomeError():
-            return Center(
-              child: Text(state.errorMessage),
+            return SliverToBoxAdapter(
+              child: Center(
+                child: Text(state.errorMessage),
+              ),
             );
           case HomeSuccess():
-            return CustomScrollView(
-              slivers: [
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                      childCount: state.subjectIds.length, (context, index) {
-                    return HomeSubjectListTile(
-                      subjectId: state.subjectIds[index],
-                    );
-                  }),
-                ),
-              ],
+            return SliverList(
+              delegate: SliverChildBuilderDelegate(
+                  childCount: state.subjectIds.length, (context, index) {
+                return HomeSubjectListTile(
+                  subjectId: state.subjectIds[index],
+                );
+              }),
             );
         }
       },
