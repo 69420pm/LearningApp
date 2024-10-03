@@ -53,8 +53,7 @@ class EditorInputFormatter extends TextInputFormatter {
   ) {
     _compareStrings(oldValue.text, newValue.text);
 
-    em.generateSpans();
-    return newValue;
+    return newValue.copyWith(text: em.generateSpans());
   }
 
   void _compareStrings(
@@ -79,7 +78,6 @@ class EditorInputFormatter extends TextInputFormatter {
               currentLineFormat = LineFormatType.body;
               context.read<EditorCubit>().changeLineFormat(currentLineFormat,
                   updateCurrentLine: false);
-              // line += '\n';
               line = '\n$line';
               if (localIndex != em.lines[lineIndex].spans.last.end) {
                 // shift spans to next line

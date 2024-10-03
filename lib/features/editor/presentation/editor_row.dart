@@ -93,14 +93,6 @@ class EditorRow extends StatelessWidget {
                   value: LineFormatType.bulleted_list,
                   label: Text('bulleted List'),
                 ),
-                ButtonSegment(
-                  value: LineFormatType.numbered_list,
-                  label: Text('numbered List'),
-                ),
-                ButtonSegment(
-                  value: LineFormatType.dashed_list,
-                  label: Text('dashed List'),
-                ),
               ],
               // Specify that multiple selections are allowed
               multiSelectionEnabled: false,

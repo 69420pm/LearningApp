@@ -1,29 +1,68 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:learning_app/core/diff_match/patch.dart';
 import 'package:learning_app/features/editor/presentation/cubit/editor_cubit.dart';
+import 'package:learning_app/features/editor/presentation/editor_input_formatter.dart';
+
+// TODO: add \n at the end of lines
+// TODO: finish list tiles
 
 class EditorTextFieldManager {
   List<EditorLine> lines = [];
   List<InlineSpan> spans = [];
 
-  void generateSpans() {
+  String generateSpans() {
+    String returnText = '';
     spans.clear();
-    for (EditorLine line in lines) {
+    for (int j = 0; j < lines.length; j++) {
+      EditorLine line = lines[j];
       final lineStyle =
           EditorFormatStyles.getLineFormatStyle(line.lineFormatType);
-      for (EditorSpan span in line.spans) {
+      if (j != 0) {
+        spans.add(TextSpan(text: '\n', style: lineStyle));
+        returnText += '\n';
+      }
+      if (line.lineFormatType == LineFormatType.bulleted_list) {
+        // spans.add(TextSpan(text: '\uffff', style: lineStyle));
+        line.spans.insert(
+            0, EditorSpan(span: TextSpan(text: '\uffff'), end: 1, start: 0));
+        for (int i = 1; i < line.spans.length; i++) {
+          line.spans[i].start += 1;
+          line.spans[i].end += 1;
+        }
+        returnText += '\uffff';
+        spans.add(
+          WidgetSpan(
+            child: Container(
+              width: 10,
+              height: 10,
+              decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(100))),
+            ),
+          ),
+        );
+      }
+      for (int i = 0; i < line.spans.length; i++) {
+        EditorSpan span = line.spans[i].copyWith();
+        String text = i == 0 && j != 0
+            ? span.span.toPlainText().characters.safeSubstring(1)
+            : span.span.toPlainText();
+        returnText += text;
         if (span.span.style == null) {
-          span.span = TextSpan(text: span.span.toPlainText(), style: lineStyle);
+          span.span = TextSpan(text: text, style: lineStyle);
         } else {
           span.span = TextSpan(
-            text: span.span.toPlainText(),
+            text: text,
             style: span.span.style!.merge(lineStyle),
           );
         }
         spans.add(span.span);
       }
     }
+    return returnText;
   }
 }
 
@@ -130,10 +169,9 @@ enum LineFormatType {
   footnote,
   monostyled,
   bulleted_list,
-  numbered_list,
-  dashed_list,
   image,
-  audio
+  audio,
+  latex
 }
 
 class EditorFormatStyles {
@@ -221,10 +259,6 @@ class EditorFormatStyles {
         return monostyled;
       case LineFormatType.bulleted_list:
         return bulletedList;
-      case LineFormatType.numbered_list:
-        return numberedList;
-      case LineFormatType.dashed_list:
-        return dashedList;
       default:
         return body;
     }
