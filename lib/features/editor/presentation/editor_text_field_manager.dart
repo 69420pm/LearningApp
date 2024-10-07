@@ -6,28 +6,35 @@ import 'package:learning_app/core/diff_match/patch.dart';
 import 'package:learning_app/features/editor/presentation/cubit/editor_cubit.dart';
 import 'package:learning_app/features/editor/presentation/editor_input_formatter.dart';
 
-// TODO: add \n at the end of lines
 // TODO: finish list tiles
 
 class EditorTextFieldManager {
   List<EditorLine> lines = [];
   List<InlineSpan> spans = [];
+  TextEditingValue _previousValue = TextEditingValue();
+  TextEditingValue _currentValue = TextEditingValue();
 
-  String generateSpans() {
+  TextEditingValue generateSpans([TextEditingValue? previousValue]) {
+    if (previousValue != null) {
+      _previousValue = previousValue;
+    }
     String returnText = '';
     spans.clear();
     for (int j = 0; j < lines.length; j++) {
       EditorLine line = lines[j];
+      spans.addAll(line.inlineSpans);
+      returnText += line.text;
+      continue;
       final lineStyle =
           EditorFormatStyles.getLineFormatStyle(line.lineFormatType);
-      if (j != 0) {
-        spans.add(TextSpan(text: '\n', style: lineStyle));
-        returnText += '\n';
-      }
+      // if (j != 0) {
+      //   spans.add(TextSpan(text: '\n', style: lineStyle));
+      //   returnText += '\n';
+      // }
       if (line.lineFormatType == LineFormatType.bulleted_list) {
         // spans.add(TextSpan(text: '\uffff', style: lineStyle));
-        line.spans.insert(
-            0, EditorSpan(span: TextSpan(text: '\uffff'), end: 1, start: 0));
+        // line.spans.insert(
+        //     0, EditorSpan(span: TextSpan(text: '\uffff'), end: 1, start: 0));
         for (int i = 1; i < line.spans.length; i++) {
           line.spans[i].start += 1;
           line.spans[i].end += 1;
@@ -39,17 +46,16 @@ class EditorTextFieldManager {
               width: 10,
               height: 10,
               decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(100))),
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(100)),
+              ),
             ),
           ),
         );
       }
       for (int i = 0; i < line.spans.length; i++) {
         EditorSpan span = line.spans[i].copyWith();
-        String text = i == 0 && j != 0
-            ? span.span.toPlainText().characters.safeSubstring(1)
-            : span.span.toPlainText();
+        String text = span.span.toPlainText();
         returnText += text;
         if (span.span.style == null) {
           span.span = TextSpan(text: text, style: lineStyle);
@@ -62,7 +68,14 @@ class EditorTextFieldManager {
         spans.add(span.span);
       }
     }
-    return returnText;
+    _currentValue = _previousValue.copyWith(text: returnText);
+    if (_previousValue.text != _currentValue.text) {
+      if (_previousValue.text.substring(0, _previousValue.selection.start) !=
+          _currentValue.text.substring(0, _currentValue.selection.start)) {
+        print('s');
+      }
+    }
+    return _currentValue;
   }
 }
 
@@ -115,10 +128,11 @@ class EditorSpan extends Equatable {
 
 class EditorLine extends Equatable {
   List<EditorSpan> spans = [];
+  List<InlineSpan> inlineSpans = [];
+  String text = '';
   LineFormatType _lineFormatType = LineFormatType.body;
 
   LineFormatType get lineFormatType => _lineFormatType;
-
   set lineFormatType(LineFormatType value) {
     if (value == _lineFormatType) return;
     for (EditorSpan span in spans) {
@@ -138,6 +152,31 @@ class EditorLine extends Equatable {
     _lineFormatType = value;
   }
 
+  void updateSpans() {
+    print('updating spans');
+    text = '';
+    inlineSpans.clear();
+    if (_lineFormatType == LineFormatType.bulleted_list) {
+      text += '\uffff';
+      inlineSpans.add(
+        WidgetSpan(
+          child: Container(
+            width: 10,
+            height: 10,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(100)),
+            ),
+          ),
+        ),
+      );
+    }
+    for (EditorSpan span in spans) {
+      inlineSpans.add(span.span);
+      text += span.span.toPlainText();
+    }
+  }
+
   int start;
   int end;
   EditorLine({
@@ -145,7 +184,9 @@ class EditorLine extends Equatable {
     required this.end,
     required this.spans,
     lineFormatType = LineFormatType.body,
-  }) : _lineFormatType = lineFormatType;
+  }) : _lineFormatType = lineFormatType {
+    updateSpans();
+  }
 
   @override
   List<Object?> get props => [spans, start, end, lineFormatType];

@@ -51,9 +51,10 @@ class EditorInputFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    _compareStrings(oldValue.text, newValue.text);
-
-    return newValue.copyWith(text: em.generateSpans());
+    _compareStrings(oldValue.text.replaceAll('\uffff', ''),
+        newValue.text.replaceAll('\uffff', ''));
+    final value = em.generateSpans(newValue);
+    return value;
   }
 
   void _compareStrings(
@@ -79,7 +80,8 @@ class EditorInputFormatter extends TextInputFormatter {
               context.read<EditorCubit>().changeLineFormat(currentLineFormat,
                   updateCurrentLine: false);
               line = '\n$line';
-              if (localIndex != em.lines[lineIndex].spans.last.end) {
+              if (em.lines.isNotEmpty &&
+                  localIndex != em.lines[lineIndex].spans.last.end) {
                 // shift spans to next line
                 for (int j = 0; j < em.lines[lineIndex].spans.length; j++) {
                   final span = em.lines[lineIndex].spans[j];
@@ -296,6 +298,9 @@ class EditorInputFormatter extends TextInputFormatter {
         }
       }
     }
+    if (em.lines.length > line) {
+      em.lines[line].updateSpans();
+    }
     _updateGlobalLineIndexes();
   }
 
@@ -413,6 +418,9 @@ class EditorInputFormatter extends TextInputFormatter {
             em.lines[line].spans[j].start -= alreadyDeletedOverhang;
             em.lines[line].spans[j].end -= alreadyDeletedOverhang;
           }
+          if (em.lines.length > line) {
+            em.lines[line].updateSpans();
+          }
           _updateGlobalLineIndexes();
           break;
         } else {
@@ -422,6 +430,9 @@ class EditorInputFormatter extends TextInputFormatter {
               text.characters.length - editedText.characters.length;
           start = currentEnd - alreadyDeletedOverhang;
           end -= alreadyDeletedOverhang;
+          if (em.lines.length > line) {
+            em.lines[line].updateSpans();
+          }
         }
       }
     }
@@ -472,6 +483,9 @@ class EditorInputFormatter extends TextInputFormatter {
             );
           } else {
             em.lines[line].spans.removeAt(j);
+            if (em.lines.length > line) {
+              em.lines[line].updateSpans();
+            }
             j--;
           }
           if (inBetween.isNotEmpty) {
@@ -519,6 +533,9 @@ class EditorInputFormatter extends TextInputFormatter {
         globalEnd - em.lines[i].start,
         i,
       );
+      if (em.lines.length > i) {
+        em.lines[i].updateSpans();
+      }
     }
     em.generateSpans();
   }
