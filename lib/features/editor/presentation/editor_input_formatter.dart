@@ -574,6 +574,7 @@ class EditorInputFormatter extends TextInputFormatter {
       return;
     }
     em.lines[line].lineFormatType = type;
+    em.lines[line].updateSpans();
     em.generateSpans();
   }
 

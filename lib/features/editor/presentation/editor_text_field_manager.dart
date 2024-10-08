@@ -70,10 +70,12 @@ class EditorTextFieldManager {
     }
     _currentValue = _previousValue.copyWith(text: returnText);
     if (_previousValue.text != _currentValue.text) {
-      if (_previousValue.text.substring(0, _previousValue.selection.start) !=
-          _currentValue.text.substring(0, _currentValue.selection.start)) {
-        print('s');
-      }
+      print('s');
+      _currentValue = _currentValue.copyWith(
+        selection: TextSelection.collapsed(
+          offset: _currentValue.selection.extentOffset + 1,
+        ),
+      );
     }
     return _currentValue;
   }
@@ -136,20 +138,37 @@ class EditorLine extends Equatable {
   set lineFormatType(LineFormatType value) {
     if (value == _lineFormatType) return;
     for (EditorSpan span in spans) {
-      if (span.span.style != null) {
-        span.span = TextSpan(
-          text: span.span.toPlainText(),
-          style: span.span.style!
-              .merge(EditorFormatStyles.getLineFormatStyle(value)),
-        );
-      } else {
-        span.span = TextSpan(
-          text: span.span.toPlainText(),
-          style: EditorFormatStyles.getLineFormatStyle(value),
-        );
-      }
+      span.span =
+          _mergeSpans(span, EditorFormatStyles.getLineFormatStyle(value));
+      // if (span.span.style != null) {
+      //   span.span = TextSpan(
+      //     text: span.span.toPlainText(),
+      //     style: span.span.style!
+      //         .merge(EditorFormatStyles.getLineFormatStyle(value)),
+      //   );
+      // } else {
+      //   span.span = TextSpan(
+      //     text: span.span.toPlainText(),
+      //     style: EditorFormatStyles.getLineFormatStyle(value),
+      //   );
+      // }
     }
     _lineFormatType = value;
+  }
+
+  InlineSpan _mergeSpans(EditorSpan span, TextStyle style) {
+    if (span.span.style != null) {
+      span.span = TextSpan(
+        text: span.span.toPlainText(),
+        style: span.span.style!.merge(style),
+      );
+    } else {
+      span.span = TextSpan(
+        text: span.span.toPlainText(),
+        style: style,
+      );
+    }
+    return span.span;
   }
 
   void updateSpans() {
@@ -157,7 +176,10 @@ class EditorLine extends Equatable {
     text = '';
     inlineSpans.clear();
     if (_lineFormatType == LineFormatType.bulleted_list) {
-      text += '\uffff';
+      if (spans.isNotEmpty &&
+          spans[0].span.toPlainText().characters.first != '\n') {
+        text += '\uffff';
+      }
       inlineSpans.add(
         WidgetSpan(
           child: Container(
@@ -172,8 +194,17 @@ class EditorLine extends Equatable {
       );
     }
     for (EditorSpan span in spans) {
+      span.span = _mergeSpans(
+          span,
+          EditorFormatStyles.getLineFormatStyle(
+            _lineFormatType,
+          ));
       inlineSpans.add(span.span);
       text += span.span.toPlainText();
+    }
+    if (spans.isNotEmpty &&
+        spans[0].span.toPlainText().characters.first == '\n') {
+      text = '\n' + '\uffff' + text.characters.safeSubstring(1);
     }
   }
 
