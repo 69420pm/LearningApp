@@ -39,6 +39,9 @@ class EditorInputFormatter extends TextInputFormatter {
   LineFormatType currentLineFormat = LineFormatType.body;
   TextSelection lastSelection = TextSelection.collapsed(offset: 0);
 
+  TextEditingValue oldValue = TextEditingValue();
+  TextEditingValue newValue = TextEditingValue();
+
   void changeLineFormat() {
     if (!lastSelection.isCollapsed) {
       _changeStyle(currentStyle, lastSelection.start, lastSelection.end);
@@ -51,9 +54,19 @@ class EditorInputFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
+    if (oldValue == newValue) {
+      return TextEditingValue(text: '123');
+    }
+    oldValue.text;
+    newValue.text;
+    this.oldValue = oldValue;
+    this.newValue = newValue;
     _compareStrings(oldValue.text.replaceAll('\uffff', ''),
         newValue.text.replaceAll('\uffff', ''));
     final value = em.generateSpans(newValue);
+    value.text;
+    this.oldValue = value;
+    this.newValue = value;
     return value;
   }
 
@@ -61,6 +74,9 @@ class EditorInputFormatter extends TextInputFormatter {
     String oldText,
     String newText,
   ) {
+    if (oldText == newText) {
+      return;
+    }
     final dmp = DiffMatchPatch();
     // compares two strings and returns insertions and deletions
     List<Diff> diffs = dmp.diff(oldText, newText);
@@ -537,7 +553,8 @@ class EditorInputFormatter extends TextInputFormatter {
         em.lines[i].updateSpans();
       }
     }
-    em.generateSpans();
+    // em.generateSpans();
+    formatEditUpdate(oldValue, newValue);
   }
 
   void changeStyleAccordingToSelection(
@@ -575,7 +592,8 @@ class EditorInputFormatter extends TextInputFormatter {
     }
     em.lines[line].lineFormatType = type;
     em.lines[line].updateSpans();
-    em.generateSpans();
+    // em.generateSpans();
+    formatEditUpdate(oldValue, newValue);
   }
 
   /// return index of line where the index of [globalStart] is located

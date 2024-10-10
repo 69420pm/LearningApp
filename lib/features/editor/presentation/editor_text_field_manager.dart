@@ -6,8 +6,6 @@ import 'package:learning_app/core/diff_match/patch.dart';
 import 'package:learning_app/features/editor/presentation/cubit/editor_cubit.dart';
 import 'package:learning_app/features/editor/presentation/editor_input_formatter.dart';
 
-// TODO: finish list tiles
-
 class EditorTextFieldManager {
   List<EditorLine> lines = [];
   List<InlineSpan> spans = [];
@@ -77,6 +75,7 @@ class EditorTextFieldManager {
         ),
       );
     }
+    _currentValue.text;
     return _currentValue;
   }
 }
@@ -173,27 +172,60 @@ class EditorLine extends Equatable {
 
   void updateSpans() {
     print('updating spans');
+    int forLoopIndex = 0;
     text = '';
     inlineSpans.clear();
     if (_lineFormatType == LineFormatType.bulleted_list) {
-      if (spans.isNotEmpty &&
-          spans[0].span.toPlainText().characters.first != '\n') {
-        text += '\uffff';
+      if (spans.isEmpty) {
+        return;
       }
-      inlineSpans.add(
-        WidgetSpan(
-          child: Container(
-            width: 10,
-            height: 10,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(100)),
+
+      if (spans[0].span.toPlainText().characters.first == '\n') {
+        forLoopIndex = 1;
+        text += '\n' + '\uffff';
+        inlineSpans.add(
+          TextSpan(text: '\n', style: spans[0].span.style),
+        );
+        inlineSpans.add(
+          WidgetSpan(
+            child: Container(
+              width: 10,
+              height: 10,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(100)),
+              ),
             ),
           ),
-        ),
-      );
+        );
+        InlineSpan helpSpan = spans[0].span;
+        helpSpan = TextSpan(
+            text: helpSpan.toPlainText().isNotEmpty
+                ? helpSpan.toPlainText().characters.safeSubstring(1)
+                : '',
+            style: spans[0].span.style);
+        inlineSpans.add(helpSpan);
+        text += helpSpan.toPlainText().isEmpty
+            ? ''
+            : helpSpan.toPlainText().characters.safeSubstring(1);
+      } else {
+        text += '\uffff';
+        inlineSpans.add(
+          WidgetSpan(
+            child: Container(
+              width: 10,
+              height: 10,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(100)),
+              ),
+            ),
+          ),
+        );
+      }
     }
-    for (EditorSpan span in spans) {
+    for (int i = forLoopIndex; i < spans.length; i++) {
+      EditorSpan span = spans[i];
       span.span = _mergeSpans(
           span,
           EditorFormatStyles.getLineFormatStyle(
@@ -201,10 +233,6 @@ class EditorLine extends Equatable {
           ));
       inlineSpans.add(span.span);
       text += span.span.toPlainText();
-    }
-    if (spans.isNotEmpty &&
-        spans[0].span.toPlainText().characters.first == '\n') {
-      text = '\n' + '\uffff' + text.characters.safeSubstring(1);
     }
   }
 
