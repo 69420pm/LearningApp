@@ -2,6 +2,29 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<!-- gal: Required -->
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>We need add only access to save medias</string>
+	<!-- gal: Required -->
+
+	<!-- gal: Required for ios < 14 or saving to album -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need access to save medias</string>
+	<!-- gal: Required for ios < 14 or saving to album -->
+
+	<!-- image_picker: Required -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need add only access to save medias</string> 
+
+	<key>NSCameraUsageDescription</key>
+	<string>For recording images and videos</string>
+
+	<key>NSMicrophoneUsageDescription</key>
+	<string>For recording videos with sound</string>
+	<!-- image_picker: Required -->
+
+	
+
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
