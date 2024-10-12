@@ -15,12 +15,7 @@ class CustomQuillToolbar extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           child: Wrap(
             children: [
-              ElevatedButton(
-                  onPressed: () {
-                    controller.formatSelection(
-                        ColorAttribute(colorToHex(Colors.red)));
-                  },
-                  child: Text('color')),
+              // ElevatedButton(onPressed: () {}, child: Text('color')),
               QuillToolbarHistoryButton(
                 isUndo: true,
                 controller: controller,
@@ -29,28 +24,7 @@ class CustomQuillToolbar extends StatelessWidget {
                 isUndo: false,
                 controller: controller,
               ),
-              QuillToolbarToggleStyleButton(
-                options: const QuillToolbarToggleStyleButtonOptions(),
-                controller: controller,
-                attribute: Attribute.bold,
-              ),
-              QuillToolbarToggleStyleButton(
-                options: const QuillToolbarToggleStyleButtonOptions(),
-                controller: controller,
-                attribute: Attribute.italic,
-              ),
-              QuillToolbarToggleStyleButton(
-                controller: controller,
-                attribute: Attribute.underline,
-              ),
-              QuillToolbarToggleStyleButton(
-                controller: controller,
-                attribute: Attribute.subscript,
-              ),
-              QuillToolbarToggleStyleButton(
-                controller: controller,
-                attribute: Attribute.superscript,
-              ),
+
               QuillToolbarImageButton(
                 controller: controller,
               ),
@@ -60,6 +34,15 @@ class CustomQuillToolbar extends StatelessWidget {
               QuillToolbarColorButton(
                 controller: controller,
                 isBackground: false,
+              ),
+              QuillToolbarToggleStyleButton(
+                controller: controller,
+                attribute: Attribute.ol,
+              ),
+              QuillToolbarSelectHeaderStyleDropdownButton(
+                controller: controller,
+                options:
+                    const QuillToolbarSelectHeaderStyleDropdownButtonOptions(),
               ),
             ],
           ),

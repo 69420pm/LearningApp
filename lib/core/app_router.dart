@@ -1,6 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:learning_app/features/editor/presentation/editor.dart';
-import 'package:learning_app/features/editor/quill_test.dart';
+import 'package:learning_app/features/quill_editor/presentation/quill_test.dart';
 import 'package:learning_app/features/subject/presentation/pages/subject_page.dart';
 import 'package:learning_app/features/home/presentation/pages/home_page.dart';
 
