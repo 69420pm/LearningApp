@@ -20,7 +20,7 @@ class QuillTest extends StatelessWidget {
       body: SafeArea(
           child: Column(
         children: [
-          CustomQuillToolbar(controller: _controller),
+          // CustomQuillToolbar(controller: _controller),
           Expanded(
             child: CustomQuillEditor(
               controller: _controller,

@@ -36,9 +36,8 @@ class FormatCharsRow extends StatelessWidget {
               controller: controller,
               attribute: Attribute.underline,
             ),
-            QuillToolbarToggleStyleButton(
+            QuillToolbarClearFormatButton(
               controller: controller,
-              attribute: Attribute.strikeThrough,
             ),
             QuillToolbarToggleStyleButton(
               controller: controller,
@@ -48,6 +47,7 @@ class FormatCharsRow extends StatelessWidget {
               controller: controller,
               attribute: Attribute.superscript,
             ),
+            QuillToolbarLinkStyleButton(controller: controller),
           ],
         ),
       ),

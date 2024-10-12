@@ -18,6 +18,11 @@ class FormatLineRow extends StatelessWidget {
       child: QuillToolbar(
         child: Row(
           children: [
+            IconButton(
+                onPressed: () {
+                  context.read<EditorKeyboardRowCubit>().selectNothing();
+                },
+                icon: Icon(Icons.arrow_back)),
             QuillToggleButton(
               onSelect: () {
                 controller.formatSelection(HeaderAttribute(level: 5));
@@ -36,22 +41,32 @@ class FormatLineRow extends StatelessWidget {
                 }
                 return isSelected;
               },
-              icon: Icons.format_clear,
+              icon: Icons.one_k,
               controller: controller,
             ),
-            IconButton(
-                onPressed: () {
-                  context.read<EditorKeyboardRowCubit>().selectNothing();
-                },
-                icon: Icon(Icons.arrow_back)),
             QuillToolbarToggleStyleButton(
               controller: controller,
               attribute: Attribute.ol,
             ),
-            QuillToolbarSelectHeaderStyleDropdownButton(
+            QuillToolbarToggleStyleButton(
               controller: controller,
-              options:
-                  const QuillToolbarSelectHeaderStyleDropdownButtonOptions(),
+              attribute: Attribute.ul,
+            ),
+            QuillToolbarToggleStyleButton(
+              controller: controller,
+              attribute: Attribute.codeBlock,
+            ),
+            QuillToolbarToggleStyleButton(
+              controller: controller,
+              attribute: Attribute.blockQuote,
+            ),
+            QuillToolbarIndentButton(
+              controller: controller,
+              isIncrease: true,
+            ),
+            QuillToolbarIndentButton(
+              controller: controller,
+              isIncrease: false,
             ),
           ],
         ),

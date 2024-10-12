@@ -32,7 +32,11 @@ class ImageEmbedBuilder extends EmbedBuilder {
     TextStyle textStyle,
   ) {
     final notes = ImageBlockEmbed(node.value.data).document;
-
+    return Material(
+      child: Image(
+        image: AssetImage('assets/images/bulleted_list.png'),
+      ),
+    );
     return Material(
       color: Colors.transparent,
       child: ListTile(

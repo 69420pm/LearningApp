@@ -37,11 +37,16 @@ class _QuillToggleButtonState extends State<QuillToggleButton> {
   Widget build(BuildContext context) {
     isSelected = widget.onBuild();
     return IconButton(
-      icon: Icon(widget.icon),
+      icon: Icon(
+        widget.icon,
+        color: isSelected
+            ? Theme.of(context).colorScheme.onPrimary
+            : Theme.of(context).colorScheme.onSurface,
+      ),
       style: ButtonStyle(
         backgroundColor: isSelected
-            ? WidgetStatePropertyAll(Colors.green)
-            : WidgetStatePropertyAll(Colors.grey),
+            ? WidgetStatePropertyAll(Theme.of(context).colorScheme.primary)
+            : WidgetStatePropertyAll(Theme.of(context).colorScheme.surface),
       ),
       onPressed: () {
         if (!isSelected) {
