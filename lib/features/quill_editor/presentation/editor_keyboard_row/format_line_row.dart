@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:learning_app/features/quill_editor/helper/quill_helper.dart';
-import 'package:learning_app/features/quill_editor/presentation/editor_keyboard_row/color_button.dart';
+import 'package:learning_app/features/quill_editor/presentation/editor_keyboard_row/widgets/close_button.dart';
+import 'package:learning_app/features/quill_editor/presentation/editor_keyboard_row/widgets/color_button.dart';
 import 'package:learning_app/features/quill_editor/presentation/editor_keyboard_row/cubit/editor_keyboard_row_cubit.dart';
-import 'package:learning_app/features/quill_editor/presentation/editor_keyboard_row/quill_toggle_button.dart';
+import 'package:learning_app/features/quill_editor/presentation/editor_keyboard_row/widgets/quill_toggle_button.dart';
 // import 'package:learning_app/features/quill_editor/presentation/editor_keyboard_row/quill_toggle_button.dart';
 
 class FormatLineRow extends StatelessWidget {
@@ -18,11 +19,7 @@ class FormatLineRow extends StatelessWidget {
       child: QuillToolbar(
         child: Row(
           children: [
-            IconButton(
-                onPressed: () {
-                  context.read<EditorKeyboardRowCubit>().selectNothing();
-                },
-                icon: Icon(Icons.arrow_back)),
+            KeyboardRowCloseButton(),
             QuillToggleButton(
               onSelect: () {
                 controller.formatSelection(HeaderAttribute(level: 5));

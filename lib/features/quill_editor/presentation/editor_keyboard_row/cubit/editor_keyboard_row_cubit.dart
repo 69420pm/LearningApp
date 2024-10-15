@@ -13,6 +13,10 @@ class EditorKeyboardRowCubit extends Cubit<EditorKeyboardRowState> {
     emit(EditorKeyboardRowFormatChars());
   }
 
+  void selectCamera() {
+    emit(EditorKeyboardRowImage());
+  }
+
   void selectChangeTextColors() {
     emit(EditorKeyboardRowChangeTextColors());
   }

@@ -30,7 +30,7 @@ class _ColorButtonState extends State<ColorButton> {
   @override
   Widget build(BuildContext context) {
     if (widget.controller.getSelectionStyle().attributes['color'] == null) {
-      color = Colors.white;
+      color = Theme.of(context).colorScheme.onSurfaceVariant;
     } else {
       color = stringToColor(
           widget.controller.getSelectionStyle().attributes['color']!.value);
@@ -39,7 +39,7 @@ class _ColorButtonState extends State<ColorButton> {
       onPressed: () {
         context.read<EditorKeyboardRowCubit>().selectChangeTextColors();
       },
-      icon: Icon(Icons.color_lens),
+      icon: Icon(Icons.border_color_outlined),
       color: color,
     );
   }

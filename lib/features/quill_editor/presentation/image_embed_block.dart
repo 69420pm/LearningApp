@@ -17,7 +17,8 @@ class ImageBlockEmbed extends CustomBlockEmbed {
 class ImageEmbedBuilder extends EmbedBuilder {
   ImageEmbedBuilder({required this.addEditNote});
 
-  Future<void> Function(BuildContext context, {Document? document}) addEditNote;
+  Future<void> Function(QuillController controller, BuildContext context,
+      {Document? document}) addEditNote;
 
   @override
   String get key => 'notes';
@@ -37,21 +38,69 @@ class ImageEmbedBuilder extends EmbedBuilder {
         image: AssetImage('assets/images/bulleted_list.png'),
       ),
     );
-    return Material(
-      color: Colors.transparent,
-      child: ListTile(
-        title: Text(
-          notes.toPlainText().replaceAll('\n', ' '),
-          maxLines: 3,
-          overflow: TextOverflow.ellipsis,
-        ),
-        leading: const Icon(Icons.notes),
-        onTap: () => addEditNote(context, document: notes),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-          side: const BorderSide(color: Colors.grey),
-        ),
+    // return Material(
+    //   color: Colors.transparent,
+    //   child: ListTile(
+    //     title: Text(
+    //       notes.toPlainText().replaceAll('\n', ' '),
+    //       maxLines: 3,
+    //       overflow: TextOverflow.ellipsis,
+    //     ),
+    //     leading: const Icon(Icons.notes),
+    //     onTap: () => addEditNote(context, document: notes),
+    //     shape: RoundedRectangleBorder(
+    //       borderRadius: BorderRadius.circular(10),
+    //       side: const BorderSide(color: Colors.grey),
+    //     ),
+    //   ),
+    // );
+  }
+}
+
+Future<void> addImage(QuillController controller, BuildContext context,
+    {Document? document}) async {
+  final isEditing = document != null;
+  final quillEditorController = QuillController(
+    document: document ?? Document(),
+    selection: const TextSelection.collapsed(offset: 0),
+  );
+
+  await showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      titlePadding: const EdgeInsets.only(left: 16, top: 8),
+
+      ///
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text('${isEditing ? 'Edit' : 'Add'} note'),
+          IconButton(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: const Icon(Icons.close),
+          )
+        ],
       ),
-    );
+      content: QuillEditor.basic(
+        controller: quillEditorController,
+        configurations: const QuillEditorConfigurations(),
+      ),
+    ),
+  );
+
+  if (quillEditorController.document.isEmpty()) return;
+
+  final block = BlockEmbed.custom(
+    ImageBlockEmbed.fromDocument(quillEditorController.document),
+  );
+  final index = controller.selection.baseOffset;
+  final length = controller.selection.extentOffset - index;
+
+  if (isEditing) {
+    final offset = getEmbedNode(controller, controller.selection.start).offset;
+    controller.replaceText(
+        offset, 1, block, TextSelection.collapsed(offset: offset));
+  } else {
+    controller.replaceText(index, length, block, null);
   }
 }

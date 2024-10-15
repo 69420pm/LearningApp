@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_quill/flutter_quill.dart';
-import 'package:learning_app/features/quill_editor/helper/quill_helper.dart';
-import 'package:learning_app/features/quill_editor/presentation/editor_keyboard_row/color_button.dart';
+import 'package:learning_app/features/quill_editor/presentation/editor_keyboard_row/widgets/close_button.dart';
+import 'package:learning_app/features/quill_editor/presentation/editor_keyboard_row/widgets/color_button.dart';
 import 'package:learning_app/features/quill_editor/presentation/editor_keyboard_row/cubit/editor_keyboard_row_cubit.dart';
 
 class FormatCharsRow extends StatelessWidget {
@@ -16,12 +16,7 @@ class FormatCharsRow extends StatelessWidget {
       child: QuillToolbar(
         child: Row(
           children: [
-            IconButton(
-                onPressed: () {
-                  context.read<EditorKeyboardRowCubit>().selectNothing();
-                },
-                icon: Icon(Icons.arrow_back)),
-            ColorButton(controller: controller),
+            KeyboardRowCloseButton(),
             QuillToolbarToggleStyleButton(
               options: const QuillToolbarToggleStyleButtonOptions(),
               controller: controller,
@@ -36,9 +31,7 @@ class FormatCharsRow extends StatelessWidget {
               controller: controller,
               attribute: Attribute.underline,
             ),
-            QuillToolbarClearFormatButton(
-              controller: controller,
-            ),
+            ColorButton(controller: controller),
             QuillToolbarToggleStyleButton(
               controller: controller,
               attribute: Attribute.subscript,
@@ -48,6 +41,9 @@ class FormatCharsRow extends StatelessWidget {
               attribute: Attribute.superscript,
             ),
             QuillToolbarLinkStyleButton(controller: controller),
+            QuillToolbarClearFormatButton(
+              controller: controller,
+            ),
           ],
         ),
       ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
-import 'package:learning_app/packages/flutter-quill/flutter_quill_extensions/lib/flutter_quill_extensions.dart';
 
 class CustomQuillToolbar extends StatelessWidget {
   const CustomQuillToolbar({super.key, required this.controller});
@@ -25,9 +24,9 @@ class CustomQuillToolbar extends StatelessWidget {
                 controller: controller,
               ),
 
-              QuillToolbarImageButton(
-                controller: controller,
-              ),
+              // QuillToolbarImageButton(
+              //   controller: controller,
+              // ),
               QuillToolbarClearFormatButton(
                 controller: controller,
               ),

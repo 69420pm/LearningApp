@@ -5,6 +5,7 @@ import 'package:learning_app/features/quill_editor/presentation/editor_keyboard_
 import 'package:learning_app/features/quill_editor/presentation/editor_keyboard_row/cubit/editor_keyboard_row_cubit.dart';
 import 'package:learning_app/features/quill_editor/presentation/editor_keyboard_row/format_chars_row.dart';
 import 'package:learning_app/features/quill_editor/presentation/editor_keyboard_row/format_line_row.dart';
+import 'package:learning_app/features/quill_editor/presentation/editor_keyboard_row/image_row.dart';
 
 class EditorKeyboardRow extends StatelessWidget {
   EditorKeyboardRow({super.key, required this.controller});
@@ -17,7 +18,10 @@ class EditorKeyboardRow extends StatelessWidget {
           return Row(
             children: [
               IconButton(
-                  onPressed: () {}, icon: Icon(Icons.camera_alt_outlined)),
+                  onPressed: () {
+                    context.read<EditorKeyboardRowCubit>().selectCamera();
+                  },
+                  icon: Icon(Icons.camera_alt_outlined)),
               IconButton(
                   onPressed: () {
                     context.read<EditorKeyboardRowCubit>().selectFormatChars();
@@ -28,7 +32,6 @@ class EditorKeyboardRow extends StatelessWidget {
                     context.read<EditorKeyboardRowCubit>().selectFormatLine();
                   },
                   icon: Icon(Icons.format_list_bulleted_rounded)),
-              IconButton(onPressed: () {}, icon: Icon(Icons.draw))
             ],
           );
         } else if (state == EditorKeyboardRowFormatChars()) {
@@ -41,6 +44,8 @@ class EditorKeyboardRow extends StatelessWidget {
           return ChangeTextColorsRow(
             controller: controller,
           );
+        } else if (state == EditorKeyboardRowImage()) {
+          return EmbedBlockRow(controller: controller);
         } else {
           return Text('internal error');
         }
