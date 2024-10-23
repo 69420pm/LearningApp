@@ -1,20 +1,91 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:learning_app/features/editor/presentation/text_field_controller.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class Editor extends StatelessWidget {
-  Editor({super.key});
-  TextFieldController controller = TextFieldController();
+import 'package:learning_app/features/editor/presentation/cubit/editor_cubit.dart';
+import 'package:learning_app/features/editor/presentation/editor_controller.dart';
+import 'package:learning_app/features/editor/presentation/editor_input_formatter.dart';
+import 'package:learning_app/features/editor/presentation/editor_row.dart';
+import 'package:learning_app/features/editor/presentation/editor_text_field_controller.dart';
+import 'package:learning_app/features/editor/presentation/editor_text_field_manager.dart';
+import 'package:learning_app/features/editor/presentation/helper/editor_text_styles.dart';
+import 'package:learning_app/features/editor/presentation/text_field_controller.dart';
+import 'package:learning_app/injection_container.dart';
+
+class EditorPage extends StatelessWidget {
+  const EditorPage({super.key});
+
   @override
   Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => sl<EditorCubit>(),
+      child: _EditorView(),
+    );
+  }
+}
+
+class _EditorView extends StatelessWidget {
+  EditorTextFieldManager editorTextFieldManager = EditorTextFieldManager();
+  double cursorHeight = 16;
+  TextFieldController controller = TextFieldController();
+
+  EditorTextStyle style = EditorTextStyle();
+  @override
+  Widget build(BuildContext context) {
+    EditorInputFormatter inputFormatter =
+        EditorInputFormatter(em: editorTextFieldManager, context: context);
+    EditorController editorController = EditorController(
+      editorTextFieldManager: editorTextFieldManager,
+    );
+    EditorTextFieldController editorTextFieldController =
+        EditorTextFieldController(
+      em: editorTextFieldManager,
+      inputFormatter: inputFormatter,
+    );
+    context.read<EditorCubit>().inputFormatter = inputFormatter;
     return Scaffold(
       appBar: AppBar(),
       body: Column(
         children: [
-          TextField(
-            // keyboardType: TextInputType.multiline,
-            // maxLines: null,
-            controller: controller,
-          )
+          BlocBuilder<EditorCubit, EditorState>(
+            builder: (context, state) {
+              switch (context.read<EditorCubit>().currentLineFormat) {
+                case LineFormatType.heading:
+                  cursorHeight = 26;
+                  break;
+                case LineFormatType.subheading:
+                  cursorHeight = 20;
+                default:
+                  cursorHeight = 16;
+                  break;
+              }
+              return TextField(
+                inputFormatters: [inputFormatter],
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                controller: editorTextFieldController,
+                cursorHeight: cursorHeight,
+              );
+            },
+          ),
+          // BlocBuilder<EditorCubit, EditorState>(
+          //   builder: (context, state) {
+          //     switch (context.read<EditorCubit>().currentLineFormat) {
+          //       case LineFormatType.heading:
+          //         cursorHeight = 26;
+          //         break;
+          //       case LineFormatType.subheading:
+          //         cursorHeight = 20;
+          //       default:
+          //         cursorHeight = 16;
+          //         break;
+          //     }
+
+          //     return
+          //   },
+          // ),
+          Expanded(child: Container()),
+          EditorRow(),
         ],
       ),
     );

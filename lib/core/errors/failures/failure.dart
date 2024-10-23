@@ -32,10 +32,26 @@ class FileDeletionFailure extends Failure {
       : super(errorMessage: errorMessage);
 }
 
-class LocalStorageException extends Failure {
+class LocalStorageFailure extends Failure {
   @override
   final String errorMessage;
 
-  LocalStorageException({required this.errorMessage})
+  LocalStorageFailure({required this.errorMessage})
+      : super(errorMessage: errorMessage);
+}
+
+class ImagePickingFailure extends Failure {
+  @override
+  final String errorMessage;
+
+  ImagePickingFailure({required this.errorMessage})
+      : super(errorMessage: errorMessage);
+}
+
+class ImageCroppingFailure extends Failure {
+  @override
+  final String errorMessage;
+
+  ImageCroppingFailure({required this.errorMessage})
       : super(errorMessage: errorMessage);
 }
