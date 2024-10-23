@@ -6,14 +6,20 @@ import 'package:learning_app/core/errors/failures/failure.dart';
 import 'package:learning_app/core/usecases/usecase.dart';
 import 'package:learning_app/features/file_system/domain/repositories/file_system_repository.dart';
 
-class MoveFile implements UseCase<void, MoveFileParams> {
+class MoveFiles implements UseCase<void, MoveFilesParams> {
   FileSystemRepository repository;
-  MoveFile({
+  MoveFiles({
     required this.repository,
   });
   @override
-  Future<Either<Failure, void>> call(MoveFileParams params) {
-    return repository.changeParentId(params.fileId, params.newParentId);
+  Future<Either<Failure, void>> call(MoveFilesParams params) async {
+    for (var id in params.fileIds) {
+      final either = await repository.changeParentId(id, params.newParentId);
+      if (either.isLeft()) {
+        return either;
+      }
+    }
+    return right(null);
     // final getEither = await repository.getFile(params.fileId);
     // return getEither.match((failure) => left(failure), (file) async {
     //   return (await repository.deleteFile(params.fileId))
@@ -27,12 +33,12 @@ class MoveFile implements UseCase<void, MoveFileParams> {
   }
 }
 
-class MoveFileParams extends Equatable {
-  final String fileId;
+class MoveFilesParams extends Equatable {
+  final List<String> fileIds;
   final String newParentId;
 
-  const MoveFileParams({required this.fileId, required this.newParentId});
+  const MoveFilesParams({required this.fileIds, required this.newParentId});
 
   @override
-  List<Object> get props => [fileId, newParentId];
+  List<Object> get props => [fileIds, newParentId];
 }

@@ -16,3 +16,12 @@ class SubjectCreateFolder extends SubjectEvent {
 class SubjectCreateCard extends SubjectEvent {
   SubjectCreateCard();
 }
+
+class SubjectMoveFiles extends SubjectEvent {
+  final String parentId;
+  final List<String> fileIds;
+  const SubjectMoveFiles({
+    required this.parentId,
+    required this.fileIds,
+  });
+}

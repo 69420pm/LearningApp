@@ -99,6 +99,35 @@ abstract class FileSystemHelper {
     // );
   }
 
+  static Future<Either<Failure, List<String>>> getParentIds(
+    FileSystemLocalDataSource lds,
+    String id,
+  ) async {
+    List<String> parentIds = [id];
+    int maxIteration = 100;
+
+    while (maxIteration > 0) {
+      maxIteration--;
+      final parentIdEither = await getParentId(parentIds.last, lds);
+
+      parentIdEither.match(
+        (failure) => left(failure),
+        (parentId) async {
+          if (parentIds.contains(parentId)) {
+            return left(
+              FileNotFoundFailure(
+                errorMessage: "circle in filesystem with $id",
+              ),
+            );
+          }
+          parentIds.add(parentId);
+          if (parentId == "/") maxIteration = 0;
+        },
+      );
+    }
+    return right(parentIds);
+  }
+
   static Future<Either<Failure, String>> _getParentIdRec(
       List<String> potentialParentIds,
       FileSystemLocalDataSource lds,

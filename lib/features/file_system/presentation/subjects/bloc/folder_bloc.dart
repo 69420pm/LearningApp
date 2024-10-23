@@ -15,18 +15,15 @@ part 'folder_state.dart';
 
 class FolderBloc extends Bloc<FolderEvent, FolderState> {
   final String parentId;
-  MoveFile moveFileUseCase;
   WatchChildrenFileSystem watchChildren;
   WatchFile watchFile;
   FolderBloc({
     required this.parentId,
-    required this.moveFileUseCase,
     required this.watchChildren,
     required this.watchFile,
   }) : super(FolderLoading()) {
     on<FolderEvent>((event, emit) {});
     on<FolderWatchChildrenIds>(watchChildrenIds);
-    on<FolderMoveFile>(moveFile);
   }
 
   Map<String, Stream<StreamEvent<File?>>> subscribedStreams = {};
@@ -62,16 +59,5 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
         },
       );
     });
-  }
-
-  Future<FutureOr<void>> moveFile(
-      FolderMoveFile event, Emitter<FolderState> emit) async {
-    final moveEither = await moveFileUseCase(
-        MoveFileParams(fileId: event.fileId, newParentId: event.parentId));
-
-    moveEither.match(
-      (failure) => emit(FolderError(errorMessage: failure.errorMessage)),
-      (stream) => null,
-    );
   }
 }

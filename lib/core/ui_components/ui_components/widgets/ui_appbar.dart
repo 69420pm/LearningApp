@@ -47,7 +47,7 @@ class UIAppBar extends StatelessWidget implements PreferredSizeWidget {
             : Align(alignment: Alignment.centerLeft, child: leading),
       ),
       elevation: 0,
-      backgroundColor: appBarColor ?? UIColors.background,
+      backgroundColor: appBarColor ?? Theme.of(context).colorScheme.surface,
       systemOverlayStyle: SystemUiOverlayStyle(
         statusBarColor: UIColors.background,
         statusBarBrightness: Theme.of(context).brightness == Brightness.light

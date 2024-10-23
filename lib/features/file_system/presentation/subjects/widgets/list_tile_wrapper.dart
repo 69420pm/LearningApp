@@ -6,9 +6,13 @@ import 'package:learning_app/features/file_system/domain/entities/folder.dart';
 import 'package:learning_app/features/file_system/presentation/subjects/bloc/folder_bloc.dart';
 import 'package:learning_app/features/file_system/presentation/subjects/widgets/card_list_tile.dart';
 import 'package:learning_app/features/file_system/presentation/subjects/widgets/folder_list_tile.dart';
+import 'package:learning_app/features/file_system/presentation/subjects/widgets/inactive_list_tile.dart';
+import 'package:learning_app/features/file_system/presentation/subjects/widgets/multi_drag_indicator.dart';
+import 'package:learning_app/features/subject/presentation/bloc/cubit/subject_hover_cubit.dart';
 import 'package:learning_app/features/subject/presentation/bloc/cubit/subject_selection_cubit.dart';
+import 'package:learning_app/injection_container.dart';
 
-/// wraps Folder and Card list tiles and updates them listening, to their
+/// wraps Folder and Card list tiles and updates them, listening to their
 /// watch stream accordingly
 class ListTileWrapper extends StatelessWidget {
   final String id;
@@ -19,109 +23,92 @@ class ListTileWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LongPressDraggable(
-      data: FileDragDetails(
-        fileId: id,
-        parentId: context.read<FolderBloc>().parentId,
-      ),
-      feedback: Container(
-        color: Colors.red,
-        height: 50,
-        width: 100,
-      ),
-      childWhenDragging: Container(
-        color: Colors.green,
-        height: 50,
-        width: 100,
-      ),
-      onDragStarted: () {
-        context.read<SubjectSelectionCubit>().selectListTile(id);
-      },
-      // this blocBuilder only provides the state to the children (folder and
-      // cards) to handle their on tap events, it never explicitly rebuilds
-      child: BlocBuilder<SubjectSelectionCubit, SubjectSelectionState>(
-        buildWhen: (previous, current) {
-          return false;
-        },
-        builder: (context, state) {
-          return Stack(
-            children: [
-              // this blocBuilder rebuilds the selection frame for the children
-              // to display the selection state, it doesn't rebuild anything else
-              BlocBuilder<SubjectSelectionCubit, SubjectSelectionState>(
-                buildWhen: (previous, current) {
-                  if (current is SubjectSelectionSelectionChanged) {
-                    if (current.selectedIds.contains(id) ||
-                        current.previouslySelectedIds.contains(id)) {
-                      return true;
-                    }
-                  }
-                  return false;
-                },
-                builder: (context, state) {
-                  bool selected = false;
-                  if (state is SubjectSelectionSelectionChanged) {
-                    if (state.selectedIds.contains(id)) {
-                      selected = true;
-                    }
-                  }
-                  return Positioned(
-                    top: 0,
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: selected ? Colors.green : Colors.transparent,
-                        ),
-                      ),
-                    ),
-                  );
-                },
+    void _onTileClicked() {
+      if (context.read<SubjectSelectionCubit>().inSelectionMode) {
+        context.read<SubjectSelectionCubit>().changeSelection(id);
+      }
+    }
+
+    return BlocBuilder<SubjectSelectionCubit, SubjectSelectionState>(
+      builder: (context, state) {
+        bool selected = (state as SubjectSelectionSelectionChanged)
+            .selectedIds
+            .contains(id);
+
+        return LongPressDraggable(
+          maxSimultaneousDrags:
+              context.read<SubjectSelectionCubit>().inSelectionMode
+                  ? selected
+                      ? 1
+                      : 0
+                  : 1,
+          data: FileDragDetails(
+            fileId: id,
+            parentId: context.read<FolderBloc>().parentId,
+          ),
+          feedback: MultiBlocProvider(
+            providers: [
+              BlocProvider.value(
+                value: BlocProvider.of<SubjectHoverCubit>(context),
               ),
-              StreamBuilder(
+              BlocProvider.value(
+                value: BlocProvider.of<FolderBloc>(context),
+              ),
+              BlocProvider.value(
+                value: BlocProvider.of<SubjectSelectionCubit>(context),
+              ),
+            ],
+            child: BlocBuilder<SubjectSelectionCubit, SubjectSelectionState>(
+              builder: (context, state) {
+                return MultiDragIndicator(
+                  fileUIDs: context
+                          .read<SubjectSelectionCubit>()
+                          .selectedIds
+                          .contains(id)
+                      ? context.read<SubjectSelectionCubit>().selectedIds
+                      : [
+                          id,
+                          ...context.read<SubjectSelectionCubit>().selectedIds
+                        ],
+                );
+              },
+            ),
+          ),
+          childWhenDragging: const InactiveListTile(),
+          onDragEnd: (details) {
+            context.read<SubjectHoverCubit>().endDrag();
+          },
+          onDragStarted: () {
+            context
+                .read<SubjectHoverCubit>()
+                .changeHover(context.read<FolderBloc>().parentId, id);
+          },
+          child: BlocBuilder<SubjectHoverCubit, SubjectHoverState>(
+            builder: (context, state) {
+              bool hovered = state is SubjectHoverChanged && state.newId == id;
+              return StreamBuilder(
                 stream: context.read<FolderBloc>().subscribedStreams[id],
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    if (!snapshot.data!.deleted &&
+                    if (selected &&
+                        context.read<SubjectHoverCubit>().isDragging) {
+                      return const InactiveListTile();
+                    } else if (!snapshot.data!.deleted &&
                         snapshot.data!.value is Folder) {
                       return FolderListTile(
                         folder: snapshot.data!.value as Folder,
-                        onTap: () {
-                          if (state is SubjectSelectionSelectionChanged &&
-                              state.selectedIds.contains(id)) {
-                            context
-                                .read<SubjectSelectionCubit>()
-                                .deselectListTile(id);
-                          } else if (context
-                              .read<SubjectSelectionCubit>()
-                              .inSelectionMode) {
-                            context
-                                .read<SubjectSelectionCubit>()
-                                .selectListTile(id);
-                          }
-                        },
+                        isSelected: selected,
+                        onTap: _onTileClicked,
+                        isHovered: hovered,
+                        changeExtensionState:
+                            state is SubjectHoverChanged && state.newId == id,
                       );
                     } else if (!snapshot.data!.deleted &&
                         snapshot.data!.value is Card) {
                       return CardListTile(
                         card: snapshot.data!.value as Card,
-                        onTap: () {
-                          if (state is SubjectSelectionSelectionChanged) {
-                            if (state.selectedIds.contains(id)) {
-                              context
-                                  .read<SubjectSelectionCubit>()
-                                  .deselectListTile(id);
-                            } else if (context
-                                .read<SubjectSelectionCubit>()
-                                .inSelectionMode) {
-                              context
-                                  .read<SubjectSelectionCubit>()
-                                  .selectListTile(id);
-                            }
-                          }
-                        },
+                        isSelected: selected,
+                        onTap: _onTileClicked,
                       );
                     }
                   }
@@ -129,11 +116,11 @@ class ListTileWrapper extends StatelessWidget {
                     child: CircularProgressIndicator(),
                   );
                 },
-              ),
-            ],
-          );
-        },
-      ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }
