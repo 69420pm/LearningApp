@@ -13,12 +13,15 @@ import 'package:learning_app/features/file_system/domain/usecases/create_card.da
 import 'package:learning_app/features/file_system/domain/usecases/create_folder.dart';
 import 'package:learning_app/features/file_system/domain/usecases/create_subject.dart';
 import 'package:learning_app/features/file_system/domain/usecases/delete_file.dart';
+import 'package:learning_app/features/file_system/domain/usecases/get_parent_ids.dart';
+import 'package:learning_app/features/file_system/domain/usecases/get_parentid.dart';
 import 'package:learning_app/features/file_system/domain/usecases/move_file.dart';
 import 'package:learning_app/features/file_system/domain/usecases/watch_children_file_system.dart';
 import 'package:learning_app/features/file_system/domain/usecases/get_file.dart';
 import 'package:learning_app/features/file_system/domain/usecases/save_file.dart';
 import 'package:learning_app/features/file_system/domain/usecases/watch_file.dart';
 import 'package:learning_app/features/file_system/presentation/subjects/bloc/folder_bloc.dart';
+import 'package:learning_app/features/subject/presentation/bloc/cubit/subject_hover_cubit.dart';
 import 'package:learning_app/features/subject/presentation/bloc/cubit/subject_selection_cubit.dart';
 import 'package:learning_app/features/subject/presentation/bloc/subject_bloc.dart';
 import 'package:learning_app/features/home/presentation/bloc/home_bloc.dart';
@@ -46,7 +49,6 @@ void features() {
       parentId: parentId as String,
       watchChildren: sl(),
       watchFile: sl(),
-      moveFileUseCase: sl(),
     ),
   );
   sl.registerFactoryParam(
@@ -54,15 +56,21 @@ void features() {
       createFolderUseCase: sl(),
       cerateCardUseCase: sl(),
       subjectId: subjectId as String,
+      moveFileUseCase: sl(),
+      getParentIdsUseCase: sl(),
+      getFileUseCase: sl(),
     ),
   );
   sl.registerFactory(
     () => SubjectSelectionCubit(
-      blockChildrenSelection: sl(),
+      getRelationUseCase: sl(),
+      getParentIdUseCase: sl(),
     ),
   );
 
   sl.registerFactory(() => EditorCubit());
+  sl.registerFactory(() => SubjectHoverCubit());
+
   // Use cases
   sl.registerLazySingleton(() => WatchChildrenFileSystem(repository: sl()));
   sl.registerLazySingleton(() => GetFile(repository: sl()));
@@ -72,8 +80,10 @@ void features() {
   sl.registerLazySingleton(() => WatchFile(repository: sl()));
   sl.registerLazySingleton(() => CreateFolder(repository: sl()));
   sl.registerLazySingleton(() => CreateCard(repository: sl()));
-  sl.registerLazySingleton(() => MoveFile(repository: sl()));
+  sl.registerLazySingleton(() => MoveFiles(repository: sl()));
   sl.registerLazySingleton(() => GetRelations(repository: sl()));
+  sl.registerLazySingleton(() => GetParentId(dataSource: sl()));
+  sl.registerLazySingleton(() => GetParentIds(dataSource: sl()));
 
   // Repository
   sl.registerLazySingleton<FileSystemRepository>(

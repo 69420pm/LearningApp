@@ -14,12 +14,3 @@ class FolderWatchChildrenIds extends FolderEvent {
     required this.parentId,
   });
 }
-
-class FolderMoveFile extends FolderEvent {
-  final String parentId;
-  final String fileId;
-  const FolderMoveFile({
-    required this.parentId,
-    required this.fileId,
-  });
-}

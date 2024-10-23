@@ -3,15 +3,17 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_constants.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_icons.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_text.dart';
+import 'package:learning_app/features/subject/presentation/bloc/subject_bloc.dart';
 
 class UIExpansionTile extends StatefulWidget {
-  List<Widget> children;
+  Widget child;
   String title;
   double? titleSpacing;
-  double? iconSpacing;
+  double? iconSize;
   double? childSpacing;
   double? collapsedHeight;
   Widget? trailing;
@@ -22,13 +24,15 @@ class UIExpansionTile extends StatefulWidget {
   Border? border;
   bool changeExtensionState;
   bool startOpen;
+  bool lockClosed;
+  String? parentId;
 
   UIExpansionTile({
     super.key,
-    required this.children,
+    required this.child,
     required this.title,
     this.titleSpacing = UIConstants.defaultSize,
-    this.iconSpacing = UIConstants.defaultSize,
+    this.iconSize = UIConstants.defaultSize,
     this.childSpacing = 0,
     this.collapsedHeight,
     this.trailing,
@@ -39,6 +43,8 @@ class UIExpansionTile extends StatefulWidget {
     this.border,
     this.changeExtensionState = false,
     this.startOpen = false,
+    this.parentId = "",
+    this.lockClosed = false,
   }) {
     iconColor ??= textColor;
   }
@@ -80,8 +86,13 @@ class _UIExpansionTileState extends State<UIExpansionTile>
     super.dispose();
   }
 
-  GestureDetector expansionIcon() => GestureDetector(
-        onTap: update,
+  Widget expansionIcon() {
+    return GestureDetector(
+      onTap: update,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        width: widget.collapsedHeight,
+        height: widget.collapsedHeight,
         child: AnimatedBuilder(
           animation: _animation,
           builder: (context, _) {
@@ -91,7 +102,9 @@ class _UIExpansionTileState extends State<UIExpansionTile>
             );
           },
         ),
-      );
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -135,41 +148,46 @@ class _UIExpansionTileState extends State<UIExpansionTile>
           if (_isOpened || _animation.value > 0)
             SizeTransition(
               sizeFactor: _animation,
-              child: ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemBuilder: (context, index) => widget.children[index],
-                itemCount: widget.children.length,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  left: UIConstants.defaultSize * 2,
+                  right: UIConstants.borderWidth,
+                ),
+                child: widget.child,
               ),
             ),
         ],
       ),
     )
         .animate(
-            delay: const Duration(milliseconds: 100),
-            target: widget.changeExtensionState == true ? 1 : 0,
-            onComplete: (controller) => controller.reset(),
-            onPlay: (controller) => controller.reset(),
-            autoPlay: false)
-        .shake(
-            delay: const Duration(milliseconds: 800),
-            duration: const Duration(milliseconds: 800),
-            hz: 3,
-            rotation: .02,
-            curve: Curves.easeIn)
-        .callback(callback: (value) {
-      changeState();
-    });
+          target: widget.changeExtensionState == true ? 1 : 0,
+          onComplete: (controller) => controller.reset(),
+          autoPlay: false,
+        )
+        .shimmer(
+          delay: const Duration(milliseconds: 800),
+          duration: const Duration(milliseconds: 800),
+          curve: Curves.easeIn,
+          angle: 0,
+          size: .5,
+        )
+        .callback(
+      callback: (value) {
+        changeState();
+      },
+    );
   }
 
   void update() {
-    setState(() {
-      _isOpened = !_isOpened;
-    });
-    if (_isOpened) {
-      _animationController.forward();
-    } else {
-      _animationController.reverse();
+    if (!widget.lockClosed) {
+      setState(() {
+        _isOpened = !_isOpened;
+      });
+      if (_isOpened) {
+        _animationController.forward();
+      } else {
+        _animationController.reverse();
+      }
     }
   }
 

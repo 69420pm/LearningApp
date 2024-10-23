@@ -1,4 +1,6 @@
+import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:learning_app/bloc_observer.dart';
 import 'package:learning_app/core/app_router.dart';
 import 'package:learning_app/core/theme/color_schemes.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -8,6 +10,7 @@ import 'injection_container.dart' as di;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await di.init();
+  Bloc.observer = MyGlobalObserver();
   runApp(const MyApp());
 }
 

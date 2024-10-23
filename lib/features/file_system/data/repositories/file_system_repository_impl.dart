@@ -353,6 +353,8 @@ class FileSystemRepositoryImpl implements FileSystemRepository {
     final parentIdEither = await FileSystemHelper.getParentId(fileId, lds);
     return parentIdEither.match((failure) => left(failure), (parentId) async {
       if (parentId == newParentId) return right(null);
+      if (fileId == newParentId) return right(null);
+
       try {
         final oldValueIds = await lds.getRelation(parentId);
         // remove fileId from old relation

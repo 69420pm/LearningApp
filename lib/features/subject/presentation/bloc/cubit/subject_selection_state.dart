@@ -16,15 +16,12 @@ final class SubjectSelectionError extends SubjectSelectionState {
 }
 
 final class SubjectSelectionSelectionChanged extends SubjectSelectionState {
+  final List<String> changedIds;
   final List<String> selectedIds;
-  final List<String> previouslySelectedIds;
   const SubjectSelectionSelectionChanged({
     required this.selectedIds,
-    required this.previouslySelectedIds,
+    required this.changedIds,
   });
   @override
-  List<Object> get props => [
-        selectedIds,
-        previouslySelectedIds,
-      ];
+  List<Object> get props => [changedIds, selectedIds];
 }
