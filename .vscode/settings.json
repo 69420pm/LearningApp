@@ -2,5 +2,8 @@
     "editor.fontFamily": "Fira Code Regular, monospace",
     "editor.fontLigatures": true,
     "terminal.integrated.fontFamily": "monospace",
-    "editor.fontSize": 12
+    "editor.fontSize": 12,
+    "cSpell.words": [
+        "usecases"
+    ]
 }

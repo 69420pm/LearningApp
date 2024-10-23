@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:learning_app/core/ui_components/ui_components/ui_constants.dart';
+import 'package:learning_app/core/ui_components/ui_components/widgets/ui_appbar.dart';
 import 'package:learning_app/features/home/presentation/bloc/home_bloc.dart';
-import 'package:learning_app/features/home/presentation/widgets/home_subject_list.dart';
+import 'package:learning_app/features/home/presentation/widgets/subject_list.dart';
+import 'package:learning_app/features/home/presentation/widgets/calendar_card.dart';
+import 'package:learning_app/features/home/presentation/widgets/learn_all_card.dart';
+import 'package:learning_app/features/home/presentation/widgets/subjects_tool_bar.dart';
+import 'package:learning_app/features/subject/presentation/widgets/files_tool_bar.dart';
 import 'package:learning_app/injection_container.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -23,16 +30,37 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.test),
+      appBar: UIAppBar(
+        title: AppLocalizations.of(context)!.test,
+        leadingBackButton: false,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context
-            .read<HomeBloc>()
-            .add(const HomeSubjectAddSubject(name: "69")),
+        onPressed: () {
+          context.push(context.namedLocation("editor"));
+        },
       ),
-      body: const SafeArea(
-        child: HomeSubjectList(),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+              horizontal: UIConstants.pageHorizontalPadding),
+          child: CustomScrollView(
+            slivers: [
+              SliverList(
+                delegate: SliverChildListDelegate(
+                  [
+                    const LearnAllCard(),
+                    const SizedBox(
+                      height: UIConstants.itemPaddingLarge,
+                    ),
+                    const CalendarCard(),
+                  ],
+                ),
+              ),
+              const SubjectsToolBar(),
+              const HomeSubjectList(),
+            ],
+          ),
+        ),
       ),
     );
   }
