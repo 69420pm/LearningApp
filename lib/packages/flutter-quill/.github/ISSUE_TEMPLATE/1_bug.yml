@@ -1,0 +1,73 @@
+name: Report a bug
+description: |
+  You found a bug in Flutter Quill causing your application to crash or
+  throw an exception, a widget is buggy, unexpected behavior or something looks wrong.
+labels: 'bug'
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for using Flutter Quill!
+
+  - type: checkboxes
+    attributes:
+      label: Is there an existing issue for this?
+      options:
+      - label: I have searched the [existing issues](https://github.com/singerdmx/flutter-quill/issues)
+        required: true
+  - type: input
+    attributes:
+      label: Flutter Quill version
+      description: The version of the project for the packages (e.g., `flutter_quill` and `flutter_quill_extensions`)
+      placeholder: (e.g., 10.0.0)
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      description: Please tell us exactly how to reproduce the problem you are running into.
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected results
+      description: Please tell us what is expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Actual results
+      description: Please tell us what is actually happening.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Additional Context
+      description: |
+        Include additional information such as Screenshots or Logs if needed.
+
+        If the logs are too large to be uploaded to GitHub, you may upload
+        them as a `txt` file or use online tools like https://pastebin.com to
+        share it.
+      value: |
+        <details>
+        <summary>Screenshots / Video demonstration</summary>
+
+        [Upload media here]
+
+        </details>
+
+
+        <details><summary>Logs</summary>
+
+        ```console
+        [Paste your logs here]
+        ```
+
+        </details>
+    validations:
+      required: false
