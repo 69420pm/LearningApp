@@ -8,7 +8,7 @@ class ImageButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () async {
-        (await sl<ImageHelper>().pickImageFromCamera()).match((failure) {
+        (await sl<ImageHelper>().pickImageFromGallery()).match((failure) {
           print(failure.errorMessage);
         }, (image) {
           final croppedImage = sl<ImageHelper>().cropImage(image: image);

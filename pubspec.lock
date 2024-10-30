@@ -89,7 +89,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
-
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -186,7 +185,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.9.3+3"
-
   fixnum:
     dependency: transitive
     description:
@@ -264,7 +262,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
-
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -343,7 +340,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "14.2.7"
-
   hive:
     dependency: "direct main"
     description:
@@ -568,7 +564,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.6"
-
   nested:
     dependency: transitive
     description:
@@ -822,7 +817,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.5.0"
-
   vector_math:
     dependency: transitive
     description:
@@ -847,7 +841,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
-
   xdg_directories:
     dependency: transitive
     description:
@@ -859,4 +852,3 @@ packages:
 sdks:
   dart: ">=3.5.1 <4.0.0"
   flutter: ">=3.24.0"
-
