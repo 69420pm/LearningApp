@@ -28,7 +28,7 @@ dependencies:
   file_picker: ^6.1.1
   flutter_math_fork: ^0.7.2
   flutter_sound: ^9.2.13
-  url_launcher: ^6.2.2
+  url_launcher: ^6.2.5
   equatable: ^2.0.5
 
 dev_dependencies:
