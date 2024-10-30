@@ -41,8 +41,7 @@ class UICard extends StatelessWidget {
           ),
           image: useGradient
               ? DecorationImage(
-                  image: const AssetImage(
-                      'lib/core/ui_components/ui_assets/gradient.png'),
+                  image: const AssetImage('assets/images/gradient.png'),
                   alignment: Alignment.lerp(
                         Alignment.topCenter,
                         Alignment.bottomCenter,
