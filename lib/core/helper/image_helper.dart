@@ -32,7 +32,7 @@ class ImageHelper {
       final pickedFile =
           await _imagePicker.pickImage(source: ImageSource.camera);
       if (pickedFile == null) {
-        return left(ImagePickingFailure(errorMessage: 'No image selected'));
+        return left(ImagePickingFailure(errorMessage: 'No image selected bro'));
       } else {
         return right(XFile(pickedFile.path));
       }
