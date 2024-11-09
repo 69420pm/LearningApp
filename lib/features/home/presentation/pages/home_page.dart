@@ -20,9 +20,8 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => sl<HomeBloc>()..add(HomeSubjectWatchChildrenIds()),
-      child: ResponsiveLayout(
-        mobile: const HomeView(),
-        desktop: null,
+      child: const ResponsiveLayout(
+        mobile: HomeView(),
       ),
     );
   }
