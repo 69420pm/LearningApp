@@ -21,14 +21,15 @@ class HomePage extends StatelessWidget {
     return BlocProvider(
       create: (context) => sl<HomeBloc>()..add(HomeSubjectWatchChildrenIds()),
       child: const ResponsiveLayout(
-        mobile: HomeView(),
+        mobile: _HomeViewMobile(),
+        desktop: null,
       ),
     );
   }
 }
 
-class HomeView extends StatelessWidget {
-  const HomeView({super.key});
+class _HomeViewMobile extends StatelessWidget {
+  const _HomeViewMobile({super.key});
 
   @override
   Widget build(BuildContext context) {
