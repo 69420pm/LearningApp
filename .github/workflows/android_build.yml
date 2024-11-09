@@ -6,7 +6,7 @@ on:
 jobs:
   build:
     name: Build & Release
-    runs-on: upbuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Get Tag
         id: get_tag
