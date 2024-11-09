@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:learning_app/core/ui_components/ui_components/responsive_layout.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_constants.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/ui_appbar.dart';
 import 'package:learning_app/features/home/presentation/bloc/home_bloc.dart';
@@ -19,7 +20,9 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => sl<HomeBloc>()..add(HomeSubjectWatchChildrenIds()),
-      child: const HomeView(),
+      child: const ResponsiveLayout(
+        mobile: HomeView(),
+      ),
     );
   }
 }
