@@ -30,4 +30,5 @@ jobs:
         with:
           artifacts: "build/app/outputs/apk/release/app-release.apk"
           tag: ${{ env.latest_tag }}
+          commit: ${{ env.latest_tag }}
           token: ${{ secrets.TOKEN }}
