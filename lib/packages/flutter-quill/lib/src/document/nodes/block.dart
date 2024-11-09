@@ -1,4 +1,5 @@
-import '../../../../quill_delta.dart';
+import 'package:dart_quill_delta/dart_quill_delta.dart';
+
 import 'container.dart';
 import 'line.dart';
 import 'node.dart';
