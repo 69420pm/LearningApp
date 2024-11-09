@@ -8,14 +8,9 @@ jobs:
     name: Build & Release
     runs-on: ubuntu-latest
     steps:
-      - name: Get latest tag
-        id: get_latest_tag
-        run: |
-          echo "Listing all tags:"
-          git tag # List all tags
-          latest_tag=$(git describe --tags `git rev-list --tags --max-count=1` 2>/dev/null || echo "v1.0.0")
-          echo "Latest tag is: $latest_tag"
-          echo "latest_tag=$latest_tag" >> $GITHUB_ENV
+      - name: "Get Previous tag"
+        id: previoustag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v1
         with:
@@ -29,6 +24,6 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: "build/app/outputs/apk/release/app-release.apk"
-          tag: ${{ env.latest_tag }}
-          commit: ${{ env.latest_tag }}
+          tag: ${{ steps.previoustag.outputs.tag }}
+          commit: ${{ steps.previoustag.outputs.tag }}
           token: ${{ secrets.TOKEN }}
