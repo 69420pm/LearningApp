@@ -1,0 +1,116 @@
+name: Android Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the code
+      - uses: actions/checkout@v1
+
+      # Setup Java environment for Android build
+      - uses: actions/setup-java@v1
+        with:
+          java-version: "12.x"
+
+      # Get the latest tag
+      - name: Get latest tag
+        id: get_latest_tag
+        run: |
+          echo "Listing all tags:"
+          git tag # List all tags
+          latest_tag=$(git describe --tags `git rev-list --tags --max-count=1` 2>/dev/null || echo "v1.0.0")
+          echo "Latest tag is: $latest_tag"
+          echo "latest_tag=$latest_tag" >> $GITHUB_ENV
+
+      # Set up the environment-specific endpoints
+      - name: Set up environment-specific endpoints
+        run: |
+          if [[ $GITHUB_REF == "refs/heads/staging" ]]; then
+            echo "Using staging endpoints"
+            cp lib/repositories/endpoints_staging.dart lib/repositories/endpoints.dart
+          else
+            echo "Using production endpoints (default)"
+            cp lib/repositories/endpoints_prod.dart lib/repositories/endpoints.dart
+          fi
+        shell: bash
+
+      # Setup the Flutter environment
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: "stable"
+          flutter-version: "3.19.6"
+
+      # Cache Flutter packages
+      - name: Cache Flutter packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-
+
+      # Get Flutter dependencies
+      - run: flutter pub get
+
+      # Build APK for staging
+      - name: Set up staging-specific endpoints
+        run: |
+          echo "Using staging endpoints"
+          cp lib/repositories/endpoints_staging.dart lib/repositories/endpoints.dart
+      - name: Build staging APK
+        run: flutter build apk --flavor staging --release -t lib/main_staging.dart
+
+      - name: Set up prod-specific endpoints
+        run: |
+          echo "Using production endpoints"
+          cp lib/repositories/endpoints_prod.dart lib/repositories/endpoints.dart
+      # Build APK for production
+      - name: Build prod APK
+        run: flutter build apk --release -t
+
+      # Upload the generated APKs to artifacts
+      - uses: actions/upload-artifact@v3
+        with:
+          name: staging-release-apk
+          path: build/app/outputs/flutter-apk/app-staging-release.apk
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: prod-release-apk
+          path: build/app/outputs/flutter-apk/app-prod-release.apk
+
+      # Create a release and upload the APK for staging
+      - name: Create GitHub staging release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.new_tag }}
+          release_name: Release ${{ env.new_tag }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Staging APK to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/app/outputs/flutter-apk/app-staging-release.apk
+          asset_name: app-staging-release.apk
+          asset_content_type: application/vnd.android.package-archive
+
+      # Upload the production APK to the release
+      - name: Upload prod APK to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/app/outputs/flutter-apk/app-prod-release.apk
+          asset_name: app-prod-release.apk
+          asset_content_type: application/vnd.android.package-archive
