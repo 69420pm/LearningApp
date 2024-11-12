@@ -20,10 +20,6 @@ class SubjectsToolBar extends StatelessWidget {
         UILabelRow(
           labelText: S.of(context).subject(2),
           actionWidgets: [
-            // UIIconButton(
-            //   icon: UIIcons.download.copyWith(color: UIColors.smallText),
-            //   onPressed: () {},
-            // ),
             UIIconButton(
               icon: UIIcons.add.copyWith(color: UIColors.smallText),
               onPressed: () {

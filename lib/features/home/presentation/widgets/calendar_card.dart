@@ -14,34 +14,16 @@ class CalendarCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final classTests = context.read<CalendarCubit>().getClassTests();
-    // final calendarDateTime = context.read<CalendarCubit>().currentMonth;
-    // final classTestsThisMonth = <Subject, List<ClassTest>>{};
-    // classTests.forEach((subject, classTests) {
-    //   for (final classTest in classTests) {
-    //     if (classTest.date.year == calendarDateTime.year &&
-    //             classTest.date.month == calendarDateTime.month ||
-    //         classTest.date.month == calendarDateTime.month - 1 ||
-    //         classTest.date.month == calendarDateTime.month + 1) {
-    //       if (classTestsThisMonth[subject] == null) {
-    //         classTestsThisMonth[subject] = [classTest];
-    //       } else {
-    //         classTestsThisMonth[subject]!.add(classTest);
-    //       }
-    //     }
-    //   }
-    // });
     return GestureDetector(
       onTap: () => Navigator.of(context).pushNamed('/calendar'),
       child: UICard(
         useGradient: true,
         distanceToTop: 280,
-        color: UIColors.primary,
         child: Column(
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -51,9 +33,7 @@ class CalendarCard extends StatelessWidget {
                       S.of(context).calendarTitle,
                       style: UIText.titleBig.copyWith(color: UIColors.textDark),
                     ),
-                    const SizedBox(
-                      height: UIConstants.defaultSize,
-                    ),
+                    const SizedBox(height: UIConstants.defaultSize),
                     Text(
                       S.of(context).month(DateTime.now()),
                       style: UIText.label.copyWith(
@@ -62,7 +42,7 @@ class CalendarCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                UIIcons.arrowForwardNormal.copyWith(color: UIColors.overlay),
+                UIIcons.arrowForwardNormal.copyWith(color: UIColors.textDark),
               ],
             ),
             const SizedBox(

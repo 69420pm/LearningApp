@@ -60,6 +60,8 @@ class _HomeViewMobile extends StatelessWidget {
                   ],
                 ),
               ),
+              const SliverToBoxAdapter(
+                  child: SizedBox(height: UIConstants.itemPadding)),
               const SubjectsToolBar(),
               const HomeSubjectList(),
             ],

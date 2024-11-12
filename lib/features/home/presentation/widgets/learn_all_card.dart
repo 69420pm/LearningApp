@@ -15,14 +15,10 @@ class LearnAllCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        final cardsRemaining = 0;
-        final bool finishedToday = cardsRemaining == 0;
+        //get from database
+        final cardsRemaining = 1;
 
-        // context
-        //     .read<OverviewCubit>()
-        //     .cardsRepository
-        //     .getAllCardsToLearnForToday()
-        //     .length;
+        final bool finishedToday = cardsRemaining == 0;
 
         return UICard(
           disabled: finishedToday,
@@ -31,7 +27,7 @@ class LearnAllCard extends StatelessWidget {
           onTap: () {},
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
                 child: Column(
@@ -46,9 +42,7 @@ class LearnAllCard extends StatelessWidget {
                               : UIColors.textDark),
                       overflow: TextOverflow.fade,
                     ),
-                    const SizedBox(
-                      height: UIConstants.defaultSize,
-                    ),
+                    const SizedBox(height: UIConstants.defaultSize),
                     Text(
                       S.of(context).learnCardSubTitle(cardsRemaining),
                       style: UIText.label.copyWith(
@@ -61,7 +55,7 @@ class LearnAllCard extends StatelessWidget {
                 ),
               ),
               if (!finishedToday)
-                UIIcons.arrowForwardNormal.copyWith(color: UIColors.overlay),
+                UIIcons.arrowForwardNormal.copyWith(color: UIColors.textDark),
             ],
           ),
         );
