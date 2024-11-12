@@ -96,6 +96,29 @@ class S {
       args: [count],
     );
   }
+
+  /// `Calendar`
+  String get calendarTitle {
+    return Intl.message(
+      'Calendar',
+      name: 'calendarTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{date}`
+  String currentDay(DateTime date) {
+    final DateFormat dateDateFormat = DateFormat.yMd(Intl.getCurrentLocale());
+    final String dateString = dateDateFormat.format(date);
+
+    return Intl.message(
+      '$dateString',
+      name: 'currentDay',
+      desc: '',
+      args: [dateString],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
@@ -104,6 +127,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
   List<Locale> get supportedLocales {
     return const <Locale>[
       Locale.fromSubtags(languageCode: 'en'),
+      Locale.fromSubtags(languageCode: 'de'),
     ];
   }
 

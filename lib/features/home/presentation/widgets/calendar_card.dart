@@ -6,6 +6,7 @@ import 'package:learning_app/core/ui_components/ui_components/ui_constants.dart'
 import 'package:learning_app/core/ui_components/ui_components/ui_icons.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_text.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/ui_card.dart';
+import 'package:learning_app/generated/l10n.dart';
 
 class CalendarCard extends StatelessWidget {
   const CalendarCard({super.key});
@@ -46,15 +47,14 @@ class CalendarCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Calendar',
+                      S.of(context).calendarTitle,
                       style: UIText.titleBig.copyWith(color: UIColors.textDark),
                     ),
                     const SizedBox(
                       height: UIConstants.defaultSize,
                     ),
                     Text(
-                      DateFormat('EEEE, MMMM dd').format(DateTime.now()),
-                      // "${DateTime.now().day}.${DateTime.now().month}.${DateTime.now().year}",
+                      S.of(context).currentDay(DateTime.now()),
                       style: UIText.label.copyWith(
                         color: UIColors.textDark,
                       ),

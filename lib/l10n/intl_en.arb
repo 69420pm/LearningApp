@@ -1,6 +1,18 @@
 {
+  "@@comment": "HomePage",
   "homePageAppBar": "Welcome back, {name}!",
   "subject": "{count, plural, other{Subjects} one{Subject}}",
   "learnCardTitle": "{count, plural, zero{Finished Today} other{Learn All Cards}}",
-  "learnCardSubTitle": "{count, plural, zero{Have a nice day!} one{1 card left} other{{count} cards left}}"
+  "learnCardSubTitle": "{count, plural, zero{Have a nice day!} one{1 card left} other{{count} cards left}}",
+  "calendarTitle": "Calendar",
+  "currentDay": "{date}",
+  "@currentDay": {
+    "placeholders": {
+        "date": {
+            "type": "DateTime",
+            "format": "yMd"
+        }
+        
+    }
+  }
 }
