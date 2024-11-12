@@ -10,8 +10,8 @@ import 'package:learning_app/features/home/presentation/widgets/calendar_card.da
 import 'package:learning_app/features/home/presentation/widgets/learn_all_card.dart';
 import 'package:learning_app/features/home/presentation/widgets/subjects_tool_bar.dart';
 import 'package:learning_app/features/subject/presentation/widgets/files_tool_bar.dart';
+import 'package:learning_app/generated/l10n.dart';
 import 'package:learning_app/injection_container.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -35,7 +35,7 @@ class _HomeViewMobile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: UIAppBar(
-        title: AppLocalizations.of(context)!.test,
+        title: S.of(context).homePageAppBar("69"),
         leadingBackButton: false,
       ),
       floatingActionButton: FloatingActionButton(

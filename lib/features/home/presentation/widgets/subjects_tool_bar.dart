@@ -7,6 +7,7 @@ import 'package:learning_app/core/ui_components/ui_components/widgets/buttons/ui
 import 'package:learning_app/core/ui_components/ui_components/widgets/ui_label_row.dart';
 import 'package:learning_app/features/home/presentation/bloc/home_bloc.dart';
 import 'package:learning_app/features/home/presentation/widgets/add_subject_bottom_sheet.dart';
+import 'package:learning_app/generated/l10n.dart';
 
 class SubjectsToolBar extends StatelessWidget {
   const SubjectsToolBar({super.key});
@@ -17,7 +18,7 @@ class SubjectsToolBar extends StatelessWidget {
       pinned: true,
       delegate: StickyToolBarHeaderDelegate(
         UILabelRow(
-          labelText: 'Subjects',
+          labelText: S.of(context).subject(2),
           actionWidgets: [
             // UIIconButton(
             //   icon: UIIcons.download.copyWith(color: UIColors.smallText),

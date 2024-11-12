@@ -6,6 +6,7 @@ import 'package:learning_app/core/ui_components/ui_components/ui_icons.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_text.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/ui_card.dart';
 import 'package:learning_app/features/home/presentation/bloc/home_bloc.dart';
+import 'package:learning_app/generated/l10n.dart';
 
 class LearnAllCard extends StatelessWidget {
   const LearnAllCard({super.key});
@@ -13,9 +14,9 @@ class LearnAllCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(
-      // buildWhen: (previous, current) => current is UpdateLearnAllButtonState,
       builder: (context, state) {
-        final cardsRemaining = 69;
+        final cardsRemaining = 0;
+        final bool finishedToday = cardsRemaining == 0;
 
         // context
         //     .read<OverviewCubit>()
@@ -23,41 +24,12 @@ class LearnAllCard extends StatelessWidget {
         //     .getAllCardsToLearnForToday()
         //     .length;
 
-        if (cardsRemaining == 0) {
-          return UICard(
-            disabled: true,
-            useGradient: true,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Finished Today',
-                  style: UIText.titleBig.copyWith(color: UIColors.textLight),
-                  overflow: TextOverflow.fade,
-                ),
-                const SizedBox(
-                  height: UIConstants.defaultSize,
-                ),
-                Text(
-                  'Have a nice day!',
-                  style: UIText.label.copyWith(
-                    color: UIColors.textLight,
-                  ),
-                ),
-              ],
-            ),
-          );
-        }
         return UICard(
+          disabled: finishedToday,
           useGradient: true,
           distanceToTop: 30,
-          color: UIColors.primary,
-          onTap: () {
-            // Navigator.pushNamed(context, "/learn", arguments: ["today"]).then(
-            //       (value) =>
-            //           context.read<OverviewCubit>().updateLearnAllButton());
-          },
+          color: UIColors.green,
+          onTap: () {},
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,21 +39,28 @@ class LearnAllCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Learn All',
-                    style: UIText.titleBig.copyWith(color: UIColors.textDark),
+                    S.of(context).learnCardTitle(cardsRemaining),
+                    style: UIText.titleBig.copyWith(
+                        color: finishedToday
+                            ? UIColors.textLight
+                            : UIColors.textDark),
+                    overflow: TextOverflow.fade,
                   ),
                   const SizedBox(
                     height: UIConstants.defaultSize,
                   ),
                   Text(
-                    '${cardsRemaining ?? "?"} cards remaining',
+                    S.of(context).learnCardSubTitle(cardsRemaining),
                     style: UIText.label.copyWith(
-                      color: UIColors.textDark,
+                      color: finishedToday
+                          ? UIColors.textLight
+                          : UIColors.textDark,
                     ),
                   ),
                 ],
               ),
-              UIIcons.arrowForwardNormal.copyWith(color: UIColors.overlay),
+              if (!finishedToday)
+                UIIcons.arrowForwardNormal.copyWith(color: UIColors.overlay),
             ],
           ),
         );

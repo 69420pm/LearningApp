@@ -10,12 +10,12 @@ You don't need to include these since they are defined by default. However, if y
 
 ```dart
 localizationsDelegates: const [
+
     DefaultCupertinoLocalizations.delegate,
     DefaultMaterialLocalizations.delegate,
     DefaultWidgetsLocalizations.delegate,
 ],
 ```
-
 
 You might need more depending on your use case. For example, if you are using custom localizations for your app with a custom app widget like `FluentApp` from [FluentUI], you will also need:
 
@@ -23,7 +23,7 @@ You might need more depending on your use case. For example, if you are using cu
 localizationsDelegates: const [
     // Required localizations delegates ...
     FluentLocalizations.delegate,
-    AppLocalizations.delegate,
+    S.delegate,
 ],
 ```
 
