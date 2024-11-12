@@ -5,12 +5,12 @@
   "learnCardTitle": "{count, plural, zero{Finished Today} other{Learn All Cards}}",
   "learnCardSubTitle": "{count, plural, zero{Have a nice day!} one{1 card left} other{{count} cards left}}",
   "calendarTitle": "Calendar",
-  "currentDay": "{date}",
-  "@currentDay": {
+  "month": "{date}",
+  "@month": {
     "placeholders": {
         "date": {
             "type": "DateTime",
-            "format": "yMd"
+            "format": "yMMMM"
         }
         
     }

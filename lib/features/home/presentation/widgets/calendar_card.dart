@@ -6,6 +6,7 @@ import 'package:learning_app/core/ui_components/ui_components/ui_constants.dart'
 import 'package:learning_app/core/ui_components/ui_components/ui_icons.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_text.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/ui_card.dart';
+import 'package:learning_app/features/home/presentation/widgets/calendar_widget.dart';
 import 'package:learning_app/generated/l10n.dart';
 
 class CalendarCard extends StatelessWidget {
@@ -54,7 +55,7 @@ class CalendarCard extends StatelessWidget {
                       height: UIConstants.defaultSize,
                     ),
                     Text(
-                      S.of(context).currentDay(DateTime.now()),
+                      S.of(context).month(DateTime.now()),
                       style: UIText.label.copyWith(
                         color: UIColors.textDark,
                       ),
@@ -67,19 +68,7 @@ class CalendarCard extends StatelessWidget {
             const SizedBox(
               height: UIConstants.itemPadding,
             ),
-            // CalendarWidget(
-            //   showWeek: true,
-            // ),
-            // SizedBox(
-            //   width: double.infinity,
-            //   height: 64,
-            //   child: ListView.builder(
-            //     scrollDirection: Axis.horizontal,
-            //     physics: const NeverScrollableScrollPhysics(),
-            //     itemCount: 7,
-            //     itemBuilder: (context, index) => DayTile(index: index),
-            //   ),
-            // ),
+            const WeekRow(),
           ],
         ),
       ),

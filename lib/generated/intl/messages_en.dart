@@ -20,26 +20,26 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
-  static String m0(date) => "${date}";
+  static String m0(name) => "Welcome back, ${name}!";
 
-  static String m1(name) => "Welcome back, ${name}!";
-
-  static String m2(count) =>
+  static String m1(count) =>
       "${Intl.plural(count, zero: 'Have a nice day!', one: '1 card left', other: '${count} cards left')}";
 
-  static String m3(count) =>
+  static String m2(count) =>
       "${Intl.plural(count, zero: 'Finished Today', other: 'Learn All Cards')}";
 
-  static String m4(count) =>
+  static String m4(date) => "${date}";
+
+  static String m3(count) =>
       "${Intl.plural(count, one: 'Subject', other: 'Subjects')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "calendarTitle": MessageLookupByLibrary.simpleMessage("Calendar"),
-        "currentDay": m0,
-        "homePageAppBar": m1,
-        "learnCardSubTitle": m2,
-        "learnCardTitle": m3,
-        "subject": m4
+        "homePageAppBar": m0,
+        "learnCardSubTitle": m1,
+        "learnCardTitle": m2,
+        "month": m4,
+        "subject": m3
       };
 }

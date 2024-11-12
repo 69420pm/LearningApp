@@ -108,13 +108,13 @@ class S {
   }
 
   /// `{date}`
-  String currentDay(DateTime date) {
-    final DateFormat dateDateFormat = DateFormat.yMd(Intl.getCurrentLocale());
+  String month(DateTime date) {
+    final DateFormat dateDateFormat = DateFormat.yMMMM(Intl.getCurrentLocale());
     final String dateString = dateDateFormat.format(date);
 
     return Intl.message(
       '$dateString',
-      name: 'currentDay',
+      name: 'month',
       desc: '',
       args: [dateString],
     );
