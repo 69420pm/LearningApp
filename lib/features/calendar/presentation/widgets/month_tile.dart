@@ -8,6 +8,7 @@ import 'package:learning_app/core/ui_components/ui_components/widgets/buttons/ui
 import 'package:learning_app/core/ui_components/ui_components/widgets/buttons/ui_icon_button_large.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/ui_card.dart';
 import 'package:learning_app/features/calendar/domain/entities/streak.dart';
+import 'package:learning_app/features/calendar/domain/entities/streaks.dart';
 import 'package:learning_app/features/calendar/domain/helper/date_time_extension.dart';
 import 'package:learning_app/features/calendar/presentation/widgets/day_tile.dart';
 import 'package:learning_app/generated/l10n.dart';
@@ -29,19 +30,10 @@ class _MonthTileState extends State<MonthTile> {
   @override
   Widget build(BuildContext context) {
     //get from database
-    List<Streak> streaks = [
+    Streaks streaks = Streaks.custom(streaks: [
       Streak.withLength(start: DateTime(2024, 11, 11), lengthInDays: 2),
       Streak.withLength(start: DateTime(2024, 11, 15), lengthInDays: 3),
-    ];
-
-    bool isPartOfStreak(DateTime day) {
-      for (var streak in streaks) {
-        if (streak.contains(day)) {
-          return true;
-        }
-      }
-      return false;
-    }
+    ]);
 
     final currentMonth =
         DateTime(now.year + monthOffset ~/ 12, now.month + monthOffset);
@@ -122,13 +114,13 @@ class _MonthTileState extends State<MonthTile> {
                             firstDayOfCurrentMonth.weekday +
                             (isSundayFirstDayOfWeek ? 0 : 1)),
                   );
-                  final streakLeft = isPartOfStreak(
-                    dayToDisplay.subtract(const Duration(days: 1)),
+                  final streakLeft = streaks.contains(
+                    dayToDisplay.dayBefore(),
                   );
-                  final streakRight = isPartOfStreak(
-                    dayToDisplay.add(const Duration(days: 1)),
+                  final streakRight = streaks.contains(
+                    dayToDisplay.dayAfter(),
                   );
-                  final hasStreak = isPartOfStreak(dayToDisplay);
+                  final hasStreak = streaks.contains(dayToDisplay);
 
                   return DayTile(
                     day: dayToDisplay,

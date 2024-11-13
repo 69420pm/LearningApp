@@ -55,3 +55,11 @@ class ImageCroppingFailure extends Failure {
   ImageCroppingFailure({required this.errorMessage})
       : super(errorMessage: errorMessage);
 }
+
+class StreakNotFoundFailure extends Failure {
+  @override
+  final String errorMessage;
+
+  StreakNotFoundFailure({required this.errorMessage})
+      : super(errorMessage: errorMessage);
+}

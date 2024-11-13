@@ -5,6 +5,8 @@ import 'package:learning_app/core/ui_components/ui_components/ui_constants.dart'
 import 'package:learning_app/core/ui_components/ui_components/ui_text.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/buttons/ui_icon_button.dart';
 import 'package:learning_app/features/calendar/domain/entities/streak.dart';
+import 'package:learning_app/features/calendar/domain/entities/streaks.dart';
+import 'package:learning_app/features/calendar/domain/helper/date_time_extension.dart';
 import 'package:learning_app/features/calendar/presentation/widgets/day_tile.dart';
 
 class WeekRow extends StatelessWidget {
@@ -16,19 +18,10 @@ class WeekRow extends StatelessWidget {
     const isSundayFirstDayOfWeek = false;
 
     //get from database
-    List<Streak> streaks = [
+    Streaks streaks = Streaks.custom(streaks: [
       Streak.withLength(start: DateTime(2024, 11, 11), lengthInDays: 2),
       Streak.withLength(start: DateTime(2024, 11, 15), lengthInDays: 3),
-    ];
-
-    bool isPartOfStreak(DateTime day) {
-      for (var streak in streaks) {
-        if (streak.contains(day)) {
-          return true;
-        }
-      }
-      return false;
-    }
+    ]);
 
     final now = DateTime.now();
     final firstDayOfCurrentWeek = now.subtract(
@@ -52,13 +45,13 @@ class WeekRow extends StatelessWidget {
               7,
               (index) {
                 final day = firstDayOfCurrentWeek.add(Duration(days: index));
-                final streakLeft = isPartOfStreak(
-                  day.subtract(const Duration(days: 1)),
+                final streakLeft = streaks.contains(
+                  day.dayBefore(),
                 );
-                final streakRight = isPartOfStreak(
-                  day.add(const Duration(days: 1)),
+                final streakRight = streaks.contains(
+                  day.dayAfter(),
                 );
-                final hasStreak = isPartOfStreak(day);
+                final hasStreak = streaks.contains(day);
 
                 print(hasStreak);
 
