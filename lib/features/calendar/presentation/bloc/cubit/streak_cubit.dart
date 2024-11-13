@@ -10,17 +10,19 @@ class StreakCubit extends Cubit<StreakState> {
 
   final CalendarRepository calendarRepository;
   Streaks _streaks = Streaks();
+  get streaks => _streaks;
 
   Future<void> getStreaks() async {
+    print("moin");
     emit(StreakLoading());
     final streaksEither = await calendarRepository.getStreaks();
     streaksEither.fold(
       (failure) => emit(StreakError(errorMessage: failure.errorMessage)),
       (streaks) {
         _streaks = streaks;
-        emit(StreakLoaded());
       },
     );
+    emit(StreakLoaded());
   }
 
   Future<void> addDayToStreaks(DateTime day) async {
@@ -46,7 +48,7 @@ class StreakCubit extends Cubit<StreakState> {
     return calendarRepository.watchStreaks().fold(
       (failure) {
         emit(StreakError(errorMessage: failure.errorMessage));
-        return Stream.empty();
+        return const Stream.empty();
       },
       (stream) => stream,
     );

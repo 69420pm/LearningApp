@@ -1,3 +1,4 @@
+import 'package:learning_app/features/calendar/data/models/streaks_model.dart';
 import 'package:learning_app/features/calendar/domain/entities/streak.dart';
 import 'package:learning_app/features/calendar/domain/helper/date_time_extension.dart';
 
@@ -24,20 +25,32 @@ class Streaks {
 
   void addDayToStreak(DateTime day) {
     if (!contains(day)) {
-      if (_streaks.contains(day.dayBefore())) {
-        _streaks[_streaks.indexWhere(
-          (element) => element.endDate == day.dayBefore(),
-        )]
-            .addDay(day);
-      } else if (_streaks.contains(day.dayAfter())) {
-        DateTime end = _streaks[_streaks.indexWhere(
-          (element) => element.startDate == day.dayAfter(),
-        )]
-            .endDate;
-        _streaks.remove(_streaks[_streaks.indexWhere(
-          (element) => element.startDate == day.dayAfter(),
-        )]);
-        _streaks.add(Streak(start: day, end: end));
+      if (contains(day.dayBefore()) && contains(day.dayAfter())) {
+        //connect two streaks
+        final indexBefore = _streaks
+            .firstWhere((element) => element.endDate == day.dayBefore());
+        final indexAfter = _streaks
+            .firstWhere((element) => element.startDate == day.dayAfter());
+
+        final start = indexBefore.startDate;
+        final end = indexAfter.endDate;
+
+        _streaks.remove(indexAfter);
+        _streaks.remove(indexBefore);
+        _streaks.add(Streak(start: start, end: end));
+      } else if (contains(day.dayBefore())) {
+        //add day after the streak
+        final index = _streaks
+            .indexWhere((element) => element.endDate == day.dayBefore());
+        _streaks[index].addDay(day);
+      } else if (contains(day.dayAfter())) {
+        //add day before the streak
+        final index = _streaks
+            .indexWhere((element) => element.startDate == day.dayAfter());
+        _streaks[index].addDay(day);
+      } else {
+        //create new streak
+        _streaks.add(Streak.newStreak(start: day));
       }
     }
   }
@@ -49,5 +62,17 @@ class Streaks {
       }
     }
     return false;
+  }
+
+  StreaksModel toModel() {
+    return StreaksModel.custom(
+        streaks: _streaks.map((e) => e.toModel()).toList());
+  }
+
+  @override
+  String toString() {
+    return _streaks
+        .map((e) => ("${e.startDate.day}-${e.endDate.day}"))
+        .join(", ");
   }
 }

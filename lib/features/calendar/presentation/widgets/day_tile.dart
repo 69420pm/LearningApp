@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_colors.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_constants.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_text.dart';
 import 'package:learning_app/features/calendar/domain/helper/date_time_extension.dart';
+import 'package:learning_app/features/calendar/presentation/bloc/cubit/streak_cubit.dart';
 
 class DayTile extends StatelessWidget {
   const DayTile({
@@ -28,36 +30,40 @@ class DayTile extends StatelessWidget {
       color: UIColors.background,
       width: UIConstants.borderWidth,
     );
-    return Container(
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.horizontal(
-          left: Radius.circular(
-              streakLeft && hasStreak ? 0 : UIConstants.cornerRadius),
-          right: Radius.circular(
-              streakRight && hasStreak ? 0 : UIConstants.cornerRadius),
-        ),
-        border: Border(
-          top: hasStreak ? border : BorderSide.none,
-          bottom: hasStreak ? border : BorderSide.none,
-          left: hasStreak && !streakLeft ? border : BorderSide.none,
-          right: hasStreak && !streakRight ? border : BorderSide.none,
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(UIConstants.borderWidth),
-        child: Container(
-          decoration: BoxDecoration(
-            color: day.isToday() ? UIColors.background : Colors.transparent,
-            borderRadius: BorderRadius.circular(UIConstants.cornerRadius),
+    return GestureDetector(
+      onTap: () => context.read<StreakCubit>().addDayToStreaks(day),
+      child: Container(
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: BorderRadius.horizontal(
+            left: Radius.circular(
+                streakLeft && hasStreak ? 0 : UIConstants.cornerRadius),
+            right: Radius.circular(
+                streakRight && hasStreak ? 0 : UIConstants.cornerRadius),
           ),
-          child: Center(
-            child: Text(
-              day.day.toString(),
-              style: textStyle ??
-                  UIText.normalBold.copyWith(
-                    color: day.isToday() ? UIColors.primary : UIColors.textDark,
-                  ),
+          border: Border(
+            top: hasStreak ? border : BorderSide.none,
+            bottom: hasStreak ? border : BorderSide.none,
+            left: hasStreak && !streakLeft ? border : BorderSide.none,
+            right: hasStreak && !streakRight ? border : BorderSide.none,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(UIConstants.borderWidth),
+          child: Container(
+            decoration: BoxDecoration(
+              color: day.isToday() ? UIColors.background : Colors.transparent,
+              borderRadius: BorderRadius.circular(UIConstants.cornerRadius),
+            ),
+            child: Center(
+              child: Text(
+                day.day.toString(),
+                style: textStyle ??
+                    UIText.normalBold.copyWith(
+                      color:
+                          day.isToday() ? UIColors.primary : UIColors.textDark,
+                    ),
+              ),
             ),
           ),
         ),

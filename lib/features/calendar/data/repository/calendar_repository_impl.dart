@@ -31,7 +31,7 @@ class CalendarRepositoryImpl extends CalendarRepository {
   @override
   Future<Either<Failure, void>> saveStreaks(Streaks streaks) async {
     try {
-      return right(lds.saveStreaks(streaks as StreaksModel));
+      return right(lds.saveStreaks(streaks.toModel()));
     } on Exception {
       return left(
         StreakNotFoundFailure(

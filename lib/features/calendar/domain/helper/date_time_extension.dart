@@ -14,4 +14,8 @@ extension DateTimeExtension on DateTime {
   DateTime dayAfter() {
     return add(const Duration(days: 1));
   }
+
+  DateTime onlyDay() {
+    return DateTime(year, month, day);
+  }
 }
