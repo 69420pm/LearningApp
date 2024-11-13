@@ -93,6 +93,7 @@ class _MonthTileState extends State<MonthTile> {
                 UIConstants.defaultSize * 5 +
                 UIConstants.borderWidth * (daysToDisplay / 7),
             child: GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 7,
                 mainAxisSpacing: UIConstants.borderWidth,
