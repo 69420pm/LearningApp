@@ -7,7 +7,9 @@ import 'package:learning_app/core/ui_components/ui_components/ui_text.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/buttons/ui_icon_button.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/buttons/ui_icon_button_large.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/ui_card.dart';
-import 'package:learning_app/features/calendar/widgets/day_tile.dart';
+import 'package:learning_app/features/calendar/domain/entities/streak.dart';
+import 'package:learning_app/features/calendar/domain/helper/date_time_extension.dart';
+import 'package:learning_app/features/calendar/presentation/widgets/day_tile.dart';
 import 'package:learning_app/generated/l10n.dart';
 
 class MonthTile extends StatefulWidget {
@@ -20,22 +22,21 @@ class MonthTile extends StatefulWidget {
 class _MonthTileState extends State<MonthTile> {
   //get from settings
   final isSundayFirstDayOfWeek = false;
-
-  //get from database
-
-  final now =
-      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+  final now = DateTime.now();
 
   int monthOffset = 0;
+
+  @override
   Widget build(BuildContext context) {
-    final streaks =
-        List.generate(20, (index) => now.subtract(Duration(days: index)));
-    streaks.remove(now.subtract(const Duration(days: 5)));
-    bool isInStreak(DateTime day) {
-      for (var streakDay in streaks) {
-        if (streakDay.day == day.day &&
-            streakDay.month == day.month &&
-            streakDay.year == day.year) {
+    //get from database
+    List<Streak> streaks = [
+      Streak.withLength(start: DateTime(2024, 11, 11), lengthInDays: 2),
+      Streak.withLength(start: DateTime(2024, 11, 15), lengthInDays: 3),
+    ];
+
+    bool isPartOfStreak(DateTime day) {
+      for (var streak in streaks) {
+        if (streak.contains(day)) {
           return true;
         }
       }
@@ -121,13 +122,13 @@ class _MonthTileState extends State<MonthTile> {
                             firstDayOfCurrentMonth.weekday +
                             (isSundayFirstDayOfWeek ? 0 : 1)),
                   );
-                  final streakLeft = isInStreak(
+                  final streakLeft = isPartOfStreak(
                     dayToDisplay.subtract(const Duration(days: 1)),
                   );
-                  final streakRight = isInStreak(
+                  final streakRight = isPartOfStreak(
                     dayToDisplay.add(const Duration(days: 1)),
                   );
-                  final hasStreak = isInStreak(dayToDisplay);
+                  final hasStreak = isPartOfStreak(dayToDisplay);
 
                   return DayTile(
                     day: dayToDisplay,
@@ -136,7 +137,7 @@ class _MonthTileState extends State<MonthTile> {
                     streakRight: streakRight,
                     backgroundColor: hasStreak ? UIColors.primary : null,
                     textStyle: UIText.normalBold.copyWith(
-                      color: dayToDisplay == now
+                      color: dayToDisplay.isToday()
                           ? UIColors.primary
                           : dayToDisplay.month == currentMonth.month
                               ? hasStreak

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_colors.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_constants.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_text.dart';
+import 'package:learning_app/features/calendar/domain/helper/date_time_extension.dart';
 
 class DayTile extends StatelessWidget {
   const DayTile({
@@ -23,9 +24,6 @@ class DayTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final now =
-        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-    final bool isToday = now == day;
     const border = BorderSide(
       color: UIColors.background,
       width: UIConstants.borderWidth,
@@ -50,7 +48,7 @@ class DayTile extends StatelessWidget {
         padding: const EdgeInsets.all(UIConstants.borderWidth),
         child: Container(
           decoration: BoxDecoration(
-            color: isToday ? UIColors.background : Colors.transparent,
+            color: day.isToday() ? UIColors.background : Colors.transparent,
             borderRadius: BorderRadius.circular(UIConstants.cornerRadius),
           ),
           child: Center(
@@ -58,7 +56,7 @@ class DayTile extends StatelessWidget {
               day.day.toString(),
               style: textStyle ??
                   UIText.normalBold.copyWith(
-                    color: isToday ? UIColors.primary : UIColors.textDark,
+                    color: day.isToday() ? UIColors.primary : UIColors.textDark,
                   ),
             ),
           ),

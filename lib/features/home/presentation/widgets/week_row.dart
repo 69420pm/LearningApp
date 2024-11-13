@@ -3,7 +3,9 @@ import 'package:intl/intl.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_colors.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_constants.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_text.dart';
-import 'package:learning_app/features/calendar/widgets/day_tile.dart';
+import 'package:learning_app/core/ui_components/ui_components/widgets/buttons/ui_icon_button.dart';
+import 'package:learning_app/features/calendar/domain/entities/streak.dart';
+import 'package:learning_app/features/calendar/presentation/widgets/day_tile.dart';
 
 class WeekRow extends StatelessWidget {
   const WeekRow({super.key});
@@ -14,7 +16,19 @@ class WeekRow extends StatelessWidget {
     const isSundayFirstDayOfWeek = false;
 
     //get from database
-    final streaks = [true, true, true, true, true, true, true];
+    List<Streak> streaks = [
+      Streak.withLength(start: DateTime(2024, 11, 11), lengthInDays: 2),
+      Streak.withLength(start: DateTime(2024, 11, 15), lengthInDays: 3),
+    ];
+
+    bool isPartOfStreak(DateTime day) {
+      for (var streak in streaks) {
+        if (streak.contains(day)) {
+          return true;
+        }
+      }
+      return false;
+    }
 
     final now = DateTime.now();
     final firstDayOfCurrentWeek = now.subtract(
@@ -38,9 +52,15 @@ class WeekRow extends StatelessWidget {
               7,
               (index) {
                 final day = firstDayOfCurrentWeek.add(Duration(days: index));
-                final streakLeft = index == 0 ? false : streaks[index - 1];
-                final streakRight = index == 6 ? false : streaks[index + 1];
-                final hasStreak = streaks[index];
+                final streakLeft = isPartOfStreak(
+                  day.subtract(const Duration(days: 1)),
+                );
+                final streakRight = isPartOfStreak(
+                  day.add(const Duration(days: 1)),
+                );
+                final hasStreak = isPartOfStreak(day);
+
+                print(hasStreak);
 
                 //Expanded doesn't work with ListView.builder, so List.generate is used
                 return Expanded(

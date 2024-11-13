@@ -4,10 +4,10 @@ import 'package:learning_app/core/ui_components/ui_components/ui_constants.dart'
 import 'package:learning_app/core/ui_components/ui_components/ui_text.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/ui_appbar.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/ui_card.dart';
-import 'package:learning_app/features/calendar/widgets/month_tile.dart';
-import 'package:learning_app/features/calendar/widgets/streak_saver_tile.dart';
-import 'package:learning_app/features/calendar/widgets/streak_tile.dart';
-import 'package:learning_app/features/calendar/widgets/tomorrow_tile.dart';
+import 'package:learning_app/features/calendar/presentation/widgets/month_tile.dart';
+import 'package:learning_app/features/calendar/presentation/widgets/streak_saver_tile.dart';
+import 'package:learning_app/features/calendar/presentation/widgets/streak_tile.dart';
+import 'package:learning_app/features/calendar/presentation/widgets/tomorrow_tile.dart';
 import 'package:learning_app/features/home/presentation/widgets/week_row.dart';
 import 'package:learning_app/generated/l10n.dart';
 
