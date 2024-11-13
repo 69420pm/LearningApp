@@ -8,6 +8,7 @@ import 'package:learning_app/core/ui_components/ui_components/ui_text.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/progress_indicators/ui_circular_progress_indicator.dart';
 import 'package:learning_app/features/file_system/domain/entities/subject.dart';
 import 'package:learning_app/features/home/presentation/bloc/home_bloc.dart';
+import 'package:learning_app/generated/l10n.dart';
 
 class SubjectListTile extends StatelessWidget {
   const SubjectListTile({super.key, required this.subjectId});
@@ -80,28 +81,9 @@ class SubjectListTile extends StatelessWidget {
                                   children: [
                                     const SizedBox(
                                         height: UIConstants.defaultSize / 2),
-                                    RichText(
-                                      text: TextSpan(
-                                        style: UIText.normal.copyWith(
-                                            color: UIColors.smallText),
-                                        children: <TextSpan>[
-                                          const TextSpan(
-                                              text: 'class test in '),
-                                          TextSpan(
-                                            text:
-                                                nextClassTestInDays.toString(),
-                                            style: UIText.normal.copyWith(
-                                                color: nextClassTestInDays < 5
-                                                    ? UIColors.delete
-                                                    : UIColors.primary),
-                                          ),
-                                          const TextSpan(
-                                              text: nextClassTestInDays == 1
-                                                  ? ' day'
-                                                  : ' days'),
-                                        ],
-                                      ),
-                                    ),
+                                    Text(S
+                                        .of(context)
+                                        .classTestIn(nextClassTestInDays)),
                                   ],
                                 ),
                             ],

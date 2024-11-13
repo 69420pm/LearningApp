@@ -16,7 +16,7 @@ class LearnAllCard extends StatelessWidget {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         //get from database
-        final cardsRemaining = 1;
+        final cardsRemaining = 1000;
 
         final bool finishedToday = cardsRemaining == 0;
 

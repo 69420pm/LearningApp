@@ -13,7 +13,7 @@ class WeekRow extends StatelessWidget {
     const isSundayFirstDayOfWeek = false;
 
     //get from database
-    final streaks = [true, true, false, true, false, false, false];
+    final streaks = [true, true, true, true, true, true, true];
 
     final now = DateTime.now();
     final firstDayOfCurrentWeek = now.subtract(

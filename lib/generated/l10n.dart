@@ -119,6 +119,16 @@ class S {
       args: [dateString],
     );
   }
+
+  /// `Next class test {count, plural, zero{today!} one{in 1 day} other{in {count} days}}`
+  String classTestIn(num count) {
+    return Intl.message(
+      'Next class test ${Intl.plural(count, zero: 'today!', one: 'in 1 day', other: 'in $count days')}',
+      name: 'classTestIn',
+      desc: '',
+      args: [count],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -20,26 +20,30 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
-  static String m0(name) => "Welcome back, ${name}!";
+  static String m0(count) =>
+      "Next class test ${Intl.plural(count, zero: 'today!', one: 'in 1 day', other: 'in ${count} days')}";
 
-  static String m1(count) =>
-      "${Intl.plural(count, zero: 'Have a nice day!', one: '1 card left', other: '${count} cards left')}";
+  static String m1(name) => "Welcome back, ${name}!";
 
   static String m2(count) =>
+      "${Intl.plural(count, zero: 'Have a nice day!', one: '1 card left', other: '${count} cards left')}";
+
+  static String m3(count) =>
       "${Intl.plural(count, zero: 'Finished Today', other: 'Learn All Cards')}";
 
   static String m4(date) => "${date}";
 
-  static String m3(count) =>
+  static String m5(count) =>
       "${Intl.plural(count, one: 'Subject', other: 'Subjects')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "calendarTitle": MessageLookupByLibrary.simpleMessage("Calendar"),
-        "homePageAppBar": m0,
-        "learnCardSubTitle": m1,
-        "learnCardTitle": m2,
+        "classTestIn": m0,
+        "homePageAppBar": m1,
+        "learnCardSubTitle": m2,
+        "learnCardTitle": m3,
         "month": m4,
-        "subject": m3
+        "subject": m5
       };
 }
