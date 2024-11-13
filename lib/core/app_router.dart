@@ -24,7 +24,6 @@ final GoRouter router = GoRouter(routes: <GoRoute>[
           path: 'editor',
           name: 'editor',
           builder: (context, state) {
-            // return EditorPage();
             return const QuillTest();
           },
         ),
@@ -32,7 +31,6 @@ final GoRouter router = GoRouter(routes: <GoRoute>[
           path: 'calendar',
           name: 'calendar',
           builder: (context, state) {
-            // return EditorPage();
             return const CalendarPage();
           },
         )

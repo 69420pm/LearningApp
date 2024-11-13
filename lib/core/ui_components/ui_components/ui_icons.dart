@@ -14,6 +14,7 @@ class UIIcons {
   static UIIcon arrowBackNormal =
       const UIIcon(Icons.arrow_back_ios_new_rounded, size: 32);
   static UIIcon arrowDown = const UIIcon(Icons.expand_more_rounded);
+  static UIIcon arrowUp = const UIIcon(Icons.expand_less_rounded);
   static UIIcon arrowBack = const UIIcon(Icons.arrow_back_rounded);
   static UIIcon add = const UIIcon(Icons.add_rounded);
   static UIIcon download = const UIIcon(Icons.file_download_outlined);

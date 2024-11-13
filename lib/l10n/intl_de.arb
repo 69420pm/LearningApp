@@ -23,5 +23,7 @@
         "format": "yMMMM"
       }
     }
-  }
+  },
+  "dayStreak": "day streak",
+  "streakSaver": "streak saver"
 }
