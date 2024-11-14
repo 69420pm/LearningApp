@@ -30,7 +30,9 @@ class Streaks {
   }
 
   void addDayToStreak(DateTime day) {
-    if (!contains(day)) {
+    if (!contains(day) &&
+        (day.isSameDay(DateTime.now().onlyDay()) ||
+            day.isBefore(DateTime.now().onlyDay()))) {
       if (contains(day.dayBefore()) && contains(day.dayAfter())) {
         //connect two streaks
         final indexBefore = _streaks
