@@ -8,11 +8,11 @@ extension DateTimeExtension on DateTime {
   }
 
   DateTime dayBefore() {
-    return subtract(const Duration(days: 1));
+    return addDays(-1);
   }
 
   DateTime dayAfter() {
-    return add(const Duration(days: 1));
+    return addDays(1);
   }
 
   DateTime onlyDay() {

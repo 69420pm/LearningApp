@@ -18,16 +18,16 @@ class TimeSpan extends Equatable {
   TimeSpan.withLength({required DateTime start, required int lengthInDays})
       : _startDate = DateTime(start.year, start.month, start.day),
         _endDate = DateTime(start.year, start.month, start.day)
-            .add(Duration(days: lengthInDays - 1));
+            .addDays(lengthInDays - 1);
 
   TimeSpan.newTimeSpan({required DateTime start})
       : _startDate = DateTime(start.year, start.month, start.day),
         _endDate = DateTime(start.year, start.month, start.day);
 
   addDay(DateTime date) {
-    if (date.isSameDay(_endDate.add(const Duration(days: 1)))) {
+    if (date.isSameDay(_endDate.addDays(1))) {
       _endDate = date;
-    } else if (date.isSameDay(_startDate.subtract(const Duration(days: 1)))) {
+    } else if (date.isSameDay(_startDate.addDays(-1))) {
       _startDate = date;
     } else {
       throw Exception('Date is not adjacent to the streak');

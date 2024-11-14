@@ -45,8 +45,7 @@ class WeekRow extends StatelessWidget {
                 ...List.generate(
                   7,
                   (index) {
-                    final day =
-                        firstDayOfCurrentWeek.add(Duration(days: index));
+                    final day = firstDayOfCurrentWeek.addDays(index);
                     final streakLeft = streaks.contains(
                       day.dayBefore(),
                     );
