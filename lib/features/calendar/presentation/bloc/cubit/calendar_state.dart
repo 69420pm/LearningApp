@@ -11,7 +11,7 @@ final class CalendarInitial extends CalendarState {}
 
 final class CalendarLoading extends CalendarState {}
 
-final class CalendarLoaded extends CalendarState {}
+final class CalendarUpdated extends CalendarState {}
 
 final class CalendarError extends CalendarState {
   final String errorMessage;
@@ -21,7 +21,5 @@ final class CalendarError extends CalendarState {
   @override
   List<Object> get props => [errorMessage];
 }
-
-final class CalendarSaved extends CalendarState {}
 
 final class CalendarDeleted extends CalendarState {}

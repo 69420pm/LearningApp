@@ -10,7 +10,6 @@ import 'package:learning_app/features/home/presentation/widgets/subject_list.dar
 import 'package:learning_app/features/home/presentation/widgets/calendar_card.dart';
 import 'package:learning_app/features/home/presentation/widgets/learn_all_card.dart';
 import 'package:learning_app/features/home/presentation/widgets/subjects_tool_bar.dart';
-import 'package:learning_app/features/subject/presentation/widgets/files_tool_bar.dart';
 import 'package:learning_app/generated/l10n.dart';
 import 'package:learning_app/injection_container.dart';
 
@@ -26,7 +25,7 @@ class HomePage extends StatelessWidget {
               sl<HomeBloc>()..add(HomeSubjectWatchChildrenIds()),
         ),
         BlocProvider(
-          create: (context) => sl<CalendarCubit>()..getCalendar(),
+          create: (context) => sl<CalendarCubit>(),
         ),
       ],
       child: const ResponsiveLayout(

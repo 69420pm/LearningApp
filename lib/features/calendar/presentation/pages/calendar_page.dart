@@ -21,7 +21,7 @@ class CalendarPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => sl<CalendarCubit>()..getCalendar(),
+      create: (context) => sl<CalendarCubit>(),
       child: const ResponsiveLayout(
         mobile: CalendarViewMobile(),
       ),

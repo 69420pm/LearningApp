@@ -47,8 +47,7 @@ class _MonthTileState extends State<MonthTile> {
         7;
 
     return BlocBuilder<CalendarCubit, CalendarState>(
-      buildWhen: (previous, current) =>
-          current is CalendarLoaded || current is CalendarSaved,
+      buildWhen: (previous, current) => current is CalendarUpdated,
       builder: (context, state) {
         return UICard(
           child: Column(

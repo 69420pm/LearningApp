@@ -15,7 +15,9 @@ part 'calendar_state.dart';
 class CalendarCubit extends Cubit<CalendarState> {
   CalendarCubit(
       {required this.getCalendarUseCase, required this.saveCalendarUseCase})
-      : super(CalendarInitial());
+      : super(CalendarInitial()) {
+    _getCalendar();
+  }
 
   final GetCalendar getCalendarUseCase;
   final SaveCalendar saveCalendarUseCase;
@@ -25,7 +27,7 @@ class CalendarCubit extends Cubit<CalendarState> {
   int get streakSaver => _calendar.streakSaver;
   int get maxStreakSaver => _calendar.maxStreakSaver;
 
-  Future<void> getCalendar() async {
+  Future<void> _getCalendar() async {
     emit(CalendarLoading());
     final calendarEither = await getCalendarUseCase(NoParams());
     calendarEither.fold(
@@ -34,44 +36,39 @@ class CalendarCubit extends Cubit<CalendarState> {
         _calendar = calendar;
       },
     );
-    emit(CalendarLoaded());
+    emit(CalendarUpdated());
   }
 
   Future<void> addDayToStreaks(DateTime day) async {
     emit(CalendarLoading());
-    if (_calendar.streakSaver > 0) {
+    if (_calendar.streakSaver > 0 &&
+        !_calendar.streaks.contains(day) &&
+        (day.isToday() || day.isBefore(DateTime.now()))) {
       _calendar.streaks.addDayToStreak(day);
       _calendar.streakSaver--;
+      _saveCalendar();
     }
-
-    final streaksEither = await saveCalendarUseCase(_calendar);
-    streaksEither.fold(
-      (failure) => emit(CalendarError(errorMessage: failure.errorMessage)),
-      (_) => emit(CalendarSaved()),
-    );
   }
 
   Future<void> addStreakSaver() async {
     emit(CalendarLoading());
     if (_calendar.streakSaver < _calendar.maxStreakSaver) {
       _calendar.streakSaver++;
+      await _saveCalendar();
     }
-
-    final streaksEither = await saveCalendarUseCase(_calendar);
-    streaksEither.fold(
-      (failure) => emit(CalendarError(errorMessage: failure.errorMessage)),
-      (_) => emit(CalendarSaved()),
-    );
   }
 
   Future<void> deleteStreaks() async {
     emit(CalendarLoading());
     _calendar.streaks.clear();
+    await _saveCalendar();
+  }
+
+  _saveCalendar() async {
     final streaksEither = await saveCalendarUseCase(_calendar);
     streaksEither.fold(
       (failure) => emit(CalendarError(errorMessage: failure.errorMessage)),
-      (_) => emit(CalendarLoaded()),
+      (_) => emit(CalendarUpdated()),
     );
-    await getCalendar();
   }
 }
