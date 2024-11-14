@@ -25,14 +25,11 @@ class MonthTile extends StatefulWidget {
 class _MonthTileState extends State<MonthTile> {
   //get from settings
   final isSundayFirstDayOfWeek = false;
-  final now = DateTime.now();
 
-  int monthOffset = 0;
+  var currentMonth = DateTime(DateTime.now().year, DateTime.now().month);
 
   @override
   Widget build(BuildContext context) {
-    final currentMonth =
-        DateTime(now.year + monthOffset ~/ 12, now.month + monthOffset);
     final firstDayOfCurrentMonth =
         DateTime(currentMonth.year, currentMonth.month, 1);
     //get days of month
@@ -66,7 +63,12 @@ class _MonthTileState extends State<MonthTile> {
                       child: GestureDetector(
                         onDoubleTap: () {
                           context.read<StreakCubit>().deleteStreaks();
-                          setState(() => monthOffset = 0);
+                          setState(
+                            () => currentMonth = DateTime(
+                              DateTime.now().year,
+                              DateTime.now().month,
+                            ),
+                          );
                         },
                         child: Text(
                           S.of(context).month(currentMonth),
@@ -77,12 +79,28 @@ class _MonthTileState extends State<MonthTile> {
                     ),
                   ),
                   UIIconButtonLarge(
-                      icon: UIIcons.arrowUp,
-                      onPressed: () => setState(() => monthOffset--)),
+                    icon: UIIcons.arrowUp,
+                    onPressed: () => setState(() {
+                      if (currentMonth.month == 1) {
+                        currentMonth = DateTime(currentMonth.year - 1, 12);
+                      } else {
+                        currentMonth =
+                            DateTime(currentMonth.year, currentMonth.month - 1);
+                      }
+                    }),
+                  ),
                   const SizedBox(width: UIConstants.defaultSize),
                   UIIconButtonLarge(
-                      icon: UIIcons.arrowDown,
-                      onPressed: () => setState(() => monthOffset++)),
+                    icon: UIIcons.arrowDown,
+                    onPressed: () => setState(() {
+                      if (currentMonth.month == 12) {
+                        currentMonth = DateTime(currentMonth.year + 1, 1);
+                      } else {
+                        currentMonth =
+                            DateTime(currentMonth.year, currentMonth.month + 1);
+                      }
+                    }),
+                  ),
                 ],
               ),
               const SizedBox(height: UIConstants.itemPadding),
@@ -114,12 +132,10 @@ class _MonthTileState extends State<MonthTile> {
                       );
                     } else {
                       final indexOfMonth = index - 7;
-                      final dayToDisplay = firstDayOfCurrentMonth.add(
-                        Duration(
-                            days: indexOfMonth -
-                                firstDayOfCurrentMonth.weekday +
-                                (isSundayFirstDayOfWeek ? 0 : 1)),
-                      );
+                      final dayToDisplay = firstDayOfCurrentMonth.addDays(
+                          indexOfMonth -
+                              firstDayOfCurrentMonth.weekday +
+                              (isSundayFirstDayOfWeek ? 0 : 1));
                       final streaks = context.read<StreakCubit>().streaks;
                       final streakLeft = streaks.contains(
                         dayToDisplay.dayBefore(),

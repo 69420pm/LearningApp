@@ -21,14 +21,6 @@ class Streaks {
 
   bool get isTodayInStreak => contains(DateTime.now());
 
-  void addTodayToStreak() {
-    if (isTodayInStreak) {
-      _streaks.last.addDay(DateTime.now());
-    } else {
-      _streaks.add(TimeSpan.newTimeSpan(start: DateTime.now()));
-    }
-  }
-
   void addDayToStreak(DateTime day) {
     if (!contains(day) &&
         (day.isSameDay(DateTime.now().onlyDay()) ||
