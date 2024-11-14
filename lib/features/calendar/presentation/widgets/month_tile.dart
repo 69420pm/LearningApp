@@ -11,7 +11,7 @@ import 'package:learning_app/core/ui_components/ui_components/widgets/ui_card.da
 import 'package:learning_app/features/calendar/domain/entities/time_span.dart';
 import 'package:learning_app/features/calendar/domain/entities/streaks.dart';
 import 'package:learning_app/features/calendar/domain/helper/date_time_extension.dart';
-import 'package:learning_app/features/calendar/presentation/bloc/cubit/streak_cubit.dart';
+import 'package:learning_app/features/calendar/presentation/bloc/cubit/calendar_cubit.dart';
 import 'package:learning_app/features/calendar/presentation/widgets/day_tile.dart';
 import 'package:learning_app/generated/l10n.dart';
 
@@ -46,11 +46,9 @@ class _MonthTileState extends State<MonthTile> {
             2 * UIConstants.pageHorizontalPadding) /
         7;
 
-    return BlocBuilder<StreakCubit, StreakState>(
+    return BlocBuilder<CalendarCubit, CalendarState>(
       buildWhen: (previous, current) =>
-          current is StreakLoaded ||
-          current is StreakSaved ||
-          current is StreakDeleted,
+          current is CalendarLoaded || current is CalendarSaved,
       builder: (context, state) {
         return UICard(
           child: Column(
@@ -62,7 +60,7 @@ class _MonthTileState extends State<MonthTile> {
                       padding: EdgeInsets.only(left: tileSize / 7),
                       child: GestureDetector(
                         onDoubleTap: () {
-                          context.read<StreakCubit>().deleteStreaks();
+                          context.read<CalendarCubit>().deleteStreaks();
                           setState(
                             () => currentMonth = DateTime(
                               DateTime.now().year,
@@ -136,7 +134,7 @@ class _MonthTileState extends State<MonthTile> {
                           indexOfMonth -
                               firstDayOfCurrentMonth.weekday +
                               (isSundayFirstDayOfWeek ? 0 : 1));
-                      final streaks = context.read<StreakCubit>().streaks;
+                      final streaks = context.read<CalendarCubit>().streaks;
                       final streakLeft = streaks.contains(
                         dayToDisplay.dayBefore(),
                       );

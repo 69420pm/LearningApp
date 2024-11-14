@@ -5,7 +5,7 @@ import 'package:learning_app/core/ui_components/ui_components/ui_constants.dart'
 import 'package:learning_app/core/ui_components/ui_components/ui_text.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/ui_card.dart';
 import 'package:learning_app/features/calendar/domain/entities/time_span.dart';
-import 'package:learning_app/features/calendar/presentation/bloc/cubit/streak_cubit.dart';
+import 'package:learning_app/features/calendar/presentation/bloc/cubit/calendar_cubit.dart';
 import 'package:learning_app/generated/l10n.dart';
 
 class StreakTile extends StatelessWidget {
@@ -15,7 +15,7 @@ class StreakTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<StreakCubit, StreakState>(
+    return BlocBuilder<CalendarCubit, CalendarState>(
       builder: (context, state) {
         return UICard(
           useGradient: true,
@@ -26,7 +26,7 @@ class StreakTile extends StatelessWidget {
               children: [
                 Text(
                   context
-                      .read<StreakCubit>()
+                      .read<CalendarCubit>()
                       .streaks
                       .currentStreakLength()
                       .toString(),

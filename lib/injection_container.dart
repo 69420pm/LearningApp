@@ -7,10 +7,10 @@ import 'package:learning_app/core/helper/image_helper.dart';
 import 'package:learning_app/features/calendar/data/datasource/calendar_local_data_source.dart';
 import 'package:learning_app/features/calendar/data/repository/calendar_repository_impl.dart';
 import 'package:learning_app/features/calendar/domain/repositories/calendar_repository.dart';
-import 'package:learning_app/features/calendar/domain/usecases/get_streaks.dart';
-import 'package:learning_app/features/calendar/domain/usecases/save_streaks.dart';
-import 'package:learning_app/features/calendar/domain/usecases/watch_streaks.dart';
-import 'package:learning_app/features/calendar/presentation/bloc/cubit/streak_cubit.dart';
+import 'package:learning_app/features/calendar/domain/usecases/get_calendar.dart';
+import 'package:learning_app/features/calendar/domain/usecases/save_calendar.dart';
+import 'package:learning_app/features/calendar/domain/usecases/watch_calendar.dart';
+import 'package:learning_app/features/calendar/presentation/bloc/cubit/calendar_cubit.dart';
 import 'package:learning_app/features/editor/presentation/cubit/editor_cubit.dart';
 import 'package:learning_app/features/file_system/data/datasources/file_system_local_data_source.dart';
 import 'package:learning_app/features/file_system/data/repositories/file_system_repository_impl.dart';
@@ -79,8 +79,9 @@ void features() {
   sl.registerFactory(() => SubjectHoverCubit());
 
   sl.registerFactoryParam(
-    (parentId, _) => StreakCubit(
-      calendarRepository: sl(),
+    (parentId, _) => CalendarCubit(
+      getCalendarUseCase: sl(),
+      saveCalendarUseCase: sl(),
     ),
   );
 
@@ -99,9 +100,9 @@ void features() {
   sl.registerLazySingleton(() => GetParentIds(dataSource: sl()));
 
   // Calendar
-  sl.registerLazySingleton(() => GetStreaks(repository: sl()));
-  sl.registerLazySingleton(() => SaveStreaks(repository: sl()));
-  sl.registerLazySingleton(() => WatchStreaks(repository: sl()));
+  sl.registerLazySingleton(() => GetCalendar(repository: sl()));
+  sl.registerLazySingleton(() => SaveCalendar(repository: sl()));
+  sl.registerLazySingleton(() => WatchCalendar(repository: sl()));
 
   // Repository
   sl.registerLazySingleton<FileSystemRepository>(
@@ -124,7 +125,7 @@ void features() {
   );
   sl.registerLazySingleton<CalendarLocalDataSource>(
     () => CalendarHive(
-      streaksBox: sl(instanceName: "streakBox"),
+      calendarBox: sl(instanceName: "calendarBox"),
     ),
   );
 
@@ -146,7 +147,7 @@ Future<void> external() async {
   final relationBox = await Hive.openBox<List<String>>("relationsBox");
   final classTestRelationBox =
       await Hive.openBox<List<String>>("classTestRelationBox");
-  final streakBox = await Hive.openBox<String>("streakBox");
+  final streakBox = await Hive.openBox<String>("calendarBox");
 
   sl.registerLazySingleton(() => cardBox, instanceName: "cardBox");
   sl.registerLazySingleton(() => folderBox, instanceName: "folderBox");
@@ -155,5 +156,5 @@ Future<void> external() async {
   sl.registerLazySingleton(() => relationBox, instanceName: "relationsBox");
   sl.registerLazySingleton(() => classTestRelationBox,
       instanceName: "classTestRelationsBox");
-  sl.registerLazySingleton(() => streakBox, instanceName: "streakBox");
+  sl.registerLazySingleton(() => streakBox, instanceName: "calendarBox");
 }

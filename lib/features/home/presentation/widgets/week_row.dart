@@ -8,7 +8,7 @@ import 'package:learning_app/core/ui_components/ui_components/widgets/buttons/ui
 import 'package:learning_app/features/calendar/domain/entities/time_span.dart';
 import 'package:learning_app/features/calendar/domain/entities/streaks.dart';
 import 'package:learning_app/features/calendar/domain/helper/date_time_extension.dart';
-import 'package:learning_app/features/calendar/presentation/bloc/cubit/streak_cubit.dart';
+import 'package:learning_app/features/calendar/presentation/bloc/cubit/calendar_cubit.dart';
 import 'package:learning_app/features/calendar/presentation/widgets/day_tile.dart';
 
 class WeekRow extends StatelessWidget {
@@ -23,11 +23,9 @@ class WeekRow extends StatelessWidget {
     final firstDayOfCurrentWeek = now.subtract(
         Duration(days: now.weekday - (isSundayFirstDayOfWeek ? 0 : 1)));
 
-    context.read<StreakCubit>().getStreaks();
-
-    return BlocBuilder<StreakCubit, StreakState>(
+    return BlocBuilder<CalendarCubit, CalendarState>(
       builder: (context, state) {
-        final streaks = context.read<StreakCubit>().streaks;
+        final streaks = context.read<CalendarCubit>().streaks;
         return Container(
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(.2),

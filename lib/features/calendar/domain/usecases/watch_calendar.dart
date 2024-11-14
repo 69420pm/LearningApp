@@ -1,18 +1,18 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:learning_app/core/errors/failures/failure.dart';
 import 'package:learning_app/core/usecases/usecase.dart';
+import 'package:learning_app/features/calendar/domain/entities/calendar.dart';
+import 'package:learning_app/features/calendar/domain/entities/time_span.dart';
 import 'package:learning_app/features/calendar/domain/entities/streaks.dart';
 import 'package:learning_app/features/calendar/domain/repositories/calendar_repository.dart';
 
-class SaveStreaks implements UseCase<void, Streaks> {
+class WatchCalendar extends UseCase<Stream<Calendar?>, NoParams> {
   final CalendarRepository repository;
 
-  SaveStreaks({
-    required this.repository,
-  });
+  WatchCalendar({required this.repository});
 
   @override
-  Future<Either<Failure, void>> call(Streaks params) async {
-    return await repository.saveStreaks(params);
+  Future<Either<Failure, Stream<Calendar?>>> call(NoParams params) async {
+    return await repository.watchCalendar();
   }
 }

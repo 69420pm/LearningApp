@@ -7,6 +7,8 @@ import 'package:learning_app/features/calendar/data/models/streaks_model.dart';
 import 'package:learning_app/features/calendar/domain/entities/time_span.dart';
 import 'package:learning_app/features/calendar/domain/entities/streaks.dart';
 import 'package:learning_app/features/calendar/domain/repositories/calendar_repository.dart';
+import 'package:learning_app/features/calendar/data/models/calendar_model.dart';
+import 'package:learning_app/features/calendar/domain/entities/calendar.dart';
 
 class CalendarRepositoryImpl extends CalendarRepository {
   final CalendarLocalDataSource lds;
@@ -16,52 +18,52 @@ class CalendarRepositoryImpl extends CalendarRepository {
   });
 
   @override
-  Future<Either<Failure, Streaks>> getStreaks() async {
+  Future<Either<Failure, Calendar>> getCalendar() async {
     try {
-      return right(await lds.getStreaks());
+      return right(await lds.getCalendar());
     } on Exception {
       return left(
-        StreakNotFoundFailure(
-          errorMessage: "Streaks not found",
+        CalendarNotFoundFailure(
+          errorMessage: "Calendar not found",
         ),
       );
     }
   }
 
   @override
-  Future<Either<Failure, void>> saveStreaks(Streaks streaks) async {
+  Future<Either<Failure, void>> saveCalendar(Calendar calendar) async {
     try {
-      return right(lds.saveStreaks(streaks.toModel()));
+      return right(lds.saveCalendar(calendar.toModel()));
     } on Exception {
       return left(
-        StreakNotFoundFailure(
-          errorMessage: "Streaks not found",
+        CalendarNotFoundFailure(
+          errorMessage: "Calendar not found",
         ),
       );
     }
   }
 
   @override
-  Future<Either<Failure, void>> deleteStreaks() async {
+  Future<Either<Failure, void>> deleteCalendar() async {
     try {
-      return right(lds.deleteStreaks());
+      return right(lds.deleteCalendar());
     } on Exception {
       return left(
-        StreakNotFoundFailure(
-          errorMessage: "Streaks not found",
+        CalendarNotFoundFailure(
+          errorMessage: "Calendar not found",
         ),
       );
     }
   }
 
   @override
-  Either<Failure, Stream<Streaks?>> watchStreaks() {
+  Either<Failure, Stream<Calendar?>> watchCalendar() {
     try {
-      return right(lds.watchStreaks() as Stream<Streaks?>);
+      return right(lds.watchCalendar() as Stream<Calendar?>);
     } on Exception {
       return left(
-        StreakNotFoundFailure(
-          errorMessage: "Streaks not found",
+        CalendarNotFoundFailure(
+          errorMessage: "Calendar not found",
         ),
       );
     }

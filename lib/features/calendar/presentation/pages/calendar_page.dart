@@ -6,7 +6,7 @@ import 'package:learning_app/core/ui_components/ui_components/ui_constants.dart'
 import 'package:learning_app/core/ui_components/ui_components/ui_text.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/ui_appbar.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/ui_card.dart';
-import 'package:learning_app/features/calendar/presentation/bloc/cubit/streak_cubit.dart';
+import 'package:learning_app/features/calendar/presentation/bloc/cubit/calendar_cubit.dart';
 import 'package:learning_app/features/calendar/presentation/widgets/month_tile.dart';
 import 'package:learning_app/features/calendar/presentation/widgets/streak_saver_tile.dart';
 import 'package:learning_app/features/calendar/presentation/widgets/streak_tile.dart';
@@ -21,7 +21,7 @@ class CalendarPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => sl<StreakCubit>()..getStreaks(),
+      create: (context) => sl<CalendarCubit>()..getCalendar(),
       child: const ResponsiveLayout(
         mobile: CalendarViewMobile(),
       ),

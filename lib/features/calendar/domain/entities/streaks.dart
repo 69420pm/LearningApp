@@ -55,6 +55,10 @@ class Streaks {
     }
   }
 
+  clear() {
+    _streaks.clear();
+  }
+
   bool contains(DateTime day) {
     for (var streak in _streaks) {
       if (streak.contains(day)) {

@@ -1,49 +1,49 @@
 import 'dart:convert';
 
 import 'package:hive/hive.dart';
-import 'package:learning_app/features/calendar/data/models/streaks_model.dart';
+import 'package:learning_app/features/calendar/data/models/calendar_model.dart';
 
 abstract class CalendarLocalDataSource {
-  Future<StreaksModel> getStreaks();
-  Future<void> saveStreaks(StreaksModel streaks);
-  Stream<StreaksModel?> watchStreaks();
+  Future<CalendarModel> getCalendar();
+  Future<void> saveCalendar(CalendarModel calendar);
+  Stream<CalendarModel?> watchCalendar();
 
-  Future<void> deleteStreaks();
+  Future<void> deleteCalendar();
 }
 
 class CalendarHive implements CalendarLocalDataSource {
-  final Box<String> streaksBox;
+  final Box<String> calendarBox;
 
   CalendarHive({
-    required this.streaksBox,
+    required this.calendarBox,
   });
 
   @override
-  Future<StreaksModel> getStreaks() async {
-    final streaks = streaksBox.get("streaks");
-    if (streaks == null) {
-      return StreaksModel();
+  Future<CalendarModel> getCalendar() async {
+    final calendar = calendarBox.get("calendar");
+    if (calendar == null) {
+      return CalendarModel();
     }
-    return StreaksModel.fromJson(jsonDecode(streaks));
+    return CalendarModel.fromJson(jsonDecode(calendar));
   }
 
   @override
-  Future<void> saveStreaks(StreaksModel streaks) async {
-    await streaksBox.put("streaks", jsonEncode(streaks.toJson()));
+  Future<void> saveCalendar(CalendarModel calendar) async {
+    await calendarBox.put("calendar", jsonEncode(calendar.toJson()));
   }
 
   @override
-  Stream<StreaksModel?> watchStreaks() {
-    return streaksBox.watch(key: "streaks").map((event) {
+  Stream<CalendarModel?> watchCalendar() {
+    return calendarBox.watch(key: "calendar").map((event) {
       if (event.value == null) {
         return null;
       }
-      return StreaksModel.fromJson(jsonDecode(event.value!));
+      return CalendarModel.fromJson(jsonDecode(event.value!));
     });
   }
 
   @override
-  Future<void> deleteStreaks() async {
-    await streaksBox.delete("streaks");
+  Future<void> deleteCalendar() async {
+    await calendarBox.delete("calendar");
   }
 }

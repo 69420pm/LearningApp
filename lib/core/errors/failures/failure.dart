@@ -56,10 +56,10 @@ class ImageCroppingFailure extends Failure {
       : super(errorMessage: errorMessage);
 }
 
-class StreakNotFoundFailure extends Failure {
+class CalendarNotFoundFailure extends Failure {
   @override
   final String errorMessage;
 
-  StreakNotFoundFailure({required this.errorMessage})
+  CalendarNotFoundFailure({required this.errorMessage})
       : super(errorMessage: errorMessage);
 }

@@ -4,7 +4,7 @@ import 'package:learning_app/core/ui_components/ui_components/ui_colors.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_constants.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_text.dart';
 import 'package:learning_app/features/calendar/domain/helper/date_time_extension.dart';
-import 'package:learning_app/features/calendar/presentation/bloc/cubit/streak_cubit.dart';
+import 'package:learning_app/features/calendar/presentation/bloc/cubit/calendar_cubit.dart';
 
 class DayTile extends StatelessWidget {
   const DayTile({
@@ -31,7 +31,7 @@ class DayTile extends StatelessWidget {
       width: UIConstants.borderWidth,
     );
     return GestureDetector(
-      onTap: () => context.read<StreakCubit>().addDayToStreaks(day),
+      onTap: () => context.read<CalendarCubit>().addDayToStreaks(day),
       child: Container(
         decoration: BoxDecoration(
           color: backgroundColor,
