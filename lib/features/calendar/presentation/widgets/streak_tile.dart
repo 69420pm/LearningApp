@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_colors.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_constants.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_text.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/ui_card.dart';
+import 'package:learning_app/features/calendar/domain/entities/time_span.dart';
+import 'package:learning_app/features/calendar/presentation/bloc/cubit/streak_cubit.dart';
 import 'package:learning_app/generated/l10n.dart';
 
 class StreakTile extends StatelessWidget {
@@ -12,31 +15,39 @@ class StreakTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //get from database
-    const streak = 420;
-
-    return UICard(
-      useGradient: true,
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              streak.toString(),
-              style: UIText.titleBig.copyWith(color: UIColors.textDark),
-              overflow: TextOverflow.fade,
+    return BlocBuilder<StreakCubit, StreakState>(
+      builder: (context, state) {
+        return UICard(
+          useGradient: true,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  (context.read<StreakCubit>().streaks.lastStreak == null)
+                      ? '0'
+                      : context
+                          .read<StreakCubit>()
+                          .streaks
+                          .lastStreak!
+                          .lengthInDays
+                          .toString(),
+                  style: UIText.titleBig.copyWith(color: UIColors.textDark),
+                  overflow: TextOverflow.fade,
+                ),
+                const SizedBox(height: UIConstants.defaultSize),
+                Text(
+                  S.of(context).dayStreak,
+                  style: UIText.label.copyWith(
+                    color: UIColors.textDark,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: UIConstants.defaultSize),
-            Text(
-              S.of(context).dayStreak,
-              style: UIText.label.copyWith(
-                color: UIColors.textDark,
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

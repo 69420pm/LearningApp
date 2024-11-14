@@ -5,7 +5,7 @@ import 'package:learning_app/core/ui_components/ui_components/ui_colors.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_constants.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_text.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/buttons/ui_icon_button.dart';
-import 'package:learning_app/features/calendar/domain/entities/streak.dart';
+import 'package:learning_app/features/calendar/domain/entities/time_span.dart';
 import 'package:learning_app/features/calendar/domain/entities/streaks.dart';
 import 'package:learning_app/features/calendar/domain/helper/date_time_extension.dart';
 import 'package:learning_app/features/calendar/presentation/bloc/cubit/streak_cubit.dart';

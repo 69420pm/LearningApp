@@ -1,25 +1,30 @@
 import 'package:learning_app/features/calendar/data/models/streaks_model.dart';
-import 'package:learning_app/features/calendar/domain/entities/streak.dart';
+import 'package:learning_app/features/calendar/domain/entities/time_span.dart';
 import 'package:learning_app/features/calendar/domain/helper/date_time_extension.dart';
 
 class Streaks {
-  final List<Streak> _streaks = List.empty(growable: true);
+  final List<TimeSpan> _streaks = List.empty(growable: true);
   get streaks => _streaks;
 
   Streaks();
 
-  Streaks.custom({required List<Streak> streaks}) {
+  Streaks.custom({required List<TimeSpan> streaks}) {
     _streaks.addAll(streaks);
   }
 
-  get lastStreak => _streaks.last;
-  get isTodayInStreak => lastStreak.contains(DateTime.now());
+  TimeSpan? get lastStreak {
+    if (_streaks.isEmpty) return null;
+    _streaks.sort((a, b) => a.startDate.compareTo(b.startDate));
+    return _streaks.last;
+  }
+
+  bool get isTodayInStreak => contains(DateTime.now());
 
   void addTodayToStreak() {
     if (isTodayInStreak) {
       _streaks.last.addDay(DateTime.now());
     } else {
-      _streaks.add(Streak.newStreak(start: DateTime.now()));
+      _streaks.add(TimeSpan.newTimeSpan(start: DateTime.now()));
     }
   }
 
@@ -37,7 +42,7 @@ class Streaks {
 
         _streaks.remove(indexAfter);
         _streaks.remove(indexBefore);
-        _streaks.add(Streak(start: start, end: end));
+        _streaks.add(TimeSpan(start: start, end: end));
       } else if (contains(day.dayBefore())) {
         //add day after the streak
         final index = _streaks
@@ -50,7 +55,7 @@ class Streaks {
         _streaks[index].addDay(day);
       } else {
         //create new streak
-        _streaks.add(Streak.newStreak(start: day));
+        _streaks.add(TimeSpan.newTimeSpan(start: day));
       }
     }
   }
@@ -72,7 +77,8 @@ class Streaks {
   @override
   String toString() {
     return _streaks
-        .map((e) => ("${e.startDate.day}-${e.endDate.day}"))
-        .join(", ");
+        .map((e) =>
+            ("${e.startDate.day}.${e.startDate.month}-${e.endDate.day}.${e.endDate.month}"))
+        .join("  ");
   }
 }

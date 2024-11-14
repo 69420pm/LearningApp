@@ -1,26 +1,26 @@
 import 'package:equatable/equatable.dart';
-import 'package:learning_app/features/calendar/data/models/streak_model.dart';
+import 'package:learning_app/features/calendar/data/models/time_span_model.dart';
 import 'package:learning_app/features/calendar/domain/helper/date_time_extension.dart';
 
-class Streak extends Equatable {
+class TimeSpan extends Equatable {
   DateTime _startDate;
   DateTime _endDate;
 
   DateTime get startDate => _startDate;
   DateTime get endDate => _endDate;
 
-  Streak({
+  TimeSpan({
     required DateTime start,
     required DateTime end,
   })  : _startDate = DateTime(start.year, start.month, start.day),
         _endDate = DateTime(end.year, end.month, end.day);
 
-  Streak.withLength({required DateTime start, required int lengthInDays})
+  TimeSpan.withLength({required DateTime start, required int lengthInDays})
       : _startDate = DateTime(start.year, start.month, start.day),
         _endDate = DateTime(start.year, start.month, start.day)
             .add(Duration(days: lengthInDays - 1));
 
-  Streak.newStreak({required DateTime start})
+  TimeSpan.newTimeSpan({required DateTime start})
       : _startDate = DateTime(start.year, start.month, start.day),
         _endDate = DateTime(start.year, start.month, start.day);
 
@@ -34,15 +34,13 @@ class Streak extends Equatable {
     }
   }
 
-  get lengthInDays => _endDate.difference(_startDate).inDays + 1;
+  int get lengthInDays => _endDate.difference(_startDate).inDays + 1;
 
   bool contains(DateTime date) {
-    return date.year >= _startDate.year &&
-        date.year <= _endDate.year &&
-        date.month >= _startDate.month &&
-        date.month <= _endDate.month &&
-        date.day >= _startDate.day &&
-        date.day <= _endDate.day;
+    date = date.onlyDay();
+    return date.isSameDay(_startDate) ||
+        date.isSameDay(_endDate) ||
+        (date.isAfter(_startDate) && date.isBefore(_endDate));
   }
 
   @override
@@ -53,8 +51,8 @@ class Streak extends Equatable {
     return 'Streak(startDate: $_startDate, endDate: $_endDate)';
   }
 
-  StreakModel toModel() {
-    return StreakModel(
+  TimeSpanModel toModel() {
+    return TimeSpanModel(
       start: _startDate,
       end: _endDate,
     );

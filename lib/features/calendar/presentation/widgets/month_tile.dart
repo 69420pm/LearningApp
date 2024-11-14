@@ -8,7 +8,7 @@ import 'package:learning_app/core/ui_components/ui_components/ui_text.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/buttons/ui_icon_button.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/buttons/ui_icon_button_large.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/ui_card.dart';
-import 'package:learning_app/features/calendar/domain/entities/streak.dart';
+import 'package:learning_app/features/calendar/domain/entities/time_span.dart';
 import 'package:learning_app/features/calendar/domain/entities/streaks.dart';
 import 'package:learning_app/features/calendar/domain/helper/date_time_extension.dart';
 import 'package:learning_app/features/calendar/presentation/bloc/cubit/streak_cubit.dart';
@@ -51,7 +51,9 @@ class _MonthTileState extends State<MonthTile> {
 
     return BlocBuilder<StreakCubit, StreakState>(
       buildWhen: (previous, current) =>
-          current is StreakLoaded || current is StreakSaved,
+          current is StreakLoaded ||
+          current is StreakSaved ||
+          current is StreakDeleted,
       builder: (context, state) {
         return UICard(
           child: Column(
@@ -62,7 +64,10 @@ class _MonthTileState extends State<MonthTile> {
                     child: Padding(
                       padding: EdgeInsets.only(left: tileSize / 7),
                       child: GestureDetector(
-                        onDoubleTap: () => setState(() => monthOffset = 0),
+                        onDoubleTap: () {
+                          context.read<StreakCubit>().deleteStreaks();
+                          setState(() => monthOffset = 0);
+                        },
                         child: Text(
                           S.of(context).month(currentMonth),
                           style: UIText.titleSmall

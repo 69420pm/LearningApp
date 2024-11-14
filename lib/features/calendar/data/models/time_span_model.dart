@@ -1,22 +1,22 @@
-import 'package:learning_app/features/calendar/domain/entities/streak.dart';
+import 'package:learning_app/features/calendar/domain/entities/time_span.dart';
 
-class StreakModel extends Streak {
-  StreakModel({
+class TimeSpanModel extends TimeSpan {
+  TimeSpanModel({
     required super.start,
     required super.end,
   });
 
-  StreakModel.withLength({
+  TimeSpanModel.withLength({
     required super.start,
     required super.lengthInDays,
   }) : super.withLength();
 
-  StreakModel.newStreak({
+  TimeSpanModel.newStreak({
     required super.start,
-  }) : super.newStreak();
+  }) : super.newTimeSpan();
 
-  factory StreakModel.fromJson(Map<String, dynamic> json) {
-    return StreakModel(
+  factory TimeSpanModel.fromJson(Map<String, dynamic> json) {
+    return TimeSpanModel(
       start: DateTime.parse(json['start'] as String),
       end: DateTime.parse(json['end'] as String),
     );

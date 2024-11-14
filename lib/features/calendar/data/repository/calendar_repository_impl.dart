@@ -4,7 +4,7 @@ import 'package:learning_app/core/errors/failures/failure.dart';
 import 'package:learning_app/core/streams/stream_events.dart';
 import 'package:learning_app/features/calendar/data/datasource/calendar_local_data_source.dart';
 import 'package:learning_app/features/calendar/data/models/streaks_model.dart';
-import 'package:learning_app/features/calendar/domain/entities/streak.dart';
+import 'package:learning_app/features/calendar/domain/entities/time_span.dart';
 import 'package:learning_app/features/calendar/domain/entities/streaks.dart';
 import 'package:learning_app/features/calendar/domain/repositories/calendar_repository.dart';
 

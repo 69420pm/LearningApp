@@ -1,7 +1,7 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:learning_app/core/errors/failures/failure.dart';
 import 'package:learning_app/core/usecases/usecase.dart';
-import 'package:learning_app/features/calendar/domain/entities/streak.dart';
+import 'package:learning_app/features/calendar/domain/entities/time_span.dart';
 import 'package:learning_app/features/calendar/domain/entities/streaks.dart';
 import 'package:learning_app/features/calendar/domain/repositories/calendar_repository.dart';
 
