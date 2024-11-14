@@ -25,14 +25,11 @@ class StreakTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  (context.read<StreakCubit>().streaks.lastStreak == null)
-                      ? '0'
-                      : context
-                          .read<StreakCubit>()
-                          .streaks
-                          .lastStreak!
-                          .lengthInDays
-                          .toString(),
+                  context
+                      .read<StreakCubit>()
+                      .streaks
+                      .currentStreakLength()
+                      .toString(),
                   style: UIText.titleBig.copyWith(color: UIColors.textDark),
                   overflow: TextOverflow.fade,
                 ),

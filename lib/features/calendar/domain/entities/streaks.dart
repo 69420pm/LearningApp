@@ -12,10 +12,11 @@ class Streaks {
     _streaks.addAll(streaks);
   }
 
-  TimeSpan? get lastStreak {
-    if (_streaks.isEmpty) return null;
-    _streaks.sort((a, b) => a.startDate.compareTo(b.startDate));
-    return _streaks.last;
+  int currentStreakLength() {
+    var currentStreak = _streaks.where((element) =>
+        element.contains(DateTime.now().onlyDay()) ||
+        element.contains(DateTime.now().onlyDay().dayBefore()));
+    return currentStreak.isNotEmpty ? currentStreak.first.lengthInDays : 0;
   }
 
   bool get isTodayInStreak => contains(DateTime.now());
