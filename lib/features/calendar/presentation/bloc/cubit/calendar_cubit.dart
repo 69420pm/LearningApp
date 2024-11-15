@@ -40,6 +40,7 @@ class CalendarCubit extends Cubit<CalendarState> {
   }
 
   Future<void> addDayToStreaks(DateTime day) async {
+    day = day.onlyDay();
     emit(CalendarLoading());
     if (_calendar.streakSaver > 0 &&
         !_calendar.streaks.contains(day) &&

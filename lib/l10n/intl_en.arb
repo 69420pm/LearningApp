@@ -16,5 +16,6 @@
   },
   "classTestIn": "Next class test {count, plural, zero{today!} one{in 1 day} other{in {count} days}}",
   "dayStreak": "day streak",
-  "streakSaver": "streak saver"
+  "streakSaver": "streak saver",
+  "learnPage": "Learn Page"
 }
