@@ -7,15 +7,15 @@ import 'package:learning_app/features/calendar/domain/helper/date_time_extension
 import 'package:learning_app/features/calendar/presentation/bloc/cubit/calendar_cubit.dart';
 
 class DayTile extends StatelessWidget {
-  const DayTile({
-    super.key,
-    required this.day,
-    required this.streakLeft,
-    required this.hasStreak,
-    required this.streakRight,
-    this.textStyle,
-    this.backgroundColor,
-  });
+  const DayTile(
+      {super.key,
+      required this.day,
+      required this.streakLeft,
+      required this.hasStreak,
+      required this.streakRight,
+      this.textStyle,
+      this.backgroundColor,
+      this.customBorder});
 
   final DateTime day;
   final bool streakLeft;
@@ -23,6 +23,7 @@ class DayTile extends StatelessWidget {
   final bool streakRight;
   final TextStyle? textStyle;
   final Color? backgroundColor;
+  final BoxBorder? customBorder;
 
   @override
   Widget build(BuildContext context) {
@@ -41,12 +42,13 @@ class DayTile extends StatelessWidget {
             right: Radius.circular(
                 streakRight && hasStreak ? 0 : UIConstants.cornerRadius),
           ),
-          border: Border(
-            top: hasStreak ? border : BorderSide.none,
-            bottom: hasStreak ? border : BorderSide.none,
-            left: hasStreak && !streakLeft ? border : BorderSide.none,
-            right: hasStreak && !streakRight ? border : BorderSide.none,
-          ),
+          border: customBorder ??
+              Border(
+                top: hasStreak ? border : BorderSide.none,
+                bottom: hasStreak ? border : BorderSide.none,
+                left: hasStreak && !streakLeft ? border : BorderSide.none,
+                right: hasStreak && !streakRight ? border : BorderSide.none,
+              ),
         ),
         child: Padding(
           padding: const EdgeInsets.all(UIConstants.borderWidth),
