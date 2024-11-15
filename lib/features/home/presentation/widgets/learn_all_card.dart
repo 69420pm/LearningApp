@@ -6,7 +6,11 @@ import 'package:learning_app/core/ui_components/ui_components/ui_constants.dart'
 import 'package:learning_app/core/ui_components/ui_components/ui_icons.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_text.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/ui_card.dart';
+import 'package:learning_app/features/calendar/domain/entities/calendar.dart';
+import 'package:learning_app/features/calendar/domain/helper/date_time_extension.dart';
+import 'package:learning_app/features/calendar/presentation/bloc/cubit/calendar_cubit.dart';
 import 'package:learning_app/features/home/presentation/bloc/home_bloc.dart';
+import 'package:learning_app/features/home/presentation/widgets/week_row.dart';
 import 'package:learning_app/generated/l10n.dart';
 
 class LearnAllCard extends StatelessWidget {
@@ -25,7 +29,11 @@ class LearnAllCard extends StatelessWidget {
           disabled: finishedToday,
           useGradient: true,
           distanceToTop: 30,
-          onTap: () => context.push(context.namedLocation("learn")),
+          onTap: () => context.push(context.namedLocation("learn")).then(
+                (value) => context
+                    .read<CalendarCubit>()
+                    .addDayToStreaks(DateTime.now()),
+              ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,

@@ -39,7 +39,7 @@ final GoRouter router = GoRouter(routes: <GoRoute>[
           path: 'learn',
           name: 'learn',
           builder: (context, state) {
-            return const LearnPage();
+            return LearnPage();
           },
         )
       ])

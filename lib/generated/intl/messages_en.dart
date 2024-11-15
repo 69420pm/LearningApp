@@ -44,6 +44,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "homePageAppBar": m1,
         "learnCardSubTitle": m2,
         "learnCardTitle": m3,
+        "learnPage": MessageLookupByLibrary.simpleMessage("Learn Page"),
         "month": m4,
         "streakSaver": MessageLookupByLibrary.simpleMessage("streak saver"),
         "subject": m5
