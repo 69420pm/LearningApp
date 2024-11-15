@@ -4,7 +4,7 @@ import 'package:learning_app/bloc_observer.dart';
 import 'package:learning_app/core/app_router.dart';
 import 'package:learning_app/core/theme/color_schemes.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:learning_app/generated/l10n.dart';
 import 'injection_container.dart' as di;
 
 Future<void> main() async {
@@ -41,16 +41,12 @@ class MyApp extends StatelessWidget {
 
       //Localization
       localizationsDelegates: const [
-        AppLocalizations.delegate,
+        S.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [
-        Locale('en'),
-        Locale('de'),
-      ],
-      locale: null, //defaults to top of supportedLocals
+      supportedLocales: S.delegate.supportedLocales,
     );
   }
 }
