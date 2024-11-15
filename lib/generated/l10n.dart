@@ -96,6 +96,39 @@ class S {
       args: [count],
     );
   }
+
+  /// `Calendar`
+  String get calendarTitle {
+    return Intl.message(
+      'Calendar',
+      name: 'calendarTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{date}`
+  String month(DateTime date) {
+    final DateFormat dateDateFormat = DateFormat.yMMMM(Intl.getCurrentLocale());
+    final String dateString = dateDateFormat.format(date);
+
+    return Intl.message(
+      '$dateString',
+      name: 'month',
+      desc: '',
+      args: [dateString],
+    );
+  }
+
+  /// `Next class test {count, plural, zero{today!} one{in 1 day} other{in {count} days}}`
+  String classTestIn(num count) {
+    return Intl.message(
+      'Next class test ${Intl.plural(count, zero: 'today!', one: 'in 1 day', other: 'in $count days')}',
+      name: 'classTestIn',
+      desc: '',
+      args: [count],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
@@ -104,6 +137,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
   List<Locale> get supportedLocales {
     return const <Locale>[
       Locale.fromSubtags(languageCode: 'en'),
+      Locale.fromSubtags(languageCode: 'de'),
     ];
   }
 

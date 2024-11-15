@@ -6,80 +6,49 @@ import 'package:learning_app/core/ui_components/ui_components/ui_constants.dart'
 import 'package:learning_app/core/ui_components/ui_components/ui_icons.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_text.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/ui_card.dart';
+import 'package:learning_app/features/home/presentation/widgets/calendar_widget.dart';
+import 'package:learning_app/generated/l10n.dart';
 
 class CalendarCard extends StatelessWidget {
   const CalendarCard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // final classTests = context.read<CalendarCubit>().getClassTests();
-    // final calendarDateTime = context.read<CalendarCubit>().currentMonth;
-    // final classTestsThisMonth = <Subject, List<ClassTest>>{};
-    // classTests.forEach((subject, classTests) {
-    //   for (final classTest in classTests) {
-    //     if (classTest.date.year == calendarDateTime.year &&
-    //             classTest.date.month == calendarDateTime.month ||
-    //         classTest.date.month == calendarDateTime.month - 1 ||
-    //         classTest.date.month == calendarDateTime.month + 1) {
-    //       if (classTestsThisMonth[subject] == null) {
-    //         classTestsThisMonth[subject] = [classTest];
-    //       } else {
-    //         classTestsThisMonth[subject]!.add(classTest);
-    //       }
-    //     }
-    //   }
-    // });
     return GestureDetector(
       onTap: () => Navigator.of(context).pushNamed('/calendar'),
       child: UICard(
         useGradient: true,
         distanceToTop: 280,
-        color: UIColors.primary,
         child: Column(
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Calendar',
+                      S.of(context).calendarTitle,
                       style: UIText.titleBig.copyWith(color: UIColors.textDark),
                     ),
-                    const SizedBox(
-                      height: UIConstants.defaultSize,
-                    ),
+                    const SizedBox(height: UIConstants.defaultSize),
                     Text(
-                      DateFormat('EEEE, MMMM dd').format(DateTime.now()),
-                      // "${DateTime.now().day}.${DateTime.now().month}.${DateTime.now().year}",
+                      S.of(context).month(DateTime.now()),
                       style: UIText.label.copyWith(
                         color: UIColors.textDark,
                       ),
                     ),
                   ],
                 ),
-                UIIcons.arrowForwardNormal.copyWith(color: UIColors.overlay),
+                UIIcons.arrowForwardNormal.copyWith(color: UIColors.textDark),
               ],
             ),
             const SizedBox(
               height: UIConstants.itemPadding,
             ),
-            // CalendarWidget(
-            //   showWeek: true,
-            // ),
-            // SizedBox(
-            //   width: double.infinity,
-            //   height: 64,
-            //   child: ListView.builder(
-            //     scrollDirection: Axis.horizontal,
-            //     physics: const NeverScrollableScrollPhysics(),
-            //     itemCount: 7,
-            //     itemBuilder: (context, index) => DayTile(index: index),
-            //   ),
-            // ),
+            const WeekRow(),
           ],
         ),
       ),

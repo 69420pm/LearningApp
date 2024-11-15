@@ -1,5 +1,5 @@
 // DO NOT EDIT. This is code generated via package:intl/generate_localized.dart
-// This is a library that provides messages for a en locale. All the
+// This is a library that provides messages for a de locale. All the
 // messages from the main program should be duplicated here with the same
 // function name.
 
@@ -18,27 +18,27 @@ final messages = new MessageLookup();
 typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 
 class MessageLookup extends MessageLookupByLibrary {
-  String get localeName => 'en';
+  String get localeName => 'de';
 
   static String m0(count) =>
-      "Next class test ${Intl.plural(count, zero: 'today!', one: 'in 1 day', other: 'in ${count} days')}";
+      "Nächster Klassenarbeit ${Intl.plural(count, zero: 'heute!', one: 'in 1 Tag', other: 'in ${count} Tagen')}";
 
-  static String m1(name) => "Welcome back, ${name}!";
+  static String m1(name) => "Willkommen zurück, ${name}!";
 
   static String m2(count) =>
-      "${Intl.plural(count, zero: 'Have a nice day!', one: '1 card left', other: '${count} cards left')}";
+      "${Intl.plural(count, zero: 'Einen schönen Tag!', one: '1 Karte übrig', other: '${count} Karten übrig')}";
 
   static String m3(count) =>
-      "${Intl.plural(count, zero: 'Finished Today', other: 'Learn All Cards')}";
+      "${Intl.plural(count, zero: 'Heute fertig', other: 'Alle Karten lernen')}";
 
   static String m4(date) => "${date}";
 
   static String m5(count) =>
-      "${Intl.plural(count, one: 'Subject', other: 'Subjects')}";
+      "${Intl.plural(count, one: 'Fach', other: 'Fächer')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "calendarTitle": MessageLookupByLibrary.simpleMessage("Calendar"),
+        "calendarTitle": MessageLookupByLibrary.simpleMessage("Kalender"),
         "classTestIn": m0,
         "homePageAppBar": m1,
         "learnCardSubTitle": m2,

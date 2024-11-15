@@ -1,0 +1,27 @@
+{
+  "@@comment": "HomePage",
+  "homePageAppBar": "Willkommen zurück, {name}!",
+  "subject": "{count, plural, other{Fächer} one{Fach}}",
+  "learnCardTitle": "{count, plural, zero{Heute fertig} other{Alle Karten lernen}}",
+  "learnCardSubTitle": "{count, plural, zero{Einen schönen Tag!} one{1 Karte übrig} other{{count} Karten übrig}}",
+  "calendarTitle": "Kalender",
+  "currentDay": "{date}",
+  "@currentDay": {
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "d.M.y"
+      }
+    }
+  },
+  "classTestIn": "Nächster Klassenarbeit {count, plural, zero{heute!} one{in 1 Tag} other{in {count} Tagen}}",
+  "month": "{date}",
+  "@month": {
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMMMM"
+      }
+    }
+  }
+}

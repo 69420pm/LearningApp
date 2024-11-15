@@ -15,52 +15,47 @@ class LearnAllCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        final cardsRemaining = 0;
-        final bool finishedToday = cardsRemaining == 0;
+        //get from database
+        final cardsRemaining = 1000;
 
-        // context
-        //     .read<OverviewCubit>()
-        //     .cardsRepository
-        //     .getAllCardsToLearnForToday()
-        //     .length;
+        final bool finishedToday = cardsRemaining == 0;
 
         return UICard(
           disabled: finishedToday,
           useGradient: true,
           distanceToTop: 30,
-          color: UIColors.green,
           onTap: () {},
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    S.of(context).learnCardTitle(cardsRemaining),
-                    style: UIText.titleBig.copyWith(
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      S.of(context).learnCardTitle(cardsRemaining),
+                      style: UIText.titleBig.copyWith(
+                          color: finishedToday
+                              ? UIColors.textLight
+                              : UIColors.textDark),
+                      overflow: TextOverflow.fade,
+                    ),
+                    const SizedBox(height: UIConstants.defaultSize),
+                    Text(
+                      S.of(context).learnCardSubTitle(cardsRemaining),
+                      style: UIText.label.copyWith(
                         color: finishedToday
                             ? UIColors.textLight
-                            : UIColors.textDark),
-                    overflow: TextOverflow.fade,
-                  ),
-                  const SizedBox(
-                    height: UIConstants.defaultSize,
-                  ),
-                  Text(
-                    S.of(context).learnCardSubTitle(cardsRemaining),
-                    style: UIText.label.copyWith(
-                      color: finishedToday
-                          ? UIColors.textLight
-                          : UIColors.textDark,
+                            : UIColors.textDark,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               if (!finishedToday)
-                UIIcons.arrowForwardNormal.copyWith(color: UIColors.overlay),
+                UIIcons.arrowForwardNormal.copyWith(color: UIColors.textDark),
             ],
           ),
         );
