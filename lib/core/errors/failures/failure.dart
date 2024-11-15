@@ -55,3 +55,11 @@ class ImageCroppingFailure extends Failure {
   ImageCroppingFailure({required this.errorMessage})
       : super(errorMessage: errorMessage);
 }
+
+class CalendarNotFoundFailure extends Failure {
+  @override
+  final String errorMessage;
+
+  CalendarNotFoundFailure({required this.errorMessage})
+      : super(errorMessage: errorMessage);
+}

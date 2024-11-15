@@ -4,7 +4,7 @@
   "subject": "{count, plural, other{Subjects} one{Subject}}",
   "learnCardTitle": "{count, plural, zero{Finished Today} other{Learn All Cards}}",
   "learnCardSubTitle": "{count, plural, zero{Have a nice day!} one{1 card left} other{{count} cards left}}",
-  "calendarTitle": "Calendar",
+  "calendar": "Calendar",
   "month": "{date}",
   "@month": {
     "placeholders": {
@@ -14,5 +14,7 @@
       }
     }
   },
-  "classTestIn": "Next class test {count, plural, zero{today!} one{in 1 day} other{in {count} days}}"
+  "classTestIn": "Next class test {count, plural, zero{today!} one{in 1 day} other{in {count} days}}",
+  "dayStreak": "day streak",
+  "streakSaver": "streak saver"
 }

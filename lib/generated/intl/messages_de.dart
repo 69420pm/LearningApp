@@ -38,12 +38,13 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "calendarTitle": MessageLookupByLibrary.simpleMessage("Kalender"),
         "classTestIn": m0,
+        "dayStreak": MessageLookupByLibrary.simpleMessage("day streak"),
         "homePageAppBar": m1,
         "learnCardSubTitle": m2,
         "learnCardTitle": m3,
         "month": m4,
+        "streakSaver": MessageLookupByLibrary.simpleMessage("streak saver"),
         "subject": m5
       };
 }

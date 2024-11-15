@@ -98,10 +98,10 @@ class S {
   }
 
   /// `Calendar`
-  String get calendarTitle {
+  String get calendar {
     return Intl.message(
       'Calendar',
-      name: 'calendarTitle',
+      name: 'calendar',
       desc: '',
       args: [],
     );
@@ -127,6 +127,26 @@ class S {
       name: 'classTestIn',
       desc: '',
       args: [count],
+    );
+  }
+
+  /// `day streak`
+  String get dayStreak {
+    return Intl.message(
+      'day streak',
+      name: 'dayStreak',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `streak saver`
+  String get streakSaver {
+    return Intl.message(
+      'streak saver',
+      name: 'streakSaver',
+      desc: '',
+      args: [],
     );
   }
 }

@@ -8,6 +8,7 @@ import 'package:learning_app/core/ui_components/ui_components/ui_text.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/progress_indicators/ui_circular_progress_indicator.dart';
 import 'package:learning_app/features/file_system/domain/entities/subject.dart';
 import 'package:learning_app/features/home/presentation/bloc/home_bloc.dart';
+import 'package:learning_app/features/home/presentation/widgets/subject_icon.dart';
 import 'package:learning_app/generated/l10n.dart';
 
 class SubjectListTile extends StatelessWidget {
@@ -43,24 +44,7 @@ class SubjectListTile extends StatelessWidget {
                       ),
                       child: Row(
                         children: [
-                          // Icon with progress indicator
-                          Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              UICircularProgressIndicator(
-                                value: 1,
-                                color: subject.disabled
-                                    ? UIColors.primaryDisabled
-                                    : UIColors.green,
-                              ),
-                              UIIcons.download.copyWith(
-                                size: 24,
-                                color: subject.disabled
-                                    ? UIColors.primaryDisabled
-                                    : UIColors.green,
-                              ),
-                            ],
-                          ),
+                          SubjectIcon(subject: subject),
                           const SizedBox(
                             width: UIConstants.itemPaddingLarge,
                           ),

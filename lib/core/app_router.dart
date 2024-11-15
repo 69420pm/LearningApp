@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:learning_app/features/calendar/presentation/pages/calendar_page.dart';
 import 'package:learning_app/features/editor/presentation/editor.dart';
 import 'package:learning_app/features/quill_editor/presentation/quill_test.dart';
 import 'package:learning_app/features/subject/presentation/pages/subject_page.dart';
@@ -9,7 +10,7 @@ final GoRouter router = GoRouter(routes: <GoRoute>[
       path: '/',
       name: 'home',
       builder: (context, state) {
-        return HomePage();
+        return const HomePage();
       },
       routes: [
         GoRoute(
@@ -23,8 +24,14 @@ final GoRouter router = GoRouter(routes: <GoRoute>[
           path: 'editor',
           name: 'editor',
           builder: (context, state) {
-            // return EditorPage();
-            return QuillTest();
+            return const QuillTest();
+          },
+        ),
+        GoRoute(
+          path: 'calendar',
+          name: 'calendar',
+          builder: (context, state) {
+            return const CalendarPage();
           },
         )
       ])
