@@ -149,6 +149,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Learn Page`
+  String get learnPage {
+    return Intl.message(
+      'Learn Page',
+      name: 'learnPage',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
