@@ -27,6 +27,7 @@ class AppRouter {
 
 final GoRouter router = GoRouter(
   initialLocation: AppRouter.splashPath,
+
   routes: [
     GoRoute(
       path: AppRouter.splashPath,
@@ -76,7 +77,6 @@ final GoRouter router = GoRouter(
   ],
   // changes on the listenable will cause the router to refresh it's route
   refreshListenable: StreamToListenable([sl<AuthenticationBloc>().stream]),
-
   //The top-level callback allows the app to redirect to a new location.
   redirect: (context, state) {
     final isAuthenticated = sl<AuthenticationBloc>().state is Authenticated;

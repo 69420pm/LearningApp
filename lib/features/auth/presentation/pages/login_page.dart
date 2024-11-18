@@ -17,11 +17,19 @@ class LoginPage extends StatelessWidget {
   }
 }
 
-class _LoginViewMobile extends StatelessWidget {
+class _LoginViewMobile extends StatefulWidget {
   _LoginViewMobile({super.key});
 
+  @override
+  State<_LoginViewMobile> createState() => _LoginViewMobileState();
+}
+
+class _LoginViewMobileState extends State<_LoginViewMobile> {
   final TextEditingController emailController = TextEditingController();
+
   final TextEditingController passwordController = TextEditingController();
+
+  bool _isSignIn = true;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +39,7 @@ class _LoginViewMobile extends StatelessWidget {
           body: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              if (state is AuthenticationLoadFailure) Text(state.message),
               UITextFormField(
                 controller: emailController,
                 validation: (_) {
@@ -45,13 +54,23 @@ class _LoginViewMobile extends StatelessWidget {
                 },
                 label: 'Password',
               ),
+              //Sign up button
+              GestureDetector(
+                onTap: () => setState(() {
+                  _isSignIn = !_isSignIn;
+                }),
+                child: Text(
+                  _isSignIn ? "No Account yet? Sign up" : "Back to login",
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ),
 
               //Login button
               GestureDetector(
                 child: UICard(
                   useGradient: true,
                   child: Center(
-                    child: Text("Login",
+                    child: Text(_isSignIn ? "Login" : "Sign Up",
                         style: Theme.of(context)
                             .textTheme
                             .headlineMedium!
@@ -61,10 +80,19 @@ class _LoginViewMobile extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn(
-                    email: emailController.text,
-                    password: passwordController.text,
-                  ));
+                  _isSignIn
+                      ? BlocProvider.of<AuthenticationBloc>(context).add(
+                          LoggedIn(
+                            email: emailController.text,
+                            password: passwordController.text,
+                          ),
+                        )
+                      : BlocProvider.of<AuthenticationBloc>(context).add(
+                          SignedUp(
+                            email: emailController.text,
+                            password: passwordController.text,
+                          ),
+                        );
                 },
               )
             ],

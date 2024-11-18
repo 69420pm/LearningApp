@@ -12,13 +12,7 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
-    print("moin");
-    // wait for 2 seconds to show splash screen
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        context.read<AuthenticationBloc>().add(AuthenticationStatusChecked());
-      }
-    });
+    context.read<AuthenticationBloc>().add(AuthenticationStatusChecked());
     super.initState();
   }
 

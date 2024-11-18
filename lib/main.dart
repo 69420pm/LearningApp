@@ -34,9 +34,7 @@ class MyApp extends StatelessWidget {
       create: (context) => sl<AuthenticationBloc>(),
       child: MaterialApp.router(
         title: 'Learning App',
-        routeInformationProvider: router.routeInformationProvider,
-        routerDelegate: router.routerDelegate,
-        routeInformationParser: router.routeInformationParser,
+        routerConfig: router,
 
         //Theme
         theme: ThemeData(
