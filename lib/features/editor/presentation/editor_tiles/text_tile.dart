@@ -11,22 +11,23 @@ class TextTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    EditorTextFieldManager editorTextFieldManager = EditorTextFieldManager();
-    double cursorHeight = 16;
-    EditorInputFormatter inputFormatter =
-        EditorInputFormatter(em: editorTextFieldManager, context: context);
-    EditorTextFieldController editorTextFieldController =
-        EditorTextFieldController(
-      em: editorTextFieldManager,
-      inputFormatter: inputFormatter,
-    );
-    context.read<EditorCubit>().inputFormatter = inputFormatter;
-    return TextField(
-      inputFormatters: [inputFormatter],
-      keyboardType: TextInputType.multiline,
-      maxLines: null,
-      controller: editorTextFieldController,
-      cursorHeight: cursorHeight,
-    );
+    // EditorTextFieldManager editorTextFieldManager = EditorTextFieldManager();
+    // double cursorHeight = 16;
+    // EditorInputFormatter inputFormatter =
+    //     EditorInputFormatter(em: editorTextFieldManager, co);
+    // EditorTextFieldController editorTextFieldController =
+    //     EditorTextFieldController(
+    //   em: editorTextFieldManager,
+    //   inputFormatter: inputFormatter,
+    // );
+    // context.read<EditorCubit>().inputFormatter = inputFormatter;
+    // return TextField(
+    //   inputFormatters: [inputFormatter],
+    //   keyboardType: TextInputType.multiline,
+    //   maxLines: null,
+    //   controller: editorTextFieldController,
+    //   cursorHeight: cursorHeight,
+    // );
+    return Text('TextTile');
   }
 }
