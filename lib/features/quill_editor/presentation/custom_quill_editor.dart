@@ -17,9 +17,6 @@ class CustomQuillEditor extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ElevatedButton(
-            onPressed: () => addImage(controller, context),
-            child: Text('test')),
         QuillEditor(
           focusNode: focusNode,
           scrollController: scrollController,

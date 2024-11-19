@@ -175,55 +175,7 @@ class EditorLine extends Equatable {
     int forLoopIndex = 0;
     text = '';
     inlineSpans.clear();
-    if (_lineFormatType == LineFormatType.bulleted_list) {
-      if (spans.isEmpty) {
-        return;
-      }
 
-      if (spans[0].span.toPlainText().characters.first == '\n') {
-        forLoopIndex = 1;
-        text += '\n' + '\uffff';
-        inlineSpans.add(
-          TextSpan(text: '\n', style: spans[0].span.style),
-        );
-        inlineSpans.add(
-          WidgetSpan(
-            child: Container(
-              width: 10,
-              height: 10,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(100)),
-              ),
-            ),
-          ),
-        );
-        InlineSpan helpSpan = spans[0].span;
-        helpSpan = TextSpan(
-            text: helpSpan.toPlainText().isNotEmpty
-                ? helpSpan.toPlainText().characters.safeSubstring(1)
-                : '',
-            style: spans[0].span.style);
-        inlineSpans.add(helpSpan);
-        text += helpSpan.toPlainText().isEmpty
-            ? ''
-            : helpSpan.toPlainText().characters.safeSubstring(1);
-      } else {
-        text += '\uffff';
-        inlineSpans.add(
-          WidgetSpan(
-            child: Container(
-              width: 10,
-              height: 10,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(100)),
-              ),
-            ),
-          ),
-        );
-      }
-    }
     for (int i = forLoopIndex; i < spans.length; i++) {
       EditorSpan span = spans[i];
       span.span = _mergeSpans(

@@ -31,9 +31,9 @@ extension SafeSubstring on Characters {
 
 class EditorInputFormatter extends TextInputFormatter {
   final EditorTextFieldManager em;
-  final BuildContext context;
+  final EditorCubit editorCubit;
 
-  EditorInputFormatter({required this.em, required this.context});
+  EditorInputFormatter({required this.em, required this.editorCubit});
   List<SpanFormatType> currentStyle = [];
   // gets updated in editor_cubit.dart
   LineFormatType currentLineFormat = LineFormatType.body;
@@ -93,7 +93,7 @@ class EditorInputFormatter extends TextInputFormatter {
             String line = lines[i];
             if (i != 0) {
               currentLineFormat = LineFormatType.body;
-              context.read<EditorCubit>().changeLineFormat(currentLineFormat,
+              editorCubit.changeLineFormat(currentLineFormat,
                   updateCurrentLine: false);
               line = '\n$line';
               if (em.lines.isNotEmpty &&

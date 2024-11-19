@@ -12,6 +12,9 @@ class EditorCubit extends Cubit<EditorState> {
   bool isItalic = false;
   bool isUnderlined = false;
 
+  // EditorTextFieldManager editorTextFieldManager = EditorTextFieldManager();
+  // EditorInputFormatter inputFormatter = EditorInputFormatter(em: editorTextFieldManager, editorCubit: this);
+
   LineFormatType currentLineFormat = LineFormatType.body;
   late EditorInputFormatter inputFormatter;
 
@@ -34,6 +37,9 @@ class EditorCubit extends Cubit<EditorState> {
     } else if (set.contains(SpanFormatType.superscript)) {
       newStyle.add(SpanFormatType.superscript);
     }
+    if (inputFormatter.currentStyle == newStyle) {
+      return;
+    }
     inputFormatter.currentStyle = newStyle;
     inputFormatter.changeLineFormat();
     emit(EditorTextFormattingChanged(textFormatSelection: set));
@@ -41,6 +47,9 @@ class EditorCubit extends Cubit<EditorState> {
 
   void changeLineFormat(LineFormatType lineFormatType,
       {bool updateCurrentLine = true}) {
+    if (currentLineFormat == lineFormatType) {
+      return;
+    }
     currentLineFormat = lineFormatType;
     if (updateCurrentLine) {
       inputFormatter.changeLineStyleAccordingToSelection(lineFormatType);

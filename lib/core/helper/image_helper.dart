@@ -41,14 +41,14 @@ class ImageHelper {
     }
   }
 
-  Future<Either<Failure, CroppedFile>> cropImage({required XFile image}) async {
+  Future<Either<Failure, String>> cropImage({required XFile image}) async {
     try {
       final croppedFile =
           await _imageCropper.cropImage(sourcePath: image.path, uiSettings: []);
       if (croppedFile == null) {
         return left(ImageCroppingFailure(errorMessage: 'No image selected'));
       } else {
-        return right(croppedFile);
+        return right(croppedFile.path);
       }
     } catch (e) {
       return left(ImageCroppingFailure(errorMessage: e.toString()));

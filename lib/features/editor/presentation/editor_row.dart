@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_app/features/editor/presentation/cubit/editor_cubit.dart';
 import 'package:learning_app/features/editor/presentation/editor_text_field_manager.dart';
-import 'package:learning_app/features/editor/presentation/text_field_controller.dart';
+import 'package:learning_app/features/editor/presentation/old/text_field_controller.dart';
 
 class EditorRow extends StatelessWidget {
   LineFormatType lineFormatSelection = LineFormatType.body;

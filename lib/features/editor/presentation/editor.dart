@@ -3,13 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:learning_app/features/editor/presentation/cubit/editor_cubit.dart';
-import 'package:learning_app/features/editor/presentation/editor_controller.dart';
 import 'package:learning_app/features/editor/presentation/editor_input_formatter.dart';
 import 'package:learning_app/features/editor/presentation/editor_row.dart';
 import 'package:learning_app/features/editor/presentation/editor_text_field_controller.dart';
 import 'package:learning_app/features/editor/presentation/editor_text_field_manager.dart';
-import 'package:learning_app/features/editor/presentation/helper/editor_text_styles.dart';
-import 'package:learning_app/features/editor/presentation/text_field_controller.dart';
+
 import 'package:learning_app/injection_container.dart';
 
 class EditorPage extends StatelessWidget {
@@ -27,16 +25,11 @@ class EditorPage extends StatelessWidget {
 class _EditorView extends StatelessWidget {
   EditorTextFieldManager editorTextFieldManager = EditorTextFieldManager();
   double cursorHeight = 16;
-  TextFieldController controller = TextFieldController();
 
-  EditorTextStyle style = EditorTextStyle();
   @override
   Widget build(BuildContext context) {
-    EditorInputFormatter inputFormatter =
-        EditorInputFormatter(em: editorTextFieldManager, context: context);
-    EditorController editorController = EditorController(
-      editorTextFieldManager: editorTextFieldManager,
-    );
+    EditorInputFormatter inputFormatter = EditorInputFormatter(
+        em: editorTextFieldManager, editorCubit: context.read<EditorCubit>());
     EditorTextFieldController editorTextFieldController =
         EditorTextFieldController(
       em: editorTextFieldManager,
