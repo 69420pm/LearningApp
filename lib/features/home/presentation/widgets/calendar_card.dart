@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:learning_app/core/app_router.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_colors.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_constants.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_icons.dart';
@@ -16,7 +17,7 @@ class CalendarCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => context.push(context.namedLocation("calendar")),
+      onTap: () => context.go(AppRouter.homePath + AppRouter.calendarPath),
       child: UICard(
         useGradient: true,
         distanceToTop: 280,

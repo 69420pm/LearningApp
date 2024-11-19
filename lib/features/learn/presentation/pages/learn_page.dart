@@ -4,9 +4,10 @@ import 'package:learning_app/core/ui_components/ui_components/widgets/ui_appbar.
 import 'package:learning_app/generated/l10n.dart';
 
 class _CardContent {
-  final List<Widget> content;
+  final List<Widget> front;
+  final List<Widget> back;
 
-  _CardContent(this.content);
+  _CardContent(this.front, this.back);
 }
 
 class LearnPage extends StatelessWidget {
@@ -22,6 +23,22 @@ class LearnPage extends StatelessWidget {
             height: 100,
             width: 100,
             color: Colors.red,
+            child: Center(
+              child: Text('Front $index'),
+            ),
+          ),
+        );
+      }),
+      List.generate(10, (index) {
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            height: 100,
+            width: 100,
+            color: Colors.green,
+            child: Center(
+              child: Text('Back $index'),
+            ),
           ),
         );
       }),
@@ -52,7 +69,10 @@ class _LearnViewMobileState extends State<_LearnViewMobile> {
     initialPage: 1,
   );
 
+  final ScrollController _scrollController = ScrollController();
+
   int _currentCard = 0;
+  bool _showFront = true;
 
   @override
   void initState() {
@@ -64,7 +84,9 @@ class _LearnViewMobileState extends State<_LearnViewMobile> {
           } else {
             setState(() {
               _currentCard++;
+              _showFront = true;
               _pageController.jumpToPage(1);
+              _scrollController.jumpTo(0);
             });
           }
         }
@@ -84,9 +106,18 @@ class _LearnViewMobileState extends State<_LearnViewMobile> {
         itemCount: 3,
         itemBuilder: (context, index) {
           if (index == 1) {
-            return SingleChildScrollView(
-              child: Column(
-                children: [...widget.content[_currentCard].content],
+            return GestureDetector(
+              onTap: () => setState(() {
+                _showFront = !_showFront;
+                _scrollController.jumpTo(0);
+              }),
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                child: Column(
+                  children: _showFront
+                      ? widget.content[_currentCard].front
+                      : widget.content[_currentCard].back,
+                ),
               ),
             );
           }

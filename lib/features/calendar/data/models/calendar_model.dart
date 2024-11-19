@@ -9,13 +9,14 @@ class CalendarModel extends Calendar {
     super.streaks,
     super.streakSaver,
     super.maxStreakSaver,
+    super.changeDate,
   });
-
   factory CalendarModel.fromJson(Map<String, dynamic> json) {
     return CalendarModel(
       streaks: StreaksModel.fromJson(json['streaks']),
       streakSaver: json['streakSaver'],
       maxStreakSaver: json['maxStreakSaver'],
+      changeDate: DateTime.parse(json['changeDate'] as String),
     );
   }
 
@@ -24,6 +25,7 @@ class CalendarModel extends Calendar {
       'streaks': streaks.toModel().toJson(),
       'streakSaver': streakSaver,
       'maxStreakSaver': maxStreakSaver,
+      'changeDate': changeDate.toIso8601String(),
     };
   }
 }
