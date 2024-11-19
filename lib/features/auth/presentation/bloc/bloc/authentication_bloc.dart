@@ -29,8 +29,10 @@ class AuthenticationBloc
           emit(const AuthenticationLoadFailure(
               'The account already exists for that email.'));
         } else if (e.code == 'invalid-email') {
-          emit(const AuthenticationLoadFailure(
-              'The email address is badly formatted.'));
+          emit(
+            const AuthenticationLoadFailure(
+                'The email address is badly formatted.'),
+          );
         } else {
           emit(AuthenticationLoadFailure(e.toString()));
         }
@@ -55,6 +57,15 @@ class AuthenticationBloc
         } else if (e.code == 'wrong-password') {
           emit(const AuthenticationLoadFailure(
               'Wrong password provided for that user.'));
+        } else if (e.code == 'invalid-email') {
+          emit(
+            const AuthenticationLoadFailure(
+                'The email address is badly formatted.'),
+          );
+        } else if (e.code == 'invalid-credential') {
+          emit(
+            const AuthenticationLoadFailure('Wrong password provided.'),
+          );
         } else {
           emit(AuthenticationLoadFailure(e.toString()));
         }

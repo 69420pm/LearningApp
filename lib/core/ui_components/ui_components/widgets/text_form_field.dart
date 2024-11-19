@@ -25,6 +25,7 @@ class UITextFormField extends StatefulWidget {
     this.maxLines = 1,
     this.prefixIcon,
     this.autofillHints,
+    this.obscureText,
   });
 
   final String? label;
@@ -45,6 +46,7 @@ class UITextFormField extends StatefulWidget {
   final int? maxLines;
   final Widget? prefixIcon;
   final List<String>? autofillHints;
+  final bool? obscureText;
 
   @override
   State<UITextFormField> createState() => _UITextFormFieldState();
@@ -98,6 +100,7 @@ class _UITextFormFieldState extends State<UITextFormField> {
               controller: widget.controller,
               maxLength: widget.maxLength != 0 ? widget.maxLength : null,
               focusNode: focusNode,
+              obscureText: widget.obscureText ?? false,
               maxLines: widget.maxLines,
               style: Theme.of(context)
                   .textTheme

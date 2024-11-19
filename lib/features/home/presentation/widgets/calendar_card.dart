@@ -17,7 +17,8 @@ class CalendarCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => context.go(AppRouter.homePath + AppRouter.calendarPath),
+      onTap: () =>
+          context.go("${AppRouter.homePath}/${AppRouter.calendarPath}"),
       child: UICard(
         useGradient: true,
         distanceToTop: 280,

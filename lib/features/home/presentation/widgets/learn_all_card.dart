@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:learning_app/core/app_router.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_colors.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_constants.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_icons.dart';
@@ -29,11 +30,12 @@ class LearnAllCard extends StatelessWidget {
           disabled: finishedToday,
           useGradient: true,
           distanceToTop: 30,
-          onTap: () => context.push(context.namedLocation("learn")).then(
-                (value) => context
-                    .read<CalendarCubit>()
-                    .addDayToStreaks(DateTime.now()),
-              ),
+          onTap: () =>
+              context.push(context.namedLocation(AppRouteName.learn.name)).then(
+                    (value) => context
+                        .read<CalendarCubit>()
+                        .addDayToStreaks(DateTime.now()),
+                  ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,

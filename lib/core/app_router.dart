@@ -1,9 +1,12 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:learning_app/features/auth/presentation/bloc/bloc/authentication_bloc.dart';
+import 'package:learning_app/features/auth/presentation/pages/landing_page.dart';
 import 'package:learning_app/features/auth/presentation/pages/login_page.dart';
+import 'package:learning_app/features/auth/presentation/pages/register_page.dart';
 import 'package:learning_app/features/auth/presentation/pages/splash_page.dart';
 import 'package:learning_app/features/calendar/presentation/pages/calendar_page.dart';
 import 'package:learning_app/features/learn/presentation/pages/learn_page.dart';
@@ -12,13 +15,25 @@ import 'package:learning_app/features/subject/presentation/pages/subject_page.da
 import 'package:learning_app/features/home/presentation/pages/home_page.dart';
 import 'package:learning_app/injection_container.dart';
 
-enum AppRouteName { splash, login, home, calendar, learn, editor, subject }
+enum AppRouteName {
+  splash,
+  landing,
+  login,
+  register,
+  home,
+  calendar,
+  learn,
+  editor,
+  subject,
+}
 
 class AppRouter {
-  static const String homePath = '/';
   static const String splashPath = '/splash';
-  static const String loginPath = '/login';
+  static const String landingPath = '/landing';
+  static const String loginPath = 'login';
+  static const String registerPath = 'loginRegister';
 
+  static const String homePath = '/home';
   static const String calendarPath = 'calendar';
   static const String learnPath = 'learn';
   static const String editorPath = 'editor';
@@ -35,9 +50,21 @@ final GoRouter router = GoRouter(
       builder: (context, state) => const SplashPage(),
     ),
     GoRoute(
-      path: AppRouter.loginPath,
-      name: AppRouteName.login.name,
-      builder: (context, state) => const LoginPage(),
+      path: AppRouter.landingPath,
+      name: AppRouteName.landing.name,
+      builder: (context, state) => const LandingPage(),
+      routes: [
+        GoRoute(
+          path: AppRouter.loginPath,
+          name: AppRouteName.login.name,
+          builder: (context, state) => const LoginPage(),
+        ),
+        GoRoute(
+          path: AppRouter.registerPath,
+          name: AppRouteName.register.name,
+          builder: (context, state) => const RegisterPage(),
+        ),
+      ],
     ),
     GoRoute(
       path: AppRouter.homePath,
@@ -85,12 +112,11 @@ final GoRouter router = GoRouter(
     // Redirect to the login page if the user is not authenticated, and if authenticated, do not show the login page
     if (isUnAuthenticated &&
         !state.matchedLocation.contains(AppRouter.loginPath)) {
-      return AppRouter.loginPath;
+      return AppRouter.landingPath;
     }
     // Redirect to the home page if the user is authenticated
     else if (isAuthenticated &&
-        (state.fullPath == AppRouter.splashPath ||
-            state.fullPath == AppRouter.loginPath)) {
+        !state.matchedLocation.contains(AppRouter.homePath)) {
       return AppRouter.homePath;
     }
     return null;
