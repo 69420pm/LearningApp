@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -30,19 +31,23 @@ class CalendarFireStore implements CalendarDataSource {
         .get()
         .then((value) {
       if (value.data()?.isNotEmpty ?? false) {
-        print(value.data());
         return CalendarModel.fromJson(value.data()!);
       }
+    }, onError: (e) {
+      e.toString().contains("[cloud_firestore/unavailable]")
+          ? null
+          : throw Exception(e.toString());
     });
   }
 
   @override
   Future<void> saveCalendar(CalendarModel calendar) async {
-    await db
+    //if device is offline, await does not finish and app pauses
+    unawaited(db
         .collection("calendar")
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .set(calendar.toJson())
-        .onError((e, _) => print("Error writing document: $e"));
+        .onError((e, _) => throw (Exception(e))));
   }
 }
 

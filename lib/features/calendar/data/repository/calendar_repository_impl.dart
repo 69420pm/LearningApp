@@ -33,7 +33,7 @@ class CalendarRepositoryImpl extends CalendarRepository {
           rdsCal,
           ldsCal?.changeDate,
           rdsCal?.changeDate,
-          CalendarModel(changeDate: DateTime.now()),
+          CalendarModel(),
         )!,
       );
     } catch (e) {

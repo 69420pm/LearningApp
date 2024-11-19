@@ -24,6 +24,7 @@ class UITextFormField extends StatefulWidget {
     this.onLoseFocus,
     this.maxLines = 1,
     this.prefixIcon,
+    this.autofillHints,
   });
 
   final String? label;
@@ -43,6 +44,7 @@ class UITextFormField extends StatefulWidget {
   final TextInputAction? textInputAction;
   final int? maxLines;
   final Widget? prefixIcon;
+  final List<String>? autofillHints;
 
   @override
   State<UITextFormField> createState() => _UITextFormFieldState();
@@ -84,6 +86,7 @@ class _UITextFormFieldState extends State<UITextFormField> {
           Padding(
             padding: const EdgeInsets.only(bottom: UIConstants.defaultSize),
             child: TextFormField(
+              autofillHints: widget.autofillHints,
               textInputAction: widget.textInputAction,
               autofocus: widget.autofocus ?? false,
               onChanged: widget.onChanged,

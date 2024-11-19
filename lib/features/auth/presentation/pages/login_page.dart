@@ -36,66 +36,70 @@ class _LoginViewMobileState extends State<_LoginViewMobile> {
     return BlocBuilder<AuthenticationBloc, AuthenticationState>(
       builder: (context, state) {
         return Scaffold(
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (state is AuthenticationLoadFailure) Text(state.message),
-              UITextFormField(
-                controller: emailController,
-                validation: (_) {
-                  return null;
-                },
-                label: 'Email',
-              ),
-              UITextFormField(
-                controller: passwordController,
-                validation: (_) {
-                  return null;
-                },
-                label: 'Password',
-              ),
-              //Sign up button
-              GestureDetector(
-                onTap: () => setState(() {
-                  _isSignIn = !_isSignIn;
-                }),
-                child: Text(
-                  _isSignIn ? "No Account yet? Sign up" : "Back to login",
-                  style: Theme.of(context).textTheme.bodyMedium,
+          body: AutofillGroup(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (state is AuthenticationLoadFailure) Text(state.message),
+                UITextFormField(
+                  autofillHints: [AutofillHints.email],
+                  controller: emailController,
+                  validation: (_) {
+                    return null;
+                  },
+                  label: 'Email',
                 ),
-              ),
-
-              //Login button
-              GestureDetector(
-                child: UICard(
-                  useGradient: true,
-                  child: Center(
-                    child: Text(_isSignIn ? "Login" : "Sign Up",
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium!
-                            .copyWith(
-                                color:
-                                    Theme.of(context).colorScheme.onPrimary)),
+                UITextFormField(
+                  autofillHints: [AutofillHints.password],
+                  controller: passwordController,
+                  validation: (_) {
+                    return null;
+                  },
+                  label: 'Password',
+                ),
+                //Sign up button
+                GestureDetector(
+                  onTap: () => setState(() {
+                    _isSignIn = !_isSignIn;
+                  }),
+                  child: Text(
+                    _isSignIn ? "No Account yet? Sign up" : "Back to login",
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ),
-                onTap: () {
-                  _isSignIn
-                      ? BlocProvider.of<AuthenticationBloc>(context).add(
-                          LoggedIn(
-                            email: emailController.text,
-                            password: passwordController.text,
-                          ),
-                        )
-                      : BlocProvider.of<AuthenticationBloc>(context).add(
-                          SignedUp(
-                            email: emailController.text,
-                            password: passwordController.text,
-                          ),
-                        );
-                },
-              )
-            ],
+
+                //Login button
+                GestureDetector(
+                  child: UICard(
+                    useGradient: true,
+                    child: Center(
+                      child: Text(_isSignIn ? "Login" : "Sign Up",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineMedium!
+                              .copyWith(
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary)),
+                    ),
+                  ),
+                  onTap: () {
+                    _isSignIn
+                        ? BlocProvider.of<AuthenticationBloc>(context).add(
+                            LoggedIn(
+                              email: emailController.text,
+                              password: passwordController.text,
+                            ),
+                          )
+                        : BlocProvider.of<AuthenticationBloc>(context).add(
+                            SignedUp(
+                              email: emailController.text,
+                              password: passwordController.text,
+                            ),
+                          );
+                  },
+                )
+              ],
+            ),
           ),
         );
       },

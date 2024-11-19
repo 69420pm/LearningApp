@@ -5,7 +5,7 @@ import 'package:learning_app/features/calendar/domain/helper/date_time_extension
 
 class Streaks extends Equatable {
   final List<TimeSpan> _streaks = List.empty(growable: true);
-  get streaks => _streaks;
+  List<TimeSpan> get streaks => _streaks;
 
   Streaks();
 
@@ -71,7 +71,8 @@ class Streaks extends Equatable {
 
   StreaksModel toModel() {
     return StreaksModel.custom(
-        streaks: _streaks.map((e) => e.toModel()).toList());
+      streaks: _streaks.map((e) => e.toModel()).toList(),
+    );
   }
 
   @override

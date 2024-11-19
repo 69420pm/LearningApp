@@ -71,9 +71,8 @@ class AuthenticationBloc
 
     on<AuthenticationStatusChecked>((event, emit) async {
       emit(AuthenticationLoadInProgress());
-      User? user;
-      FirebaseAuth.instance.authStateChanges().listen((User? u) => user = u);
-      if (user != null) {
+
+      if (FirebaseAuth.instance.currentUser != null) {
         emit(Authenticated());
       } else {
         emit(Unauthenticated());
