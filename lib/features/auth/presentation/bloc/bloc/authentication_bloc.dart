@@ -69,15 +69,15 @@ class AuthenticationBloc
       });
     });
 
-    on<AuthenticationStatusChecked>((event, emit) {
+    on<AuthenticationStatusChecked>((event, emit) async {
       emit(AuthenticationLoadInProgress());
-      FirebaseAuth.instance.authStateChanges().listen((User? user) {
-        if (user == null) {
-          emit(Unauthenticated());
-        } else {
-          emit(Authenticated());
-        }
-      });
+      User? user;
+      FirebaseAuth.instance.authStateChanges().listen((User? u) => user = u);
+      if (user != null) {
+        emit(Authenticated());
+      } else {
+        emit(Unauthenticated());
+      }
     });
   }
 }

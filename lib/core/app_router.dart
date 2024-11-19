@@ -73,13 +73,12 @@ final GoRouter router = GoRouter(
           },
         ),
       ],
-    )
+    ),
   ],
   // changes on the listenable will cause the router to refresh it's route
   refreshListenable: StreamToListenable([sl<AuthenticationBloc>().stream]),
   //The top-level callback allows the app to redirect to a new location.
   redirect: (context, state) {
-    print("moin");
     final isAuthenticated = sl<AuthenticationBloc>().state is Authenticated;
     final isUnAuthenticated = sl<AuthenticationBloc>().state is Unauthenticated;
 
@@ -89,8 +88,9 @@ final GoRouter router = GoRouter(
       return AppRouter.loginPath;
     }
     // Redirect to the home page if the user is authenticated
-    else if (isAuthenticated && state.fullPath == AppRouter.splashPath) {
-      print("home");
+    else if (isAuthenticated &&
+        (state.fullPath == AppRouter.splashPath ||
+            state.fullPath == AppRouter.loginPath)) {
       return AppRouter.homePath;
     }
     return null;
