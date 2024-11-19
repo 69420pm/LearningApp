@@ -55,17 +55,4 @@ class CalendarRepositoryImpl extends CalendarRepository {
       );
     }
   }
-
-  @override
-  Either<Failure, Stream<Calendar?>> watchCalendar() {
-    try {
-      return right(lds.watchCalendar() as Stream<Calendar?>);
-    } on Exception {
-      return left(
-        CalendarNotFoundFailure(
-          errorMessage: "Calendar not found",
-        ),
-      );
-    }
-  }
 }

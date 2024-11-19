@@ -9,6 +9,4 @@ abstract class CalendarRepository {
   Future<Either<Failure, void>> saveCalendar(Calendar calendar);
   Future<Either<Failure, Calendar>> getCalendar();
   Future<Either<Failure, void>> deleteCalendar();
-
-  Either<Failure, Stream<Calendar?>> watchCalendar();
 }

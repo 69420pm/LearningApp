@@ -10,7 +10,6 @@ import 'package:learning_app/features/calendar/data/repository/calendar_reposito
 import 'package:learning_app/features/calendar/domain/repositories/calendar_repository.dart';
 import 'package:learning_app/features/calendar/domain/usecases/get_calendar.dart';
 import 'package:learning_app/features/calendar/domain/usecases/save_calendar.dart';
-import 'package:learning_app/features/calendar/domain/usecases/watch_calendar.dart';
 import 'package:learning_app/features/calendar/presentation/bloc/cubit/calendar_cubit.dart';
 import 'package:learning_app/features/editor/presentation/cubit/editor_cubit.dart';
 import 'package:learning_app/features/file_system/data/datasources/file_system_local_data_source.dart';
@@ -107,8 +106,6 @@ void features() {
   // Calendar
   sl.registerLazySingleton(() => GetCalendar(repository: sl()));
   sl.registerLazySingleton(() => SaveCalendar(repository: sl()));
-  sl.registerLazySingleton(() => WatchCalendar(repository: sl()));
-
   // Repository
   sl.registerLazySingleton<FileSystemRepository>(
     () => FileSystemRepositoryImpl(lds: sl()),
@@ -129,9 +126,11 @@ void features() {
     ),
   );
   sl.registerLazySingleton<CalendarLocalDataSource>(
-    () => CalendarHive(
-      calendarBox: sl(instanceName: "calendarBox"),
-    ),
+    // () => CalendarHive(
+    //   calendarBox: sl(instanceName: "calendarBox"),
+    // ),
+
+    () => CalendarFireStore(),
   );
 
   // Editor

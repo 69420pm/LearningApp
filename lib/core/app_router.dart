@@ -79,6 +79,7 @@ final GoRouter router = GoRouter(
   refreshListenable: StreamToListenable([sl<AuthenticationBloc>().stream]),
   //The top-level callback allows the app to redirect to a new location.
   redirect: (context, state) {
+    print("moin");
     final isAuthenticated = sl<AuthenticationBloc>().state is Authenticated;
     final isUnAuthenticated = sl<AuthenticationBloc>().state is Unauthenticated;
 
