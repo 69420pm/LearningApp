@@ -89,7 +89,8 @@ final GoRouter router = GoRouter(
       return AppRouter.loginPath;
     }
     // Redirect to the home page if the user is authenticated
-    else if (isAuthenticated) {
+    else if (isAuthenticated && state.fullPath == AppRouter.splashPath) {
+      print("home");
       return AppRouter.homePath;
     }
     return null;

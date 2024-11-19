@@ -5,17 +5,20 @@ import 'package:learning_app/features/calendar/domain/entities/calendar.dart';
 import 'package:learning_app/features/calendar/domain/entities/streaks.dart';
 
 class CalendarModel extends Calendar {
-  CalendarModel({
-    super.streaks,
-    super.streakSaver,
-    super.maxStreakSaver,
-  });
+  CalendarModel(
+      {super.streaks,
+      super.streakSaver,
+      super.maxStreakSaver,
+      required this.changeDate});
+
+  DateTime changeDate = DateTime.now();
 
   factory CalendarModel.fromJson(Map<String, dynamic> json) {
     return CalendarModel(
       streaks: StreaksModel.fromJson(json['streaks']),
       streakSaver: json['streakSaver'],
       maxStreakSaver: json['maxStreakSaver'],
+      changeDate: DateTime.parse(json['changeDate'] as String),
     );
   }
 
@@ -24,6 +27,7 @@ class CalendarModel extends Calendar {
       'streaks': streaks.toModel().toJson(),
       'streakSaver': streakSaver,
       'maxStreakSaver': maxStreakSaver,
+      'changeDate': changeDate.toIso8601String()
     };
   }
 }

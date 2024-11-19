@@ -1,7 +1,8 @@
+import 'package:equatable/equatable.dart';
 import 'package:learning_app/features/calendar/data/models/calendar_model.dart';
 import 'package:learning_app/features/calendar/domain/entities/streaks.dart';
 
-class Calendar {
+class Calendar extends Equatable {
   Streaks _streaks = Streaks();
   Streaks get streaks => _streaks;
 
@@ -25,7 +26,7 @@ class Calendar {
     }
   }
 
-  Calendar({streaks, streakSaver = 3, maxStreakSaver = 3}) {
+  Calendar({streaks, streakSaver = 3, maxStreakSaver = 3, changeDate}) {
     _streaks = streaks ?? Streaks();
     _streakSaver = streakSaver;
     _maxStreakSaver = maxStreakSaver;
@@ -36,6 +37,11 @@ class Calendar {
       streaks: _streaks.toModel(),
       streakSaver: _streakSaver,
       maxStreakSaver: _maxStreakSaver,
+      changeDate: DateTime.now(),
     );
   }
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [_streaks, _streakSaver, _maxStreakSaver];
 }

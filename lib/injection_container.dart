@@ -5,7 +5,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:learning_app/core/helper/image_helper.dart';
 import 'package:learning_app/features/auth/presentation/bloc/bloc/authentication_bloc.dart';
-import 'package:learning_app/features/calendar/data/datasource/calendar_local_data_source.dart';
+import 'package:learning_app/features/calendar/data/datasource/calendar_data_source.dart';
 import 'package:learning_app/features/calendar/data/repository/calendar_repository_impl.dart';
 import 'package:learning_app/features/calendar/domain/repositories/calendar_repository.dart';
 import 'package:learning_app/features/calendar/domain/usecases/get_calendar.dart';
@@ -111,7 +111,8 @@ void features() {
     () => FileSystemRepositoryImpl(lds: sl()),
   );
   sl.registerLazySingleton<CalendarRepository>(
-    () => CalendarRepositoryImpl(lds: sl()),
+    () => CalendarRepositoryImpl(
+        lds: sl<CalendarHive>(), rds: sl<CalendarFireStore>()),
   );
 
   // Data sources
@@ -125,12 +126,11 @@ void features() {
       classTestRelationBox: sl(instanceName: "classTestRelationsBox"),
     ),
   );
-  sl.registerLazySingleton<CalendarLocalDataSource>(
-    // () => CalendarHive(
-    //   calendarBox: sl(instanceName: "calendarBox"),
-    // ),
-
-    () => CalendarFireStore(),
+  sl.registerLazySingleton<CalendarFireStore>(() => CalendarFireStore());
+  sl.registerLazySingleton<CalendarHive>(
+    () => CalendarHive(
+      calendarBox: sl(instanceName: "calendarBox"),
+    ),
   );
 
   // Editor

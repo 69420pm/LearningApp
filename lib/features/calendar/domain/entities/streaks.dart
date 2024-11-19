@@ -1,8 +1,9 @@
+import 'package:equatable/equatable.dart';
 import 'package:learning_app/features/calendar/data/models/streaks_model.dart';
 import 'package:learning_app/features/calendar/domain/entities/time_span.dart';
 import 'package:learning_app/features/calendar/domain/helper/date_time_extension.dart';
 
-class Streaks {
+class Streaks extends Equatable {
   final List<TimeSpan> _streaks = List.empty(growable: true);
   get streaks => _streaks;
 
@@ -80,4 +81,8 @@ class Streaks {
             ("${e.startDate.day}.${e.startDate.month}-${e.endDate.day}.${e.endDate.month}"))
         .join("  ");
   }
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [_streaks];
 }
