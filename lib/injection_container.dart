@@ -4,7 +4,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:learning_app/core/helper/image_helper.dart';
-import 'package:learning_app/features/auth/presentation/bloc/bloc/authentication_bloc.dart';
+import 'package:learning_app/features/auth/presentation/bloc/auth_bloc/authentication_bloc.dart';
 import 'package:learning_app/features/calendar/data/datasource/calendar_data_source.dart';
 import 'package:learning_app/features/calendar/data/repository/calendar_repository_impl.dart';
 import 'package:learning_app/features/calendar/domain/repositories/calendar_repository.dart';

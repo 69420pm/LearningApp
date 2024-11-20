@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:hive/hive.dart';
-import 'package:learning_app/features/auth/presentation/bloc/bloc/authentication_bloc.dart';
+import 'package:learning_app/features/auth/presentation/bloc/auth_bloc/authentication_bloc.dart';
 import 'package:learning_app/features/calendar/data/models/calendar_model.dart';
 import 'package:learning_app/injection_container.dart';
 

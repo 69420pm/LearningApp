@@ -6,19 +6,27 @@ import 'package:learning_app/core/ui_components/ui_components/responsive_layout.
 import 'package:learning_app/core/ui_components/ui_components/ui_colors.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_constants.dart';
 import 'package:learning_app/core/ui_components/ui_components/ui_text.dart';
+import 'package:learning_app/core/ui_components/ui_components/widgets/bottom_sheet/ui_bottom_sheet.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/buttons/ui_button.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/buttons/ui_card_button.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/text_form_field.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/ui_card.dart';
-import 'package:learning_app/features/auth/presentation/bloc/bloc/authentication_bloc.dart';
+import 'package:learning_app/features/auth/presentation/bloc/auth_bloc/authentication_bloc.dart';
+import 'package:learning_app/features/auth/presentation/bloc/sign_in/sign_in_bloc.dart';
+import 'package:learning_app/features/auth/presentation/widgets/email_text_field.dart';
+import 'package:learning_app/features/auth/presentation/widgets/password_text_field.dart';
+import 'package:learning_app/features/auth/presentation/widgets/reset_password_bs.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ResponsiveLayout(
-      mobile: _LoginViewMobile(),
+    return BlocProvider(
+      create: (context) => SignInBloc(),
+      child: ResponsiveLayout(
+        mobile: _LoginViewMobile(),
+      ),
     );
   }
 }
@@ -36,16 +44,21 @@ class _LoginViewMobile extends StatelessWidget {
   Widget build(BuildContext context) {
     login() {
       if (formKey.currentState?.validate() ?? false) {
-        BlocProvider.of<AuthenticationBloc>(context).add(
-          LoggedIn(
-            email: emailController.text,
-            password: passwordController.text,
-          ),
-        );
+        context.read<SignInBloc>().add(
+              SignIn(
+                email: emailController.text,
+                password: passwordController.text,
+              ),
+            );
       }
     }
 
-    return BlocBuilder<AuthenticationBloc, AuthenticationState>(
+    return BlocConsumer<SignInBloc, SignInState>(
+      listener: (context, state) {
+        if (state is SignInSuccessful) {
+          context.read<AuthenticationBloc>().add(AuthenticationStatusChecked());
+        }
+      },
       builder: (context, state) {
         return Scaffold(
           body: Padding(
@@ -57,44 +70,26 @@ class _LoginViewMobile extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    UITextFormField(
-                      autofillHints: [AutofillHints.email],
-                      inputType: TextInputType.emailAddress,
-                      textInputAction: TextInputAction.next,
-                      controller: emailController,
-                      validation: (text) {
-                        if (text!.isEmpty) {
-                          return "Email cannot be empty";
-                        }
-                        if (!RegExp(
-                                r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                            .hasMatch(text)) {
-                          return "Invalid email";
-                        }
-                      },
-                      label: 'Email',
-                    ),
-                    UITextFormField(
-                      autofillHints: [AutofillHints.password],
-                      inputType: TextInputType.visiblePassword,
-                      textInputAction: TextInputAction.go,
-                      controller: passwordController,
-                      obscureText: true,
-                      validation: (text) {
-                        if (text!.isEmpty) {
-                          return "Password cannot be empty";
-                        }
-                      },
-                      label: 'Password',
-                      onFieldSubmitted: (_) => login(),
+                    EmailTextField(emailController: emailController),
+                    PasswordTextField(
+                        passwordController: passwordController,
+                        onSubmitted: login),
+                    GestureDetector(
+                      onTap: () => UIBottomSheet.showUIBottomSheet(
+                        builder: (context) => ResetPasswordBS(),
+                        context: context,
+                      ),
+                      child: const Text(
+                        "Reset Password",
+                        style: UIText.normal,
+                      ),
                     ),
                     Text(
-                        (state is AuthenticationLoadFailure)
-                            ? state.message
-                            : "",
-                        style: UIText.normal.copyWith(
-                          color: UIColors.red,
-                        )),
+                      (state is SignInFailure) ? state.message : "",
+                      style: UIText.normal.copyWith(
+                        color: UIColors.red,
+                      ),
+                    ),
 
                     //Sign up button
                     const SizedBox(height: UIConstants.itemPaddingLarge),
@@ -102,7 +97,7 @@ class _LoginViewMobile extends StatelessWidget {
                     UICardButton(
                       color: UIColors.primary,
                       text: Text(
-                        "Login",
+                        state is SignInLoading ? "Loading..." : "Login",
                         style: UIText.labelBold.copyWith(
                             color: Theme.of(context).colorScheme.onPrimary),
                       ),

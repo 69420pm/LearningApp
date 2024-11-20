@@ -8,7 +8,7 @@ import 'package:learning_app/bloc_observer.dart';
 import 'package:learning_app/core/app_router.dart';
 import 'package:learning_app/core/theme/color_schemes.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:learning_app/features/auth/presentation/bloc/bloc/authentication_bloc.dart';
+import 'package:learning_app/features/auth/presentation/bloc/auth_bloc/authentication_bloc.dart';
 import 'package:learning_app/firebase_options.dart';
 import 'package:learning_app/generated/l10n.dart';
 import 'package:learning_app/injection_container.dart';

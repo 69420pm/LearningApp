@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
-import 'package:learning_app/features/auth/presentation/bloc/bloc/authentication_bloc.dart';
+import 'package:learning_app/features/auth/presentation/bloc/auth_bloc/authentication_bloc.dart';
 import 'package:learning_app/features/auth/presentation/pages/landing_page.dart';
 import 'package:learning_app/features/auth/presentation/pages/login_page.dart';
 import 'package:learning_app/features/auth/presentation/pages/register_page.dart';

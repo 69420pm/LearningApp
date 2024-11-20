@@ -7,7 +7,7 @@ import 'package:learning_app/core/ui_components/ui_components/ui_constants.dart'
 import 'package:learning_app/core/ui_components/ui_components/ui_icons.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/buttons/ui_icon_button.dart';
 import 'package:learning_app/core/ui_components/ui_components/widgets/ui_appbar.dart';
-import 'package:learning_app/features/auth/presentation/bloc/bloc/authentication_bloc.dart';
+import 'package:learning_app/features/auth/presentation/bloc/auth_bloc/authentication_bloc.dart';
 import 'package:learning_app/features/calendar/presentation/bloc/cubit/calendar_cubit.dart';
 import 'package:learning_app/features/home/presentation/bloc/home_bloc.dart';
 import 'package:learning_app/features/home/presentation/widgets/subject_list.dart';
