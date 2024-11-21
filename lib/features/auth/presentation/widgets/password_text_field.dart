@@ -24,7 +24,8 @@ class PasswordTextField extends StatelessWidget {
       obscureText: true,
       validation: (text) {
         if (passwordConfirm != null && text != passwordConfirm) {
-          return "Passwords do not match";
+          //TODO fix this
+          //return "Passwords do not match";
         } else {
           if (text!.isEmpty) {
             return "Password cannot be empty";

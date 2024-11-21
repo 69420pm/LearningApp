@@ -9,6 +9,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   SignUpBloc() : super(SignUpInitial()) {
     on<SignUp>((event, emit) async {
       emit(SignUpLoading());
+
       try {
         await FirebaseAuth.instance
             .createUserWithEmailAndPassword(

@@ -10,6 +10,14 @@ class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
     on<ResetPassword>((event, emit) async {
       emit(PasswordResetEmailInProgress());
 
+      if (event.email.isEmpty) {
+        emit(const PasswordResetEmailFailure('Email cannot be empty'));
+        return;
+      } else if (!event.email.contains('@')) {
+        emit(const PasswordResetEmailFailure('Invalid email'));
+        return;
+      }
+
       await FirebaseAuth.instance
           .sendPasswordResetEmail(email: event.email)
           .then((value) => emit(PasswordResetEmailSent()), onError: (e) {

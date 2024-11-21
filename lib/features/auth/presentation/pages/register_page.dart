@@ -84,7 +84,7 @@ class _RegisterViewMobile extends StatelessWidget {
                     UICardButton(
                       color: UIColors.primary,
                       text: Text(
-                        "Sign Up",
+                        state is SignUpLoading ? "Loading..." : "Sign Up",
                         style: UIText.labelBold.copyWith(
                             color: Theme.of(context).colorScheme.onPrimary),
                       ),
