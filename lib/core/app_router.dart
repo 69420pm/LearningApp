@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +9,7 @@ import 'package:learning_app/features/auth/presentation/pages/landing_page.dart'
 import 'package:learning_app/features/auth/presentation/pages/login_page.dart';
 import 'package:learning_app/features/auth/presentation/pages/register_page.dart';
 import 'package:learning_app/features/auth/presentation/pages/splash_page.dart';
+import 'package:learning_app/features/auth/presentation/pages/verify_email_page.dart';
 import 'package:learning_app/features/calendar/presentation/pages/calendar_page.dart';
 import 'package:learning_app/features/learn/presentation/pages/learn_page.dart';
 import 'package:learning_app/features/quill_editor/presentation/quill_test.dart';
@@ -25,13 +27,17 @@ enum AppRouteName {
   learn,
   editor,
   subject,
+  verifyEmail,
 }
 
 class AppRouter {
   static const String splashPath = '/splash';
+
   static const String landingPath = '/landing';
   static const String loginPath = 'login';
   static const String registerPath = 'loginRegister';
+
+  static const String verifyEmailPath = '/verify-email';
 
   static const String homePath = '/home';
   static const String calendarPath = 'calendar';
@@ -65,6 +71,11 @@ final GoRouter router = GoRouter(
           builder: (context, state) => const RegisterPage(),
         ),
       ],
+    ),
+    GoRoute(
+      path: AppRouter.verifyEmailPath,
+      name: AppRouteName.verifyEmail.name,
+      builder: (context, state) => const VerifyEmailPage(),
     ),
     GoRoute(
       path: AppRouter.homePath,
@@ -103,12 +114,24 @@ final GoRouter router = GoRouter(
     ),
   ],
   // changes on the listenable will cause the router to refresh it's route
-  refreshListenable: StreamToListenable([sl<AuthenticationBloc>().stream]),
+  refreshListenable: StreamToListenable(
+    [
+      sl<AuthenticationBloc>().stream.where(
+            (event) => event is Unauthenticated || event is Authenticated,
+          ),
+      FirebaseAuth.instance
+          .authStateChanges()
+          .where((event) => event?.emailVerified == true),
+    ],
+  ),
+
   //The top-level callback allows the app to redirect to a new location.
   redirect: (context, state) {
+    FirebaseAuth.instance.currentUser?.reload();
     final isAuthenticated = sl<AuthenticationBloc>().state is Authenticated;
     final isUnAuthenticated = sl<AuthenticationBloc>().state is Unauthenticated;
-
+    final isVerified =
+        FirebaseAuth.instance.currentUser?.emailVerified ?? false;
     // Redirect to the login page if the user is not authenticated, and if authenticated, do not show the login page
     if (isUnAuthenticated &&
         !state.matchedLocation.contains(AppRouter.loginPath)) {
@@ -116,8 +139,13 @@ final GoRouter router = GoRouter(
     }
     // Redirect to the home page if the user is authenticated
     else if (isAuthenticated &&
-        !state.matchedLocation.contains(AppRouter.homePath)) {
+        !state.matchedLocation.contains(AppRouter.homePath) &&
+        isVerified) {
       return AppRouter.homePath;
+    } else if (isAuthenticated &&
+        !state.matchedLocation.contains(AppRouter.homePath) &&
+        !isVerified) {
+      return AppRouter.verifyEmailPath;
     }
     return null;
   },
