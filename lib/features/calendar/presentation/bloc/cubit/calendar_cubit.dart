@@ -37,6 +37,7 @@ class CalendarCubit extends Cubit<CalendarState> {
       },
     );
     emit(CalendarUpdated());
+    _saveCalendar();
   }
 
   Future<void> addDayToStreaks(DateTime day) async {
@@ -47,6 +48,7 @@ class CalendarCubit extends Cubit<CalendarState> {
         (day.isToday() || day.isBefore(DateTime.now()))) {
       _calendar.streaks.addDayToStreak(day);
       _calendar.streakSaver--;
+      _calendar.updateChangeDate();
       _saveCalendar();
     }
   }
@@ -55,6 +57,8 @@ class CalendarCubit extends Cubit<CalendarState> {
     emit(CalendarLoading());
     if (_calendar.streakSaver < _calendar.maxStreakSaver) {
       _calendar.streakSaver++;
+      _calendar.updateChangeDate();
+
       await _saveCalendar();
     }
   }
@@ -62,6 +66,8 @@ class CalendarCubit extends Cubit<CalendarState> {
   Future<void> deleteStreaks() async {
     emit(CalendarLoading());
     _calendar.streaks.clear();
+    _calendar.updateChangeDate();
+
     await _saveCalendar();
   }
 

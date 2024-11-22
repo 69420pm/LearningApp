@@ -17,7 +17,7 @@ class StreaksModel extends Streaks {
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
-      'streaks': streaks.map((e) => e.toJson()).toList(),
+      'streaks': streaks.map((e) => e.toModel().toJson()).toList(),
     };
   }
 }

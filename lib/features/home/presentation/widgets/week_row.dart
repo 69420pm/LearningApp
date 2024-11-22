@@ -24,6 +24,7 @@ class WeekRow extends StatelessWidget {
         Duration(days: now.weekday - (isSundayFirstDayOfWeek ? 0 : 1)));
 
     return BlocBuilder<CalendarCubit, CalendarState>(
+      buildWhen: (previous, current) => current is CalendarUpdated,
       builder: (context, state) {
         final streaks = context.read<CalendarCubit>().streaks;
         return Container(
@@ -71,12 +72,17 @@ class WeekRow extends StatelessWidget {
                               ),
                             ),
                           ),
+                          const SizedBox(height: UIConstants.defaultSize),
                           Expanded(
                             child: DayTile(
                               day: day,
                               streakLeft: streakLeft,
                               hasStreak: hasStreak,
                               streakRight: streakRight,
+                              backgroundColor: hasStreak
+                                  ? UIColors.primary.withOpacity(.2)
+                                  : Colors.transparent,
+                              // customBorder: const Border(),
                             ),
                           ),
                         ],

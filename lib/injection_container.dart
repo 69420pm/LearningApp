@@ -4,12 +4,12 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:learning_app/core/helper/image_helper.dart';
-import 'package:learning_app/features/calendar/data/datasource/calendar_local_data_source.dart';
+import 'package:learning_app/features/auth/presentation/bloc/auth_bloc/authentication_bloc.dart';
+import 'package:learning_app/features/calendar/data/datasource/calendar_data_source.dart';
 import 'package:learning_app/features/calendar/data/repository/calendar_repository_impl.dart';
 import 'package:learning_app/features/calendar/domain/repositories/calendar_repository.dart';
 import 'package:learning_app/features/calendar/domain/usecases/get_calendar.dart';
 import 'package:learning_app/features/calendar/domain/usecases/save_calendar.dart';
-import 'package:learning_app/features/calendar/domain/usecases/watch_calendar.dart';
 import 'package:learning_app/features/calendar/presentation/bloc/cubit/calendar_cubit.dart';
 import 'package:learning_app/features/editor/presentation/cubit/editor_cubit.dart';
 import 'package:learning_app/features/file_system/data/datasources/file_system_local_data_source.dart';
@@ -78,11 +78,15 @@ void features() {
   sl.registerFactory(() => EditorCubit());
   sl.registerFactory(() => SubjectHoverCubit());
 
-  sl.registerFactoryParam(
-    (parentId, _) => CalendarCubit(
+  sl.registerFactory(
+    () => CalendarCubit(
       getCalendarUseCase: sl(),
       saveCalendarUseCase: sl(),
     ),
+  );
+
+  sl.registerLazySingleton(
+    () => AuthenticationBloc(),
   );
 
   // Use cases
@@ -102,14 +106,13 @@ void features() {
   // Calendar
   sl.registerLazySingleton(() => GetCalendar(repository: sl()));
   sl.registerLazySingleton(() => SaveCalendar(repository: sl()));
-  sl.registerLazySingleton(() => WatchCalendar(repository: sl()));
-
   // Repository
   sl.registerLazySingleton<FileSystemRepository>(
     () => FileSystemRepositoryImpl(lds: sl()),
   );
   sl.registerLazySingleton<CalendarRepository>(
-    () => CalendarRepositoryImpl(lds: sl()),
+    () => CalendarRepositoryImpl(
+        lds: sl<CalendarHive>(), rds: sl<CalendarFireStore>()),
   );
 
   // Data sources
@@ -123,7 +126,8 @@ void features() {
       classTestRelationBox: sl(instanceName: "classTestRelationsBox"),
     ),
   );
-  sl.registerLazySingleton<CalendarLocalDataSource>(
+  sl.registerLazySingleton<CalendarFireStore>(() => CalendarFireStore());
+  sl.registerLazySingleton<CalendarHive>(
     () => CalendarHive(
       calendarBox: sl(instanceName: "calendarBox"),
     ),
