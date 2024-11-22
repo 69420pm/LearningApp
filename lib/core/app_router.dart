@@ -118,16 +118,12 @@ final GoRouter router = GoRouter(
     [
       sl<AuthenticationBloc>().stream.where(
             (event) => event is Unauthenticated || event is Authenticated,
-          ),
-      FirebaseAuth.instance
-          .authStateChanges()
-          .where((event) => event?.emailVerified == true),
+          )
     ],
   ),
 
   //The top-level callback allows the app to redirect to a new location.
   redirect: (context, state) {
-    FirebaseAuth.instance.currentUser?.reload();
     final isAuthenticated = sl<AuthenticationBloc>().state is Authenticated;
     final isUnAuthenticated = sl<AuthenticationBloc>().state is Unauthenticated;
     final isVerified =

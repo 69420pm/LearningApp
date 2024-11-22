@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -23,15 +25,42 @@ class VerifyEmailPage extends StatelessWidget {
   }
 }
 
-class _VerifyEmailScreenMobile extends StatelessWidget {
+class _VerifyEmailScreenMobile extends StatefulWidget {
   _VerifyEmailScreenMobile({super.key});
 
+  @override
+  State<_VerifyEmailScreenMobile> createState() =>
+      _VerifyEmailScreenMobileState();
+}
+
+class _VerifyEmailScreenMobileState extends State<_VerifyEmailScreenMobile> {
   final TextEditingController _codeController = TextEditingController();
+
+  late Timer timer;
+  @override
+  void initState() {
+    if (context.read<EmailVerifyBloc>().state is EmailVerifyInitial) {
+      context.read<EmailVerifyBloc>().add(SendVerifyEmail());
+    }
+    super.initState();
+    timer = Timer.periodic(const Duration(seconds: 3), (_) {
+      if (context.mounted) {
+        FirebaseAuth.instance.currentUser?.reload().then((value) {
+          if (FirebaseAuth.instance.currentUser!.emailVerified) {
+            context
+                .read<AuthenticationBloc>()
+                .add(AuthenticationStatusChecked());
+            timer.cancel();
+          }
+        });
+      } else {
+        timer.cancel();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    print(FirebaseAuth.instance.currentUser!.emailVerified);
-
     return BlocBuilder<EmailVerifyBloc, EmailVerifyState>(
       builder: (context, state) {
         return Scaffold(
@@ -43,25 +72,19 @@ class _VerifyEmailScreenMobile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text('Verify your email to continue'),
-                UICardButton(
+                if (state is EmailSendFailure)
+                  UICardButton(
                     onPressed: () {
                       context.read<EmailVerifyBloc>().add(SendVerifyEmail());
                     },
-                    text: Text(state is EmailSendingLoading
-                        ? 'Sending...'
-                        : state is EmailVerifyInitial
-                            ? 'Send email'
-                            : state is EmailSendSuccess
-                                ? 'Resend verification email'
-                                : state is EmailSendFailure
-                                    ? state.message
-                                    : '')),
+                    text: const Text("Resent Email"),
+                  ),
                 const SizedBox(height: 20),
                 UICardButton(
                     onPressed: () {
                       context.read<AuthenticationBloc>().add(LoggedOut());
                     },
-                    text: Text("logout"))
+                    text: const Text("logout"))
               ],
             ),
           ),
